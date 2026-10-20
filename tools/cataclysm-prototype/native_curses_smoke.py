@@ -6,6 +6,11 @@ user, log = sys.argv[2:4]
 world = os.listdir(user + '/save')[0]
 save_world = user + '/save/' + world
 verify_path = user + '/verification.json'
+options_path = user + '/config/options.json'
+os.makedirs(user + '/config', exist_ok=True)
+options = json.load(open(options_path)) if os.path.exists(options_path) else []
+with open(options_path, 'w') as f:
+    json.dump([o for o in options if o.get('name') != 'USE_LANG'] + [{'name': 'USE_LANG', 'value': 'en'}], f)
 def digest(path):
     with open(path, 'rb') as f: return hashlib.sha256(f.read()).hexdigest()
 before = {name: digest(save_world + '/' + name) for name in ('#VW4gVGFwaWE=.sav.zzip', 'dimension_data.gsav', 'novgorod_rng_state')}
@@ -37,9 +42,10 @@ def key(data, label):
     os.write(master, data); print('INPUT', label, flush=True)
 open(log, 'wb').close()
 try:
-    wait_for([b'language'], 20, 'language chooser')
-    key(b'1\n', 'select English')
-    wait_for([world.encode('utf8'), b'[MOTD]'], 120, 'main menu')
+    wait_for([b'language', world.encode('utf8'), b'[MOTD]'], 120, 'language chooser or main menu')
+    if b'language' in bytes(allout).lower() and b'[motd]' not in bytes(allout).lower():
+        key(b'1\n', 'select English')
+        wait_for([world.encode('utf8'), b'[MOTD]'], 120, 'main menu')
     key(b'l', 'open Load')
     wait_for([b'Load', world.encode('utf8')], 20, 'load selection')
     key(b'\n', 'load selected world')

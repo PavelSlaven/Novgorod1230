@@ -10,12 +10,95 @@ Novgorod и не открывает пользовательские saves. Fixt
 фактические проверки и ограничения — [результат задания 03](TASK03-LIVE-RESULT.md).
 Это отдельный игровой запуск; команды старого smoke ниже остаются стендом.
 
+## Графика и русский язык
+
+`run-p3-dev.sh` по умолчанию открывает графический `runtime/cataclysm-tiles` с
+официальным русским переводом и тайлсетом UltimateCataclysm, текстовая игра —
+`run-p3-dev.sh --text`. `run-p3-dev.ps1` на Windows по умолчанию запускает
+текстовую игру, графику — с ключом `-Tiles`: окно WSLg может не появиться на
+рабочем столе Windows. Если выбранного бинаря нет, запускалка останавливается и
+не переключает режим сама; без графического бинаря она называет оба выхода:
+текстовую версию и команду подготовки runtime.
+
+Перевод и тайлсет берутся из закреплённого официального архива CDDA
+`cdda-experimental-2026-10-18-0359` (Linux, with graphics); URL и sha256 —
+в [`prepare_p3_runtime.py`](prepare_p3_runtime.py). Из архива используются
+только `lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo` и `gfx/UltimateCataclysm/`,
+его бинари не запускаются. Архив скачивается один раз в новый пустой каталог
+`~/cdda-assets/cdda-experimental-2026-10-18-0359/graphics/`; без него скрипт
+подготовки печатает точную команду `curl` и ожидаемый sha256.
+
+Графическую сборку делает [`build-tiles.sh`](build-tiles.sh) (в WSL). Он
+повторяет рецепт CDDA `.github/actions/setup-sdl3-stack`: SDL `release-3.4.10`,
+SDL_image `release-3.4.4` и SDL_ttf `release-3.2.2` клонируются с закреплёнными
+коммитами (при расхождении HEAD сборка останавливается) и ставятся в свой
+префикс, по умолчанию `~/.local/share/novgorod/sdl3-3.4.10`. SDL3_mixer не
+нужен: звук выключен (`-DSOUND=OFF`). Затем в `$CDDA/build-tiles` (или
+`--build-dir`) собирается цель `cataclysm-tiles` с `-DTILES=ON` и
+`-DUSE_PREFIX_DATA_DIR=OFF`: при умолчании CMake игра ищет перевод в
+`/usr/local/share/locale`, а не в `lang/mo` рядом с runtime, и молча
+остаётся на английском. Поэтому и текстовые сборки ниже конфигурируются с
+`-DUSE_PREFIX_DATA_DIR=OFF`. Автотесты при этом остаются на английском: они
+задают `USE_LANG=en` в своём userdir.
+Пакеты сборки — список рецепта без пяти звуковых библиотек SDL3_mixer, плюс
+`glslang-tools` для шейдеров:
+
+```sh
+sudo apt-get install -y libfreetype-dev libharfbuzz-dev libjpeg-dev libpng-dev \
+  libwebp-dev libtiff-dev libasound2-dev libpulse-dev libx11-dev libxext-dev \
+  libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxrender-dev libxss-dev \
+  libxtst-dev libxkbcommon-dev libwayland-dev libwayland-bin wayland-protocols \
+  libdecor-0-dev libdrm-dev libgbm-dev libudev-dev libegl-dev libgl-dev \
+  libgles-dev libvulkan-dev libpipewire-0.3-dev libdbus-1-dev libibus-1.0-dev \
+  glslang-tools
+bash tools/cataclysm-prototype/build-tiles.sh --source "$CDDA"
+```
+
+Шейдеры родная цель `compile_shaders` компилирует в `data/shaders` исходника,
+поэтому runtime готовится после графической сборки.
+
+Runtime root готовит скрипт (в WSL, из корня этого репозитория):
+
+```sh
+python3 -I tools/cataclysm-prototype/prepare_p3_runtime.py \
+  --runtime-root "$HOME/cataclysm-<задача>/runtime-root" \
+  --source "$CDDA" \
+  --text-build "$CDDA/build-clang-release" \
+  --tiles-build "$CDDA/build-tiles" \
+  --fixture <каталог с save/ и config/options.json>
+```
+
+`--source` — исходник CDDA с overlays прототипа; `--text-build` и
+`--tiles-build` — каталоги сборок CMake (нужен хотя бы один) с
+`CMAKE_BUILD_TYPE=Release` и `USE_PREFIX_DATA_DIR=OFF`, иначе скрипт
+отказывает. Скрипт сверяет sha256 архива до любых записей, берёт
+`run/session.lock` (запущенная игра — отказ, runtime не меняется) и собирает
+новый runtime рядом, во временном каталоге: родной `cmake --install` каждой
+сборки, затем перевод, мод `dev-world`, тайлсет и копия `gfx/` в `data/gfx`
+(с `--datadir` игра ищет тайлсеты там, `src/path_info.cpp:538-544`). Готовый
+каталог подменяет `runtime` переименованием; при ошибке прежний runtime
+остаётся. В `data/CMakeLists.txt` CDDA перечислен каталог `help`, которого в
+исходнике нет; без него `cmake --install` падает, поэтому скрипт создаёт пустой
+`data/help` и печатает об этом строку. `build-tiles.sh` конфигурирует сборку с
+`-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON`: иначе установка срезает путь к
+SDL3 из префикса. В
+`fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true`,
+`TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. В родном режиме
+`keychar` при русской раскладке буквенные горячие клавиши приходят кириллицей
+и не срабатывают (`g` → «неизвестная клавиша»); в `keycode` они работают при
+любой раскладке, а окно F12 само включает текстовый ввод и принимает кириллицу.
+`--fixture` нужен только для нового runtime root:
+существующий fixture не заменяется. Уже созданный `userdir` скрипт не трогает,
+поэтому в начатом мире язык и графика меняются в настройках игры или через
+`--reset` (прежний userdir сохраняется рядом).
+
 ## Среда
 
 Проверенная платформа: Windows 11 Pro 10.0.26200, WSL2 Ubuntu 24.04.4,
 ядро Linux 6.6.114.1, Intel i9-12900K, 24 логических CPU для WSL, 31 GiB RAM
-и 8 GiB swap. Исходник находится в Linux filesystem WSL:
-`/home/slaven/cataclysm-vertical-slice`.
+и 8 GiB swap. Общий закреплённый checkout — `/home/slaven/cataclysm-recovery`
+в Linux filesystem WSL; он только для чтения. Команды ниже собирают свою копию в
+новом каталоге ext4: `CDDA` в них — этот каталог, например `CDDA=$HOME/cataclysm-<задача>`.
 Инструменты: CMake 3.28.3, Ninja 1.11.1, Git 2.43.0, GCC 13.3.0 и Clang
 19.1.1. Текущая сборка использует Clang; версии и параметры записываются в
 `CMakeCache.txt` рядом с build directory.
@@ -39,25 +122,25 @@ smoke подтверждены ниже. Независимая повторна
 ```sh
 git clone --depth=1 --no-checkout \
   https://github.com/CleverRaven/Cataclysm-DDA.git \
-  /home/slaven/cataclysm-vertical-slice
-git -C /home/slaven/cataclysm-vertical-slice fetch --depth=1 origin \
+  $CDDA
+git -C $CDDA fetch --depth=1 origin \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice checkout --detach \
+git -C $CDDA checkout --detach \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice rev-parse HEAD
+git -C $CDDA rev-parse HEAD
 ```
 
 Последняя команда должна вывести закреплённый SHA выше. Сконфигурировать
 headless curses build с native tests и собрать максимум на восьми jobs:
 
 ```sh
-cmake -S /home/slaven/cataclysm-vertical-slice \
-  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+cmake -S $CDDA \
+  -B $CDDA/build-clang-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 \
   -DTILES=OFF -DCURSES=ON -DTESTS=ON -DBUILD_TESTING=ON \
-  -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
+  -DCATA_CCACHE=OFF -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA/build-clang-release \
   --parallel 8
 ```
 
@@ -65,7 +148,7 @@ cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
 и пользовательскими каталогами из корня исходников:
 
 ```sh
-cd /home/slaven/cataclysm-vertical-slice
+cd $CDDA
 ./build-clang-release/tests/cata_test --rng-seed 17 \
   --user-dir=/tmp/cdda-novgorod-upstream-smoke-activity '[activity]'
 ./build-clang-release/tests/cata_test --rng-seed 17 \
@@ -77,21 +160,22 @@ cd /home/slaven/cataclysm-vertical-slice
 fixture tests:
 
 ```sh
-NOVGOROD=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-vertical-slice/Novgorod
-git -C /home/slaven/cataclysm-vertical-slice apply --check \
+NOVGOROD=/mnt/c/Users/Slaven/Documents/Novgorod
+git -C $CDDA apply --check \
   "$NOVGOROD/tools/cataclysm-prototype/native-input.patch"
-git -C /home/slaven/cataclysm-vertical-slice apply \
+git -C $CDDA apply \
   "$NOVGOROD/tools/cataclysm-prototype/native-input.patch"
 cp "$NOVGOROD/tools/cataclysm-prototype/novgorod_slice_test.cpp" \
-  /home/slaven/cataclysm-vertical-slice/tests/novgorod_slice_test.cpp
-cmake -S /home/slaven/cataclysm-vertical-slice \
-  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+  $CDDA/tests/novgorod_slice_test.cpp
+cmake -S $CDDA \
+  -B $CDDA/build-clang-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA/build-clang-release \
   --parallel 8
-cd /home/slaven/cataclysm-vertical-slice
+cd $CDDA
 ./build-clang-release/tests/cata_test --rng-seed 17 \
   --user-dir=/home/slaven/cataclysm-evidence/new-slice-run '[novgorod_slice]'
 ```
@@ -127,19 +211,20 @@ harness, а не общий headless runtime или готовность P3–P6
 
 ```sh
 git clone --depth=1 --no-checkout https://github.com/CleverRaven/Cataclysm-DDA.git \
-  /home/slaven/cataclysm-vertical-slice-repeat
-git -C /home/slaven/cataclysm-vertical-slice-repeat fetch --depth=1 origin \
+  $CDDA-repeat
+git -C $CDDA-repeat fetch --depth=1 origin \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice-repeat checkout --detach \
+git -C $CDDA-repeat checkout --detach \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-cmake -S /home/slaven/cataclysm-vertical-slice-repeat \
-  -B /home/slaven/cataclysm-vertical-slice-repeat/build-clang-release-repeat \
+cmake -S $CDDA-repeat \
+  -B $CDDA-repeat/build-clang-release-repeat \
   -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice-repeat/build-clang-release-repeat \
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA-repeat/build-clang-release-repeat \
   --parallel 8
-cd /home/slaven/cataclysm-vertical-slice-repeat
+cd $CDDA-repeat
 ./build-clang-release-repeat/tests/cata_test --rng-seed 17 \
   --user-dir=/tmp/cdda-novgorod-upstream-repeat '[activity],[npc]'
 ```
@@ -185,7 +270,8 @@ cmake -S "$NATIVE" \
   -B "$NATIVE/build-clang-release" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build "$NATIVE/build-clang-release" --parallel 8
 ```
 

@@ -212,9 +212,9 @@ test('semantic repair rejects a changed speech act or contribution kind', async 
       revalidateStateVersion: async () => input.state_version,
       maxRepairAttempts: 1
     }), (error) => {
-      assert.equal(error.code, 'TURN_NPC_MODEL_FAILED');
-      assert.equal(error.details.cause,
-        'NPC semantic repair must preserve contribution kind and speech act.');
+      assert.equal(error.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+      assert.equal(error.details.category, 'semantic');
+      assert.deepEqual(error.details.repair_kinds_used, ['semantic']);
       return true;
     });
     assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
@@ -315,8 +315,7 @@ test('a grounded model repair is accepted after the first speech audit fails',
     ]);
     const repairInput = JSON.parse(fixture.calls[2].messages[1].content);
     assert.deepEqual(repairInput.request, input);
-    assert.deepEqual(repairInput.original_output,
-      assembleNpcConversationPlan(original, input));
+    assert.deepEqual(repairInput.original_output, original);
     assert.deepEqual(repairInput.validation_errors, [{
       code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
       category: 'semantic_grounding', retryable: true,
@@ -346,7 +345,8 @@ test('two grounding failures return a typed error without a canned NPC response'
     validateFreshPlan: model.validateFreshPlan,
     revalidateStateVersion: async () => input.state_version,
     maxRepairAttempts: 1
-  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  }), (error) => error.code === 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'
+    && error.details.category === 'semantic');
   assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
     'npc_conversation_responder', 'npc_conversation_grounding_auditor',
     'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor'

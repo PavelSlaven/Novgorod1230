@@ -72,5 +72,5 @@ test('only surrender activates the party-local commitment and projects the knife
     checkResult: checkResult(contracts.check.check_id, 'success'),
     offerStage,
     checkRequest
-  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  }), { code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE' });
 });

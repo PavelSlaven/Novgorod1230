@@ -33,8 +33,17 @@ const SAFE_NPC_VALIDATION_CODES = new Set([
   'npc_combat_operation_shape_invalid', 'npc_combat_intent_choice_invalid',
   'npc_combat_ref_choice_invalid', 'npc_combat_force_choice_invalid',
   'npc_combat_risk_choice_invalid', 'npc_combat_statement_invalid',
-  'npc_combat_reason_invalid', 'invalid_enum'
+  'npc_combat_reason_invalid', 'invalid_enum',
+  'conversation_plan_not_object', 'missing_field', 'unexpected_field',
+  'invalid_type', 'envelope_mismatch', 'reference_not_allowed',
+  'mixed_script_word', 'mixed_script_repair_changed_text',
+  'conversation_contribution_schema_invalid', 'json_parse_failed',
+  'semantic_repair_changed_act', 'repair_declared_unrepairable',
+  'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+  'TRACE_NPC_REQUIRED_PRESENTATION_MISSING'
 ]);
+const NPC_FAILURE_CODES = new Set(['TURN_NPC_PLAN_INVALID',
+  'TURN_NPC_CONVERSATION_CONTRACT_FAILURE']);
 const SAFE_TURN_STEP_VALIDATION_CODES = new Set([
   'additional_property', 'candidate', 'const', 'continuation',
   'domain_owner_unavailable', 'echo_mismatch', 'enum', 'invalid_request',
@@ -92,7 +101,11 @@ function turnStepValidationScope(path) {
   return /^\$\.[a-z_]+$/u.test(value) ? 'plan' : null;
 }
 function safeNpcFailure(value = {}) {
-  if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;
+  const failureCode = text(value?.code);
+  if (!NPC_FAILURE_CODES.has(failureCode)) return null;
+  const category = failureCode === 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'
+    && ['format', 'semantic'].includes(value?.details?.category)
+    ? value.details.category : null;
   const source = Array.isArray(value?.validation_codes)
     ? value.validation_codes
     : value?.details?.validation_errors?.map(({ code }) => code);
@@ -107,7 +120,8 @@ function safeNpcFailure(value = {}) {
   const scopes = [...new Set(sourceScopes.map(text)
     .filter((scope) => SAFE_NPC_VALIDATION_SCOPES.has(scope)))];
   return codes.length === 0 ? null : Object.freeze({
-    code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes),
+    code: failureCode, ...(category === null ? {} : { category }),
+    validation_codes: Object.freeze(codes),
     ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
   });
 }

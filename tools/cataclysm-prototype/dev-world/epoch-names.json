@@ -1,0 +1,41 @@
+[
+  {
+    "type": "furniture",
+    "id": "f_clay_oven",
+    "copy-from": "f_clay_oven",
+    "name": "печь"
+  },
+  {
+    "type": "body_part",
+    "id": "torso",
+    "copy-from": "torso",
+    "name": "тело",
+    "accusative": { "ctxt": "bodypart_accusative", "str": "тело" },
+    "heading": "тело",
+    "heading_multiple": "тело"
+  },
+  {
+    "type": "weather_type",
+    "id": "rainstorm",
+    "copy-from": "rainstorm",
+    "name": "Ливень"
+  },
+  {
+    "type": "weather_type",
+    "id": "rainstorm_reverberation",
+    "copy-from": "rainstorm_reverberation",
+    "name": "Ливень"
+  },
+  {
+    "type": "weather_type",
+    "id": "thunder",
+    "copy-from": "thunder",
+    "name": "Гроза"
+  },
+  {
+    "type": "weather_type",
+    "id": "lightning",
+    "copy-from": "lightning",
+    "name": "Гроза с молниями"
+  }
+]

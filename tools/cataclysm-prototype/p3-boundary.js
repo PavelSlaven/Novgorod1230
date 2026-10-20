@@ -18,7 +18,8 @@ import { buildNpcDecisionBoundary, buildNpcDecisionSignal } from '@rus/npc-runti
 import { addElapsedTime } from '@rus/time-events-history';
 import { projectConversationAudience } from '@rus/visibility-knowledge-memory';
 import { loadP3NpcProfile } from './p3-npc-profile.js';
-import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn } from './p3-npc-subject.js';
+import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn, projectP3NpcWire }
+  from './p3-npc-subject.js';
 import { applyPlayerPlan, projectPlayerStatementAudience } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-statements.js';
 import { requiredVerbatimUtteranceText } from
@@ -558,7 +559,8 @@ export function createP3RoleRuntime({ env = process.env, budget = createP3Attemp
   return Object.freeze({ roleRunner,
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
     npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({ roleRunner }),
-    npcConversationModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner }),
+    npcConversationModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+      requestWire: projectP3NpcWire }),
     budget });
 }
 
@@ -789,7 +791,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       const current = projection.native_observation;
       return { player_safe_state: { actor_ref: 'avatar', current_position:
         current.actors.find(({ actor_ref: ref }) => ref === 'avatar').position,
-        visible_entities: [...current.items.map(item => ({ ...item,
+        visible_entities: [...current.items.map(({ type: _nativeType, ...item }) => ({ ...item,
           ...(typeof item.item_uid === 'string' ? { entity_ref: item.item_uid } : {}) })), ...current.targets,
           ...current.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)],
         ...(selectedNpc ? { active_interlocutor: { entity_ref: { entity_kind: 'npc',

@@ -7,6 +7,9 @@ const NATIVE_NO_ACTIVITY = 'ACT_NULL';
 const RECORD_KEYS = ['kind', 'speaker_ref', 'listener_ref', 'text', 'turn'];
 const PLACEMENT_TEXT = Object.freeze({ ground: 'лежит поблизости', worn: 'на мне',
   carried: 'при мне', wielded: 'у меня в руках' });
+const WIRE_SERVICE_KEYS = new Set(['request_id', 'boundary_id', 'conversation_id',
+  'exchange_id', 'state_version', 'requested_at', 'signal_refs', 'template_ref']);
+const CYRILLIC = /\p{Script=Cyrillic}/u;
 
 export function p3Error(code) {
   const error = new Error(code);
@@ -65,7 +68,8 @@ function withoutCurrentPhrase(records, { playerRef, npcRef, utterance, turns }) 
 }
 
 function trustLevel(value) {
-  return value <= 0 ? 'low' : value < 5 ? 'medium' : 'high';
+  if (value === 0) return undefined;
+  return value < 0 ? 'low' : value < 5 ? 'medium' : 'high';
 }
 
 function hostilityLevel(value) {
@@ -74,6 +78,62 @@ function hostilityLevel(value) {
 
 function perceptionRefOfItem(turn, npcId, uid) {
   return { entity_kind: 'perception_result', entity_id: `p3-seen-${turn}-${npcId}-${uid}` };
+}
+
+function wireValue(value, key, named, insideReferences) {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value !== 'object') return value;
+  let projected;
+  if (Array.isArray(value)) {
+    projected = value.map(entry => wireValue(entry, '', named, insideReferences))
+      .filter(entry => entry !== undefined);
+  } else {
+    // The request carries the same resources twice (top level and npc); the model gets them once.
+    const once = (name, entry) => {
+      if (name !== 'npc' || !Object.hasOwn(value, 'available_resources')
+          || entry === null || typeof entry !== 'object') return entry;
+      const { available_resources: _duplicate, ...rest } = entry;
+      return rest;
+    };
+    projected = Object.fromEntries(Object.entries(value).flatMap(([name, entry]) => {
+      if (WIRE_SERVICE_KEYS.has(name)) return [];
+      const child = wireValue(once(name, entry), name, named,
+        insideReferences || name === 'allowed_references');
+      return child === undefined ? [] : [[name, child]];
+    }));
+  }
+  const empty = Array.isArray(projected) ? projected.length === 0
+    : Object.keys(projected).length === 0;
+  return empty && !insideReferences && !named.has(key) ? undefined : projected;
+}
+
+export function projectP3NpcWire(value, system) {
+  return wireValue(value, '', new Set(system.match(/[A-Za-z0-9_]+/gu)), false) ?? {};
+}
+
+function appearanceText(actor, who) {
+  const look = actor.appearance;
+  const worn = (look.worn_items ?? []).map(item => item.label).filter(Boolean);
+  const wounds = (look.visible_wounds ?? []).map(wound => wound.label).filter(Boolean);
+  return [`Вижу человека рядом: ${who}.`,
+    ...(look.sex_label ? [`${look.sex_label}.`] : []),
+    ...(worn.length > 0 ? [`Одежда: ${worn.join(', ')}.`] : []),
+    ...(look.wielded_item?.label ? [`В руках: ${look.wielded_item.label}.`] : []),
+    ...(look.wet === true ? ['Одежда мокрая.'] : []),
+    ...(wounds.length > 0 ? [`Видно: ${wounds.join(', ')}.`] : [])].join(' ');
+}
+
+function environmentText(environment) {
+  return [['Время суток', environment?.time_label],
+    ['Свет там, где стоит собеседник', environment?.light_label],
+    ['Погода', environment?.weather_label]]
+    .filter(([, label]) => typeof label === 'string' && label !== '')
+    .map(([name, label]) => `${name}: ${label}.`).join(' ');
+}
+
+function withResourceLabels(resources, labels) {
+  return resources.map(resource => labels.has(resource.resource_ref)
+    ? { ...resource, label: labels.get(resource.resource_ref) } : resource);
 }
 
 export function buildP3NpcConversationSubject({ projection, profile, frame, player,
@@ -90,7 +150,7 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
   const relation = acquainted
     ? `человек, с которым я уже ${female ? 'говорила' : 'говорил'}` : 'незнакомый человек';
   const memory = projectConversationMemory(records, { npc_ref: npcRef, limit: 40,
-    label_of: (ref) => sameRef(ref, npcRef) ? 'я' : sameRef(ref, playerRef) ? relation
+    label_of: (ref) => sameRef(ref, npcRef) ? 'я' : sameRef(ref, playerRef) ? 'собеседник'
       : 'другой человек',
     time_of: p3GameTimeOfTurn });
 
@@ -109,17 +169,28 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
   const knownFacts = [
     ...(profile?.knowledge_snapshot?.known_facts ?? []),
     fact(`p3-own-gender-${npcId}`, female ? 'Я женщина.' : 'Я мужчина.'),
+    ...(projection.job_description?.trim()
+      ? [fact(`p3-own-job-${npcId}`, projection.job_description.trim())] : []),
     ...items.filter(item => item.owner_faction_id !== '' && item.owner_faction_id
       === projection.faction_id).map(item => fact(`p3-owns-${item.item_uid}`,
       `Вещь «${item.label}» принадлежит мне.`, { resource_ref: item.item_ref,
         source_perception_ref: seen(item) }))
   ];
+  const observation = (id, text) => ({ observation_ref: { entity_kind: 'perception_result',
+    entity_id: id }, source_type: 'direct_perception', observed_at: at, fact_text: text });
+  const surroundings = environmentText(frame.environment);
   const subject = projectNpcConversationSubject({
     npc_ref: npcRef,
     current_observations: [
       ...items.map(item => ({ observation_ref: seen(item), source_type: 'direct_perception',
         observed_at: at,
         fact_text: `Вижу вещь «${item.label}»: ${PLACEMENT_TEXT[item.placement]}.` })),
+      ...(projection.visible_actors ?? []).filter(actor => actor.appearance)
+        .map(actor => observation(`p3-seen-actor-${frame.turn}-${npcId}-${actor.actor_id}`,
+          appearanceText(actor, actor.actor_id === player.actor_id ? relation
+            : 'другой человек'))),
+      ...(surroundings ? [observation(`p3-surroundings-${frame.turn}-${npcId}`, surroundings)]
+        : []),
       { observation_ref: perceptionRef, source_type: 'direct_perception', observed_at: at,
         fact_text: `Слышу реплику, обращённую ко мне. Говорящий: ${relation}. `
           + `Слова: «${utterance}».` }
@@ -147,7 +218,12 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
     { entity_kind: 'item', entity_id: item.item_uid }])).values()]
     .sort((left, right) => `${left.entity_kind}\0${left.entity_id}`
       < `${right.entity_kind}\0${right.entity_id}` ? -1 : 1);
-  return { npc: subject.npc, knowledge: subject.knowledge, memory: subject.memory,
-    available_resources: subject.available_resources, knowledge_refs: subject.knowledge_refs,
+  const labels = new Map(items.filter(item => typeof item.label === 'string'
+    && CYRILLIC.test(item.label)).map(item => [item.item_ref, item.label]));
+  return { npc: { ...subject.npc,
+    available_resources: withResourceLabels(subject.npc.available_resources, labels) },
+    knowledge: subject.knowledge, memory: subject.memory,
+    available_resources: withResourceLabels(subject.available_resources, labels),
+    knowledge_refs: subject.knowledge_refs,
     entity_refs: entityRefs, public_conversation_history: memory.public_conversation_history };
 }

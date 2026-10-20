@@ -144,3 +144,28 @@
 - 2026-10-20T18:58Z — servak, `$P/r2`: сверка файлов и sha256 нового runtime с прежним (`compare.txt`): одинаковых 8225. Только в прежнем: 3473 файла `data/cache` (кэш, который пишет сама игра), 5 файлов `data/sound` (`data/CMakeLists.txt:15-16` ставит звук только при `SOUND=ON`), `data/CMakeLists.txt` и `data/application_manifest.xml` (прежний скрипт копировал весь `data/`). Только в новом: лицензии, README, VERSION и `doc/` (DOCDIR родной установки) и `gfx/UltimateCataclysm` в корне (адаптер кладёт тайлсет в `gfx/` и копирует `gfx/` в `data/gfx`). Изменены: `cataclysm` (сборка `USE_PREFIX_DATA_DIR=OFF`), `cataclysm-tiles` (RUNPATH переписан установкой) и три файла мода (`dev-world/` возвращён к main). Регрессия: unittest 52 OK, `test:cataclysm-p3` 59/59 + 52 OK, `docs:check` rc=0, `git diff --check` rc=0, `dev_curses_probe` PASS, `native_curses_smoke` — известное падение `novgorod_rng_state` (#797) при тех же экранных состояниях.
 - 2026-10-20T19:00Z — Порча на копиях (`mutate.py`, 8 вариантов четырёх порч): `-DTESTS=ON`, без `-DTESTS=OFF`, `-DBUILD_TESTING=ON`, без `-DBUILD_TESTING=OFF`, `set_options` только с `--fixture`, lock без `flock`, сборка на месте без подмены, без уборки временного каталога при сбое — каждая роняет тест, выживших 0.
 - 2026-10-20T19:04Z — Короткая проба графики на servak, Xvfb `:57`, программный рендер, `run-p3-dev.sh --runtime-root $P/r2/runtime-root-r2 --native-only`, без вызовов модели. Загрузка, шаг, `g` («Поблизости нечего подобрать.»), меню, «Сохранить и выйти», главное меню, выход; запускалка завершилась сама. debug.log: язык `ru`, `Loaded tileset: UltimateCataclysm`, `renderer=software`; открытых `/dev/dri` нет. Первый проход упал на моём инструменте (`xsend` не знал заглавных клавиш, нужен `S-`), остановлен по своему PID и повторён. После пробы `pgrep -af "[t]ask05-ru-graphics"` пуст.
+- 2026-10-20T22:05Z — FIX-04, вход NPC (#802). Ветка `claude/fix04-npc-input-2e9793` от `0aa046076`. Сдача и логи — `codex-direct/part1/fix04/` (`logs/`, `CA-note-fix04.md`, `R4-old-tests.md`, `prompt-review-*.md`).
+  - Провод p3: `projectP3NpcWire` убирает `null`, восемь служебных ключей, пустые значения, которых system не называет, и копию `available_resources` внутри `npc`. System всех трёх ролей совпадает с базой байт в байт.
+  - Ресурсы получают русскую `label`, и только из `p3-npc-subject.js`. Общая модель и аудитор берут `requestWire` с тождеством по умолчанию, поэтому вне p3 провод прежний.
+  - Родное наблюдение даёт внешность (`get_visible_worn_items`, оружие, мокрая одежда, пол, раны), окружение (`time_approx`, свет клетки аватара, погода) и `job_description` класса.
+  - Данные — дословно по DATA-OK-fix04, включая поправку `"variants": []` у `pants`. Без неё родные варианты давали «burgundy khaki pants».
+- 2026-10-20T22:05Z — Проверки FIX-04.
+  - JS: `node --test` трёх файлов p3 — 99/99. Замороженная приёмка `p3-npc-input.acceptance.test.js` не тронута, sha256 `e8656087…671c`.
+  - `npm run test:apps`: 1805 тестов, 1804 pass, 1 skipped, 0 fail. `architecture:check` OK.
+  - Python p3 в WSL — 52 OK.
+  - `npm run test:cataclysm-p3` на Windows падает в `test_dev_launcher_windows.ps1:18`: кириллица в пути. На базе тест тоже падает, только в другом месте, `run-p3-dev.ps1:25`. Файлов запускалки в diff нет.
+  - `docs:check` падает: устарел `generated/generated-manifest.json`. На базе `0aa046076` без моих правок — то же.
+- 2026-10-20T22:05Z — Родные прогоны FIX-04 в WSL `~/cataclysm-fix04`.
+  - cata_test sha256 `d22164f6…9d1c3`:
+    - `[novgorod_live]` 2536 assertions / 25 тестов;
+    - `[novgorod_delivery]` 270/2;
+    - `[novgorod_slice]` 541/4;
+    - `[novgorod_item_uid]` 36/4;
+    - `[novgorod_semantic]` 74 из 75: единственное падение — известный сбой среды «uses native avatar primitives» (`request_stream.good()`).
+  - Мод с итоговыми `dev-world/*.json` (sha256 файлов сверен с копией сборки), временный тест `[fix04_scratch]`, `--mods=novgorod_dev_world`, cata_test `7bc15799…03c9`: 30 assertions, EXIT=0.
+    - Имена: печь, тело, Ливень, Гроза, Гроза с молниями, плотницкий топор, долото, порты, кожаный пояс, онучи, поршни, рубаха, соломенная корзина, кривая палка, трут.
+    - Мастер держит топор, при нём долото, корзины нет. Надето: онучи, рубаха, порты, поршни, кожаный пояс.
+  - Не проверено:
+    - свет NPC: `light_label` один на кадр, с клетки аватара;
+    - пустое `job_description` проверяет только JS-тест D2, родного класса с пустым описанием нет;
+    - провод «после» ждёт захвата «6» с поддельного провода. Вызовов Qwen не было.

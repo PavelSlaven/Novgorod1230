@@ -13,6 +13,11 @@ Launcher берёт существующие настройки Qwen из `%LOCA
 по правилу владельца game-server. Файл не копируется и не меняется.
 Для другого файла заранее задайте `$env:RUS_LLM_SETTINGS_PATH`.
 
+Первый запуск требует подготовленного WSL-runtime в корне `~/cataclysm-recovery/task03-dev` (на ext4):
+каталоги `runtime/cataclysm` (бинарник), `runtime/data`, `runtime/gfx` и `fixture/save`, без символьных ссылок.
+Без `-NativeOnly` нужны ещё WSL Node v22.23.3 в `~/.local/share/novgorod/` и читаемый файл,
+на который указывает `RUS_LLM_SETTINGS_PATH`. Иначе launcher остановится с сообщением.
+
 Мир постоянный: WSL `/home/slaven/cataclysm-recovery/task03-dev/userdir`.
 Первый запуск копирует fixture; повторный продолжает сохранение.
 Стрелки — движение, `.` — ждать, `g` — подобрать, `i` — вещи.

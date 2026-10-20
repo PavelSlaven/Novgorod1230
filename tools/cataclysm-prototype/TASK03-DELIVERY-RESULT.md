@@ -60,7 +60,7 @@
 
 Узкая независимая проверка: [фактическая цепочка](evidence/task03-delivery/reply03e-grounding-note.md).
 `apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js:48–55,89–134` при `semantic_grounding` возвращает программно составленную реплику без второго responder LLM. `packages/turn/src/npc-semantic-decision.js:258–279` учитывает один repair; live config по-прежнему max1. Call14 — второй audit, не второй responder.
-Active `npc_conversation_mode_contract.md:1895–1919` разрешает format repair без замены смысла; §37.2 объявляет semantic inconsistency неприменимым и запрещает коду выбирать похожую реплику. Явного основания для наблюдаемой замены не установлено. Этот owner существовал до reply-03e, не исправлялся в данной дельте.
+Решение владельца по repair отказа семантики NPC — в [TASK03-REPAIR-RESULT.md](TASK03-REPAIR-RESULT.md); прежняя ссылка на §37.2 устарела.
 По СТОП-правилу владельца дальнейшие Qwen/реализация остановлены. Это частичная живая проверка одного repair-прохода #773, **не** проверка двух плохих responder outputs с уходом в родной NPC. Fake-проверка ровно2 попыток остаётся успешной в focused suite.
 Распорядителю: оформить отдельную находку owner/Contract Auditor и решить, как обрабатывать semantic rejection по активной норме; затем отдельный план правки существующего owner, focused fake и ограниченный повтор Qwen в оставшемся бюджете. Промпты без согласованного плана не менять.
 

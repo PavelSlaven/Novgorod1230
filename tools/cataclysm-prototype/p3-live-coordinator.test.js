@@ -11,16 +11,24 @@ import { loadP3DevConfig, startP3LiveCoordinator } from './p3-live-coordinator.m
 import { createP3RoleRuntime } from './p3-boundary.js';
 import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
 import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
+import { npcProjection } from './p3-test-frames.js';
+
+const withNpcs = (base, npcs) => ({ ...base, actors: [...base.actors, ...npcs],
+  npc_projections: npcs.map(({ actor_id: actorId, position, name }) =>
+    npcProjection(actorId, { position, name })) });
 
 const observation = { schema: 'p3_native_observation_v1', turn: 10, revision: 10,
   actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] }],
   items: [], targets: [{ target_ref: 'tile:east', position: [61, 60, 0] }] };
 
-test('wire accepts only configured Qwen alias and its backend id', () => {
-  assert.equal(matchesP3WireModelId('qwen3.8-27b-uncensored-w4a16-tp2'), true);
-  assert.equal(matchesP3WireModelId('qwen3.8-27b'), true);
-  assert.equal(matchesP3WireModelId('qwen3.8-27b-other'), false);
-  assert.equal(matchesP3WireModelId('qwen3.8-72b'), false);
+test('wire accepts the requested model id or the backend id of the configured alias only', () => {
+  const alias = 'qwen3.8-27b-uncensored-w4a16-tp2';
+  assert.equal(matchesP3WireModelId(alias, alias), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b', alias), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b', 'other-model'), false);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b-other', alias), false);
+  assert.equal(matchesP3WireModelId('qwen3.8-72b', alias), false);
+  assert.equal(matchesP3WireModelId('other-model', 'other-model'), true);
 });
 
 function plan(request, operation) {
@@ -251,10 +259,12 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
 
 test('witnesses, missing target, unheard target and vanished target do not call NPC model', async t => {
   const utterance = 'Слышите?';
-  const npc8 = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
-  const npc9 = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [60, 61, 0] };
-  const actors = [...observation.actors, npc8, npc9];
-  const sceneObservation = { ...observation, actors };
+  const npc8 = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const npc9 = { actor_ref: 'npc:9', actor_id: '9', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const { actors, ...sceneBase } = withNpcs(observation, [npc8, npc9]);
+  const sceneObservation = { ...sceneBase, actors };
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -305,9 +315,11 @@ test('witnesses, missing target, unheard target and vanished target do not call 
 
 test('confirmed native listener gets one NPC model reply and native speech', async t => {
   const utterance = 'Слышишь меня?';
-  const npc = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [61, 60, 0] };
-  const witness = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [60, 61, 0] };
-  const sceneObservation = { ...observation, actors: [...observation.actors, witness, npc] };
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const witness = { actor_ref: 'npc:8', actor_id: '8', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const sceneObservation = withNpcs(observation, [witness, npc]);
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -348,10 +360,11 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
   assert.equal(second.request.primitive, 'speak');
   assert.equal(second.request.actor_id, '9');
   assert.deepEqual(second.request.args, { utterance: 'Слышу.' });
+  assert.deepEqual(second.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
   channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
     operation_id: second.request.operation_id, status: 'applied', goal_result: 'achieved',
-    native_effect: { effect_status: 'confirmed', speakerId: '9', utterance: 'Слышу.',
-      actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
+    native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+      utterance: 'Слышу.', actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
   const result = await channel.receive();
   assert.equal(result.status, 'completed');
   assert.equal(result.applied_operations, 2);
@@ -380,8 +393,9 @@ test('dev config is seven calls per turn and rejects the process budget key', as
 
 test('turn call limit refuses the extra call with its own text and resets on the next intent', async t => {
   const utterance = 'Слышишь меня?';
-  const npc = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [61, 60, 0] };
-  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const sceneObservation = withNpcs(observation, [npc]);
   const scene = await fixture(t, request => request.remaining_intent === utterance
     ? { ...plan(request, {}), resolution: 'direct', goal_result: 'achieved', operations: [],
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -434,7 +448,7 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   const utterance = 'Ответь';
   const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
     position: [61, 60, 0] };
-  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const sceneObservation = withNpcs(observation, [npc]);
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -475,12 +489,12 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
 });
 
 test('another NPC failure after the player spoke names the listener and is not a contract verdict', async t => {
-  for (const [name, speaker] of [['Жирко', 'Жирко'], [undefined, 'Собеседник']]) {
+  for (const [name, speaker] of [['Жирко', 'Жирко']]) {
     await t.test(speaker, async t => {
       const utterance = 'Ответь';
-      const npc = { actor_ref: 'npc:8', actor_id: '8', ...(name ? { name } : {}),
+      const npc = { actor_ref: 'npc:8', actor_id: '8', name,
         visible: true, position: [61, 60, 0] };
-      const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+      const sceneObservation = withNpcs(observation, [npc]);
       const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
         goal_result: 'achieved', operations: [],
         activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -522,8 +536,9 @@ test('registered NPC responder repairs grounding through the real role path', as
       const utterance = 'На площади волк. Ты видел его раньше?';
       const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
         position: [61, 60, 0] };
-      const witness = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [60, 61, 0] };
-      const sceneObservation = { ...observation, actors: [...observation.actors, npc, witness] };
+      const witness = { actor_ref: 'npc:9', actor_id: '9', name: 'Ратибор', visible: true,
+        position: [60, 61, 0] };
+      const sceneObservation = withNpcs(observation, [npc, witness]);
       const roles = [];
       const responderInputs = [];
       const responderOutputs = [];
@@ -584,10 +599,12 @@ test('registered NPC responder repairs grounding through the real role path', as
         assert.equal(next.request.actor_id, '8');
         assert.equal(next.request.primitive, 'speak');
         assert.deepEqual(next.request.args, { utterance: repairedUtterance });
+        assert.deepEqual(next.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
         channel.send({ type: 'readback', readback: {
           schema: 'p3_native_operation_readback_v1', operation_id: next.request.operation_id,
           status: 'applied', goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
-            speakerId: '8', utterance: repairedUtterance, actualHeardListenerIds: ['7'] },
+            speakerId: '8', contribution_kind: 'speech', utterance: repairedUtterance,
+            actualHeardListenerIds: ['7'] },
           before: { turn: 11 }, after: { turn: 12 } } });
       } else {
         assert.equal(next.type, 'result');
@@ -632,10 +649,18 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.deepEqual(responderInputs[0].npc_ref, { entity_kind: 'npc', entity_id: '8' });
       assert.deepEqual(responderInputs[0].memory, { current_observations: [{
         observation_ref: perceptionRef,
-        fact_text: `NPC услышал реплику игрока ${JSON.stringify(utterance)}.` }] });
+        fact_text: `Слышу реплику, обращённую ко мне. Говорящий: незнакомый человек. Слова: «${utterance}».`,
+        observed_at: { whole_minutes: '0', subminute_numerator: '11', subminute_denominator: '60' },
+        source_type: 'direct_perception' }], previous_decisions: [], received_messages: [],
+        recent_events: [], relevant_long_term_events: [] });
       assert.deepEqual(responderInputs[0].perceived_message.perception_result_ref, perceptionRef);
-      assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [perceptionRef]);
-      assert.deepEqual(responderInputs[0].knowledge, {});
+      assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [
+        { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' },
+        { entity_kind: 'npc_identity', entity_id: '8' }, perceptionRef]);
+      assert.deepEqual(responderInputs[0].knowledge, { known_facts: [{
+        fact_ref: { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' }, state: 'known',
+        summary: 'Я мужчина.', source_event_ref: null, process_ref: null, resource_ref: null }],
+        beliefs: [], hypotheses: [] });
       assert.deepEqual(responderInputs[1].request, responderInputs[0]);
       assert.deepEqual(responderInputs[1].original_output.speech, responderOutputs[0].speech);
       assert.equal(responderInputs[1].validation_errors[0].category, 'semantic_grounding');

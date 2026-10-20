@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
 import { createLlmSettingsOwner } from '@rus/game-server';
@@ -19,7 +20,13 @@ import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   loadP3QwenSettingsOwner,
   runP3SealedPackage, createP3NativeSpeechOwnerFixture,
   validateP3Readback, validateP3SealedCasePack,
-  writeP3OperationRequest } from './p3-boundary.js';
+  writeP3OperationRequest, runP3NativeNpcReply } from './p3-boundary.js';
+import { validateNpcConversationResponseRequest,
+  validateNpcConversationResponseSubject } from '@rus/npc-runtime';
+import { requireLiveObservation } from './p3-live-socket.js';
+import { loadP3NpcProfile } from './p3-npc-profile.js';
+import { heardRecord, npcProjection, playerSpeechReadback, replyFrame, saidRecord,
+  silencePlan, silenceRecord, speechPlan, visibleItem } from './p3-test-frames.js';
 
 const qwenSettingsOwner = () => createLlmSettingsOwner({ initialRecord: {
   version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
@@ -1072,7 +1079,7 @@ test('P3 settings loader requires explicit file and private Qwen endpoint withou
   const temp = await mkdtemp(path.join(os.tmpdir(), 'p3-settings-'));
   const file = path.join(temp, 'settings.json');
   const record = { version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
-    base_url: 'http://192.168.1.100:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+    base_url: 'http://10.11.12.13:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     api_key: 'private-test-key' }, ordinary_materialization_identity: null, qualification_version: null };
   await writeFile(file, JSON.stringify(record));
   const settingsOwner = await loadP3QwenSettingsOwner({ env: { RUS_LLM_SETTINGS_PATH: file } });
@@ -1112,4 +1119,321 @@ test('evidence sanitizer removes secret-shaped fields and values', () => {
   assert.deepEqual(sanitizeP3Evidence({ max_tokens: 20_000, usage: { input_tokens: 50,
     output_tokens: 12, total_tokens: 62 } }), { max_tokens: 20_000,
     usage: { input_tokens: 50, output_tokens: 12, total_tokens: 62 } });
+});
+
+const ref = (kind, id) => ({ entity_kind: kind, entity_id: id });
+
+const zhirkoProfile = {
+  template_id: 'zhirko',
+  npc_snapshot: {
+    profile_level: 'key', role_ref: { id: 'reeve' },
+    temperament: [{ temperament_ref: 'calm', summary: 'сдержан', state: 'stable', intensity: 'low' }],
+    values: [{ value_ref: 'honour', summary: 'держит слово', state: 'held', intensity: 'high' }],
+    goals: [{ goal_ref: 'harvest', summary: 'собрать урожай', state: 'active', priority: 'high' }],
+    fears: [{ fear_ref: 'raid', summary: 'набег', state: 'latent', intensity: 'medium' }]
+  },
+  knowledge_snapshot: {
+    known_facts: [{ fact_ref: ref('known_fact', 'zhirko-fact'), source_event_ref: null,
+      resource_ref: null, process_ref: null, summary: 'Двор стоит у реки.', state: 'known',
+      confidence: 'high' }],
+    beliefs: [{ belief_ref: ref('belief', 'zhirko-belief'), source_event_ref: null,
+      summary: 'Сосед честен.', state: 'held', confidence: 'medium' }]
+  }
+};
+
+async function withProfilesDir(run, { profile = zhirkoProfile } = {}) {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-profiles-'));
+  try {
+    if (profile) await writeFile(path.join(dir, `${profile.template_id}.json`),
+      JSON.stringify(profile));
+    return await run(dir);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+function replyHarness({ frame, plan = speechPlan, nativeReadback, profilesDir }) {
+  const state = { requests: [], envelopes: [] };
+  const nativeAdapter = {
+    refreshObservation: async () => structuredClone(frame),
+    execute: async envelope => {
+      state.envelopes.push(structuredClone(envelope));
+      return nativeReadback(envelope);
+    }
+  };
+  const semanticModel = async request => {
+    state.requests.push(structuredClone(request));
+    return plan(request);
+  };
+  state.run = (utterance = 'Здравствуй.', extra = {}) => runP3NativeNpcReply({
+    nativeAdapter, observation: frame,
+    playerReadback: playerSpeechReadback({ utterance }), semanticModel,
+    targetActorRef: 'npc:9', profilesDir, ...extra });
+  return state;
+}
+
+const npcSpeechReadback = envelope => ({ schema: 'p3_native_operation_readback_v1',
+  operation_id: envelope.operation_id, status: 'applied',
+  native_effect: { effect_status: 'confirmed', primitive: 'speak', actor_id: '9',
+    speakerId: '9', contribution_kind: 'speech', utterance: envelope.args.utterance,
+    actualHeardListenerIds: ['7'] },
+  before: { turn: 10 }, after: { turn: 10 } });
+
+const npcSilenceReadback = envelope => ({ schema: 'p3_native_operation_readback_v1',
+  operation_id: envelope.operation_id, status: 'applied',
+  native_effect: { effect_status: 'confirmed', primitive: 'speak', actor_id: '9',
+    speakerId: '9', contribution_kind: 'silence',
+    visible_behavior: envelope.args.visible_behavior, actualHeardListenerIds: [] },
+  before: { turn: 10 }, after: { turn: 10 } });
+
+const withEffect = (readback, changes) => envelope => {
+  const base = readback(envelope);
+  return { ...base, native_effect: { ...base.native_effect, ...changes } };
+};
+
+test('profile loader returns null for a missing file and a typed error for broken input', async () => {
+  await withProfilesDir(async dir => {
+    assert.deepEqual(await loadP3NpcProfile('zhirko', { profilesDir: dir }), zhirkoProfile);
+    assert.equal(await loadP3NpcProfile('absent', { profilesDir: dir }), null);
+    await writeFile(path.join(dir, 'broken.json'), '{not json');
+    await writeFile(path.join(dir, 'other.json'), JSON.stringify({ template_id: 'zhirko' }));
+    await writeFile(path.join(dir, 'array.json'), '[]');
+    for (const id of ['broken', 'other', 'array', '../zhirko', 'Zhirko', '', 'a/b', 'a.b']) {
+      await assert.rejects(loadP3NpcProfile(id, { profilesDir: dir }),
+        { code: 'P3_NPC_PROFILE_INVALID' }, id);
+    }
+    await assert.rejects(loadP3NpcProfile(undefined, { profilesDir: dir }),
+      { code: 'P3_NPC_PROFILE_INVALID' });
+  });
+});
+
+test('NPC reply request passes the strict conversation validators and takes the profile', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ projections: [npcProjection('9', {
+      visible_items: [visibleItem(33), visibleItem(34, { owner_faction_id: 'other' })] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    const result = await harness.run();
+    assert.equal(result.native_readback.status, 'applied');
+    const [request] = harness.requests;
+    assert.equal(validateNpcConversationResponseRequest(request), true);
+    assert.equal(validateNpcConversationResponseSubject(request), true);
+    assert.equal(request.npc.temperament[0].temperament_ref, 'calm');
+    assert.equal(request.npc.values[0].value_ref, 'honour');
+    assert.equal(request.npc.goals[0].goal_ref, 'harvest');
+    assert.equal(request.npc.fears[0].fear_ref, 'raid');
+    assert.equal(request.npc.identity.name_or_label, 'Жирко');
+    assert.equal(request.knowledge.known_facts.some(({ summary }) =>
+      summary === 'Двор стоит у реки.'), true);
+    assert.equal(request.knowledge.beliefs[0].summary, 'Сосед честен.');
+    const ownership = request.knowledge.known_facts.filter(({ fact_ref: factRef }) =>
+      factRef.entity_id.startsWith('p3-owns-'));
+    assert.deepEqual(ownership.map(({ fact_ref: factRef }) => factRef.entity_id), ['p3-owns-33']);
+    assert.equal(request.knowledge.known_facts.some(({ fact_ref: factRef }) =>
+      factRef.entity_id === 'p3-own-gender-9'), true);
+    assert.equal(request.npc.available_resources.length, 2);
+    assert.deepEqual(request.available_resources, request.npc.available_resources);
+    assert.deepEqual(request.allowed_references.entity_refs,
+      [ref('item', '33'), ref('item', '34')]);
+  });
+});
+
+test('NPC without a profile gets an empty personality and still its items and memory', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ projections: [npcProjection('9', { template_id: 'unknown_npc',
+      visible_items: [visibleItem(33)], conversation_memory: [heardRecord('Привет.', 8),
+        saidRecord('Здравствуй.', 8)] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    await harness.run('Как жизнь?');
+    const [request] = harness.requests;
+    assert.equal(validateNpcConversationResponseSubject(request), true);
+    assert.deepEqual([request.npc.temperament, request.npc.values, request.npc.goals,
+      request.npc.fears], [[], [], [], []]);
+    assert.equal(request.npc.available_resources.length, 1);
+    assert.equal(request.memory.recent_events.length, 2);
+    assert.deepEqual(request.public_conversation_history.map(({ utterance_text: text }) => text),
+      ['Привет.', 'Здравствуй.', 'Как жизнь?']);
+  });
+});
+
+test('two phrases of one pair share conversation_id and the current phrase is not repeated', async () => {
+  await withProfilesDir(async profilesDir => {
+    const first = replyHarness({ frame: replyFrame({ turn: 10, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await first.run('Здравствуй.');
+    const second = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10), saidRecord('Слышу тебя.', 10),
+        heardRecord('Как дела?', 12)] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+    await second.run('Как дела?', { playerReadback: playerSpeechReadback({
+      utterance: 'Как дела?', operationId: 'op-2', turn: 12 }) });
+    assert.equal(first.requests[0].conversation_id, 'p3-conversation-npc9-pc7');
+    assert.equal(second.requests[0].conversation_id, first.requests[0].conversation_id);
+    assert.deepEqual(first.requests[0].public_conversation_history.map(
+      ({ utterance_text: text }) => text), ['Здравствуй.']);
+    assert.deepEqual(second.requests[0].public_conversation_history.map(
+      ({ utterance_text: text }) => text), ['Здравствуй.', 'Слышу тебя.', 'Как дела?']);
+  });
+});
+
+test('speech plan sends the utterance with the avatar addressee and checks the readback', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame(), nativeReadback: npcSpeechReadback,
+      profilesDir });
+    await harness.run();
+    const [envelope] = harness.envelopes;
+    assert.equal(envelope.primitive, 'speak');
+    assert.deepEqual(envelope.args, { utterance: 'Слышу тебя.' });
+    assert.deepEqual(envelope.references.actors, [{ ref: 'avatar', id: '7' }]);
+    for (const changes of [{ speakerId: '7' }, { utterance: 'Иное.' },
+      { contribution_kind: 'silence' }]) {
+      const wrong = replyHarness({ frame: replyFrame(), profilesDir,
+        nativeReadback: withEffect(npcSpeechReadback, changes) });
+      await assert.rejects(wrong.run(), /P3_NATIVE_SPEECH_READBACK_MISMATCH/);
+    }
+  });
+});
+
+test('silent plan sends speak with silence and the visible behavior, never a reason', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame(), plan: silencePlan,
+      nativeReadback: npcSilenceReadback, profilesDir });
+    const result = await harness.run();
+    assert.equal(result.native_readback.status, 'applied');
+    const [envelope] = harness.envelopes;
+    assert.equal(envelope.primitive, 'speak');
+    assert.deepEqual(envelope.args, { contribution_kind: 'silence',
+      visible_behavior: 'Молча отводит взгляд.' });
+    assert.deepEqual(envelope.references.actors, [{ ref: 'avatar', id: '7' }]);
+    for (const changes of [{ visible_behavior: 'Иное.' }, { contribution_kind: 'speech' },
+      { speakerId: '7' }]) {
+      const wrong = replyHarness({ frame: replyFrame(), plan: silencePlan, profilesDir,
+        nativeReadback: withEffect(npcSilenceReadback, changes) });
+      await assert.rejects(wrong.run(), /P3_NATIVE_SPEECH_READBACK_MISMATCH/);
+    }
+  });
+});
+
+test('a missing projection and malformed memory are typed errors, never dropped', async () => {
+  await withProfilesDir(async profilesDir => {
+    const noProjection = replyHarness({ frame: { ...replyFrame(), npc_projections: [] },
+      nativeReadback: npcSpeechReadback, profilesDir });
+    await assert.rejects(noProjection.run(), { code: 'P3_NPC_PROJECTION_MISSING' });
+    for (const bad of [
+      { ...heardRecord('Привет.'), speaker_ref: 'player' },
+      { ...heardRecord('Привет.'), listener_ref: 'npc:x' },
+      { ...heardRecord('Привет.'), text: '   ' },
+      { ...heardRecord('Привет.'), turn: -1 },
+      { ...heardRecord('Привет.'), extra: 1 }
+    ]) {
+      const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+        conversation_memory: [bad] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+      await assert.rejects(harness.run('Иное.'), { code: 'P3_NPC_MEMORY_RECORD_INVALID' });
+      assert.equal(harness.requests.length, 0);
+    }
+  });
+});
+
+test('silence records stay in memory events but not in the public history', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Эй.', 6), silenceRecord(6)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await harness.run('Ну?');
+    const [request] = harness.requests;
+    assert.equal(request.memory.recent_events.length, 2);
+    assert.deepEqual(request.public_conversation_history.map(({ utterance_text: text }) => text),
+      ['Эй.', 'Ну?']);
+  });
+});
+
+test('live observation validation types the NPC fields of the frame', () => {
+  const good = replyFrame({ projections: [npcProjection('9', {
+    visible_items: [visibleItem(33)], conversation_memory: [heardRecord('Привет.')] })] });
+  assert.deepEqual(requireLiveObservation(good), good);
+  for (const change of [
+    frame => { delete frame.actors[1].name; },
+    frame => { frame.actors[1].name = 5; },
+    frame => { frame.actors[1].name = '  '; },
+    frame => { frame.npc_projections[0].name = '  '; },
+    frame => { frame.npc_projections[0].name = null; },
+    frame => { delete frame.npc_projections[0].template_id; },
+    frame => { frame.npc_projections[0].gender = 'other'; },
+    frame => { frame.npc_projections[0].personality.bravery = 1.5; },
+    frame => { delete frame.npc_projections[0].personality.altruism; },
+    frame => { frame.npc_projections[0].faction_id = 3; },
+    frame => { frame.npc_projections[0].opinion_of_avatar.trust = '1'; },
+    frame => { frame.npc_projections[0].opinion_of_avatar = null; },
+    frame => { frame.npc_projections[0].conversation_memory = {}; },
+    frame => { frame.npc_projections[0].conversation_memory = ['x']; },
+    frame => { frame.npc_projections[0].visible_items = null; },
+    frame => { delete frame.npc_projections[0].visible_items[0].label; },
+    frame => { frame.npc_projections[0].visible_items[0].placement = 'floor'; },
+    frame => { frame.npc_projections[0].visible_items[0].owner_faction_id = null; }
+  ]) {
+    const frame = structuredClone(good);
+    change(frame);
+    assert.throws(() => requireLiveObservation(frame), /P3_LIVE_OBSERVATION_INVALID/);
+  }
+});
+
+test('planner request names the selected interlocutor and offers speech only with a target', async () => {
+  const current = replyFrame({ turn: 3 });
+  const capture = async (frame, targetActorRef) => {
+    const seen = [];
+    await assert.rejects(runP3TurnStep({ intent: 'Скажи привет', observation: frame,
+      nativeAdapter: { writeOperationRequest: async () => { throw new Error('unused'); },
+        readOperationReadback: async () => { throw new Error('unused'); } },
+      operationId: 'planner-1', nativeSpeechOnly: true, targetActorRef,
+      turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
+    return seen[0];
+  };
+  const targeted = await capture(current, 'npc:9');
+  assert.deepEqual(targeted.player_safe_state.active_interlocutor,
+    { entity_ref: { entity_kind: 'npc', entity_id: 'npc:9' }, display_label: 'Жирко' });
+  const speech = targeted.available_domain_operations.filter(({ op }) => op === 'emit_interaction');
+  assert.deepEqual(speech, [{ op: 'emit_interaction', actor_ref: 'avatar',
+    target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: 'speech',
+    instrument_refs: [], description: 'Speak to the selected listener' }]);
+  assert.equal(targeted.available_domain_operations.at(-1).op, 'emit_interaction');
+  const plain = await capture(current, null);
+  assert.equal('active_interlocutor' in plain.player_safe_state, false);
+  assert.equal(plain.available_domain_operations.some(({ op }) => op === 'emit_interaction'), false);
+  assert.equal(buildP3TurnOperations(current, 'npc:9').some(({ op }) => op === 'emit_interaction'), true);
+});
+
+const prototypeRoot = path.dirname(fileURLToPath(import.meta.url));
+
+async function listFiles(dir, skip = new Set(['node_modules', 'runtime'])) {
+  const found = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (!skip.has(entry.name)) found.push(...await listFiles(full, skip));
+    } else found.push(full);
+  }
+  return found;
+}
+
+test('no NPC profile file ships inside the dev world folder', async () => {
+  const files = await listFiles(path.join(prototypeRoot, 'dev-world'));
+  assert.deepEqual(files.filter(file => /profile/iu.test(path.basename(file))
+    && file.endsWith('.json')), []);
+});
+
+test('no prototype test file contains a private LAN address', async () => {
+  const lan = /\b(?:10\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])|192\.168)\.\d{1,3}\.\d{1,3}\b/u;
+  const tests = (await listFiles(prototypeRoot)).filter(file =>
+    /(?:\.test\.js|[\\/]test_[^\\/]*\.(?:py|ps1))$/u.test(file));
+  assert.equal(tests.length > 0, true);
+  const allowed = { address: '10.11.12.13', file: 'p3-boundary.test.js' };
+  const offenders = [];
+  for (const file of tests) {
+    const found = (await readFile(file, 'utf8')).match(new RegExp(lan.source, 'gu')) ?? [];
+    for (const address of found) {
+      if (address !== allowed.address || path.basename(file) !== allowed.file) {
+        offenders.push(`${path.basename(file)} ${address}`);
+      }
+    }
+  }
+  assert.deepEqual(offenders, []);
 });

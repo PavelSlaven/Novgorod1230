@@ -1237,6 +1237,32 @@ test('NPC reply request passes the strict conversation validators and takes the 
   });
 });
 
+test('committed dev-world master profile loads from the default directory into a valid reply request', async () => {
+  const profile = JSON.parse(await readFile(fileURLToPath(new URL('./npc-profiles/novgorod_dev_master.json', import.meta.url)), 'utf8'));
+  assert.deepEqual(await loadP3NpcProfile('novgorod_dev_master'), profile);
+  const frame = replyFrame({ projections: [npcProjection('9', { template_id: 'novgorod_dev_master' })] });
+  const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback });
+  const result = await harness.run();
+  assert.equal(result.native_readback.status, 'applied');
+  assert.equal(harness.requests.length, 1);
+  const [request] = harness.requests;
+  assert.equal(validateNpcConversationResponseRequest(request), true);
+  assert.equal(validateNpcConversationResponseSubject(request), true);
+  for (const [field, refKey] of [['temperament', 'temperament_ref'], ['values', 'value_ref'],
+    ['goals', 'goal_ref'], ['fears', 'fear_ref']]) {
+    assert.deepEqual(request.npc[field].map(item => item[refKey]),
+      profile.npc_snapshot[field].map(item => item[refKey]));
+    assert.deepEqual(request.npc[field].map(({ summary }) => summary),
+      profile.npc_snapshot[field].map(({ summary }) => summary));
+  }
+  const requestFactIds = request.knowledge.known_facts.map(({ fact_ref: factRef }) => factRef.entity_id);
+  for (const { fact_ref: factRef } of profile.knowledge_snapshot.known_facts) {
+    assert.ok(requestFactIds.includes(factRef.entity_id));
+  }
+  assert.deepEqual(request.knowledge.beliefs.map(({ summary }) => summary),
+    profile.knowledge_snapshot.beliefs.map(({ summary }) => summary));
+});
+
 test('NPC without a profile gets an empty personality and still its items and memory', async () => {
   await withProfilesDir(async profilesDir => {
     const frame = replyFrame({ projections: [npcProjection('9', { template_id: 'unknown_npc',

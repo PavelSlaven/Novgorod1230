@@ -19,10 +19,20 @@ $names = @(
     'VCPKG_OVERLAY_TRIPLETS', 'X_VCPKG_ASSET_SOURCES', 'VCPKG_BINARY_SOURCES',
     'VCPKG_ROOT', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0',
     'CDDA_RELEASE_BUILD', 'BACKTRACE', 'VCPKG_FORCE_DOWNLOADED_BINARIES',
-    'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG'
+    'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG', 'VCPKG_OVERLAY_PORTS',
+    'VCPKG_DEFAULT_HOST_TRIPLET', 'VCPKG_VISUAL_STUDIO_PATH', 'VCPKG_KEEP_ENV_VARS',
+    'X_VCPKG_RECURSIVE_DATA', 'NODE_OPTIONS', 'VCPKG_FEATURE_FLAGS',
+    'X_VCPKG_REGISTRIES_CACHE', 'NODE_TLS_REJECT_UNAUTHORIZED'
 )
+$integrationNames = @(
+    'VcpkgRoot', 'VcpkgTriplet', 'VcpkgEnableManifest', 'VcpkgManifestRoot',
+    'VcpkgInstalledDir', 'VcpkgAdditionalInstallOptions', 'VcpkgAutoBootstrap',
+    'VcpkgUnlistedIntegrationProbe', 'Platform'
+)
+$retainedName = 'vcpkgLowercaseProbe'
+$allNames = @($names) + $integrationNames + @($retainedName)
 $original = @{}
-foreach ($name in $names) {
+foreach ($name in $allNames) {
     $original[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
     $foreignValue = if ($name -in @('CDDA_RELEASE_BUILD', 'BACKTRACE')) { '1' } else { 'foreign-value' }
     [Environment]::SetEnvironmentVariable($name, $foreignValue, 'Process')
@@ -46,6 +56,15 @@ try {
         VCPKG_FORCE_DOWNLOADED_BINARIES = $null
         VCPKG_FORCE_SYSTEM_BINARIES = $null
         PKG_CONFIG = $null
+        VCPKG_OVERLAY_PORTS = $null
+        VCPKG_DEFAULT_HOST_TRIPLET = $null
+        VCPKG_VISUAL_STUDIO_PATH = $null
+        VCPKG_KEEP_ENV_VARS = $null
+        X_VCPKG_RECURSIVE_DATA = $null
+        NODE_OPTIONS = $null
+        VCPKG_FEATURE_FLAGS = $null
+        X_VCPKG_REGISTRIES_CACHE = $null
+        NODE_TLS_REJECT_UNAUTHORIZED = $null
     }
     if ($actual.Count -ne $expected.Count) { throw "Unexpected environment key count: $($actual.Count)" }
     foreach ($name in $names) {
@@ -60,14 +79,12 @@ try {
     New-Item -ItemType Directory -Path $buildRoot -Force | Out-Null
     $pwshExe = (Get-Process -Id $PID).Path
     $probe = @'
-$names = @('VCPKG_DOWNLOADS', 'VCPKG_DEFAULT_BINARY_CACHE', 'VCPKG_DISABLE_METRICS', 'VCPKG_OVERLAY_TRIPLETS', 'X_VCPKG_ASSET_SOURCES', 'VCPKG_BINARY_SOURCES', 'VCPKG_ROOT', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0')
+$names = @('VCPKG_DOWNLOADS', 'VCPKG_DEFAULT_BINARY_CACHE', 'VCPKG_DISABLE_METRICS', 'VCPKG_OVERLAY_TRIPLETS', 'X_VCPKG_ASSET_SOURCES', 'VCPKG_ROOT', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0')
 $values = @{}
 foreach ($name in $names) { $values[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
-$values['CDDA_RELEASE_BUILD_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('CDDA_RELEASE_BUILD')
-$values['BACKTRACE_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('BACKTRACE')
-$values['VCPKG_FORCE_DOWNLOADED_BINARIES_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('VCPKG_FORCE_DOWNLOADED_BINARIES')
-$values['VCPKG_FORCE_SYSTEM_BINARIES_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('VCPKG_FORCE_SYSTEM_BINARIES')
-$values['PKG_CONFIG_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('PKG_CONFIG')
+$removed = @('VCPKG_BINARY_SOURCES', 'CDDA_RELEASE_BUILD', 'BACKTRACE', 'VCPKG_FORCE_DOWNLOADED_BINARIES', 'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG', 'VCPKG_OVERLAY_PORTS', 'VCPKG_DEFAULT_HOST_TRIPLET', 'VCPKG_VISUAL_STUDIO_PATH', 'VCPKG_KEEP_ENV_VARS', 'X_VCPKG_RECURSIVE_DATA', 'NODE_OPTIONS', 'VCPKG_FEATURE_FLAGS', 'X_VCPKG_REGISTRIES_CACHE', 'NODE_TLS_REJECT_UNAUTHORIZED')
+$values['REMOVED_KEYS'] = @([Environment]::GetEnvironmentVariables('Process').Keys | Where-Object { $_ -in $removed -or $_ -clike 'Vcpkg*' -or $_ -ceq 'Platform' })
+$values['RETAINED_VALUE'] = [Environment]::GetEnvironmentVariable('vcpkgLowercaseProbe', 'Process')
 $values['INHERITED_VALUE'] = [Environment]::GetEnvironmentVariable('P3_NATIVE_INHERITED_PROBE', 'Process')
 $values['WORKING_DIRECTORY'] = (Get-Location).Path
 $values | ConvertTo-Json -Compress
@@ -76,14 +93,21 @@ $values | ConvertTo-Json -Compress
     if ($exitCode -ne 0) { throw "Environment probe exited with code $exitCode" }
     $child = Get-Content -LiteralPath $logPath -Raw | ConvertFrom-Json -AsHashtable
     foreach ($name in $names) {
-        if ($name -in @('CDDA_RELEASE_BUILD', 'BACKTRACE', 'VCPKG_FORCE_DOWNLOADED_BINARIES', 'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG')) { continue }
-        if ($child[$name] -cne $expected[$name]) { throw "Incorrect real child environment value: $name" }
+        if ($null -eq $expected[$name]) {
+            if ($child['REMOVED_KEYS'] -contains $name) { throw "Removed environment key reached the child: $name" }
+        } elseif ($child[$name] -cne $expected[$name]) {
+            throw "Incorrect real child environment value: $name"
+        }
+        $foreignValue = if ($name -in @('CDDA_RELEASE_BUILD', 'BACKTRACE')) { '1' } else { 'foreign-value' }
+        if ([Environment]::GetEnvironmentVariable($name, 'Process') -cne $foreignValue) { throw "Parent environment changed: $name" }
     }
-    if ($child['CDDA_RELEASE_BUILD_PRESENT'] -or $child['BACKTRACE_PRESENT'] -or
-        $child['VCPKG_FORCE_DOWNLOADED_BINARIES_PRESENT'] -or $child['VCPKG_FORCE_SYSTEM_BINARIES_PRESENT'] -or
-        $child['PKG_CONFIG_PRESENT']) {
-        throw 'Removed environment keys reached the child'
+    foreach ($name in $integrationNames) {
+        if ($child['REMOVED_KEYS'] -contains $name) { throw "MSBuild integration key reached the child: $name" }
+        if ([Environment]::GetEnvironmentVariable($name, 'Process') -cne 'foreign-value') { throw "Parent environment changed: $name" }
     }
+    if (@($child['REMOVED_KEYS']).Count -ne 0) { throw "Unexpected removed keys reached the child: $($child['REMOVED_KEYS'] -join ', ')" }
+    if ($child['RETAINED_VALUE'] -cne 'foreign-value') { throw 'Unrelated lowercase environment value missing' }
+    if ([Environment]::GetEnvironmentVariable($retainedName, 'Process') -cne 'foreign-value') { throw "Parent environment changed: $retainedName" }
     if ($child['INHERITED_VALUE'] -cne 'retained-value') { throw 'Unrelated inherited environment value missing' }
     if ($child['WORKING_DIRECTORY'] -cne $buildRoot) { throw 'Incorrect child working directory' }
     $failureCode = Invoke-P3NativeBuildTool -FilePath $pwshExe -ArgumentList @('-NoProfile', '-Command', '[Console]::Error.WriteLine("child failure"); exit 7') -WorkingDirectory $buildRoot -Environment $actual -LogPath $failureLogPath
@@ -95,7 +119,7 @@ $values | ConvertTo-Json -Compress
     Write-Host 'PASS: native build child environment'
 } finally {
     [Environment]::SetEnvironmentVariable($inheritedName, $originalInherited, 'Process')
-    foreach ($name in $names) {
+    foreach ($name in $allNames) {
         [Environment]::SetEnvironmentVariable($name, $original[$name], 'Process')
     }
     foreach ($path in @($logPath, $failureLogPath)) {

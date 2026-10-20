@@ -31,6 +31,15 @@ function Get-P3NativeBuildEnvironment {
         VCPKG_FORCE_DOWNLOADED_BINARIES = $null
         VCPKG_FORCE_SYSTEM_BINARIES = $null
         PKG_CONFIG = $null
+        VCPKG_OVERLAY_PORTS = $null
+        VCPKG_DEFAULT_HOST_TRIPLET = $null
+        VCPKG_VISUAL_STUDIO_PATH = $null
+        VCPKG_KEEP_ENV_VARS = $null
+        X_VCPKG_RECURSIVE_DATA = $null
+        NODE_OPTIONS = $null
+        VCPKG_FEATURE_FLAGS = $null
+        X_VCPKG_REGISTRIES_CACHE = $null
+        NODE_TLS_REJECT_UNAUTHORIZED = $null
     }
 }
 
@@ -51,6 +60,11 @@ function Invoke-P3NativeBuildTool {
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     foreach ($argument in $ArgumentList) { [void] $startInfo.ArgumentList.Add($argument) }
+    foreach ($name in @($startInfo.Environment.Keys)) {
+        if ($name -clike 'Vcpkg*' -or $name -ceq 'Platform') {
+            [void] $startInfo.Environment.Remove($name)
+        }
+    }
     foreach ($name in $Environment.Keys) {
         if ($null -eq $Environment[$name]) {
             [void] $startInfo.Environment.Remove($name)

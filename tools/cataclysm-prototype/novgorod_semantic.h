@@ -21,6 +21,7 @@ struct operation_result {
 void write_observation( JsonOut &out );
 operation_result apply_operation( const JsonObject &request );
 operation_result finish_operation();
+bool refuse_operation( const std::string &code );
 void observe_heard_speech( const Character &listener, const tripoint_bub_ms &source,
                            const std::string &description );
 void submit_live_intent( const std::string &intent, const std::string &target_actor_ref = "" );

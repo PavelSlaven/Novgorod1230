@@ -528,14 +528,27 @@ std::vector<std::string> read_addressees( const JsonObject &request, const std::
     return refs;
 }
 
+std::string reference_id( const JsonObject &request, const std::string &kind,
+                          const std::string &ref_prefix, const char *mismatch )
+{
+    const JsonObject references = request.get_object( "references" );
+    references.allow_omitted_members();
+    const JsonObject reference = references.get_object( kind );
+    const std::string id = reference.get_string( "id" );
+    if( reference.get_string( "ref" ) != ref_prefix + id ) {
+        throw std::runtime_error( mismatch );
+    }
+    return id;
+}
+
 void check_target( const JsonObject &request, const tripoint_bub_ms &target )
 {
     if( !get_avatar().sees( get_map(), target ) ) {
         throw std::runtime_error( "NOVGOROD_TARGET_NOT_OBSERVED" );
     }
-    if( request.get_object( "references" ).get_object( "targets" ).get_string( "id" ) !=
-        p3_target_ref( target ) ) {
-        throw std::runtime_error( "NOVGOROD_TARGET_REFERENCE_MISMATCH" );
+    const char *mismatch = "NOVGOROD_TARGET_REFERENCE_MISMATCH";
+    if( reference_id( request, "targets", "", mismatch ) != p3_target_ref( target ) ) {
+        throw std::runtime_error( mismatch );
     }
 }
 } // namespace
@@ -597,7 +610,8 @@ operation_result apply_operation( const JsonObject &request )
                 actions.push_back( action_ident( ACTION_OPEN ) );
             }
         } else if( op.primitive == "pickup" || op.primitive == "use_item" ) {
-            const std::string uid = request.get_object( "references" ).get_object( "items" ).get_string( "id" );
+            const std::string uid = reference_id( request, "items", "item:",
+                                                  "NOVGOROD_ITEM_REFERENCE_MISMATCH" );
             size_t parsed = 0;
             op.item_uid = std::stoll( uid, &parsed );
             if( parsed != uid.size() || op.item_uid <= 0 ) {
@@ -714,6 +728,7 @@ operation_result apply_operation( const JsonObject &request )
                     op.sound_volume = loudness == 1 ? Character::minimum_voice_volume :
                                        loudness == 2 ? speaker->indoor_voice() : speaker->get_shout_volume();
                     op.sound_description = op.utterance;
+                    add_msg( _( "You yell %s" ), string_format( _( "\"%s\"" ), op.utterance ) );
                     sounds::sound( op.speaker_position, op.sound_volume, sounds::sound_t::speech,
                                    op.utterance, false, "speech" );
                     if( !brief ) you.mod_moves( -you.get_speed() );
@@ -754,6 +769,13 @@ void observe_heard_speech( const Character &listener, const tripoint_bub_ms &sou
     append_memory( *guy, { "heard", evidence->speaker_ref,
                            addressed ? own_ref : evidence->addressees.front(), evidence->utterance,
                            to_turn<int>( calendar::turn ) } );
+}
+
+bool refuse_operation( const std::string &code )
+{
+    if( !evidence ) return false;
+    evidence->refusal = code;
+    return true;
 }
 
 operation_result finish_operation()

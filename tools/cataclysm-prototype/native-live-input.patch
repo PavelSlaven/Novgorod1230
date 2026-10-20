@@ -1,7 +1,15 @@
 diff --git a/src/action.cpp b/src/action.cpp
 --- a/src/action.cpp
 +++ b/src/action.cpp
-@@ -200,6 +200,8 @@
+@@ -31,6 +31,7 @@
+ #include "mapdata.h"
+ #include "memory_fast.h"
+ #include "messages.h"
++#include "novgorod_semantic.h"
+ #include "options.h"
+ #include "output.h"
+ #include "path_info.h"
+@@ -200,6 +201,8 @@
              return "haul_toggle";
          case ACTION_BUTCHER:
              return "butcher";
@@ -10,7 +18,7 @@ diff --git a/src/action.cpp b/src/action.cpp
          case ACTION_CHAT:
              return "chat";
          case ACTION_LOOK:
-@@ -467,6 +469,7 @@
+@@ -467,6 +470,7 @@
          case ACTION_PANEL_MGMT:
          case ACTION_RELOAD_TILESET:
          case ACTION_TIMEOUT:
@@ -18,7 +26,7 @@ diff --git a/src/action.cpp b/src/action.cpp
          case ACTION_TOGGLE_AUTO_FEATURES:
          case ACTION_TOGGLE_AUTO_PULP_BUTCHER:
          case ACTION_TOGGLE_AUTO_MINING:
-@@ -988,6 +991,7 @@
+@@ -988,6 +992,7 @@
              REGISTER_ACTION( ACTION_OPEN );
              REGISTER_ACTION( ACTION_CLOSE );
              REGISTER_ACTION( ACTION_CHAT );
@@ -26,7 +34,7 @@ diff --git a/src/action.cpp b/src/action.cpp
              REGISTER_ACTION( ACTION_PICKUP );
              REGISTER_ACTION( ACTION_PICKUP_ALL );
              REGISTER_ACTION( ACTION_GRAB );
-@@ -1160,6 +1164,12 @@
+@@ -1160,6 +1165,12 @@
      if( !test_mode ) {
          throw std::logic_error( "Novgorod adjacent selection requires test_mode" );
      }
@@ -39,7 +47,7 @@ diff --git a/src/action.cpp b/src/action.cpp
      if( actor_id <= 0 || direction.x() < -1 || direction.x() > 1 ||
          direction.y() < -1 || direction.y() > 1 || direction.z() < -1 || direction.z() > 1 ||
          ( direction.x() == 0 && direction.y() == 0 && direction.z() == 0 ) ) {
-@@ -1171,9 +1181,6 @@
+@@ -1171,9 +1182,6 @@
 
  void require_novgorod_test_adjacent_selection()
  {
@@ -49,7 +57,7 @@ diff --git a/src/action.cpp b/src/action.cpp
      novgorod_test_adjacent_selection_required = true;
  }
 
-@@ -1192,7 +1199,7 @@
+@@ -1192,7 +1200,7 @@
          const novgorod_adjacent_selection selection = *novgorod_test_adjacent_selection;
          novgorod_test_adjacent_selection.reset();
          Character &actor = get_player_character();
@@ -58,12 +66,15 @@ diff --git a/src/action.cpp b/src/action.cpp
              actor.pos_bub() != selection.origin || selection.direction.x() < -1 ||
              selection.direction.x() > 1 || selection.direction.y() < -1 ||
              selection.direction.y() > 1 || ( allow_vertical ?
-@@ -1206,7 +1213,7 @@
+@@ -1206,7 +1214,10 @@
          }
          return selection.direction;
      }
 -    if( test_mode && novgorod_test_adjacent_selection_required ) {
 +    if( novgorod_test_adjacent_selection_required ) {
++        if( novgorod_semantic::refuse_operation( "NOVGOROD_ADJACENT_TARGET_MISSING" ) ) {
++            return std::nullopt;
++        }
          throw std::runtime_error( "NOVGOROD_TEST_INPUT_EXHAUSTED: adjacent target missing" );
      }
      input_context ctxt( "DEFAULTMODE", keyboard_mode::keycode );

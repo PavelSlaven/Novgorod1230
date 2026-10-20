@@ -18,7 +18,8 @@ $names = @(
     'VCPKG_DOWNLOADS', 'VCPKG_DEFAULT_BINARY_CACHE', 'VCPKG_DISABLE_METRICS',
     'VCPKG_OVERLAY_TRIPLETS', 'X_VCPKG_ASSET_SOURCES', 'VCPKG_BINARY_SOURCES',
     'VCPKG_ROOT', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0',
-    'CDDA_RELEASE_BUILD', 'BACKTRACE'
+    'CDDA_RELEASE_BUILD', 'BACKTRACE', 'VCPKG_FORCE_DOWNLOADED_BINARIES',
+    'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG'
 )
 $original = @{}
 foreach ($name in $names) {
@@ -42,6 +43,9 @@ try {
         GIT_CONFIG_VALUE_0 = 'openssl'
         CDDA_RELEASE_BUILD = $null
         BACKTRACE = $null
+        VCPKG_FORCE_DOWNLOADED_BINARIES = $null
+        VCPKG_FORCE_SYSTEM_BINARIES = $null
+        PKG_CONFIG = $null
     }
     if ($actual.Count -ne $expected.Count) { throw "Unexpected environment key count: $($actual.Count)" }
     foreach ($name in $names) {
@@ -61,6 +65,9 @@ $values = @{}
 foreach ($name in $names) { $values[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
 $values['CDDA_RELEASE_BUILD_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('CDDA_RELEASE_BUILD')
 $values['BACKTRACE_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('BACKTRACE')
+$values['VCPKG_FORCE_DOWNLOADED_BINARIES_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('VCPKG_FORCE_DOWNLOADED_BINARIES')
+$values['VCPKG_FORCE_SYSTEM_BINARIES_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('VCPKG_FORCE_SYSTEM_BINARIES')
+$values['PKG_CONFIG_PRESENT'] = [Environment]::GetEnvironmentVariables('Process').Contains('PKG_CONFIG')
 $values['INHERITED_VALUE'] = [Environment]::GetEnvironmentVariable('P3_NATIVE_INHERITED_PROBE', 'Process')
 $values['WORKING_DIRECTORY'] = (Get-Location).Path
 $values | ConvertTo-Json -Compress
@@ -69,10 +76,12 @@ $values | ConvertTo-Json -Compress
     if ($exitCode -ne 0) { throw "Environment probe exited with code $exitCode" }
     $child = Get-Content -LiteralPath $logPath -Raw | ConvertFrom-Json -AsHashtable
     foreach ($name in $names) {
-        if ($name -in @('CDDA_RELEASE_BUILD', 'BACKTRACE')) { continue }
+        if ($name -in @('CDDA_RELEASE_BUILD', 'BACKTRACE', 'VCPKG_FORCE_DOWNLOADED_BINARIES', 'VCPKG_FORCE_SYSTEM_BINARIES', 'PKG_CONFIG')) { continue }
         if ($child[$name] -cne $expected[$name]) { throw "Incorrect real child environment value: $name" }
     }
-    if ($child['CDDA_RELEASE_BUILD_PRESENT'] -or $child['BACKTRACE_PRESENT']) {
+    if ($child['CDDA_RELEASE_BUILD_PRESENT'] -or $child['BACKTRACE_PRESENT'] -or
+        $child['VCPKG_FORCE_DOWNLOADED_BINARIES_PRESENT'] -or $child['VCPKG_FORCE_SYSTEM_BINARIES_PRESENT'] -or
+        $child['PKG_CONFIG_PRESENT']) {
         throw 'Removed environment keys reached the child'
     }
     if ($child['INHERITED_VALUE'] -cne 'retained-value') { throw 'Unrelated inherited environment value missing' }

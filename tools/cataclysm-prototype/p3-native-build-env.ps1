@@ -28,6 +28,9 @@ function Get-P3NativeBuildEnvironment {
         GIT_CONFIG_VALUE_0 = 'openssl'
         CDDA_RELEASE_BUILD = $null
         BACKTRACE = $null
+        VCPKG_FORCE_DOWNLOADED_BINARIES = $null
+        VCPKG_FORCE_SYSTEM_BINARIES = $null
+        PKG_CONFIG = $null
     }
 }
 

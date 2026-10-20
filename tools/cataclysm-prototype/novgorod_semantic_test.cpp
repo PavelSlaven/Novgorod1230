@@ -24,6 +24,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "debug.h"
 #include "faction.h"
 #include "flag.h"
 #include "game.h"
@@ -759,6 +760,86 @@ TEST_CASE( "Novgorod live movement shares native dispatch and bounds", "[novgoro
         CHECK( take_snapshot().world_signature == before.world_signature );
         CHECK( calendar::turn == before.native_time );
     }
+}
+
+namespace
+{
+std::string boundary_request( const std::string &primitive, const std::string &args_json,
+                              const std::string &references_json )
+{
+    const std::string actor = std::to_string( get_avatar().getID().get_value() );
+    const std::string turn = std::to_string( to_turn<int>( calendar::turn ) );
+    return "{\"schema\":\"p3_native_operation_request_v1\",\"operation_id\":\"focused-live\","
+           "\"expected_native_observation\":{\"turn\":" + turn + ",\"revision\":" + turn +
+           ",\"actor_id\":\"" + actor + "\",\"references\":" + references_json + "},"
+           "\"actor_id\":\"" + actor + "\",\"primitive\":\"" + primitive + "\",\"args\":" + args_json +
+           ",\"references\":" + references_json + "}";
+}
+
+std::string carried_item_reference( const itype_id &type )
+{
+    std::string id;
+    for( const item *it : get_avatar().items_with( [&]( const item &candidate ) {
+    return candidate.typeId() == type;
+} ) ) {
+        id = std::to_string( it->uid().get_value() );
+    }
+    REQUIRE_FALSE( id.empty() );
+    return "{\"items\":{\"ref\":\"item:" + id + "\",\"id\":\"" + id + "\"}}";
+}
+} // namespace
+
+TEST_CASE( "Novgorod live item and target references carry ref and id", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    map &here = get_map();
+    novgorod_semantic::operation_result result;
+    SECTION( "carried item" ) {
+        const std::string references = carried_item_reference( itype_id( "flashlight" ) );
+        CHECK( capture_debugmsg_during( [&]() {
+            result = run_live_request( boundary_request( "use_item", "{\"method\":\"transform\"}",
+                                       references ) );
+        } ) == "" );
+        REQUIRE( result.applied );
+        CHECK( you.items_with( []( const item & it ) {
+            return it.typeId() == itype_id( "flashlight_on" );
+        } ).size() == 1 );
+    }
+    SECTION( "adjacent target" ) {
+        const tripoint_bub_ms door = you.pos_bub() + tripoint_rel_ms( 1, 0, 0 );
+        const std::string target = std::to_string( door.x() ) + "," + std::to_string( door.y() ) + "," +
+                                   std::to_string( door.z() );
+        CHECK( capture_debugmsg_during( [&]() {
+            result = run_live_request( boundary_request( "open", "{\"direction\":[1,0]}",
+                                       "{\"targets\":{\"ref\":\"" + target + "\",\"id\":\"" + target + "\"}}" ) );
+        } ) == "" );
+        REQUIRE( result.applied );
+        CHECK( here.ter( door ) == ter_str_id( "t_door_o" ) );
+    }
+}
+
+TEST_CASE( "Novgorod live item use without a needed adjacent target is refused", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const std::string references = carried_item_reference( itype_id( "crude_firestarter" ) );
+    const native_snapshot before = take_snapshot();
+    novgorod_semantic::operation_result result;
+    REQUIRE_NOTHROW( result = run_live_request( boundary_request( "use_item",
+                              "{\"method\":\"firestarter\"}", references ) ) );
+    CHECK_FALSE( result.applied );
+    CHECK( result.json.find( "NOVGOROD_ADJACENT_TARGET_MISSING" ) != std::string::npos );
+    CHECK( take_snapshot().world_signature == before.world_signature );
+}
+
+TEST_CASE( "Novgorod live avatar speech enters the native message log", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const std::string actor = std::to_string( get_avatar().getID().get_value() );
+    Messages::clear_messages();
+    const auto result = run_live_request( live_request( "speak", actor, "Здравствуй, мастер." ) );
+    REQUIRE( result.applied );
+    CHECK( message_log().find( "You yell \"Здравствуй, мастер.\"" ) != std::string::npos );
 }
 
 TEST_CASE( "Novgorod ACTION_USE preserves nested carried item location", "[novgorod_semantic][item]" )

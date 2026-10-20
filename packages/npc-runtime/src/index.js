@@ -30,6 +30,7 @@ export {
   validatePlayerConversationInput,
   validateSocialDeliveryResult
 } from './conversation-contracts.js';
+export { diagnoseConversationPlan, diagnoseMixedScriptRepair } from './conversation-plan-diagnosis.js';
 export {
   buildNpcActionDecisionRequest,
   buildNpcActionDecisionRequestFromSnapshots,

@@ -1420,7 +1420,7 @@ test('planner request names the selected interlocutor and offers speech only wit
   const speech = targeted.available_domain_operations.filter(({ op }) => op === 'emit_interaction');
   assert.deepEqual(speech, [{ op: 'emit_interaction', actor_ref: 'avatar',
     target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: 'speech',
-    instrument_refs: [], description: 'Speak to the selected listener' }]);
+    instrument_refs: [] }]);
   assert.equal(targeted.available_domain_operations.at(-1).op, 'emit_interaction');
   const plain = await capture(current, null);
   assert.equal('active_interlocutor' in plain.player_safe_state, false);

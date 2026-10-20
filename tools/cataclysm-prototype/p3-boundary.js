@@ -591,7 +591,7 @@ export function buildP3TurnOperations(observation, targetActorRef = null) {
       target_refs: [], description: 'Wait for the next period' },
     ...(targetActorRef ? [{ op: 'emit_interaction', actor_ref: 'avatar',
       target_actor_refs: [targetActorRef], interaction_kind: 'speech', content: 'speech',
-      instrument_refs: [], description: 'Speak to the selected listener' }] : [])
+      instrument_refs: [] }] : [])
   ];
 }
 

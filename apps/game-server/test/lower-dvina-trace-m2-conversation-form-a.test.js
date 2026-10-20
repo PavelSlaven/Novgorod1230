@@ -3,6 +3,8 @@ import test from 'node:test';
 import { validateNpcConversationResponseSubject } from '@rus/npc-runtime';
 import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { npcConversationSubject } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-subject.js';
 import {
   checkResult,
   digest,
@@ -64,6 +66,29 @@ test('phase 3 request carries the NPC subject in form A', async () => {
   assert.equal(stance[0].status, 'guarded');
   assert.equal(JSON.stringify(request).includes('knowledge_profile_snapshot'),
     false);
+});
+
+test('the NPC subject requires the knowledge scope snapshot and never projects it', () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({
+    state, bundle: revision14Bundle
+  });
+  const eremey = contracts.actors[0];
+  const subjectOf = (actor) => npcConversationSubject({
+    actor, npcRef: { entity_kind: 'npc', entity_id: actor.instance_id },
+    state, currentObservations: []
+  });
+
+  const subject = subjectOf(eremey);
+  assert.deepEqual(subject.knowledge,
+    { beliefs: [], hypotheses: [], known_facts: [] });
+  assert.equal(JSON.stringify(subject).includes(
+    eremey.knowledge_profile_snapshot.profile_id), false);
+  for (const snapshot of [undefined, null, []]) {
+    assert.throws(
+      () => subjectOf({ ...eremey, knowledge_profile_snapshot: snapshot }),
+      { code: 'TRACE_M2_NPC_KNOWLEDGE_GAP' });
+  }
 });
 
 test('presented evidence turns the stance into cooperation and drops the required tag',

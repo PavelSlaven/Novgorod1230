@@ -5,7 +5,9 @@
 Это карта, а не норма. Правила проверок задаёт [AGENTS.md §24](../governance/WORKFLOW_RULES.md) (и §22 для отладки, §29 для
 отчёта). Все команды по группам перечислены в [генерируемом каталоге](../../generated/npm-script-catalog.md)
 из [package.json](../../package.json); CI —
-[.github/workflows/test.yml](../../.github/workflows/test.yml).
+[.github/workflows/test.yml](../../.github/workflows/test.yml). Windows-сборка CDDA-прототипа —
+[.github/workflows/windows-build.yml](../../.github/workflows/windows-build.yml), только `workflow_dispatch` и push в
+ветку `windows-build`, не на PR ([README прототипа](../../tools/cataclysm-prototype/README.md)).
 
 `docs:check` проверяет `npm run` в корневых инструкциях, `docs/`, `infra/`, `apps/`, `packages/`,
 `scripts/`, `tools/` и CI workflows (тестовые файлы исключены). Исторические планы/журналы в

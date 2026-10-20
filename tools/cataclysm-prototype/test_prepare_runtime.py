@@ -87,7 +87,8 @@ class PrepareRuntimeTest(unittest.TestCase):
         self.assertEqual((self.runtime_root / "fixture/save/novgorod-dev/seed.txt").read_text(), "seed")
         self.assertEqual(self.options(), {"AUTOSAVE": "true", "AUTOSAVE_TURNS": "3600",
                                           "AUTOSAVE_MINUTES": "5", "USE_LANG": "ru",
-                                          "USE_TILES": "true", "TILES": "UltimateCataclysm"})
+                                          "USE_TILES": "true", "TILES": "UltimateCataclysm",
+                                          "SDL_KEYBOARD_MODE": "keycode"})
 
     def test_rerun_is_idempotent_and_never_touches_userdir(self):
         digest = self.write_archive()

@@ -69,8 +69,12 @@ python3 -I tools/cataclysm-prototype/prepare_p3_runtime.py \
 `--source` — исходник CDDA с overlays прототипа. Скрипт сверяет sha256 архива
 до любых записей, заменяет `runtime/data` копией `data/` исходника, кладёт мод
 `dev-world`, тайлсет, перевод и указанные бинари, а в
-`fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true` и
-`TILES=UltimateCataclysm`. `--fixture` нужен только для нового runtime root:
+`fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true`,
+`TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. В родном режиме
+`keychar` при русской раскладке буквенные горячие клавиши приходят кириллицей
+и не срабатывают (`g` → «неизвестная клавиша»); в `keycode` они работают при
+любой раскладке, а окно F12 само включает текстовый ввод и принимает кириллицу.
+`--fixture` нужен только для нового runtime root:
 существующий fixture не заменяется. Уже созданный `userdir` скрипт не трогает,
 поэтому в начатом мире язык и графика меняются в настройках игры или через
 `--reset` (прежний userdir сохраняется рядом).

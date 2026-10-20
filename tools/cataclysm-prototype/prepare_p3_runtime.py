@@ -17,7 +17,10 @@ ARCHIVE = {
 }
 TRANSLATION = "lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo"
 TILESET = "gfx/UltimateCataclysm"
-OPTIONS = {"USE_LANG": "ru", "USE_TILES": "true", "TILES": "UltimateCataclysm"}
+# keycode: under a Russian layout keychar delivers Cyrillic letters that miss every hotkey binding,
+# while text prompts such as F12 switch to text input themselves and still receive Cyrillic.
+OPTIONS = {"USE_LANG": "ru", "USE_TILES": "true", "TILES": "UltimateCataclysm",
+           "SDL_KEYBOARD_MODE": "keycode"}
 MOD = Path(__file__).with_name("dev-world")
 
 

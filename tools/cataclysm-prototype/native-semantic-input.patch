@@ -99,10 +99,10 @@ index fd159c8..bbd3da3 100644
          bool allow_vertical = false, bool allow_mouse = false, int timeout = 50,
          const std::function<std::pair<bool, std::optional<tripoint_rel_ms>>(
 diff --git a/src/game.cpp b/src/game.cpp
-index b00f641..878facf 100644
+index b00f641..f41ae8f 100644
 --- a/src/game.cpp
 +++ b/src/game.cpp
-@@ -5740,6 +5739,29 @@ void game::pickup()
+@@ -5740,6 +5740,29 @@ void game::pickup()
  {
      map &here = get_map();
  
@@ -283,14 +283,13 @@ index b642fe2..7a05c94 100644
  {
      if( has_flag( flag_PRESERVE_SPAWN_LOC ) && !has_var( "spawn_location" ) ) {
 diff --git a/src/item.h b/src/item.h
-index 697bad4..af9dfb2 100644
+index 697bad4..892c3d5 100644
 --- a/src/item.h
 +++ b/src/item.h
-@@ -247,6 +247,9 @@ class item
+@@ -247,6 +247,8 @@ class item
              return uid_;
          }
  
-+        /** Transfer persistent identities from an equivalent whole-item copy. */
 +        bool transfer_identity_from( item &source );
 +
          /**
@@ -310,7 +309,7 @@ index 4289c1e..bc3afe2 100644
                          write( *it );
                      } else {
 diff --git a/src/npc.h b/src/npc.h
-index 41661c0..e6014e4 100644
+index 41661c0..18ce6f8 100644
 --- a/src/npc.h
 +++ b/src/npc.h
 @@ -1227,6 +1227,16 @@ class npc : public Character
@@ -330,11 +329,10 @@ index 41661c0..e6014e4 100644
          // Functions which choose an action for a particular goal
          npc_action method_of_fleeing();
          npc_action method_of_attack();
-@@ -1719,6 +1729,13 @@ class npc : public Character
+@@ -1719,6 +1729,12 @@ class npc : public Character
          dialogue_chatbin chatbin;
          int patience = 0; // Used when we expect the player to leave the area
          npc_follower_rules rules;
-+        // Native-owned durable state for an externally assigned Novgorod intent.
 +        std::string novgorod_assignment_id;
 +        std::string novgorod_intent_payload;
 +        tripoint_abs_ms novgorod_intent_target = tripoint_abs_ms::invalid;

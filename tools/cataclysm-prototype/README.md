@@ -26,6 +26,33 @@ Novgorod и не открывает пользовательские saves. Fixt
 `~/cdda-assets/cdda-experimental-2026-10-18-0359/graphics/`; без него скрипт
 подготовки печатает точную команду `curl` и ожидаемый sha256.
 
+Графическую сборку делает [`build-tiles.sh`](build-tiles.sh) (в WSL). Он
+повторяет рецепт CDDA `.github/actions/setup-sdl3-stack`: SDL `release-3.4.10`,
+SDL_image `release-3.4.4` и SDL_ttf `release-3.2.2` клонируются с закреплёнными
+коммитами (при расхождении HEAD сборка останавливается) и ставятся в свой
+префикс, по умолчанию `~/.local/share/novgorod/sdl3-3.4.10`. SDL3_mixer не
+нужен: звук выключен (`-DSOUND=OFF`). Затем в `$CDDA/build-tiles` (или
+`--build-dir`) собирается цель `cataclysm-tiles` с `-DTILES=ON` и
+`-DUSE_PREFIX_DATA_DIR=OFF`: при умолчании CMake игра ищет перевод в
+`/usr/local/share/locale`, а не в `lang/mo` рядом с runtime, и молча остаётся на английском. Та же причина не даёт русского текстовой сборке
+из раздела «Checkout и сборка»; для автотестов это не нужно — они на английском.
+Пакеты сборки — список рецепта без пяти звуковых библиотек SDL3_mixer, плюс
+`glslang-tools` для шейдеров:
+
+```sh
+sudo apt-get install -y libfreetype-dev libharfbuzz-dev libjpeg-dev libpng-dev \
+  libwebp-dev libtiff-dev libasound2-dev libpulse-dev libx11-dev libxext-dev \
+  libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxrender-dev libxss-dev \
+  libxtst-dev libxkbcommon-dev libwayland-dev libwayland-bin wayland-protocols \
+  libdecor-0-dev libdrm-dev libgbm-dev libudev-dev libegl-dev libgl-dev \
+  libgles-dev libvulkan-dev libpipewire-0.3-dev libdbus-1-dev libibus-1.0-dev \
+  glslang-tools
+bash tools/cataclysm-prototype/build-tiles.sh --source "$CDDA"
+```
+
+Шейдеры родная цель `compile_shaders` компилирует в `data/shaders` исходника,
+поэтому runtime готовится после графической сборки.
+
 Runtime root готовит скрипт (в WSL, из корня этого репозитория):
 
 ```sh

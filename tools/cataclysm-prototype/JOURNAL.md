@@ -153,8 +153,8 @@
   - JS: `node --test` трёх файлов p3 — 99/99. Замороженная приёмка `p3-npc-input.acceptance.test.js` не тронута, sha256 `e8656087…671c`.
   - `npm run test:apps`: 1805 тестов, 1804 pass, 1 skipped, 0 fail. `architecture:check` OK.
   - Python p3 в WSL — 52 OK.
-  - `npm run test:cataclysm-p3` на Windows падает в `test_dev_launcher_windows.ps1:18`: кириллица в пути. На базе тест тоже падает, только в другом месте, `run-p3-dev.ps1:25`. Файлов запускалки в diff нет.
-  - `docs:check` падает: устарел `generated/generated-manifest.json`. На базе `0aa046076` без моих правок — то же.
+  - `npm run test:cataclysm-p3` на Windows падает в `test_dev_launcher_windows.ps1:18`: PowerShell читает stdout node из `run-p3-dev.ps1:25` как cp866. На базе тест тоже падает, только в другом месте, `run-p3-dev.ps1:25`. Файлов запускалки в diff нет. Известный отказ вне FIX-04 — #809.
+  - `docs:check` падал: устарел `generated/generated-manifest.json`. Дайджест считается и по скриптам корневого `package.json`, а коммит `0aa046076` добавил приёмку в `test:cataclysm-p3`. После `npm run docs:generate` изменился только манифест, `docs:check` rc=0 (`logs/docs-check.log`).
 - 2026-10-20T22:05Z — Родные прогоны FIX-04 в WSL `~/cataclysm-fix04`.
   - cata_test sha256 `d22164f6…9d1c3`:
     - `[novgorod_live]` 2536 assertions / 25 тестов;

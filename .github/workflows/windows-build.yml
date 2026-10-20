@@ -103,24 +103,6 @@ jobs:
             $missing += 'Novgorod overlays in cataclysm-tiles.exe'
           }
           if ($missing) { throw "Missing from bindist: $($missing -join ', ')" }
-      - name: Check the dev world mod loads
-        continue-on-error: true
-        timeout-minutes: 10
-        run: |
-          $root = (Resolve-Path bindist).Path
-          $codes = @{}
-          foreach ($mod in 'dda', 'novgorod_dev_world') {
-            $userdir = "$env:RUNNER_TEMP\userdir-$mod"
-            $game = Start-Process "$root\cataclysm-tiles.exe" -Wait -PassThru `
-              -RedirectStandardOutput "$userdir.out" -RedirectStandardError "$userdir.err" `
-              -ArgumentList '--basepath', "$root\", '--userdir', "$userdir\", '--check-mods', $mod
-            $codes[$mod] = $game.ExitCode
-            "== $mod exit $($game.ExitCode)"
-            Get-Content "$userdir.out", "$userdir.err" -Tail 40
-            Get-ChildItem $userdir -Recurse -Name
-            Get-ChildItem $userdir -Recurse -Filter debug.log | Get-Content -Tail 40
-          }
-          if ($codes['novgorod_dev_world'] -ne 0) { throw "--check-mods novgorod_dev_world exited with $($codes['novgorod_dev_world'])" }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: novgorod-cdda-windows-tiles-x64

@@ -31,7 +31,6 @@ export {
   validatePlayerConversationInput,
   validateSocialDeliveryResult
 } from './conversation-contracts.js';
-export { diagnoseConversationPlan, diagnoseMixedScriptRepair } from './conversation-plan-diagnosis.js';
 export {
   buildNpcActionDecisionRequest,
   buildNpcActionDecisionRequestFromSnapshots,
@@ -69,14 +68,17 @@ export {
 } from './schedule-decision-terminal.js';
 export { selectApplicableNpcActivityExecution } from
   './activity-execution-selection.js';
-export { matchesOperationContract } from './operation-contract-match.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow
 } from './reaction-policy.js';
 
 import { decideBoundedNpcAction as decideBoundedNpcActionInternal } from './bounded-decision.js';
+import { diagnoseConversationPlan, diagnoseMixedScriptRepair } from './conversation-plan-diagnosis.js';
+import { matchesOperationContract } from './operation-contract-match.js';
 import { proposeNpcReactionOptions as proposeNpcReactionOptionsInternal } from './reaction-options.js';
 import { NPC_RUNTIME_RESOURCE_LIMITS } from './runtime-configuration.js';
+
+export { diagnoseConversationPlan, diagnoseMixedScriptRepair, matchesOperationContract };
 
 export function proposeNpcReactionOptions(input = {}) {
   return proposeNpcReactionOptionsInternal(input, {

@@ -1,4 +1,4 @@
-import { isDeepStrictEqual } from 'node:util';
+import { stableStringify } from '@rus/kernel';
 import {
   allowedKeys,
   exactKeys,
@@ -250,7 +250,8 @@ export function validateNpcConversationResponseSubject(request) {
     || !validateNpc(request.npc)
     || !validateSubjectKnowledge(request.knowledge)
     || !validateSubjectMemory(request.memory)
-    || !isDeepStrictEqual(request.available_resources, request.npc.available_resources)
+    || stableStringify(request.available_resources)
+      !== stableStringify(request.npc.available_resources)
     || !plainRecord(request.allowed_references)) {
     return false;
   }

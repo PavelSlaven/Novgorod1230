@@ -26,6 +26,8 @@
 #include "character.h"
 #include "debug.h"
 #include "faction.h"
+#include "field.h"
+#include "field_type.h"
 #include "flag.h"
 #include "game.h"
 #include "game_constants.h"
@@ -776,7 +778,7 @@ std::string boundary_request( const std::string &primitive, const std::string &a
            ",\"references\":" + references_json + "}";
 }
 
-std::string carried_item_reference( const itype_id &type )
+std::string carried_item_uid( const itype_id &type )
 {
     std::string id;
     for( const item *it : get_avatar().items_with( [&]( const item &candidate ) {
@@ -785,7 +787,18 @@ std::string carried_item_reference( const itype_id &type )
         id = std::to_string( it->uid().get_value() );
     }
     REQUIRE_FALSE( id.empty() );
+    return id;
+}
+
+std::string carried_item_reference( const itype_id &type )
+{
+    const std::string id = carried_item_uid( type );
     return "{\"items\":{\"ref\":\"item:" + id + "\",\"id\":\"" + id + "\"}}";
+}
+
+std::string target_ref( const tripoint_bub_ms &p )
+{
+    return std::to_string( p.x() ) + "," + std::to_string( p.y() ) + "," + std::to_string( p.z() );
 }
 } // namespace
 
@@ -808,8 +821,7 @@ TEST_CASE( "Novgorod live item and target references carry ref and id", "[novgor
     }
     SECTION( "adjacent target" ) {
         const tripoint_bub_ms door = you.pos_bub() + tripoint_rel_ms( 1, 0, 0 );
-        const std::string target = std::to_string( door.x() ) + "," + std::to_string( door.y() ) + "," +
-                                   std::to_string( door.z() );
+        const std::string target = target_ref( door );
         CHECK( capture_debugmsg_during( [&]() {
             result = run_live_request( boundary_request( "open", "{\"direction\":[1,0]}",
                                        "{\"targets\":{\"ref\":\"" + target + "\",\"id\":\"" + target + "\"}}" ) );
@@ -817,6 +829,75 @@ TEST_CASE( "Novgorod live item and target references carry ref and id", "[novgor
         REQUIRE( result.applied );
         CHECK( here.ter( door ) == ter_str_id( "t_door_o" ) );
     }
+    SECTION( "carried item and adjacent target together" ) {
+        const tripoint_bub_ms kindling = you.pos_bub() + tripoint_rel_ms( -1, 0, 0 );
+        const std::string id = carried_item_uid( itype_id( "crude_firestarter" ) );
+        const std::string target = target_ref( kindling );
+        CHECK( capture_debugmsg_during( [&]() {
+            result = run_live_request( boundary_request( "use_item",
+                                       "{\"method\":\"firestarter\",\"target_direction\":[-1,0]}",
+                                       "{\"items\":{\"ref\":\"item:" + id + "\",\"id\":\"" + id + "\"},"
+                                       "\"targets\":{\"ref\":\"" + target + "\",\"id\":\"" + target + "\"}}" ) );
+        } ) == "" );
+        REQUIRE( result.applied );
+        CHECK( ( here.get_field( kindling, fd_fire ) != nullptr ||
+                 you.activity.id() == activity_id( "ACT_START_FIRE" ) ) );
+    }
+}
+
+TEST_CASE( "Novgorod live references that disagree with their id are refused", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const std::string id = carried_item_uid( itype_id( "flashlight" ) );
+    const std::string other = carried_item_uid( itype_id( "crude_firestarter" ) );
+    const std::string door = target_ref( get_avatar().pos_bub() + tripoint_rel_ms( 1, 0, 0 ) );
+    const std::string wall = target_ref( get_avatar().pos_bub() + tripoint_rel_ms( 0, -1, 0 ) );
+    const std::string use = "{\"method\":\"transform\"}";
+    const std::string open = "{\"direction\":[1,0]}";
+    std::string primitive;
+    std::string args;
+    std::string references;
+    std::string code;
+    SECTION( "item ref without the item prefix" ) {
+        primitive = "use_item";
+        args = use;
+        references = "{\"items\":{\"ref\":\"" + id + "\",\"id\":\"" + id + "\"}}";
+        code = "NOVGOROD_ITEM_REFERENCE_MISMATCH";
+    }
+    SECTION( "item ref naming another item" ) {
+        primitive = "use_item";
+        args = use;
+        references = "{\"items\":{\"ref\":\"item:" + other + "\",\"id\":\"" + id + "\"}}";
+        code = "NOVGOROD_ITEM_REFERENCE_MISMATCH";
+    }
+    SECTION( "item ref missing" ) {
+        primitive = "use_item";
+        args = use;
+        references = "{\"items\":{\"id\":\"" + id + "\"}}";
+    }
+    SECTION( "target ref differing from its id" ) {
+        primitive = "open";
+        args = open;
+        references = "{\"targets\":{\"ref\":\"" + wall + "\",\"id\":\"" + door + "\"}}";
+        code = "NOVGOROD_TARGET_REFERENCE_MISMATCH";
+    }
+    SECTION( "target naming another tile" ) {
+        primitive = "open";
+        args = open;
+        references = "{\"targets\":{\"ref\":\"" + wall + "\",\"id\":\"" + wall + "\"}}";
+        code = "NOVGOROD_TARGET_REFERENCE_MISMATCH";
+    }
+    CAPTURE( primitive, references );
+    const native_snapshot before = take_snapshot();
+    novgorod_semantic::operation_result result;
+    CHECK( capture_debugmsg_during( [&]() {
+        result = run_live_request( boundary_request( primitive, args, references ) );
+    } ) == "" );
+    CHECK_FALSE( result.applied );
+    if( !code.empty() ) CHECK( result.json.find( code ) != std::string::npos );
+    CHECK( take_snapshot().world_signature == before.world_signature );
+    CHECK( calendar::turn == before.native_time );
+    CHECK( get_avatar().get_moves() == before.moves );
 }
 
 TEST_CASE( "Novgorod live item use without a needed adjacent target is refused", "[novgorod_live]" )
@@ -824,12 +905,15 @@ TEST_CASE( "Novgorod live item use without a needed adjacent target is refused",
     reset_p3_fixture();
     const std::string references = carried_item_reference( itype_id( "crude_firestarter" ) );
     const native_snapshot before = take_snapshot();
+    const std::string log_before = message_log();
     novgorod_semantic::operation_result result;
     REQUIRE_NOTHROW( result = run_live_request( boundary_request( "use_item",
                               "{\"method\":\"firestarter\"}", references ) ) );
     CHECK_FALSE( result.applied );
     CHECK( result.json.find( "NOVGOROD_ADJACENT_TARGET_MISSING" ) != std::string::npos );
     CHECK( take_snapshot().world_signature == before.world_signature );
+    CHECK( get_avatar().activity.is_null() );
+    CHECK( message_log() == log_before );
 }
 
 TEST_CASE( "Novgorod live avatar speech enters the native message log", "[novgorod_live]" )

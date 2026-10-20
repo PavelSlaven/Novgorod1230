@@ -3,6 +3,7 @@ import { projectConversationMemory, validateConversationMemoryRecord }
   from '@rus/visibility-knowledge-memory';
 
 const SCENE_REF = 'p3-scene';
+const NATIVE_NO_ACTIVITY = 'ACT_NULL';
 const RECORD_KEYS = ['kind', 'speaker_ref', 'listener_ref', 'text', 'turn'];
 const PLACEMENT_TEXT = Object.freeze({ ground: 'лежит поблизости', worn: 'на мне',
   carried: 'при мне', wielded: 'у меня в руках' });
@@ -48,9 +49,14 @@ const sameRef = (left, right) => left.entity_kind === right.entity_kind
   && left.entity_id === right.entity_id;
 
 function withoutCurrentPhrase(records, { playerRef, npcRef, utterance, turns }) {
+  // Native writes the heard record when the sound is processed, a turn or two after the speech
+  // starts, so its turn lies inside the operation window rather than on its ends.
+  const first = Math.min(...turns);
+  const last = Math.max(...turns);
   for (let index = records.length - 1; index >= 0; index -= 1) {
     const record = records[index];
-    if (record.kind === 'heard' && record.text === utterance && turns.has(record.turn)
+    if (record.kind === 'heard' && record.text === utterance
+        && record.turn >= first && record.turn <= last
         && sameRef(record.speaker_ref, playerRef) && sameRef(record.listener_ref, npcRef)) {
       return records.filter((_, position) => position !== index);
     }
@@ -89,6 +95,8 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
     time_of: p3GameTimeOfTurn });
 
   const items = projection.visible_items;
+  const activityRef = projection.activity_id && projection.activity_id !== NATIVE_NO_ACTIVITY
+    ? projection.activity_id : null;
   const seen = (item) => perceptionRefOfItem(frame.turn, npcId, item.item_uid);
   const profileSnapshot = profile?.npc_snapshot ?? {};
   const npcSnapshot = { ...profileSnapshot, instance_id: instanceId,
@@ -118,8 +126,8 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
     ],
     received_messages: [],
     npc_snapshot: npcSnapshot,
-    current_activity_snapshot: { activity_ref: projection.activity_id || null, summary: null,
-      status: projection.activity_id ? 'in_progress' : 'idle',
+    current_activity_snapshot: { activity_ref: activityRef, summary: null,
+      status: activityRef ? 'in_progress' : 'idle',
       can_continue_automatically: false },
     relationship_snapshots: [{ relationship_ref: `npc${npcId}-relationship-${player.actor_id}`,
       actor_ref: playerRef, relation, status: acquainted ? 'acquainted' : 'first_meeting',

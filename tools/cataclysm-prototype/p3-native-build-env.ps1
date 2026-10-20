@@ -49,7 +49,8 @@ function Invoke-P3NativeBuildTool {
         [Parameter(Mandatory)][string[]] $ArgumentList,
         [Parameter(Mandatory)][string] $WorkingDirectory,
         [Parameter(Mandatory)][hashtable] $Environment,
-        [Parameter(Mandatory)][string] $LogPath
+        [Parameter(Mandatory)][string] $LogPath,
+        [switch] $NoClobber
     )
 
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
@@ -75,7 +76,9 @@ function Invoke-P3NativeBuildTool {
 
     $logPath = [System.IO.Path]::GetFullPath($LogPath)
     New-Item -ItemType Directory -Path ([System.IO.Path]::GetDirectoryName($logPath)) -Force | Out-Null
-    $writer = [System.IO.StreamWriter]::new($logPath, $false, [System.Text.UTF8Encoding]::new($false))
+    $fileMode = if ($NoClobber) { [System.IO.FileMode]::CreateNew } else { [System.IO.FileMode]::Create }
+    $logStream = [System.IO.File]::Open($logPath, $fileMode, [System.IO.FileAccess]::Write, [System.IO.FileShare]::Read)
+    $writer = [System.IO.StreamWriter]::new($logStream, [System.Text.UTF8Encoding]::new($false))
     $writer.AutoFlush = $true
     $process = [System.Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
@@ -111,9 +114,11 @@ function Invoke-P3NativeDependencyInstall {
         [Parameter(Mandatory)][string] $NodeExe,
         [Parameter(Mandatory)][string] $VcpkgRoot,
         [Parameter(Mandatory)][string] $InstallRoot,
-        [switch] $PreflightOnly
+        [switch] $PreflightOnly,
+        [switch] $Install
     )
 
+    if ($Install -and $PreflightOnly) { throw 'Параметры -Install и -PreflightOnly нельзя использовать вместе.' }
     if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Запустите установку зависимостей через PowerShell 7 (pwsh).' }
     $powershellDirectory = 'C:\Program Files\PowerShell\7'
     if (-not (Test-Path -LiteralPath (Join-Path $powershellDirectory 'pwsh.exe') -PathType Leaf)) {
@@ -126,13 +131,14 @@ function Invoke-P3NativeDependencyInstall {
     $NativeRoot = [System.IO.Path]::GetFullPath($NativeRoot)
     $BuildRoot = [System.IO.Path]::GetFullPath($BuildRoot)
     $VcpkgRoot = [System.IO.Path]::GetFullPath($VcpkgRoot)
-    $InstallRoot = [System.IO.Path]::GetFullPath($InstallRoot)
+    $InstallRoot = [System.IO.Path]::TrimEndingDirectorySeparator([System.IO.Path]::GetFullPath($InstallRoot))
     $manifestRoot = Join-Path $BuildRoot 'msvc-full-features'
     $vcpkgExe = Join-Path $VcpkgRoot 'vcpkg.exe'
     foreach ($path in @($vcpkgExe, $NodeExe, (Join-Path $manifestRoot 'vcpkg.json'))) {
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Не найден обязательный файл: $path. Установка зависимостей не начата." }
     }
-    if ($InstallRoot -eq (Join-Path $manifestRoot 'vcpkg_installed')) {
+    $manifestInstallRoot = [System.IO.Path]::TrimEndingDirectorySeparator([System.IO.Path]::GetFullPath((Join-Path $manifestRoot 'vcpkg_installed')))
+    if ($InstallRoot -eq $manifestInstallRoot) {
         throw 'Для зависимостей требуется отдельный InstallRoot вне msvc-full-features/vcpkg_installed.'
     }
     $environment = Get-P3NativeBuildEnvironment -NativeRoot $NativeRoot -BuildRoot $BuildRoot -NodeExe $NodeExe -VcpkgRoot $VcpkgRoot
@@ -143,9 +149,10 @@ function Invoke-P3NativeDependencyInstall {
     if ($exitCode -ne 0) {
         throw "Офлайн-предпроверка powershell-core завершилась с кодом $exitCode. Установка зависимостей не начата. Лог: $preflightLog"
     }
-    if ($PreflightOnly) { return }
-    $installLog = Join-Path $NativeRoot 'work/vcpkg-install.log'
-    $arguments = @('install', '--triplet', 'x64-windows-static', "--x-install-root=$InstallRoot", '--clean-buildtrees-after-build', '--clean-packages-after-build')
-    $exitCode = Invoke-P3NativeBuildTool -FilePath $vcpkgExe -ArgumentList $arguments -WorkingDirectory $manifestRoot -Environment $environment -LogPath $installLog
+    if (-not $Install) { return }
+    $timestamp = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssfffffffZ', [cultureinfo]::InvariantCulture)
+    $installLog = Join-Path $NativeRoot "work/vcpkg-install-$timestamp.log"
+    $arguments = @('install', '--triplet', 'x64-windows-static', '--host-triplet=x64-windows-static', "--x-install-root=$InstallRoot", '--clean-buildtrees-after-build', '--clean-packages-after-build')
+    $exitCode = Invoke-P3NativeBuildTool -FilePath $vcpkgExe -ArgumentList $arguments -WorkingDirectory $manifestRoot -Environment $environment -LogPath $installLog -NoClobber
     if ($exitCode -ne 0) { throw "Установка зависимостей vcpkg завершилась с кодом $exitCode. Лог: $installLog" }
 }

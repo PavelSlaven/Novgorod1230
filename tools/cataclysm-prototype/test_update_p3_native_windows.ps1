@@ -20,9 +20,17 @@ New-Item -ItemType Directory -Path (Join-Path $base 'src') | Out-Null
 [System.IO.File]::WriteAllText((Join-Path $base 'src/restore.txt'), "base bytes`n")
 [System.IO.File]::WriteAllText((Join-Path $base 'src/deleted.txt'), "deleted base bytes`n")
 [System.IO.File]::WriteAllText((Join-Path $base 'src/unmanaged.txt'), "unmanaged bytes`n")
+$renameOldLines = @(1..20 | ForEach-Object { "shared line $_" })
+$renameNewLines = @($renameOldLines)
+$renameNewLines[9] = 'changed line 10'
+$renameOldText = ($renameOldLines -join "`n") + "`n"
+$renameNewText = ($renameNewLines -join "`n") + "`n"
+[System.IO.File]::WriteAllText((Join-Path $base 'src/old.txt'), $renameOldText)
 [System.IO.File]::WriteAllText((Join-Path $base '.gitignore'), "*.lib`n*.ignored`n")
 & git -C $base init -q
 if ($LASTEXITCODE) { throw 'git init failed' }
+& git -C $base config diff.renames true
+if ($LASTEXITCODE) { throw 'git config failed' }
 & git -C $base add .
 if ($LASTEXITCODE) { throw 'git add failed' }
 & git -C $base -c user.name=Fixture -c user.email=fixture@example.test commit -qm fixture
@@ -42,11 +50,32 @@ for ($i = 0; $i -lt $patchNames.Count; $i++) {
         $patch += "diff --git a/src/restore.txt b/src/restore.txt`n--- a/src/restore.txt`n+++ b/src/restore.txt`n@@ -1 +1 @@`n-base bytes`n+patched bytes`n"
         $patch += "diff --git a/src/created.txt b/src/created.txt`nnew file mode 100644`n--- /dev/null`n+++ b/src/created.txt`n@@ -0,0 +1 @@`n+created bytes`n"
         $patch += "diff --git a/src/deleted.txt b/src/deleted.txt`ndeleted file mode 100644`n--- a/src/deleted.txt`n+++ /dev/null`n@@ -1 +0,0 @@`n-deleted base bytes`n"
+        $patch += "diff --git a/src/old.txt b/src/old.txt`ndeleted file mode 100644`n--- a/src/old.txt`n+++ /dev/null`n@@ -1,20 +0,0 @@`n"
+        $patch += (($renameOldLines | ForEach-Object { "-$_" }) -join "`n") + "`n"
+        $patch += "diff --git a/src/new.txt b/src/new.txt`nnew file mode 100644`n--- /dev/null`n+++ b/src/new.txt`n@@ -0,0 +1,20 @@`n"
+        $patch += (($renameNewLines | ForEach-Object { "+$_" }) -join "`n") + "`n"
     }
     [System.IO.File]::WriteAllText((Join-Path $overlay "$($patchNames[$i]).patch"), $patch)
 }
 [System.IO.File]::WriteAllBytes((Join-Path $overlay 'novgorod_semantic.cpp'), [byte[]](0, 1, 10, 255))
 [System.IO.File]::WriteAllText((Join-Path $overlay 'novgorod_semantic.h'), 'fixture header')
+
+$renameIndex = Join-Path $root 'rename.index'
+$priorIndex = $env:GIT_INDEX_FILE
+try {
+    $env:GIT_INDEX_FILE = $renameIndex
+    & git -C $base read-tree $baseSha
+    if ($LASTEXITCODE) { throw 'Fixture index read-tree failed' }
+    & git -C $base apply --cached (Join-Path $overlay 'native-input.patch')
+    if ($LASTEXITCODE) { throw 'Fixture patch apply failed' }
+    $folded = @(& git -C $base diff --cached --name-only $baseSha)
+    if ($LASTEXITCODE -or $folded -contains 'src/old.txt' -or $folded -notcontains 'src/new.txt') {
+        throw 'Fixture did not trigger rename detection'
+    }
+} finally {
+    $env:GIT_INDEX_FILE = $priorIndex
+    if (Test-Path -LiteralPath $renameIndex) { Remove-Item -LiteralPath $renameIndex }
+}
 
 $separator = [System.IO.Path]::DirectorySeparatorChar
 $arguments = @('-NoProfile', '-File', $Updater, '-PrepareOnly', '-BaseRoot', "$base$separator",
@@ -74,12 +103,22 @@ $first = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 if ($first.stamp -notmatch '^[a-f0-9]{64}$' -or $first.paths.'src/sequence.txt' -notmatch '^[a-f0-9]{64}$') {
     throw 'Stamp or per-path manifest missing'
 }
+if ((Test-Path -LiteralPath (Join-Path $build 'src/old.txt')) -or
+    [System.IO.File]::ReadAllText((Join-Path $build 'src/new.txt')) -ne $renameNewText -or
+    $first.paths.PSObject.Properties.Name -notcontains 'src/old.txt' -or
+    $first.paths.PSObject.Properties.Name -notcontains 'src/new.txt' -or
+    $null -ne $first.paths.'src/old.txt' -or
+    $first.paths.'src/new.txt' -notmatch '^[a-f0-9]{64}$') { throw 'Renamed patch paths were not applied or recorded' }
 $mtime = (Get-Item -LiteralPath (Join-Path $build 'src/sequence.txt')).LastWriteTimeUtc
 $firstStage = (Get-ChildItem -LiteralPath $stage -Directory | Select-Object -First 1).FullName
 $firstStageBytes = [System.IO.File]::ReadAllBytes((Join-Path $firstStage 'src/sequence.txt'))
 if ((Test-Path -LiteralPath (Join-Path $firstStage '.git')) -or
     (Test-Path -LiteralPath (Join-Path $firstStage 'src/unmanaged.txt')) -or
-    (Test-Path -LiteralPath (Join-Path $firstStage '.gitignore'))) { throw 'Stage contains more than managed paths' }
+    (Test-Path -LiteralPath (Join-Path $firstStage '.gitignore')) -or
+    (Test-Path -LiteralPath (Join-Path $firstStage 'src/old.txt')) -or
+    [System.IO.File]::ReadAllText((Join-Path $firstStage 'src/new.txt')) -ne $renameNewText) {
+    throw 'Stage contains incorrect managed paths'
+}
 if (Test-Path -LiteralPath (Join-Path $build 'src/deleted.txt')) { throw 'Patch deletion was not applied' }
 if (((& git -C $base ls-files --stage) -join "`n") -ne $baseIndexEntries -or $LASTEXITCODE) { throw 'Prepare changed the pinned base index' }
 $stageCount = @(Get-ChildItem -LiteralPath $stage -Directory).Count
@@ -139,6 +178,8 @@ $patchText = [System.IO.File]::ReadAllText($firstPatch)
 if ($LASTEXITCODE) { throw 'Removing paths from patches failed' }
 if ([System.IO.File]::ReadAllText((Join-Path $build 'src/restore.txt')) -ne "base bytes`n" -or
     [System.IO.File]::ReadAllText((Join-Path $build 'src/deleted.txt')) -ne "deleted base bytes`n" -or
+    [System.IO.File]::ReadAllText((Join-Path $build 'src/old.txt')) -ne $renameOldText -or
+    (Test-Path -LiteralPath (Join-Path $build 'src/new.txt')) -or
     (Test-Path -LiteralPath (Join-Path $build 'src/created.txt'))) { throw 'Removed patch paths were not restored or deleted' }
 $validLastPatch = [System.IO.File]::ReadAllText($lastPatch)
 [System.IO.File]::WriteAllText($lastPatch, $validLastPatch.Replace('-step7', '-conflict'))

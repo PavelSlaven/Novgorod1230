@@ -94,7 +94,7 @@ try {
     }
 
     $managed = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-    foreach ($path in @(Invoke-IndexGit @('diff', '--cached', '--name-only', $BaseSha))) { [void]$managed.Add($path.Replace('\', '/')) }
+    foreach ($path in @(Invoke-IndexGit @('diff', '--cached', '--no-renames', '--name-only', $BaseSha))) { [void]$managed.Add($path.Replace('\', '/')) }
     foreach ($name in @('novgorod_semantic.cpp', 'novgorod_semantic.h')) { [void]$managed.Add("src/$name") }
 
     $previous = $null

@@ -1,4 +1,6 @@
+import { isDeepStrictEqual } from 'node:util';
 import {
+  allowedKeys,
   exactKeys,
   freeze,
   normalizeTimestamp,
@@ -19,6 +21,7 @@ import {
   uniqueRefsOfKind,
   validateContributionBody
 } from './conversation-contract-core.js';
+import { validateNpc } from './npc-safe-subject-contract.js';
 import { validateContributionRequirement } from
   './conversation-contribution-requirements.js';
 import { validateAllowedContributionReferences } from
@@ -163,6 +166,101 @@ export function validateNpcConversationResponseRequest(value) {
 
 export function buildNpcConversationResponseRequest(value) {
   return buildValidated(value, validateNpcConversationResponseRequest, 'npc_conversation_response_request_v1');
+}
+
+const SUBJECT_KNOWLEDGE_GROUPS = [
+  ['known_facts', 'fact_ref', 'known_fact', ['source_event_ref', 'resource_ref',
+    'process_ref', 'summary', 'state', 'confidence']],
+  ['beliefs', 'belief_ref', 'belief',
+    ['source_event_ref', 'summary', 'state', 'confidence']],
+  ['hypotheses', 'hypothesis_ref', 'hypothesis',
+    ['source_event_ref', 'summary', 'state', 'confidence']]
+];
+const SUBJECT_MEMORY_EVENT_GROUPS = ['recent_events', 'relevant_long_term_events'];
+const SUBJECT_MEMORY_KEYS = [...SUBJECT_MEMORY_EVENT_GROUPS, 'previous_decisions',
+  'current_observations', 'received_messages'];
+const SUBJECT_LINK_FIELDS = ['source_event_ref', 'resource_ref', 'process_ref',
+  'request_ref', 'boundary_ref'];
+const SUBJECT_TEXT_FIELDS = ['summary', 'state', 'confidence'];
+
+function subjectProjectedEntry(entry, allowed, required) {
+  return plainRecord(entry)
+    && allowedKeys(entry, allowed, required)
+    && Object.entries(entry).every(([key, field]) => {
+      if (SUBJECT_LINK_FIELDS.includes(key)) {
+        return field === null || stableId(field) || contractEntityRef(field);
+      }
+      return !SUBJECT_TEXT_FIELDS.includes(key) || nonEmptyText(field);
+    });
+}
+
+function validateSubjectKnowledge(value) {
+  return exactKeys(value, SUBJECT_KNOWLEDGE_GROUPS.map(([group]) => group))
+    && SUBJECT_KNOWLEDGE_GROUPS.every(([group, ownKey, kind, fields]) =>
+      Array.isArray(value[group]) && value[group].every((entry) =>
+        subjectProjectedEntry(entry, [ownKey, ...fields], [ownKey])
+        && contractEntityRef(entry[ownKey], kind)));
+}
+
+function validateSubjectMemoryEvent(entry) {
+  return subjectProjectedEntry(entry,
+    ['event_ref', 'source_event_ref', 'summary', 'occurred_at'], ['event_ref'])
+    && contractEntityRef(entry.event_ref, 'memory_event')
+    && (!Object.hasOwn(entry, 'occurred_at')
+      || normalizeTimestamp(entry.occurred_at) !== null);
+}
+
+function validateSubjectObservation(entry) {
+  return plainRecord(entry)
+    && exactKeys(entry, ['observation_ref', 'source_type', 'observed_at', 'fact_text'])
+    && contractEntityRef(entry.observation_ref, 'perception_result')
+    && entry.source_type === 'direct_perception'
+    && normalizeTimestamp(entry.observed_at) !== null
+    && nonEmptyText(entry.fact_text);
+}
+
+function validateSubjectMemory(value) {
+  return exactKeys(value, SUBJECT_MEMORY_KEYS)
+    && SUBJECT_MEMORY_EVENT_GROUPS.every((group) =>
+      Array.isArray(value[group]) && value[group].every(validateSubjectMemoryEvent))
+    && Array.isArray(value.previous_decisions)
+    && value.previous_decisions.every((entry) =>
+      subjectProjectedEntry(entry, ['request_ref', 'boundary_ref'], []))
+    && Array.isArray(value.current_observations)
+    && value.current_observations.every(validateSubjectObservation)
+    && Array.isArray(value.received_messages)
+    && value.received_messages.every(plainRecord);
+}
+
+function subjectKnowledgeRefs(request) {
+  return [
+    { entity_kind: 'npc_identity', entity_id: request.npc_ref.entity_id },
+    ...SUBJECT_KNOWLEDGE_GROUPS.flatMap(([group, ownKey]) =>
+      request.knowledge[group].map((entry) => entry[ownKey])),
+    ...SUBJECT_MEMORY_EVENT_GROUPS.flatMap((group) =>
+      request.memory[group].map(({ event_ref: reference }) => reference)),
+    ...request.memory.current_observations.map(
+      ({ observation_ref: reference }) => reference)
+  ];
+}
+
+export function validateNpcConversationResponseSubject(request) {
+  if (!plainRecord(request) || !contractEntityRef(request.npc_ref, 'npc')
+    || !validateNpc(request.npc)
+    || !validateSubjectKnowledge(request.knowledge)
+    || !validateSubjectMemory(request.memory)
+    || !isDeepStrictEqual(request.available_resources, request.npc.available_resources)
+    || !plainRecord(request.allowed_references)) {
+    return false;
+  }
+  const allowed = request.allowed_references.knowledge_refs;
+  if (!Array.isArray(allowed) || !allowed.every((reference) =>
+    contractEntityRef(reference))) {
+    return false;
+  }
+  const allowedKeysSet = new Set(allowed.map(refKey));
+  return subjectKnowledgeRefs(request).every((reference) =>
+    allowedKeysSet.has(refKey(reference)));
 }
 
 export function validateConversationContributionPlan(value, request = null) {

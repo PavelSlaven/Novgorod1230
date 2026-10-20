@@ -14,6 +14,10 @@ export {
   projectActorPortraitSpecV1
 } from
   './active-conversation-interlocutor.js';
+export {
+  projectConversationMemory,
+  validateConversationMemoryRecord
+} from './conversation-memory.js';
 export { resolveEvidenceConclusions } from './evidence-resolution.js';
 export { resolveAuthoredStatementEvidence } from './statement-evidence.js';
 export {

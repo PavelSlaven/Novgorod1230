@@ -1,5 +1,6 @@
 import { buildNpcActionDecisionRequest } from
   './semantic-decision-request-contract.js';
+import { exactKeys, refKey, stableId } from './internal.js';
 import { runtimeItemContentsAreOpen, runtimeItemRecordIsConcealed } from
   '@rus/items-property';
 
@@ -19,9 +20,6 @@ export function buildNpcActionDecisionRequestFromSnapshots({
   resolved_signals,
   operation_contract
 } = {}) {
-  const machineState = npc_snapshot?.machine_state ?? {};
-  const identityState = npc_snapshot?.identity_state ?? {};
-  const socialRole = npc_snapshot?.social_role ?? {};
   const signalRefs = new Map((resolved_signals ?? []).map(
     (signal) => [signal.signal_id, signal]
   ));
@@ -31,6 +29,17 @@ export function buildNpcActionDecisionRequestFromSnapshots({
   if (orderedSignals?.some((signal) => signal === undefined)) {
     throw new TypeError('NPC request snapshots must include every boundary signal');
   }
+  const subject = projectNpcSafeSubject({
+    npc_snapshot,
+    current_activity_snapshot,
+    body_snapshot,
+    mood_snapshot,
+    relationship_snapshots,
+    resource_snapshots,
+    perception_snapshot,
+    knowledge_snapshot,
+    memory_snapshot
+  });
   return buildNpcActionDecisionRequest({
     schema: 'npc_action_decision_request_v1',
     ...structuredClone(request_identity),
@@ -58,6 +67,36 @@ export function buildNpcActionDecisionRequestFromSnapshots({
           ['custom_ref', 'summary', 'status'])
       )
     },
+    npc: subject.npc,
+    perception: completePerceptionSnapshot(perception_snapshot),
+    knowledge: subject.knowledge,
+    memory: subject.memory,
+    decision_scope: {
+      mode: 'autonomous_action',
+      allowed_attribute_refs: (npc_snapshot.attributes ?? [])
+        .map(({ attribute_ref: ref }) => ref),
+      allowed_skill_refs: (npc_snapshot.skills ?? [])
+        .map(({ skill_ref: ref }) => ref),
+      operation_contract: structuredClone(operation_contract)
+    }
+  });
+}
+
+export function projectNpcSafeSubject({
+  npc_snapshot,
+  current_activity_snapshot,
+  body_snapshot = null,
+  mood_snapshot = null,
+  relationship_snapshots = [],
+  resource_snapshots = [],
+  perception_snapshot = null,
+  knowledge_snapshot = null,
+  memory_snapshot = null
+} = {}) {
+  const machineState = npc_snapshot?.machine_state ?? {};
+  const identityState = npc_snapshot?.identity_state ?? {};
+  const socialRole = npc_snapshot?.social_role ?? {};
+  return {
     npc: {
       profile_level: npc_snapshot.profile_level ?? null,
       identity: {
@@ -116,7 +155,6 @@ export function buildNpcActionDecisionRequestFromSnapshots({
         knowledge_snapshot
       })
     },
-    perception: completePerceptionSnapshot(perception_snapshot),
     knowledge: {
       known_facts: projectEntries(knowledge_snapshot?.known_facts,
         [
@@ -138,16 +176,59 @@ export function buildNpcActionDecisionRequestFromSnapshots({
       ),
       previous_decisions: projectEntries(memory_snapshot?.previous_decisions,
         ['request_ref', 'boundary_ref'])
-    },
-    decision_scope: {
-      mode: 'autonomous_action',
-      allowed_attribute_refs: (npc_snapshot.attributes ?? [])
-        .map(({ attribute_ref: ref }) => ref),
-      allowed_skill_refs: (npc_snapshot.skills ?? [])
-        .map(({ skill_ref: ref }) => ref),
-      operation_contract: structuredClone(operation_contract)
     }
-  });
+  };
+}
+
+const CONVERSATION_KNOWLEDGE_REFS = [
+  ['known_facts', 'fact_ref'],
+  ['beliefs', 'belief_ref'],
+  ['hypotheses', 'hypothesis_ref']
+];
+
+export function projectNpcConversationSubject({
+  npc_ref,
+  current_observations = [],
+  received_messages = [],
+  additional_knowledge_refs = [],
+  ...snapshots
+} = {}) {
+  const subject = projectNpcSafeSubject(snapshots);
+  const memory = {
+    ...subject.memory,
+    current_observations: structuredClone(current_observations),
+    received_messages: structuredClone(received_messages)
+  };
+  const references = [
+    { entity_kind: 'npc_identity', entity_id: entityRefOf(npc_ref).entity_id },
+    ...CONVERSATION_KNOWLEDGE_REFS.flatMap(([group, ownKey]) =>
+      subject.knowledge[group].map((entry) => entry[ownKey])),
+    ...['recent_events', 'relevant_long_term_events'].flatMap((group) =>
+      memory[group].map((entry) => entry.event_ref)),
+    ...memory.current_observations.map((entry) => entry?.observation_ref),
+    ...additional_knowledge_refs
+  ];
+  const unique = new Map(references.map((reference) => {
+    const { entity_kind, entity_id } = entityRefOf(reference);
+    return [refKey(reference), { entity_kind, entity_id }];
+  }));
+  return {
+    npc: subject.npc,
+    knowledge: subject.knowledge,
+    memory,
+    available_resources: structuredClone(subject.npc.available_resources),
+    knowledge_refs: [...unique.entries()]
+      .sort(([left], [right]) => (left < right ? -1 : 1))
+      .map(([, reference]) => reference)
+  };
+}
+
+function entityRefOf(value) {
+  if (!exactKeys(value, ['entity_kind', 'entity_id'])
+    || !stableId(value.entity_kind) || !stableId(value.entity_id)) {
+    throw new TypeError('NPC conversation subject requires entity refs');
+  }
+  return value;
 }
 
 function projectBodyConditions(conditions, fields) {

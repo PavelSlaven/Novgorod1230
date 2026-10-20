@@ -26,6 +26,7 @@ export {
   validateConversationSession,
   validateConversationStatementEvent,
   validateNpcConversationResponseRequest,
+  validateNpcConversationResponseSubject,
   validatePlayerConversationContributionPlan,
   validatePlayerConversationInput,
   validateSocialDeliveryResult
@@ -35,7 +36,9 @@ export {
   buildNpcActionDecisionRequest,
   buildNpcActionDecisionRequestFromSnapshots,
   npcSafeSnapshotHasEntityEvidence,
+  projectNpcConversationSubject,
   projectNpcSafeResourceSnapshots,
+  projectNpcSafeSubject,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,
   diagnoseNpcStepPlan,

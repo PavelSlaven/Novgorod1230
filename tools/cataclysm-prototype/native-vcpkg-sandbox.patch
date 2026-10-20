@@ -1,0 +1,9 @@
+diff --git a/.github/vcpkg_triplets/x64-windows-static.cmake b/.github/vcpkg_triplets/x64-windows-static.cmake
+--- a/.github/vcpkg_triplets/x64-windows-static.cmake
++++ b/.github/vcpkg_triplets/x64-windows-static.cmake
+@@ -10,3 +10,5 @@
+ if(PORT MATCHES "^mpg123$")
+     set(VCPKG_LIBRARY_LINKAGE dynamic)
+ endif()
++# Under the sandbox account the user profile is not listable, so CMake cannot shorten the cmcldeps path and writes an invalid Ninja RC rule.
++list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS -DCMAKE_NINJA_CMCLDEPS_RC=0)

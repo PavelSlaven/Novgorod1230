@@ -16,6 +16,8 @@ function Assert-StageCount([int] $expected) {
 }
 
 New-Item -ItemType Directory -Path (Join-Path $base 'src') | Out-Null
+[System.IO.Directory]::CreateDirectory((Join-Path $base '.github/vcpkg_triplets')) | Out-Null
+[System.IO.File]::WriteAllText((Join-Path $base '.github/vcpkg_triplets/x64-windows-static.cmake'), "set(VCPKG_TARGET_ARCHITECTURE x64)`n")
 [System.IO.File]::WriteAllText((Join-Path $base 'src/sequence.txt'), "step0`n")
 [System.IO.File]::WriteAllText((Join-Path $base 'src/restore.txt'), "base bytes`n")
 [System.IO.File]::WriteAllText((Join-Path $base 'src/deleted.txt'), "deleted base bytes`n")
@@ -41,8 +43,14 @@ if ($LASTEXITCODE) { throw 'git ls-files failed' }
 
 $patchNames = @('native-input', 'native-persistence', 'native-item-identity',
     'native-rng-state', 'native-preload', 'native-semantic-input',
-    'native-live-input', 'native-autosave-options')
+    'native-live-input', 'native-autosave-options', 'native-vcpkg-sandbox')
 for ($i = 0; $i -lt $patchNames.Count; $i++) {
+    if ($patchNames[$i] -eq 'native-vcpkg-sandbox') {
+        $tripletPath = '.github/vcpkg_triplets/x64-windows-static.cmake'
+        $patch = "diff --git a/$tripletPath b/$tripletPath`n--- a/$tripletPath`n+++ b/$tripletPath`n@@ -1 +1,2 @@`n set(VCPKG_TARGET_ARCHITECTURE x64)`n+list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS -DCMAKE_NINJA_CMCLDEPS_RC=0)`n"
+        [System.IO.File]::WriteAllText((Join-Path $overlay "$($patchNames[$i]).patch"), $patch)
+        continue
+    }
     $before = $i
     $after = $i + 1
     $patch = "diff --git a/src/sequence.txt b/src/sequence.txt`n--- a/src/sequence.txt`n+++ b/src/sequence.txt`n@@ -1 +1 @@`n-step$before`n+step$after`n"
@@ -104,12 +112,17 @@ if (-not $updaterText.Contains('Invoke-Git $BuildRoot @(''diff'', ''--no-renames
 }
 if (-not (Test-Path (Join-Path $build 'src/sequence.txt'))) { throw 'Build path was not created' }
 if (([System.IO.File]::ReadAllText((Join-Path $build 'src/sequence.txt'))) -ne "step8`n") { throw 'Patch order is wrong' }
+$triplet = Join-Path $build '.github/vcpkg_triplets/x64-windows-static.cmake'
+if ([System.IO.File]::ReadAllText($triplet) -ne "set(VCPKG_TARGET_ARCHITECTURE x64)`nlist(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS -DCMAKE_NINJA_CMCLDEPS_RC=0)`n") {
+    throw 'Sandbox triplet patch was not applied last'
+}
 if ([Convert]::ToHexString([System.IO.File]::ReadAllBytes((Join-Path $build 'src/novgorod_semantic.cpp'))) -ne '00010AFF') {
     throw 'Semantic source bytes changed'
 }
 $manifestPath = "$build.manifest.json"
 $first = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-if ($first.stamp -notmatch '^[a-f0-9]{64}$' -or $first.paths.'src/sequence.txt' -notmatch '^[a-f0-9]{64}$') {
+if ($first.stamp -notmatch '^[a-f0-9]{64}$' -or $first.paths.'src/sequence.txt' -notmatch '^[a-f0-9]{64}$' -or
+    $first.paths.PSObject.Properties.Name -notcontains '.github/vcpkg_triplets/x64-windows-static.cmake') {
     throw 'Stamp or per-path manifest missing'
 }
 if ((Test-Path -LiteralPath (Join-Path $build 'src/old.txt')) -or

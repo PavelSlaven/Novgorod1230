@@ -66,7 +66,7 @@ if (@(Invoke-Git $BaseRoot @('status', '--porcelain', '--untracked-files=no')).C
 
 $patchNames = @('native-input', 'native-persistence', 'native-item-identity',
     'native-rng-state', 'native-preload', 'native-semantic-input',
-    'native-live-input', 'native-autosave-options')
+    'native-live-input', 'native-autosave-options', 'native-vcpkg-sandbox')
 $inputs = [ordered]@{ base = $BaseSha }
 foreach ($name in $patchNames) {
     $path = Join-Path $OverlayRoot "$name.patch"

@@ -1,6 +1,7 @@
 param(
     [switch] $NativeOnly,
     [switch] $Reset,
+    [switch] $Text,
     [string] $RuntimeRoot = "/home/slaven/cataclysm-recovery/task03-dev"
 )
 $ErrorActionPreference = "Stop"
@@ -9,6 +10,7 @@ if ($LASTEXITCODE -ne 0) { throw "Не удалось определить WSL-�
 $arguments = @($launcher, "--runtime-root", $RuntimeRoot)
 if ($NativeOnly) { $arguments += "--native-only" }
 if ($Reset) { $arguments += "--reset" }
+if ($Text) { $arguments += "--text" }
 $previousWslEnv = $env:WSLENV
 $previousSettingsPath = $env:RUS_LLM_SETTINGS_PATH
 try {

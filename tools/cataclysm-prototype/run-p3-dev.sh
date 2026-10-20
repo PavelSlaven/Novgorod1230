@@ -3,11 +3,13 @@ set -euo pipefail
 launcher_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 runtime_root="$HOME/cataclysm-recovery/task03-dev"
 native_only=false
+binary_name=cataclysm-tiles
 reset=false
 while (($#)); do
     case "$1" in
         --runtime-root) runtime_root=${2:?missing runtime root}; shift 2 ;;
         --native-only) native_only=true; shift ;;
+        --text) binary_name=cataclysm; shift ;;
         --reset) reset=true; shift ;;
         *) printf 'Неизвестный аргумент: %s\n' "$1" >&2; exit 2 ;;
     esac
@@ -17,9 +19,14 @@ runtime="$runtime_root/runtime"
 userdir="$runtime_root/userdir"
 run_dir="$runtime_root/run"
 fixture="$runtime_root/fixture/save"
+binary="$runtime/$binary_name"
 [[ $(findmnt -n -o FSTYPE -T "$runtime_root") == ext4 ]] || { echo 'Runtime должен находиться на ext4 WSL.' >&2; exit 1; }
-[[ -x "$runtime/cataclysm" && -d "$runtime/data" && -d "$runtime/gfx" && -d "$runtime/data/gfx" && -d "$fixture" ]] || { echo 'Runtime не подготовлен: нужны binary, data/gfx и fixture/save.' >&2; exit 1; }
-for location in "$runtime" "$runtime/cataclysm" "$runtime/data" "$runtime/data/gfx" "$fixture"; do
+if [[ $binary_name == cataclysm-tiles && ! -x "$binary" ]]; then
+    printf 'Нет графического бинаря %s. Запустите текстовую игру (run-p3-dev.ps1 -Text или run-p3-dev.sh --text) или подготовьте runtime: python3 -I %s/prepare_p3_runtime.py --runtime-root %s --source <исходник CDDA> --tiles-binary <cataclysm-tiles>\n' "$binary" "$launcher_dir" "$runtime_root" >&2
+    exit 1
+fi
+[[ -x "$binary" && -d "$runtime/data" && -d "$runtime/gfx" && -d "$runtime/data/gfx" && -d "$fixture" ]] || { echo 'Runtime не подготовлен: нужны binary, data/gfx и fixture/save.' >&2; exit 1; }
+for location in "$runtime" "$binary" "$runtime/data" "$runtime/data/gfx" "$fixture"; do
     [[ $(realpath -e -- "$location") == "$runtime_root/"* ]] || { echo 'Runtime ссылается за пределы своего каталога.' >&2; exit 1; }
 done
 [[ -z $(find "$runtime/data" "$runtime/gfx" "$fixture" -type l -print -quit) ]] || { echo 'Ссылки внутри runtime/fixture не поддерживаются.' >&2; exit 1; }
@@ -134,7 +141,7 @@ PY
 fi
 printf '%s\n' 'Dev-проба, не P3 GO; T09 не закрыт. Проза: черновик, не сохранено.'
 cd -- "$runtime"
-"$runtime/cataclysm" --datadir "$runtime/data/" --userdir "$userdir/" --world "$world" <&0 &
+"$binary" --datadir "$runtime/data/" --userdir "$userdir/" --world "$world" <&0 &
 game_pid=$!
 wait "$game_pid"
 game_pid=''

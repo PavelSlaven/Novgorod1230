@@ -51,7 +51,10 @@ try {
     Assert-Equal $launcherCalls[-1].Settings $null
     Assert-Equal $launcherCalls[-1].Arguments[-1] "--native-only"
     Assert-Equal $env:RUS_LLM_SETTINGS_PATH $null
-    Write-Output "PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly."
+
+    & $launcher -NativeOnly -Text
+    Assert-Equal ($launcherCalls[-1].Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/slaven/cataclysm-recovery/task03-dev|--native-only|--text"
+    Write-Output "PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly, Text."
 } finally {
     foreach ($name in $previous.Keys) {
         [Environment]::SetEnvironmentVariable($name, $previous[$name], "Process")

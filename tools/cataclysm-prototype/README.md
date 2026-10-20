@@ -34,8 +34,10 @@ SDL_image `release-3.4.4` и SDL_ttf `release-3.2.2` клонируются с �
 нужен: звук выключен (`-DSOUND=OFF`). Затем в `$CDDA/build-tiles` (или
 `--build-dir`) собирается цель `cataclysm-tiles` с `-DTILES=ON` и
 `-DUSE_PREFIX_DATA_DIR=OFF`: при умолчании CMake игра ищет перевод в
-`/usr/local/share/locale`, а не в `lang/mo` рядом с runtime, и молча остаётся на английском. Та же причина не даёт русского текстовой сборке
-из раздела «Checkout и сборка»; для автотестов это не нужно — они на английском.
+`/usr/local/share/locale`, а не в `lang/mo` рядом с runtime, и молча
+остаётся на английском. Поэтому и текстовые сборки ниже конфигурируются с
+`-DUSE_PREFIX_DATA_DIR=OFF`. Автотесты при этом остаются на английском: они
+задают `USE_LANG=en` в своём userdir.
 Пакеты сборки — список рецепта без пяти звуковых библиотек SDL3_mixer, плюс
 `glslang-tools` для шейдеров:
 
@@ -120,7 +122,7 @@ cmake -S $CDDA \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 \
   -DTILES=OFF -DCURSES=ON -DTESTS=ON -DBUILD_TESTING=ON \
-  -DCATA_CCACHE=OFF
+  -DCATA_CCACHE=OFF -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build $CDDA/build-clang-release \
   --parallel 8
 ```
@@ -152,7 +154,8 @@ cmake -S $CDDA \
   -B $CDDA/build-clang-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build $CDDA/build-clang-release \
   --parallel 8
 cd $CDDA
@@ -200,7 +203,8 @@ cmake -S $CDDA-repeat \
   -B $CDDA-repeat/build-clang-release-repeat \
   -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build $CDDA-repeat/build-clang-release-repeat \
   --parallel 8
 cd $CDDA-repeat
@@ -249,7 +253,8 @@ cmake -S "$NATIVE" \
   -B "$NATIVE/build-clang-release" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build "$NATIVE/build-clang-release" --parallel 8
 ```
 

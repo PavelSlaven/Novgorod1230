@@ -54,6 +54,14 @@
     "description": "Куски кожи, обмотанные вокруг ступней; лучше, чем босиком."
   },
   {
+    "id": "leather_pouch",
+    "copy-from": "leather_pouch",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "кожаный кошель", "str_pl": "кожаные кошели" },
+    "description": "Небольшой кошель из кожи, подвешенный к поясу; в него влезает мелочь вроде кресала и трута."
+  },
+  {
     "id": "straw_basket",
     "copy-from": "straw_basket",
     "type": "ITEM",

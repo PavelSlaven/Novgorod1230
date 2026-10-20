@@ -35,7 +35,8 @@
         "entries": [
           { "item": "tunic" },
           { "item": "loincloth_fur" },
-          { "item": "footrags_leather" }
+          { "item": "footrags_leather" },
+          { "item": "leather_pouch" }
         ]
       }
     }

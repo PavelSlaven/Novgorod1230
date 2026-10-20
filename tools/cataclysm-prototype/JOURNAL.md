@@ -107,3 +107,23 @@ A0.4 toolchain inventory: `C:\Program Files\Microsoft Visual Studio\2022\Communi
 
 Вывод C:\Users\Slaven\NovgorodNative\work\assess-a4-06d8.mjs, дословно:
 {"baselineLines":6,"baselineSha256":"c479287dc7ea02e594cdd76f8dc32660d05fada0998d09e7ffd4cd07436555f4","newRecords":12,"bytes":42938915,"expectedBaseBytes":324227347,"rowCeiling":345000000,"oneRunLimit":378702524,"outcomes":{"ok":11,"denied":1},"failed":[{"index":12,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download"}],"outsideTable":[],"expectedPorts":24,"installedPorts":11,"missingPorts":["brotli","bzip2","directx-dxc","freetype","libflac","libogg","libvorbis","mpg123","sdl3-mixer","sdl3-shadercross","sdl3-ttf","spirv-cross","spirv-headers"],"extraPorts":[],"wrongVersions":[],"wrongTriplets":[],"problems":["1 new fetch outcomes are not ok","installed ports differ from the dry-run"]}
+
+06d9, до второго запуска A4: HEAD 02fb56aaf22dd1a50532b83db057f0806dbc57f3, рабочее дерево чистое. work/fetch.log имеет 18 строк, 6249 байт и SHA256 019341f796a395e8b85ae048781206558a7405c687ab5238a01b6bd085cf9ad7; свободное место C: по DriveInfo — 601389830144 байт, больше 20 ГБ. База сохранена в work/a4-baseline-06d9.json. Генератор work/add-sourceforge-host-06d9.mjs добавил только downloads.sourceforge.net: redirectHosts 20 → 21, entries 66 и их SHA256 be5f750075cdb30fd408044ba029b8e2487f399ca29b256f94ce0218c421235d до и после одинаковы. В round2.md строка mpg123 уточняет промежуточный хост; числа и SHA512 строки не менялись. Сначала проверка списка выявила, что старый тест принимает успешные записи первого A4 за записи раунда 1 (19 вместо 8); проверка ограничена историческими записями без outcome, затем оба теста прошли. Штатная предпроверка install-пути без -Install вернула C:\Program Files\PowerShell\7\pwsh.exe, код 0. Команда второго A4 остаётся прежней: & 'C:\Program Files\PowerShell\7\pwsh.exe' -NoProfile -File 'C:\Users\Slaven\.codex\worktrees\cataclysm-recovery\Novgorod\tools\cataclysm-prototype\install-p3-native-dependencies.ps1' -Install.
+
+Вывод теста загрузчика, дословно:
+{"tablePairs":36,"sourceforgeVariants":20,"roundOneEntries":10,"entries":66}
+production-list copy sha512: check failed as required
+production-list copy maxBytes: check failed as required
+production-list copy missing: check failed as required
+production-list copy extra: check failed as required
+production-list copy redirectExtra: check failed as required
+production-list copy redirectMissing: check failed as required
+fetch allowlist offline checks passed
+
+Вывод теста списка, дословно:
+{"tablePairs":36,"sourceforgeVariants":20,"roundOneEntries":10,"entries":66}
+
+06d9, единственный согласованный повтор A4 завершился кодом 1. Лог: C:\Users\Slaven\NovgorodNative\work\vcpkg-install-20261020T1901514994547Z.log; между его созданием и последней записью прошло 5,3 с. Свободное место C: после команды по DriveInfo — 600580845568 байт (до 601389830144). Новая запись fetch.log одна, исход denied/redirect-host, скачано 0 байт против ожидаемых 281288432 и предела 378702524. В журнале отказа записан только запрещённый хост sf-eu-introserv-3.dl.sourceforge.net, без пути или параметров. URL вне таблицы и повторной загрузки уже полученных файлов нет. Успешные загрузки двух прогонов суммарно 42938915 байт, ниже суммы потолков строк 345000000. Установлены прежние 11 из 24 портов; версии установленных и триплет x64-windows-static совпадают с dry-run, остальные 13 портов ещё отсутствуют. Редирект через согласованный downloads.sourceforge.net прошёл, следующий хост оказался вне списка. Без разрешения распорядителя новый хост не добавлялся, A4 не повторялся; MSBuild не запускался.
+
+Вывод C:\Users\Slaven\NovgorodNative\work\assess-a4-06d9.mjs, дословно:
+{"baselineLines":18,"baselineSha256":"019341f796a395e8b85ae048781206558a7405c687ab5238a01b6bd085cf9ad7","newRecords":1,"bytes":0,"expectedRemainingBytes":281288432,"rowCeiling":345000000,"oneRunLimit":378702524,"firstRunOkBytes":42938915,"newOkBytes":0,"combinedOkBytes":42938915,"outcomes":{"denied":1},"failed":[{"index":1,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"sf-eu-introserv-3.dl.sourceforge.net"}],"outsideTable":[],"repeatedPriorFiles":[],"expectedPorts":24,"installedPorts":11,"missingPorts":["brotli","bzip2","directx-dxc","freetype","libflac","libogg","libvorbis","mpg123","sdl3-mixer","sdl3-shadercross","sdl3-ttf","spirv-cross","spirv-headers"],"extraPorts":[],"wrongVersions":[],"wrongTriplets":[],"problems":["1 new fetch outcomes are not ok","installed ports differ from the dry-run"]}

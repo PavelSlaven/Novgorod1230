@@ -160,7 +160,7 @@ export function npcConversationInstructions(repair, request = null) {
     'proves an earlier observation, memory, cause, continuation, or hidden fact.',
     'npc.current_activity is only the exact activity at requested_at.',
     'It never proves where the NPC was, what the NPC did, or what the NPC saw at',
-    'an earlier time. Past first-person activity or observation, including a denial, needs an exact knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events, cited in speech.claims.source_knowledge_refs and supporting the same past assertion. A knowingly_false claim instead cites the exact known fact it contradicts. Without such a ref, omit the past claim and invent no explanation.',
+    'an earlier time. Past first-person activity or observation, including a denial, needs an exact knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events, cited in speech.claims.source_knowledge_refs and supporting the same past assertion. A believed_true claim may instead cite the exact knowledge.beliefs entry stating the same belief about that past; it grounds the belief, not objective truth. A knowingly_false claim instead cites the exact known fact it contradicts or hides. Without such a ref, omit the past claim and invent no explanation.',
     'npc.identity.name_or_label is the only authority for the speaker own name;',
     'npc.identity and npc.social_role are the speaker own name, age, origin, and craft,',
     'and a claim about them cites {"entity_kind":"npc_identity","entity_id":"<copy npc_ref.entity_id>"}.',

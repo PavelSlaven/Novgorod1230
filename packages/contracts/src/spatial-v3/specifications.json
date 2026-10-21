@@ -14185,6 +14185,7 @@
         "The request contains only messages and conversation history actually perceived by this NPC.",
         "Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.",
         "Hidden reasons, objective unknown facts and other model prompts are excluded.",
+        "The npc, knowledge and memory fields use the npc_action_decision_request_v1 shapes built by the shared NPC-safe projection; memory additionally carries current_observations and received_messages.",
         "Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.",
         "Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.",
         "activity.duration_class belongs to decision_scope.allowed_duration_classes."

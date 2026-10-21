@@ -21,9 +21,11 @@ test('direct greeting requires only Eremey first-contact identity and behavior',
       targetActorId: contracts.actors[0].instance_id
     });
     assert.deepEqual(eremey.npcRequest.social_context.first_contact_introduction,
-      { canonical_name: 'Еремей' });
-    assert.equal(eremey.npcRequest.social_context.npc_behavior.current_stance,
-      'guarded');
+      {});
+    assert.equal(eremey.npcRequest.npc.identity.name_or_label, 'Еремей');
+    assert.equal(eremey.npcRequest.npc.relationships.find(
+      ({ actor_ref: actorRef }) => actorRef === state.actor_id
+    ).status, 'guarded');
     assert.equal(eremey.npcRequest.social_context.npc_behavior
       .required_interaction_tag, 'withhold');
 

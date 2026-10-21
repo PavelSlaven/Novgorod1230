@@ -1,12 +1,16 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
 import { createLlmSettingsOwner } from '@rus/game-server';
+import { requestTurnStepPlanWithRepair } from '@rus/turn';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
 import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceNpcSemanticModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   applyP3CoordinatorSpeech,
@@ -19,7 +23,14 @@ import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   loadP3QwenSettingsOwner,
   runP3SealedPackage, createP3NativeSpeechOwnerFixture,
   validateP3Readback, validateP3SealedCasePack,
-  writeP3OperationRequest } from './p3-boundary.js';
+  writeP3OperationRequest, runP3NativeNpcReply } from './p3-boundary.js';
+import { validateNpcConversationResponseRequest,
+  validateNpcConversationResponseSubject } from '@rus/npc-runtime';
+import { requireLiveObservation } from './p3-live-socket.js';
+import { loadP3NpcProfile } from './p3-npc-profile.js';
+import { projectP3NpcWire } from './p3-npc-subject.js';
+import { heardRecord, npcProjection, playerSpeechReadback, replyFrame, saidRecord,
+  silencePlan, silenceRecord, speechPlan, visibleItem } from './p3-test-frames.js';
 
 const qwenSettingsOwner = () => createLlmSettingsOwner({ initialRecord: {
   version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
@@ -43,6 +54,33 @@ test('one shared budget counts calls across role wrappers before transport', asy
   assert.deepEqual(events.map(({ phase, attempt }) => [phase, attempt]),
     [['before', 1], ['after', 1], ['before', 2], ['after', 2]]);
   assert.throws(() => createP3AttemptBudget({ budget: 73 }), /between 1 and 72/);
+  assert.throws(() => budget.beginTurn(), /turn scope/);
+});
+
+test('turn budget passes the seventh call and refuses the eighth in one turn', async () => {
+  let sent = 0;
+  const budget = createP3AttemptBudget({ scope: 'turn', budget: 7 });
+  const runner = budget.wrap({ async run(value) { sent++; return value; } });
+  budget.beginTurn();
+  for (let call = 1; call <= 7; call++) await runner.run({ call });
+  await assert.rejects(runner.run({ call: 8 }), { code: 'P3_TURN_CALL_BUDGET_EXHAUSTED' });
+  assert.equal(sent, 7);
+  assert.equal(budget.turnCalls, 7);
+  budget.beginTurn();
+  assert.equal(budget.turnCalls, 0);
+  await runner.run({ call: 1 });
+  assert.equal(budget.calls, 8);
+  assert.throws(() => createP3AttemptBudget({ scope: 'session' }), /scope/);
+});
+
+test('turn budget has no process limit across a hundred full turns', async () => {
+  const budget = createP3AttemptBudget({ scope: 'turn', budget: 7 });
+  const runner = budget.wrap({ async run(value) { return value; } });
+  for (let turn = 0; turn < 100; turn++) {
+    budget.beginTurn();
+    for (let call = 0; call < 7; call++) await runner.run({ turn, call });
+  }
+  assert.equal(budget.calls, 700);
 });
 
 test('failed provider call records its exact request before transport and error after', async () => {
@@ -1045,7 +1083,7 @@ test('P3 settings loader requires explicit file and private Qwen endpoint withou
   const temp = await mkdtemp(path.join(os.tmpdir(), 'p3-settings-'));
   const file = path.join(temp, 'settings.json');
   const record = { version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
-    base_url: 'http://192.168.1.100:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+    base_url: 'http://10.11.12.13:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     api_key: 'private-test-key' }, ordinary_materialization_identity: null, qualification_version: null };
   await writeFile(file, JSON.stringify(record));
   const settingsOwner = await loadP3QwenSettingsOwner({ env: { RUS_LLM_SETTINGS_PATH: file } });
@@ -1085,4 +1123,729 @@ test('evidence sanitizer removes secret-shaped fields and values', () => {
   assert.deepEqual(sanitizeP3Evidence({ max_tokens: 20_000, usage: { input_tokens: 50,
     output_tokens: 12, total_tokens: 62 } }), { max_tokens: 20_000,
     usage: { input_tokens: 50, output_tokens: 12, total_tokens: 62 } });
+});
+
+const ref = (kind, id) => ({ entity_kind: kind, entity_id: id });
+
+const zhirkoProfile = {
+  template_id: 'zhirko',
+  npc_snapshot: {
+    profile_level: 'key', role_ref: { id: 'reeve' },
+    temperament: [{ temperament_ref: 'calm', summary: 'сдержан', state: 'stable', intensity: 'low' }],
+    values: [{ value_ref: 'honour', summary: 'держит слово', state: 'held', intensity: 'high' }],
+    goals: [{ goal_ref: 'harvest', summary: 'собрать урожай', state: 'active', priority: 'high' }],
+    fears: [{ fear_ref: 'raid', summary: 'набег', state: 'latent', intensity: 'medium' }]
+  },
+  knowledge_snapshot: {
+    known_facts: [{ fact_ref: ref('known_fact', 'zhirko-fact'), source_event_ref: null,
+      resource_ref: null, process_ref: null, summary: 'Двор стоит у реки.', state: 'known',
+      confidence: 'high' }],
+    beliefs: [{ belief_ref: ref('belief', 'zhirko-belief'), source_event_ref: null,
+      summary: 'Сосед честен.', state: 'held', confidence: 'medium' }]
+  }
+};
+
+async function withProfilesDir(run, { profile = zhirkoProfile } = {}) {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-profiles-'));
+  try {
+    if (profile) await writeFile(path.join(dir, `${profile.template_id}.json`),
+      JSON.stringify(profile));
+    return await run(dir);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+function replyHarness({ frame, plan = speechPlan, nativeReadback, profilesDir }) {
+  const state = { requests: [], envelopes: [] };
+  const nativeAdapter = {
+    refreshObservation: async () => structuredClone(frame),
+    execute: async envelope => {
+      state.envelopes.push(structuredClone(envelope));
+      return nativeReadback(envelope);
+    }
+  };
+  const semanticModel = async request => {
+    state.requests.push(structuredClone(request));
+    return plan(request);
+  };
+  state.run = (utterance = 'Здравствуй.', extra = {}) => runP3NativeNpcReply({
+    nativeAdapter, observation: frame,
+    playerReadback: playerSpeechReadback({ utterance }), semanticModel,
+    targetActorRef: 'npc:9', profilesDir, ...extra });
+  return state;
+}
+
+const npcSpeechReadback = envelope => ({ schema: 'p3_native_operation_readback_v1',
+  operation_id: envelope.operation_id, status: 'applied',
+  native_effect: { effect_status: 'confirmed', primitive: 'speak', actor_id: '9',
+    speakerId: '9', contribution_kind: 'speech', utterance: envelope.args.utterance,
+    actualHeardListenerIds: ['7'] },
+  before: { turn: 10 }, after: { turn: 10 } });
+
+const npcSilenceReadback = envelope => ({ schema: 'p3_native_operation_readback_v1',
+  operation_id: envelope.operation_id, status: 'applied',
+  native_effect: { effect_status: 'confirmed', primitive: 'speak', actor_id: '9',
+    speakerId: '9', contribution_kind: 'silence',
+    visible_behavior: envelope.args.visible_behavior, actualHeardListenerIds: [] },
+  before: { turn: 10 }, after: { turn: 10 } });
+
+const withEffect = (readback, changes) => envelope => {
+  const base = readback(envelope);
+  return { ...base, native_effect: { ...base.native_effect, ...changes } };
+};
+
+test('profile loader returns null for a missing file and a typed error for broken input', async () => {
+  await withProfilesDir(async dir => {
+    assert.deepEqual(await loadP3NpcProfile('zhirko', { profilesDir: dir }), zhirkoProfile);
+    assert.equal(await loadP3NpcProfile('absent', { profilesDir: dir }), null);
+    await writeFile(path.join(dir, 'broken.json'), '{not json');
+    await writeFile(path.join(dir, 'other.json'), JSON.stringify({ template_id: 'zhirko' }));
+    await writeFile(path.join(dir, 'array.json'), '[]');
+    for (const id of ['broken', 'other', 'array', '../zhirko', 'Zhirko', '', 'a/b', 'a.b']) {
+      await assert.rejects(loadP3NpcProfile(id, { profilesDir: dir }),
+        { code: 'P3_NPC_PROFILE_INVALID' }, id);
+    }
+    await assert.rejects(loadP3NpcProfile(undefined, { profilesDir: dir }),
+      { code: 'P3_NPC_PROFILE_INVALID' });
+  });
+});
+
+test('NPC reply request passes the strict conversation validators and takes the profile', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ projections: [npcProjection('9', {
+      visible_items: [visibleItem(33), visibleItem(34, { owner_faction_id: 'other' })] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    const result = await harness.run();
+    assert.equal(result.native_readback.status, 'applied');
+    const [request] = harness.requests;
+    assert.equal(validateNpcConversationResponseRequest(request), true);
+    assert.equal(validateNpcConversationResponseSubject(request), true);
+    assert.equal(request.npc.temperament[0].temperament_ref, 'calm');
+    assert.equal(request.npc.values[0].value_ref, 'honour');
+    assert.equal(request.npc.goals[0].goal_ref, 'harvest');
+    assert.equal(request.npc.fears[0].fear_ref, 'raid');
+    assert.equal(request.npc.identity.name_or_label, 'Жирко');
+    assert.equal(request.knowledge.known_facts.some(({ summary }) =>
+      summary === 'Двор стоит у реки.'), true);
+    assert.equal(request.knowledge.beliefs[0].summary, 'Сосед честен.');
+    const ownership = request.knowledge.known_facts.filter(({ fact_ref: factRef }) =>
+      factRef.entity_id.startsWith('p3-owns-'));
+    assert.deepEqual(ownership.map(({ fact_ref: factRef }) => factRef.entity_id), ['p3-owns-33']);
+    assert.equal(request.knowledge.known_facts.some(({ fact_ref: factRef }) =>
+      factRef.entity_id === 'p3-own-gender-9'), true);
+    assert.equal(request.npc.available_resources.length, 2);
+    assert.deepEqual(request.available_resources, request.npc.available_resources);
+    assert.deepEqual(request.allowed_references.entity_refs,
+      [ref('item', '33'), ref('item', '34')]);
+  });
+});
+
+test('committed dev-world master profile loads from the default directory into a valid reply request', async () => {
+  const profile = JSON.parse(await readFile(fileURLToPath(new URL('./npc-profiles/novgorod_dev_master.json', import.meta.url)), 'utf8'));
+  assert.deepEqual(await loadP3NpcProfile('novgorod_dev_master'), profile);
+  const frame = replyFrame({ projections: [npcProjection('9', { template_id: 'novgorod_dev_master' })] });
+  const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback });
+  const result = await harness.run();
+  assert.equal(result.native_readback.status, 'applied');
+  assert.equal(harness.requests.length, 1);
+  const [request] = harness.requests;
+  assert.equal(validateNpcConversationResponseRequest(request), true);
+  assert.equal(validateNpcConversationResponseSubject(request), true);
+  for (const [field, refKey] of [['temperament', 'temperament_ref'], ['values', 'value_ref'],
+    ['goals', 'goal_ref'], ['fears', 'fear_ref']]) {
+    assert.deepEqual(request.npc[field].map(item => item[refKey]),
+      profile.npc_snapshot[field].map(item => item[refKey]));
+    assert.deepEqual(request.npc[field].map(({ summary }) => summary),
+      profile.npc_snapshot[field].map(({ summary }) => summary));
+  }
+  const requestFactIds = request.knowledge.known_facts.map(({ fact_ref: factRef }) => factRef.entity_id);
+  for (const { fact_ref: factRef } of profile.knowledge_snapshot.known_facts) {
+    assert.ok(requestFactIds.includes(factRef.entity_id));
+  }
+  assert.deepEqual(request.knowledge.beliefs.map(({ summary }) => summary),
+    profile.knowledge_snapshot.beliefs.map(({ summary }) => summary));
+});
+
+test('NPC without a profile gets an empty personality and still its items and memory', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ projections: [npcProjection('9', { template_id: 'unknown_npc',
+      visible_items: [visibleItem(33)], conversation_memory: [heardRecord('Привет.', 8),
+        saidRecord('Здравствуй.', 8)] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    await harness.run('Как жизнь?');
+    const [request] = harness.requests;
+    assert.equal(validateNpcConversationResponseSubject(request), true);
+    assert.deepEqual([request.npc.temperament, request.npc.values, request.npc.goals,
+      request.npc.fears], [[], [], [], []]);
+    assert.equal(request.npc.available_resources.length, 1);
+    assert.equal(request.memory.recent_events.length, 2);
+    assert.deepEqual(request.public_conversation_history.map(({ utterance_text: text }) => text),
+      ['Привет.', 'Здравствуй.', 'Как жизнь?']);
+  });
+});
+
+test('two phrases of one pair share conversation_id and the current phrase is not repeated', async () => {
+  await withProfilesDir(async profilesDir => {
+    const first = replyHarness({ frame: replyFrame({ turn: 10, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await first.run('Здравствуй.');
+    const second = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10), saidRecord('Слышу тебя.', 10),
+        heardRecord('Как дела?', 12)] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+    await second.run('Как дела?', { playerReadback: playerSpeechReadback({
+      utterance: 'Как дела?', operationId: 'op-2', turn: 12 }) });
+    assert.equal(first.requests[0].conversation_id, 'p3-conversation-npc9-pc7');
+    assert.equal(second.requests[0].conversation_id, first.requests[0].conversation_id);
+    assert.deepEqual(first.requests[0].public_conversation_history.map(
+      ({ utterance_text: text }) => text), ['Здравствуй.']);
+    assert.deepEqual(second.requests[0].public_conversation_history.map(
+      ({ utterance_text: text }) => text), ['Здравствуй.', 'Слышу тебя.', 'Как дела?']);
+  });
+});
+
+test('the current phrase heard between the readback turns is removed once and an earlier same phrase stays', async () => {
+  await withProfilesDir(async profilesDir => {
+    const readback = { ...playerSpeechReadback({ utterance: 'Здравствуй.', turn: 12 }),
+      before: { turn: 9 } };
+    const history = request => request.public_conversation_history.map(
+      ({ utterance_text: text }) => text);
+    const first = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await first.run('Здравствуй.', { playerReadback: readback });
+    const [meeting] = first.requests;
+    assert.deepEqual(history(meeting), ['Здравствуй.']);
+    assert.deepEqual(meeting.memory.recent_events, []);
+    assert.deepEqual([meeting.npc.relationships[0].status, meeting.npc.relationships[0].relation],
+      ['first_meeting', 'незнакомый человек']);
+    const second = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 5), saidRecord('Слышу тебя.', 6),
+        heardRecord('Здравствуй.', 11)] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+    await second.run('Здравствуй.', { playerReadback: readback });
+    const [again] = second.requests;
+    assert.deepEqual(history(again), ['Здравствуй.', 'Слышу тебя.', 'Здравствуй.']);
+    assert.equal(again.memory.recent_events.length, 2);
+    assert.equal(again.npc.relationships[0].status, 'acquainted');
+  });
+});
+
+test('the native null activity reaches the NPC as idle and a real activity as in progress', async () => {
+  await withProfilesDir(async profilesDir => {
+    const activity = async activityId => {
+      const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+        activity_id: activityId })] }), nativeReadback: npcSpeechReadback, profilesDir });
+      await harness.run();
+      return harness.requests[0].npc.current_activity;
+    };
+    assert.deepEqual(await activity('ACT_NULL'), { activity_ref: null, summary: null,
+      status: 'idle', can_continue_automatically: false });
+    assert.deepEqual(await activity('ACT_WAIT'), { activity_ref: 'ACT_WAIT', summary: null,
+      status: 'in_progress', can_continue_automatically: false });
+  });
+});
+
+test('speech plan sends the utterance with the avatar addressee and checks the readback', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame(), nativeReadback: npcSpeechReadback,
+      profilesDir });
+    await harness.run();
+    const [envelope] = harness.envelopes;
+    assert.equal(envelope.primitive, 'speak');
+    assert.deepEqual(envelope.args, { utterance: 'Слышу тебя.' });
+    assert.deepEqual(envelope.references.actors, [{ ref: 'avatar', id: '7' }]);
+    for (const changes of [{ speakerId: '7' }, { utterance: 'Иное.' },
+      { contribution_kind: 'silence' }]) {
+      const wrong = replyHarness({ frame: replyFrame(), profilesDir,
+        nativeReadback: withEffect(npcSpeechReadback, changes) });
+      await assert.rejects(wrong.run(), /P3_NATIVE_SPEECH_READBACK_MISMATCH/);
+    }
+  });
+});
+
+test('silent plan sends speak with silence and the visible behavior, never a reason', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame(), plan: silencePlan,
+      nativeReadback: npcSilenceReadback, profilesDir });
+    const result = await harness.run();
+    assert.equal(result.native_readback.status, 'applied');
+    const [envelope] = harness.envelopes;
+    assert.equal(envelope.primitive, 'speak');
+    assert.deepEqual(envelope.args, { contribution_kind: 'silence',
+      visible_behavior: 'Молча отводит взгляд.' });
+    assert.deepEqual(envelope.references.actors, [{ ref: 'avatar', id: '7' }]);
+    for (const changes of [{ visible_behavior: 'Иное.' }, { contribution_kind: 'speech' },
+      { speakerId: '7' }]) {
+      const wrong = replyHarness({ frame: replyFrame(), plan: silencePlan, profilesDir,
+        nativeReadback: withEffect(npcSilenceReadback, changes) });
+      await assert.rejects(wrong.run(), /P3_NATIVE_SPEECH_READBACK_MISMATCH/);
+    }
+  });
+});
+
+test('a missing projection and malformed memory are typed errors, never dropped', async () => {
+  await withProfilesDir(async profilesDir => {
+    const noProjection = replyHarness({ frame: { ...replyFrame(), npc_projections: [] },
+      nativeReadback: npcSpeechReadback, profilesDir });
+    await assert.rejects(noProjection.run(), { code: 'P3_NPC_PROJECTION_MISSING' });
+    for (const bad of [
+      { ...heardRecord('Привет.'), speaker_ref: 'player' },
+      { ...heardRecord('Привет.'), listener_ref: 'npc:x' },
+      { ...heardRecord('Привет.'), text: '   ' },
+      { ...heardRecord('Привет.'), turn: -1 },
+      { ...heardRecord('Привет.'), extra: 1 }
+    ]) {
+      const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+        conversation_memory: [bad] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+      await assert.rejects(harness.run('Иное.'), { code: 'P3_NPC_MEMORY_RECORD_INVALID' });
+      assert.equal(harness.requests.length, 0);
+    }
+  });
+});
+
+test('silence records stay in memory events but not in the public history', async () => {
+  await withProfilesDir(async profilesDir => {
+    const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Эй.', 6), silenceRecord(6)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await harness.run('Ну?');
+    const [request] = harness.requests;
+    assert.equal(request.memory.recent_events.length, 2);
+    assert.deepEqual(request.public_conversation_history.map(({ utterance_text: text }) => text),
+      ['Эй.', 'Ну?']);
+  });
+});
+
+test('live observation validation types the NPC fields of the frame', () => {
+  const good = replyFrame({ projections: [npcProjection('9', {
+    visible_items: [visibleItem(33)], conversation_memory: [heardRecord('Привет.')] })] });
+  assert.deepEqual(requireLiveObservation(good), good);
+  for (const change of [
+    frame => { delete frame.actors[1].name; },
+    frame => { frame.actors[1].name = 5; },
+    frame => { frame.actors[1].name = '  '; },
+    frame => { frame.npc_projections[0].name = '  '; },
+    frame => { frame.npc_projections[0].name = null; },
+    frame => { delete frame.npc_projections[0].template_id; },
+    frame => { frame.npc_projections[0].gender = 'other'; },
+    frame => { frame.npc_projections[0].personality.bravery = 1.5; },
+    frame => { delete frame.npc_projections[0].personality.altruism; },
+    frame => { frame.npc_projections[0].faction_id = 3; },
+    frame => { frame.npc_projections[0].opinion_of_avatar.trust = '1'; },
+    frame => { frame.npc_projections[0].opinion_of_avatar = null; },
+    frame => { frame.npc_projections[0].conversation_memory = {}; },
+    frame => { frame.npc_projections[0].conversation_memory = ['x']; },
+    frame => { frame.npc_projections[0].visible_items = null; },
+    frame => { delete frame.npc_projections[0].visible_items[0].label; },
+    frame => { frame.npc_projections[0].visible_items[0].placement = 'floor'; },
+    frame => { frame.npc_projections[0].visible_items[0].owner_faction_id = null; }
+  ]) {
+    const frame = structuredClone(good);
+    change(frame);
+    assert.throws(() => requireLiveObservation(frame), /P3_LIVE_OBSERVATION_INVALID/);
+  }
+});
+
+test('planner request names the selected interlocutor and offers speech only with a target', async () => {
+  const current = replyFrame({ turn: 3 });
+  const capture = async (frame, targetActorRef) => {
+    const seen = [];
+    await assert.rejects(runP3TurnStep({ intent: 'Скажи привет', observation: frame,
+      nativeAdapter: { writeOperationRequest: async () => { throw new Error('unused'); },
+        readOperationReadback: async () => { throw new Error('unused'); } },
+      operationId: 'planner-1', nativeSpeechOnly: true, targetActorRef,
+      turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
+    return seen[0];
+  };
+  const targeted = await capture(current, 'npc:9');
+  assert.deepEqual(targeted.player_safe_state.active_interlocutor,
+    { entity_ref: { entity_kind: 'npc', entity_id: 'npc:9' }, display_label: 'Жирко' });
+  const speech = targeted.available_domain_operations.filter(({ op }) => op === 'emit_interaction');
+  assert.deepEqual(speech, [{ op: 'emit_interaction', actor_ref: 'avatar',
+    target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: 'Скажи привет',
+    instrument_refs: [] }]);
+  assert.equal(targeted.available_domain_operations.at(-1).op, 'emit_interaction');
+  const plain = await capture(current, null);
+  assert.equal('active_interlocutor' in plain.player_safe_state, false);
+  assert.equal(plain.available_domain_operations.some(({ op }) => op === 'emit_interaction'), false);
+  assert.equal(buildP3TurnOperations(current, 'npc:9', 'Привет')
+    .some(({ op }) => op === 'emit_interaction'), true);
+});
+
+test('planner sees the native items first, in frame order, with their use methods and no native type',
+  async () => {
+    const current = { ...replyFrame({ turn: 3 }), items: [
+      { item_ref: 'item:21', item_uid: '21', type: 'flint_steel', label: 'кресало',
+        placement: 'held', holder: '7', use_methods: ['firestarter'] },
+      { item_ref: 'item:22', item_uid: '22', type: 'leather_belt', label: 'кожаный пояс',
+        placement: 'held', holder: '7', use_methods: ['holster'] },
+      { item_ref: 'item:23', item_uid: '23', type: 'ax', label: 'плотницкий топор',
+        placement: 'held', holder: '7', use_methods: ['activate', 'chop'] }] };
+    const seen = [];
+    await assert.rejects(runP3TurnStep({ intent: 'Осмотрись', observation: current,
+      nativeAdapter: { writeOperationRequest: async () => { throw new Error('unused'); },
+        readOperationReadback: async () => { throw new Error('unused'); } },
+      operationId: 'planner-items', nativeSpeechOnly: true, targetActorRef: null,
+      turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
+    assert.deepEqual(seen[0].player_safe_state.visible_entities.slice(0, 3), [
+      { item_ref: 'item:21', item_uid: '21', label: 'кресало', placement: 'held', holder: '7',
+        use_methods: ['firestarter'], entity_ref: '21' },
+      { item_ref: 'item:22', item_uid: '22', label: 'кожаный пояс', placement: 'held', holder: '7',
+        use_methods: ['holster'], entity_ref: '22' },
+      { item_ref: 'item:23', item_uid: '23', label: 'плотницкий топор', placement: 'held', holder: '7',
+        use_methods: ['activate', 'chop'], entity_ref: '23' }]);
+  });
+
+function chosenOperationOutput(request, selected) {
+  return { interpretation: { player_goal: request.remaining_intent,
+    grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    direct_result_kind: null, operation_family: selected.operation.op,
+    operation_choice: selected.choice_id, operations: [], check: null,
+    continuation: null, clarification: null, reason_code: 'offered_operation',
+    reason: 'Choose the offered operation.' };
+}
+
+test('production speech choice speaks the player words to the selected interlocutor', async () => {
+  for (const [intent, words] of [
+    ['Здравствуй, Жирко. Чей это двор?', 'Здравствуй, Жирко. Чей это двор?'],
+    ['Скажи ему: «Приходи до рассвета!»', 'Приходи до рассвета!']
+  ]) {
+    let providerCalls = 0;
+    let captured;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+      providerCalls++;
+      const request = JSON.parse(call.messages[1].content);
+      const selected = turnStepOperationChoices(request)
+        .find(({ operation }) => operation.op === 'emit_interaction');
+      assert.ok(selected);
+      return { output: chosenOperationOutput(request, selected) };
+    } } });
+    const result = await runP3TurnStep({ intent, observation: replyFrame({ turn: 3 }),
+      operationId: 'production-speech-choice', nativeSpeechOnly: true, targetActorRef: 'npc:9',
+      nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
+        async execute(envelope) {
+          captured = envelope;
+          return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
+            status: 'applied', goal_result: 'achieved', before: { turn: 3 }, after: { turn: 3 },
+            native_effect: { effect_status: 'confirmed', speakerId: '7',
+              utterance: envelope.args.utterance, actualHeardListenerIds: ['9'] } };
+        } },
+      turnStepModel: model });
+    assert.equal(providerCalls, 1);
+    assert.equal(captured.primitive, 'speak');
+    assert.equal(captured.args.utterance, words);
+    assert.deepEqual(captured.references.actors.map(({ ref }) => ref), ['npc:9']);
+    assert.equal(result.working_projection.native_readback.status, 'applied');
+  }
+});
+
+test('every offered P3 domain operation passes production plan validation when chosen', async () => {
+  const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
+    actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+      { actor_ref: 'npc:8', actor_id: '8', position: [61, 61, 0], visible: true, name: 'Жирко' }],
+    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7', use_methods: ['activate'] }],
+    targets: [{ target_ref: 'tile:east', position: [61, 60, 0], openable: true }] };
+  let request;
+  await assert.rejects(runP3TurnStep({ intent: 'Сделай что-нибудь', observation: current,
+    nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}) },
+    operationId: 'offered-operations', nativeSpeechOnly: true, targetActorRef: 'npc:8',
+    turnStepModel: async seen => { request = seen; throw new Error('stop'); } }), /stop/);
+  const choices = turnStepOperationChoices(request);
+  assert.equal(choices.length, request.available_domain_operations.length);
+  assert.deepEqual([...new Set(choices.map(({ operation }) => operation.op))].sort(),
+    ['emit_interaction', 'request_activity', 'request_container_access', 'request_item_use',
+      'request_movement']);
+  for (const selected of choices) {
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run() {
+      calls++;
+      return { output: chosenOperationOutput(request, selected) };
+    } } });
+    const result = await requestTurnStepPlanWithRepair({ request, turnStepModel: model })
+      .catch(error => assert.fail(`${selected.choice_id}: ${error.message}`));
+    assert.equal(calls, 1, selected.choice_id);
+    assert.equal(result.repaired, false, selected.choice_id);
+    assert.deepEqual(result.plan.operations, [selected.operation], selected.choice_id);
+  }
+});
+
+const prototypeRoot = path.dirname(fileURLToPath(import.meta.url));
+
+async function listFiles(dir, skip = new Set(['node_modules', 'runtime'])) {
+  const found = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (!skip.has(entry.name)) found.push(...await listFiles(full, skip));
+    } else found.push(full);
+  }
+  return found;
+}
+
+test('no NPC profile file ships inside the dev world folder', async () => {
+  const files = await listFiles(path.join(prototypeRoot, 'dev-world'));
+  assert.deepEqual(files.filter(file => /profile/iu.test(path.basename(file))
+    && file.endsWith('.json')), []);
+});
+
+test('no prototype test file contains a private LAN address', async () => {
+  const lan = /\b(?:10\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])|192\.168)\.\d{1,3}\.\d{1,3}\b/u;
+  const tests = (await listFiles(prototypeRoot)).filter(file =>
+    /(?:\.test\.js|[\\/]test_[^\\/]*\.(?:py|ps1))$/u.test(file));
+  assert.equal(tests.length > 0, true);
+  const allowed = { address: '10.11.12.13', file: 'p3-boundary.test.js' };
+  const offenders = [];
+  for (const file of tests) {
+    const found = (await readFile(file, 'utf8')).match(new RegExp(lan.source, 'gu')) ?? [];
+    for (const address of found) {
+      if (address !== allowed.address || path.basename(file) !== allowed.file) {
+        offenders.push(`${path.basename(file)} ${address}`);
+      }
+    }
+  }
+  assert.deepEqual(offenders, []);
+});
+
+const wirePlayer = { entity_kind: 'player_character', entity_id: '7' };
+const wireSpeechOutput = { contribution_kind: 'speech', primary_addressee_ref: wirePlayer,
+  intended_addressee_refs: [wirePlayer], affected_actor_refs: [],
+  speech: { utterance_text: 'Слышу тебя.', dominant_act: 'answer', interaction_tags: [],
+    topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } },
+  interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.', adaptation: 'literal' },
+  resolution: 'automatic', activity: { duration_class: 'brief', effort: 'none' },
+  supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' };
+const wireStop = () => { throw new Error('captured'); };
+const toRepair = ({ roleId }) => roleId === 'npc_conversation_responder'
+  ? { contribution_kind: 'speech' } : wireStop();
+const toAudit = ({ roleId }) => roleId === 'npc_conversation_responder'
+  ? wireSpeechOutput : wireStop();
+const WIRE_SERVICE_KEYS = ['request_id', 'boundary_id', 'conversation_id', 'exchange_id',
+  'state_version', 'requested_at', 'signal_refs', 'template_ref'];
+
+// Each call is replayed through the shared model without a wire projection, so the test compares
+// against the exact pre-projection user message of the same request.
+async function captureNpcWire(respond, projectionOverrides = {}) {
+  const sent = [];
+  const unprojected = [];
+  const requests = [];
+  const runtime = createP3RoleRuntime({ env: {}, settingsOwner: qwenSettingsOwner(),
+    execute: async value => {
+      sent.push({ roleId: value.roleId, messages: structuredClone(value.messages) });
+      return { status: 'ok', parsed_json: await respond(value),
+        provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+        scope: value.scope, role_id: value.roleId, durationMs: 1 };
+    } });
+  const identity = createLowerDvinaTraceNpcSemanticModel({ roleRunner: { run: async value => {
+    unprojected.push({ roleId: value.role_id, messages: structuredClone(value.messages) });
+    return { output: await respond({ roleId: value.role_id }) };
+  } } });
+  const projected = runtime.npcConversationModel;
+  const semanticModel = Object.assign(async (request, context) => {
+    requests.push(structuredClone(request));
+    await identity(request, context).catch(() => {});
+    return projected(request, context);
+  }, { originalOutputOf: projected.originalOutputOf,
+    validateFreshPlan: async (plan, request) => {
+      await identity.validateFreshPlan(plan, request).catch(() => {});
+      return projected.validateFreshPlan(plan, request);
+    } });
+  const frame = replyFrame({ projections: [npcProjection('9', { template_id: '',
+    visible_items: [visibleItem(31)], ...projectionOverrides })] });
+  await runP3NativeNpcReply({ nativeAdapter: { refreshObservation: async () => structuredClone(frame) },
+    observation: frame, playerReadback: playerSpeechReadback({ utterance: 'Здравствуй.', turn: 10 }),
+    semanticModel, targetActorRef: 'npc:9', maxRepairAttempts: 2 }).catch(() => {});
+  const message = (call, role) => call.messages.find(entry => entry.role === role).content;
+  assert.equal(sent.length, unprojected.length);
+  return { requests, calls: sent.map((call, index) => {
+    assert.equal(call.roleId, unprojected[index].roleId);
+    assert.equal(message(call, 'system'), message(unprojected[index], 'system'));
+    return { roleId: call.roleId, system: message(call, 'system'),
+      before: JSON.parse(message(unprojected[index], 'user')),
+      after: JSON.parse(message(call, 'user')) };
+  }) };
+}
+
+function lostNamedKeys(before, after, named, path = '') {
+  if (Array.isArray(before)) {
+    return before.flatMap((entry, index) => lostNamedKeys(entry, after?.[index], named,
+      `${path}[${index}]`));
+  }
+  if (before === null || typeof before !== 'object') return [];
+  return Object.entries(before).flatMap(([key, value]) => {
+    // The frozen acceptance contract forbids service keys and a second copy of the resources.
+    if (WIRE_SERVICE_KEYS.includes(key) || value === null
+        || (key === 'available_resources' && path.endsWith('.npc'))) return [];
+    if (!Object.hasOwn(after ?? {}, key)) return named.has(key) ? [`${path}.${key}`] : [];
+    return lostNamedKeys(value, after[key], named, `${path}.${key}`);
+  });
+}
+
+function namedEmptyKeys(value, named, path = '') {
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, entry]) => {
+    const empty = entry !== null && typeof entry === 'object' && Object.keys(entry).length === 0;
+    return [...(empty && named.has(key) ? [`${path}.${key}`] : []),
+      ...namedEmptyKeys(entry, named, `${path}.${key}`)];
+  });
+}
+
+function wireValuesOf(value, key) {
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([name, entry]) =>
+    [...(name === key ? [entry] : []), ...wireValuesOf(entry, key)]);
+}
+
+test('P3 NPC wire keeps the base system messages byte for byte', async () => {
+  const golden = {
+    npc_conversation_responder: '959eecf0ae3c6a301357aebf0418cf1f45d2c83b691aa40c63c71a20b678fbe5',
+    npc_conversation_responder_format_repair:
+      '895e95fbfa9c9ed16e5dfb119058a45896c28f19db1507532cb70e9ab364d05e',
+    npc_conversation_grounding_auditor:
+      '72f9852721961ffa02a01824c9bee90d2636e9549185f7b7ad8ed756f82fd7e6' };
+  const repair = await captureNpcWire(toRepair);
+  const audit = await captureNpcWire(toAudit);
+  const calls = [repair.calls[0], repair.calls[1], audit.calls[1]];
+  assert.deepEqual(calls.map(call => call.roleId), Object.keys(golden));
+  for (const call of calls) {
+    assert.equal(createHash('sha256').update(call.system).digest('hex'), golden[call.roleId],
+      call.roleId);
+  }
+});
+
+test('P3 NPC wire projects only the request and passes the rest of the repair message unchanged',
+  async () => {
+    const repair = await captureNpcWire(toRepair);
+    const audit = await captureNpcWire(toAudit);
+    for (const call of [repair.calls[0], repair.calls[1], audit.calls[1]]) {
+      const named = new Set(call.system.match(/[A-Za-z0-9_]+/gu));
+      if (call.roleId === 'npc_conversation_responder_format_repair') {
+        const { request: beforeRequest, ...beforeRest } = call.before;
+        const { request: afterRequest, ...afterRest } = call.after;
+        assert.deepEqual(afterRequest, projectP3NpcWire(beforeRequest, call.system), call.roleId);
+        assert.deepEqual(afterRest, beforeRest, call.roleId);
+        assert.deepEqual(Object.keys(call.after), Object.keys(call.before), call.roleId);
+      } else {
+        assert.deepEqual(call.after, projectP3NpcWire(call.before, call.system), call.roleId);
+      }
+      assert.deepEqual(lostNamedKeys(call.before, call.after, named), [], call.roleId);
+      assert.notDeepEqual(namedEmptyKeys(call.after, named), [], call.roleId);
+    }
+  });
+
+test('P3 NPC repair receives the model own answer whole, with its null check and handoff',
+  async () => {
+    const { reason: _reason, ...formFailure } = wireSpeechOutput;
+    const unsupported = { pass: false, concerns: [{ kind: 'unsupported_fact',
+      path: '$.speech.utterance_text', quote: 'Слышу тебя' }] };
+    for (const [answer, auditor, kind] of [
+      [wireSpeechOutput, unsupported, 'MANDATORY SEMANTIC REPAIR'],
+      [formFailure, null, 'MANDATORY FORMAT REPAIR']]) {
+      const { calls } = await captureNpcWire(({ roleId }) => {
+        if (roleId === 'npc_conversation_responder') return answer;
+        if (roleId === 'npc_conversation_grounding_auditor' && auditor) return auditor;
+        return wireStop();
+      });
+      const repair = calls.find(call => call.roleId === 'npc_conversation_responder_format_repair');
+      assert.ok(repair, kind);
+      assert.ok(repair.system.includes(kind), kind);
+      assert.deepEqual(repair.after.original_output, JSON.parse(JSON.stringify(answer)), kind);
+      assert.deepEqual(repair.after.request, projectP3NpcWire(repair.before.request, repair.system),
+        kind);
+      assert.deepEqual(repair.after.validation_errors, repair.before.validation_errors, kind);
+      assert.deepEqual(Object.keys(repair.after), ['request', 'original_output', 'validation_errors'],
+        kind);
+    }
+  });
+
+async function resourcesSentToEachRole(visibleItems) {
+  const repair = await captureNpcWire(toRepair, { visible_items: visibleItems });
+  const audit = await captureNpcWire(toAudit, { visible_items: visibleItems });
+  for (const request of [...repair.requests, ...audit.requests]) {
+    assert.equal(validateNpcConversationResponseRequest(request), true);
+    assert.deepEqual(request.npc.available_resources, request.available_resources);
+  }
+  return [repair.calls[0], repair.calls[1], audit.calls[1]].map(({ roleId, before, after }) => {
+    const request = (value) => value.request ?? value;
+    return { roleId, before: request(before).available_resources,
+      after: request(after).available_resources };
+  });
+}
+
+test('P3 NPC resources carry the perceived Russian label for held and ground items', async () => {
+  const roles = await resourcesSentToEachRole([visibleItem(31),
+    visibleItem(32, { type: 'chisel', label: 'долото', placement: 'carried' })]);
+  const expected = {
+    'item:31': ['огниво', 'firesteel', { location_ref: 'p3-scene', holder_npc_id: null }],
+    'item:32': ['долото', 'chisel', { location_ref: null, holder_npc_id: 'npc:9' }] };
+  assert.deepEqual(roles.map(role => role.roleId), ['npc_conversation_responder',
+    'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor']);
+  for (const { roleId, before, after } of roles) {
+    assert.deepEqual(after.map(resource => resource.resource_ref).sort(), ['item:31', 'item:32'],
+      roleId);
+    for (const resource of after) {
+      const [label, type, branch] = expected[resource.resource_ref];
+      const original = before.find(entry => entry.resource_ref === resource.resource_ref);
+      assert.deepEqual({ location_ref: original.location_ref,
+        holder_npc_id: original.holder_npc_id }, branch, roleId);
+      assert.equal(resource.label, label, roleId);
+      assert.match(resource.label, /\p{Script=Cyrillic}/u);
+      assert.notEqual(resource.label, type);
+      assert.notEqual(resource.label, original.template_ref);
+      assert.notEqual(resource.label, resource.resource_ref);
+    }
+  }
+});
+
+test('P3 NPC resource without a Russian perceived name gets no label key', async () => {
+  const roles = await resourcesSentToEachRole([
+    visibleItem(33, { type: 'stick', label: 'stick' }), visibleItem(34, { label: '' })]);
+  for (const { roleId, after } of roles) {
+    assert.equal(after.length, 2, roleId);
+    for (const resource of after) {
+      assert.equal(Object.hasOwn(resource, 'label'), false, `${roleId} ${resource.resource_ref}`);
+    }
+  }
+});
+
+test('P3 NPC trust reaches the responder as a level and neutral trust is omitted', async () => {
+  for (const [trust, expected] of [[0, []], [-3, ['low']], [2, ['medium']], [7, ['high']]]) {
+    const { calls } = await captureNpcWire(toAudit, {
+      opinion_of_avatar: { trust, fear: 0, value: 0, anger: 0 } });
+    assert.deepEqual(wireValuesOf(calls[0].after, 'trust'), expected, String(trust));
+  }
+});
+
+test('shared NPC conversation model sends the request unchanged without a wire projection',
+  async () => {
+    const { requests, calls } = await captureNpcWire(toAudit);
+    const [responder, auditor] = calls;
+    assert.deepEqual(responder.before, JSON.parse(JSON.stringify(requests[0])));
+    assert.deepEqual(auditor.before.request, responder.before);
+    assert.deepEqual(Object.keys(auditor.before), ['request', 'plan']);
+  });
+
+test('shared NPC conversation model sends a request without a p3 frame unchanged', async () => {
+  const targets = JSON.parse(await readFile(new URL(
+    '../../apps/game-server/test/fixtures/npc-conversation-target-prompts.json',
+    import.meta.url), 'utf8'));
+  const users = [];
+  const roleRunner = { run: async ({ messages }) => {
+    users.push(messages[1].content);
+    return { output: { pass: true, concerns: [] } };
+  } };
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner });
+  const repairOf = (user, kind) => ({ repair: { kind, original_output: user.original_output,
+    validation_errors: user.validation_errors } });
+  await model(targets.responder.user).catch(() => {});
+  await model(targets.format_repair.user.request, repairOf(targets.format_repair.user, 'format'))
+    .catch(() => {});
+  await model.validateFreshPlan(targets.auditor.user.plan, targets.auditor.user.request)
+    .catch(() => {});
+  const { request: _request, ...repairRest } = targets.format_repair.user;
+  assert.deepEqual(users, [JSON.stringify(targets.responder.user),
+    JSON.stringify({ request: targets.format_repair.user.request, ...repairRest }),
+    JSON.stringify(targets.auditor.user)]);
 });

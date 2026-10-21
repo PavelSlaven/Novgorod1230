@@ -82,6 +82,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         error.code = result.error?.code ?? 'LLM_ROLE_FAILED';
         error.retryable = result.error?.retryable === true;
         error.llm_provider_failure = true;
+        if (typeof result.raw_text === 'string') error.raw_text = result.raw_text;
         throw error;
       }
       return Object.freeze({

@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import {
   npcConversationInstructions,
@@ -41,49 +42,90 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
 }
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
-  worldKnowledgeGrounder = null } = {}) {
+  worldKnowledgeGrounder = null, requestWire = (value) => value } = {}) {
   requireRoleRunner(roleRunner);
+  const originalOutputs = new WeakMap();
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
+    const semanticRepair = repair?.kind === 'semantic';
     const modelRequest = worldKnowledgeGrounder == null ? request
       : await worldKnowledgeGrounder.ground(request, 'conversation');
+    const system = [npcConversationInstructions(repair, modelRequest),
+      ...worldKnowledgeFactualClosure(modelRequest)].join(' ');
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
         ? 'npc_conversation_responder_format_repair'
         : 'npc_conversation_responder',
+      ...(repair ? { repair_kind: semanticRepair ? 'semantic' : 'format' } : {}),
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: [npcConversationInstructions(repair, modelRequest),
-          ...worldKnowledgeFactualClosure(modelRequest)].join(' ')
+        content: system
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request: modelRequest,
-          original_output: repair.original_output,
+          request: requestWire(modelRequest, system),
+          ...(Object.hasOwn(repair, 'original_output_text')
+            ? { original_output_text: repair.original_output_text }
+            : { original_output: repair.original_output }),
           validation_errors: repair.validation_errors
-        } : modelRequest)
+        } : requestWire(modelRequest, system))
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
+    if (repair && isDeepStrictEqual(response.output, { status: 'unrepairable' })) {
+      throw conversationContractFailure(semanticRepair, [{
+        code: 'repair_declared_unrepairable', category: 'format', path: '$',
+        message: 'The repair declared the response unrepairable.' }]);
+    }
+    const changedAct = semanticRepair
+      ? changedActPaths(response.output, repair.original_output) : [];
+    if (changedAct.length > 0) {
+      throw conversationContractFailure(true, changedAct.map((path) => ({
+        code: 'semantic_repair_changed_act', category: 'semantic_grounding',
+        path, message: 'A semantic repair must keep the contribution kind, speech act, addressees and intent.' })));
+    }
     const plan = assembleNpcConversationPlan(response.output, request);
-    if (repair?.validation_errors?.some(
-      ({ category }) => category === 'semantic_grounding'
-    ) && (plan.contribution_kind !== repair.original_output?.contribution_kind
-      || plan.speech?.dominant_act
-        !== repair.original_output?.speech?.dominant_act)) {
-      throw serverError('TURN_NPC_PLAN_INVALID',
-        'NPC semantic repair must preserve contribution kind and speech act.',
-        { status: 503 });
+    if (plan !== null && typeof plan === 'object') {
+      originalOutputs.set(plan, response.output);
     }
     return plan;
   };
+  model.originalOutputOf = (plan) => plan !== null && typeof plan === 'object'
+    ? originalOutputs.get(plan) : undefined;
   model.validateFreshPlan = async (plan, request) => {
     const presentation = validateRequiredNpcPresentation(plan, request);
-    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+    return presentation ?? auditFreshNpcSpeech({
+      roleRunner, plan, request, requestWire
+    });
   };
   return model;
+}
+
+const ACT_PATHS = Object.freeze([
+  ['contribution_kind'], ['speech', 'dominant_act'], ['primary_addressee_ref'],
+  ['intended_addressee_refs'], ['interpretation', 'intent']
+]);
+
+function changedActPaths(output, original) {
+  return ACT_PATHS.filter((path) => !isDeepStrictEqual(
+    valueAt(output, path), valueAt(original, path)))
+    .map((path) => `$.${path.join('.')}`);
+}
+
+function valueAt(value, path) {
+  return path.reduce((current, key) => current !== null
+    && typeof current === 'object' ? current[key] : undefined, value);
+}
+
+function conversationContractFailure(semantic, validationErrors) {
+  return serverError('TURN_NPC_CONVERSATION_CONTRACT_FAILURE',
+    'NPC conversation repair cannot satisfy the conversation contract.', {
+      status: 503,
+      details: { category: semantic ? 'semantic' : 'format',
+        validation_errors: validationErrors }
+    });
 }
 
 function validateRequiredNpcPresentation(plan, request) {
@@ -112,11 +154,9 @@ function validateRequiredNpcPresentation(plan, request) {
 }
 
 function requiredFirstContactName(request) {
-  const name = request?.social_context?.first_contact_introduction
-    ?.canonical_name;
-  return typeof name === 'string' && name.trim()
-      && name.trim() === request?.npc?.identity_state?.canonical_name
-    ? name.trim() : null;
+  if (request?.social_context?.first_contact_introduction == null) return null;
+  const name = request?.npc?.identity?.name_or_label;
+  return typeof name === 'string' && name.trim() ? name.trim() : null;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

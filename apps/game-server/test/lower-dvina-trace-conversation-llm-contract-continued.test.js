@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  projectNpcConversationSubject,
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest,
   validatePlayerConversationContributionPlan,
@@ -25,6 +26,11 @@ import {
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const subject = projectNpcConversationSubject({
+  npc_ref: ref('npc', 'npc-1'),
+  npc_snapshot: { instance_id: 'npc-1' },
+  current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+});
 const outcomes = () => ({
   clean_success: { delivery_quality: 'compelling', observable_effects: [] },
   success: { delivery_quality: 'credible', observable_effects: [] },
@@ -95,14 +101,14 @@ function npcRequest(required = {}) {
     decision_reasons: { significance: 'material', categories: ['communication'],
       signal_refs: [ref('npc_decision_signal', 'signal-1')],
       perceived_changes: ['Игрок обратился к NPC.'] },
-    npc: {}, perceived_message: {
+    npc: subject.npc, perceived_message: {
       source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1')
-    }, public_conversation_history: [], knowledge: {}, memory: {},
-    social_context: {}, available_resources: [],
+    }, public_conversation_history: [], knowledge: subject.knowledge, memory: subject.memory,
+    social_context: {}, available_resources: subject.available_resources,
     allowed_references: {
       actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
-      entity_refs: [ref('item', 'item-1')], knowledge_refs: [],
+      entity_refs: [ref('item', 'item-1')], knowledge_refs: [...subject.knowledge_refs],
       combat_target_refs: []
     },
     decision_scope: {

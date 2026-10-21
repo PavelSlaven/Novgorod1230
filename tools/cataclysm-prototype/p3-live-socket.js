@@ -10,10 +10,42 @@ export function requireLiveObservation(observation) {
       || !Array.isArray(observation.targets)
       || !observation.actors.some(actor => actor.actor_ref === 'avatar'
         && typeof actor.actor_id === 'string'
-        && Array.isArray(actor.position) && actor.position.length === 3)) {
+        && Array.isArray(actor.position) && actor.position.length === 3)
+      || !observation.actors.every(actor => actor.actor_ref === 'avatar'
+        || (typeof actor.name === 'string' && actor.name.trim() !== ''))
+      || (observation.npc_projections !== undefined
+        && (!Array.isArray(observation.npc_projections)
+          || !observation.npc_projections.every(validLiveNpcProjection)))) {
     throw new Error('P3_LIVE_OBSERVATION_INVALID');
   }
   return structuredClone(observation);
+}
+
+const PERSONALITY_KEYS = ['aggression', 'bravery', 'collector', 'altruism'];
+const OPINION_KEYS = ['trust', 'fear', 'value', 'anger'];
+const ITEM_PLACEMENTS = new Set(['ground', 'worn', 'carried', 'wielded']);
+
+function integerRecord(value, keys) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && keys.every(key => Number.isSafeInteger(value[key]));
+}
+
+function validLiveNpcProjection(projection) {
+  if (projection === null || typeof projection !== 'object') return false;
+  const field = (key, check) => check(projection[key]);
+  return field('name', value => typeof value === 'string' && value.trim() !== '')
+    && field('template_id', value => typeof value === 'string')
+    && field('gender', value => value === 'male' || value === 'female')
+    && field('personality', value => integerRecord(value, PERSONALITY_KEYS))
+    && field('faction_id', value => typeof value === 'string')
+    && field('opinion_of_avatar', value => integerRecord(value, OPINION_KEYS))
+    && field('conversation_memory', value => Array.isArray(value)
+      && value.every(record => record !== null && typeof record === 'object'
+        && !Array.isArray(record)))
+    && field('visible_items', value => Array.isArray(value)
+      && value.every(item => item !== null && typeof item === 'object'
+        && typeof item.label === 'string' && ITEM_PLACEMENTS.has(item.placement)
+        && typeof item.owner_faction_id === 'string'));
 }
 
 function rejectSnapshot(value) {

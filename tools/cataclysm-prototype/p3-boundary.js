@@ -17,8 +17,13 @@ import { buildNpcActionDecisionRequestFromSnapshots,
 import { buildNpcDecisionBoundary, buildNpcDecisionSignal } from '@rus/npc-runtime';
 import { addElapsedTime } from '@rus/time-events-history';
 import { projectConversationAudience } from '@rus/visibility-knowledge-memory';
+import { loadP3NpcProfile } from './p3-npc-profile.js';
+import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn, projectP3NpcWire }
+  from './p3-npc-subject.js';
 import { applyPlayerPlan, projectPlayerStatementAudience } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-statements.js';
+import { requiredVerbatimUtteranceText } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 export const P3_ATTEMPT_BUDGET = 72;
 export const P3_CASE_IDS = Object.freeze(['T06', 'T07', 'T08', 'T09', 'T10']);
@@ -37,22 +42,34 @@ export function requireP3CaseId(caseId) {
   return caseId;
 }
 
-export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET,
+export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET, scope = 'process',
   onAttempt = async () => {} } = {}) {
   if (!Number.isSafeInteger(budget) || budget < 1 || budget > P3_ATTEMPT_BUDGET) {
     throw new TypeError('budget must be between 1 and 72');
   }
+  if (scope !== 'process' && scope !== 'turn') throw new TypeError('scope must be process or turn');
   let calls = 0;
+  let turnCalls = 0;
+  let turnExhausted = false;
   return {
     get calls() { return calls; },
+    get turnCalls() { return turnCalls; },
+    get turnExhausted() { return turnExhausted; },
+    beginTurn() {
+      if (scope !== 'turn') throw new Error('beginTurn requires turn scope');
+      turnCalls = 0;
+      turnExhausted = false;
+    },
     wrap(roleRunner) {
       if (typeof roleRunner?.run !== 'function') throw new TypeError('roleRunner.run required');
       return { async run(input) {
-        if (calls >= budget) {
-          const error = new Error('P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED');
-          error.code = 'P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED';
-          throw error;
+        if ((scope === 'turn' ? turnCalls : calls) >= budget) {
+          const code = scope === 'turn' ? 'P3_TURN_CALL_BUDGET_EXHAUSTED'
+            : 'P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED';
+          turnExhausted = scope === 'turn';
+          throw Object.assign(new Error(code), { code });
         }
+        turnCalls++;
         const attempt = ++calls;
         await onAttempt({ phase: 'before', attempt, input, output: null, error: null });
         try {
@@ -412,7 +429,7 @@ export async function runP3NativeNpcFlow({ nativeAdapter, actorId, semanticModel
 }
 
 export async function runP3NativeNpcReply({ nativeAdapter, observation, playerReadback,
-  semanticModel, targetActorRef = null, maxRepairAttempts = 2 } = {}) {
+  semanticModel, targetActorRef = null, maxRepairAttempts = 2, profilesDir } = {}) {
   const effect = playerReadback?.native_effect;
   if (playerReadback?.status !== 'applied' || !Array.isArray(effect?.actualHeardListenerIds)
       || typeof effect.utterance !== 'string' || !effect.utterance
@@ -420,7 +437,7 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
   const heard = new Set(effect.actualHeardListenerIds);
   const npc = observation.actors.find(actor => actor.actor_ref === targetActorRef
     && actor.actor_id === targetActorRef.slice(4)
-    && actor.visible === true && heard.has(actor.actor_id));
+    && heard.has(actor.actor_id));
   if (!npc) return null;
   const current = await nativeAdapter.refreshObservation();
   const actor = current.actors.find(row => row.actor_ref === npc.actor_ref
@@ -428,16 +445,21 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
   if (!actor) return null;
   const player = current.actors.find(row => row.actor_ref === 'avatar');
   if (!player) throw new Error('P3_AVATAR_OBSERVATION_MISSING');
-  const remainder = current.turn % 60;
-  const divisor = (left, right) => right === 0 ? left : divisor(right, left % right);
-  const common = divisor(remainder, 60) || 60;
-  const at = { whole_minutes: String(Math.floor(current.turn / 60)),
-    subminute_numerator: String(remainder / common), subminute_denominator: String(60 / common) };
+  const at = p3GameTimeOfTurn(current.turn);
   const npcRef = { entity_kind: 'npc', entity_id: actor.actor_id };
   const playerRef = { entity_kind: 'player_character', entity_id: player.actor_id };
   const perceptionRef = { entity_kind: 'perception_result',
     entity_id: `p3-heard-${playerReadback.operation_id}-${actor.actor_id}` };
   const source = { entity_kind: 'event', entity_id: `p3-speech-${playerReadback.operation_id}` };
+  const projection = (current.npc_projections ?? []).find(row => row.actor_id === actor.actor_id);
+  if (!projection) throw p3Error('P3_NPC_PROJECTION_MISSING');
+  const profile = projection.template_id
+    ? await loadP3NpcProfile(projection.template_id, profilesDir ? { profilesDir } : undefined)
+    : null;
+  const subject = buildP3NpcConversationSubject({ projection, profile, frame: current, player,
+    npcRef, playerRef, perceptionRef, utterance: effect.utterance,
+    currentTurns: new Set([playerReadback.before?.turn, playerReadback.after?.turn,
+      current.turn].filter(Number.isSafeInteger)) });
   const signal = buildNpcDecisionSignal({ occurred_at: at, category: 'communication',
     significance: 'material', source_event_ref: source, subject_ref: npcRef,
     scope_refs: [], perception_required: false });
@@ -453,22 +475,22 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
     schema: 'npc_conversation_response_request_v1',
     request_id: `p3-reply-${playerReadback.operation_id}-${actor.actor_id}`,
     boundary_id: boundary.boundary_id,
-    conversation_id: `p3-conversation-${playerReadback.operation_id}`,
+    conversation_id: `p3-conversation-npc${actor.actor_id}-pc${player.actor_id}`,
     exchange_id: `p3-exchange-${playerReadback.operation_id}`,
     state_version: stateVersion, requested_at: at, npc_ref: npcRef,
     decision_reasons: { significance: 'material', categories: ['communication'],
       signal_refs: [signalRef], perceived_changes: [effect.utterance] },
-    npc: { native_actor_id: actor.actor_id, position: actor.position },
+    npc: subject.npc,
     perceived_message: {
       source_statement_ref: { entity_kind: 'conversation_statement',
         entity_id: `p3-player-speech-${playerReadback.operation_id}` },
       perception_result_ref: perceptionRef },
-    public_conversation_history: [{ speaker_ref: playerRef, utterance_text: effect.utterance }],
-    knowledge: {}, memory: { current_observations: [{ observation_ref: perceptionRef,
-      fact_text: `NPC услышал реплику игрока ${JSON.stringify(effect.utterance)}.` }] },
-    social_context: {}, available_resources: [],
-    allowed_references: { actor_refs: [npcRef, playerRef], entity_refs: [],
-      knowledge_refs: [perceptionRef], combat_target_refs: [] },
+    public_conversation_history: [...subject.public_conversation_history,
+      { speaker_ref: playerRef, utterance_text: effect.utterance }],
+    knowledge: subject.knowledge, memory: subject.memory,
+    social_context: {}, available_resources: subject.available_resources,
+    allowed_references: { actor_refs: [npcRef, playerRef], entity_refs: subject.entity_refs,
+      knowledge_refs: subject.knowledge_refs, combat_target_refs: [] },
     decision_scope: { conversation_mode: true, action_handoff_available: false,
       combat_handoff_available: false, allowed_attribute_refs: [], allowed_skill_refs: [],
       allowed_check_profile_refs: [], allowed_duration_classes: ['moment', 'brief', 'short', 'domain_owned'],
@@ -477,17 +499,25 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
   const proposal = await requestNpcSemanticDecision({ boundary, request, semanticModel,
     maxRepairAttempts, revalidateStateVersion: async () => stateVersion,
     validateFreshPlan: semanticModel.validateFreshPlan ?? null });
-  if (proposal.status !== 'planned' || proposal.plan?.contribution_kind !== 'speech') {
+  const plan = proposal.plan;
+  if (proposal.status !== 'planned' || !['speech', 'silence'].includes(plan?.contribution_kind)) {
     return { proposal, native_readback: null };
   }
-  const utterance = proposal.plan.speech.utterance_text;
+  const silent = plan.contribution_kind === 'silence';
+  const utterance = silent ? null : plan.speech.utterance_text;
+  const visibleBehavior = silent ? plan.interpretation.grounded_contribution : null;
   const envelope = createP3OperationEnvelope({ observation: current,
     operationId: `${playerReadback.operation_id}-npc-${actor.actor_id}`,
-    actorRef: actor.actor_ref, primitive: 'speak', args: { utterance },
-    registeredPrimitives: ['speak'] });
+    actorRef: actor.actor_ref, primitive: 'speak',
+    args: silent ? { contribution_kind: 'silence', visible_behavior: visibleBehavior }
+      : { utterance },
+    references: { actors: ['avatar'] }, registeredPrimitives: ['speak'] });
   const readback = validateP3Readback(envelope, await nativeAdapter.execute(envelope));
-  if (readback.status === 'applied' && (readback.native_effect?.speakerId !== actor.actor_id
-      || readback.native_effect?.utterance !== utterance)) {
+  const replyEffect = readback.native_effect;
+  if (readback.status === 'applied' && (replyEffect?.speakerId !== actor.actor_id
+      || (silent ? replyEffect.contribution_kind !== 'silence'
+        || replyEffect.visible_behavior !== visibleBehavior
+        : replyEffect.contribution_kind !== 'speech' || replyEffect.utterance !== utterance))) {
     throw new Error('P3_NATIVE_SPEECH_READBACK_MISMATCH');
   }
   return { proposal, native_readback: readback };
@@ -529,7 +559,8 @@ export function createP3RoleRuntime({ env = process.env, budget = createP3Attemp
   return Object.freeze({ roleRunner,
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
     npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({ roleRunner }),
-    npcConversationModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner }),
+    npcConversationModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+      requestWire: projectP3NpcWire }),
     budget });
 }
 
@@ -541,7 +572,7 @@ function makeP3Env(env) {
   ]));
 }
 
-export function buildP3TurnOperations(observation) {
+export function buildP3TurnOperations(observation, targetActorRef = null, speechText = null) {
   const actor = observation.actors.find(({ actor_ref: ref }) => ref === 'avatar');
   if (!actor) throw new Error('P3_AVATAR_OBSERVATION_MISSING');
   const [x, y, z] = actor.position;
@@ -561,7 +592,10 @@ export function buildP3TurnOperations(observation) {
       .map(target => ({ op: 'request_container_access', actor_ref: 'avatar',
         container_ref: target.target_ref, access_kind: 'open' })),
     { op: 'request_activity', actor_ref: 'avatar', activity_kind: 'wait',
-      target_refs: [], description: 'Wait for the next period' }
+      target_refs: [], description: 'Wait for the next period' },
+    ...(targetActorRef && speechText ? [{ op: 'emit_interaction', actor_ref: 'avatar',
+      target_actor_refs: [targetActorRef], interaction_kind: 'speech', content: speechText,
+      instrument_refs: [] }] : [])
   ];
 }
 
@@ -663,11 +697,12 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
   if (typeof intent !== 'string' || !intent.trim()) throw new TypeError('intent required');
   if (typeof turnStepModel !== 'function') throw new TypeError('turnStepModel required');
   requireP3NativeSeam(nativeAdapter);
-  const selectedNpc = nativeSpeechOnly && typeof targetActorRef === 'string'
+  const selectedNpc = typeof targetActorRef === 'string'
     && /^npc:\d+$/u.test(targetActorRef) && observation.actors.some(actor =>
       actor.actor_ref === targetActorRef && actor.actor_id === targetActorRef.slice(4)
       && actor.visible === true)
     ? targetActorRef : null;
+  const speechText = selectedNpc ? requiredVerbatimUtteranceText({ raw_text: intent }) : null;
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
   const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
@@ -756,10 +791,13 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       const current = projection.native_observation;
       return { player_safe_state: { actor_ref: 'avatar', current_position:
         current.actors.find(({ actor_ref: ref }) => ref === 'avatar').position,
-        visible_entities: [...current.items.map(item => ({ ...item,
+        visible_entities: [...current.items.map(({ type: _nativeType, ...item }) => ({ ...item,
           ...(typeof item.item_uid === 'string' ? { entity_ref: item.item_uid } : {}) })), ...current.targets,
-          ...current.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)] },
-      available_domain_operations: buildP3TurnOperations(current) };
+          ...current.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)],
+        ...(selectedNpc ? { active_interlocutor: { entity_ref: { entity_kind: 'npc',
+          entity_id: selectedNpc }, display_label: current.actors.find(({ actor_ref }) =>
+          actor_ref === selectedNpc).name.trim() } } : {}) },
+      available_domain_operations: buildP3TurnOperations(current, selectedNpc, speechText) };
     },
     revalidateCommittedState: async () => ({ state_version: 0 })
   });

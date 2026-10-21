@@ -1,8 +1,6 @@
 import {
   compareRefs,
-  fail,
   isEntityRef,
-  plainRecord,
   ref,
   refKey,
   sameRef
@@ -29,41 +27,6 @@ export function perceivedChanges(records, { presentedEvidenceRecognized }) {
   });
 }
 
-export function ownNpcProjection(actor) {
-  if (!plainRecord(actor.identity_state)
-      || !plainRecord(actor.machine_state)) {
-    fail(
-      'TRACE_M2_NPC_SUBJECTIVE_STATE_GAP',
-      'The NPC own identity and subjective machine state are required.'
-    );
-  }
-  const roleRef = trustedRoleRef(actor.role_ref)
-    ?? trustedRoleRef(actor.social_role?.role_ref);
-  return {
-    participant_ref: actor.ref,
-    instance_id: actor.instance_id,
-    identity_state: structuredClone(actor.identity_state),
-    machine_state: structuredClone(actor.machine_state),
-    ...(roleRef == null ? {} : { social_role: { role_ref: roleRef } })
-  };
-}
-
-function trustedRoleRef(value) {
-  if (typeof value === 'string' && value) return value;
-  return plainRecord(value) && typeof value.id === 'string' && value.id
-    ? value.id : null;
-}
-
-export function ownKnowledgeProjection(actor) {
-  if (!plainRecord(actor.knowledge_profile_snapshot)) {
-    fail(
-      'TRACE_M2_NPC_KNOWLEDGE_GAP',
-      'The NPC own knowledge profile snapshot is required.'
-    );
-  }
-  return structuredClone(actor.knowledge_profile_snapshot);
-}
-
 export function currentSceneObservationProjection(state,
   details = state.current_visible_context?.sensory_details) {
   if (!Array.isArray(details)) return [];
@@ -77,19 +40,6 @@ export function currentSceneObservationProjection(state,
     observed_at: structuredClone(state.clock),
     fact_text: text
   }));
-}
-
-export function ownMemoryProjection(actor, state, targetRef,
-  currentObservations = currentSceneObservationProjection(state)) {
-  return {
-    records: structuredClone(actor.knowledge_records ?? []),
-    received_messages: structuredClone(
-      (state.received_messages ?? []).filter(
-        ({ listener_ref: listenerRef }) => sameRef(listenerRef, targetRef)
-      )
-    ),
-    current_observations: structuredClone(currentObservations)
-  };
 }
 
 export function receivedConversationMessage(context, working, statement) {

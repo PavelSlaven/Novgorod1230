@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
+import {
+  buildNpcDecisionBoundary,
+  projectNpcConversationSubject
+} from '@rus/npc-runtime';
 import { normalizeNpcBoundaryBatch } from
   '../src/conversation-exchange-npc-batch.js';
 import { resumePendingNpcExecution } from
@@ -227,6 +230,11 @@ function npcFirstDecision() {
     same_time_batch_ref: ref('temporal_batch', 'batch-1'),
     significance: 'material', categories: ['objective'],
     signal_refs: [ref('npc_decision_signal', 'signal-1')], state_version: '2' });
+  const subject = projectNpcConversationSubject({
+    npc_ref: ref('npc', 'speaker'),
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+  });
   return { boundary, persisted_trace: null, request: {
     schema: 'npc_conversation_response_request_v1',
     request_id: 'request-1', boundary_id: boundary.boundary_id,
@@ -235,11 +243,12 @@ function npcFirstDecision() {
     decision_reasons: { significance: 'material', categories: ['objective'],
       signal_refs: [ref('npc_decision_signal', 'signal-1')],
       perceived_changes: ['Решил заговорить.'] },
-    npc: {}, perceived_message: null, public_conversation_history: [],
-    knowledge: {}, memory: {}, social_context: {}, available_resources: [],
+    npc: subject.npc, perceived_message: null, public_conversation_history: [],
+    knowledge: subject.knowledge, memory: subject.memory, social_context: {},
+    available_resources: subject.available_resources,
     allowed_references: { actor_refs: [ref('npc', 'speaker'),
-      ref('player_character', 'player')], entity_refs: [], knowledge_refs: [],
-    combat_target_refs: [] },
+      ref('player_character', 'player')], entity_refs: [],
+    knowledge_refs: subject.knowledge_refs, combat_target_refs: [] },
     decision_scope: { conversation_mode: true, action_handoff_available: false,
       combat_handoff_available: false, allowed_attribute_refs: [],
       allowed_skill_refs: [], allowed_check_profile_refs: [],

@@ -12,8 +12,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const evidenceDir = path.join(root, 'artifacts', '2026-10-19', 'task01', 'wire');
 const expectedModel = 'qwen3.8-27b-uncensored-w4a16-tp2';
 const expectedBackendModel = 'qwen3.8-27b';
-export function matchesP3WireModelId(value) {
-  return value === expectedModel || value === expectedBackendModel;
+export function matchesP3WireModelId(responseId, requestedId) {
+  return responseId === requestedId
+    || (requestedId === expectedModel && responseId === expectedBackendModel);
 }
 const expectedWindow = 65_536;
 const runtimeMetadataContext = null;
@@ -213,7 +214,7 @@ async function readModelMetadata(settingsOwner) {
   let data = null;
   try { data = await response.json(); } catch {}
   const models = Array.isArray(data?.data) ? data.data : [];
-  const model = models.find(item => matchesP3WireModelId(item?.id)) ?? null;
+  const model = models.find(item => matchesP3WireModelId(item?.id, expectedModel)) ?? null;
   return { status: response.status, elapsed_ms: Date.now() - started,
     model_id: model?.id ?? null,
     max_model_len: Number.isSafeInteger(model?.max_model_len) ? model.max_model_len : null };
@@ -229,7 +230,7 @@ async function liveCalls() {
   }
   const { settingsOwner, safeRoles, contextBudgets } = await loadConfig();
   const metadata = JSON.parse(await readFile(path.join(evidenceDir, 'model-metadata.json'), 'utf8'));
-  if (metadata.status !== 200 || !matchesP3WireModelId(metadata.model_id)) {
+  if (metadata.status !== 200 || !matchesP3WireModelId(metadata.model_id, expectedModel)) {
     throw new Error('P3_WIRE_MODEL_METADATA_MISMATCH');
   }
 
@@ -301,7 +302,7 @@ async function liveCalls() {
       try {
         const result = await runtime.roleRunner.run(before);
         const responseModel = result?.provider_record?.model ?? null;
-        if (!matchesP3WireModelId(responseModel)) modelMismatch = true;
+        if (!matchesP3WireModelId(responseModel, expectedModel)) modelMismatch = true;
         attempts.push({ attempt: index + 1, role_id: before.role_id,
           status: modelMismatch ? 'stopped_unexpected_response_model' : 'ok',
           response_model_id: responseModel,
@@ -315,7 +316,7 @@ async function liveCalls() {
       }
       const wire = liveWire.at(-1);
       if (wire && wire.status >= 200 && wire.status < 300
-          && !matchesP3WireModelId(wire.response_model_id)) modelMismatch = true;
+          && !matchesP3WireModelId(wire.response_model_id, expectedModel)) modelMismatch = true;
       if (wire && wire.status != null && (wire.status < 200 || wire.status >= 300)) continue;
       if (modelMismatch) break;
     }
@@ -347,7 +348,7 @@ async function liveCalls() {
   const successfulCalls = attemptsWithWire.length === liveCallTarget
     && attemptsWithWire.every(({ http_status, response_model_id, prompt_tokens,
       completion_tokens, total_tokens }) => http_status === 200
-        && matchesP3WireModelId(response_model_id)
+        && matchesP3WireModelId(response_model_id, expectedModel)
         && Number.isSafeInteger(prompt_tokens)
         && Number.isSafeInteger(completion_tokens)
         && Number.isSafeInteger(total_tokens));

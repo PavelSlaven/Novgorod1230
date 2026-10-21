@@ -39,7 +39,13 @@ import {
 import { validateRuntimeInstanceMechanics } from '@rus/items-property';
 
 export { buildNpcActionDecisionRequest, validateNpcActionDecisionRequest } from './semantic-decision-request-contract.js';
-export { buildNpcActionDecisionRequestFromSnapshots, npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from './npc-safe-request-projector.js';
+export {
+  buildNpcActionDecisionRequestFromSnapshots,
+  npcSafeSnapshotHasEntityEvidence,
+  projectNpcConversationSubject,
+  projectNpcSafeResourceSnapshots,
+  projectNpcSafeSubject
+} from './npc-safe-request-projector.js';
 
 function validateInterpretation(value) {
   return exactKeys(value, ['npc_goal', 'grounded_attempt', 'adaptation'])

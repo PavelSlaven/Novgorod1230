@@ -11,11 +11,11 @@ import {
 
 test('only surrender activates the party-local commitment and projects the knife transition signals', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
-  const ratsha = contracts.actors.ratsha_storehouse_helper;
   const persistenceMarker =
     'ratsha-private-request-knowledge-must-not-reach-state-payload';
-  ratsha.knowledge_profile_snapshot.private_persistence_marker =
-    persistenceMarker;
+  const ratsha = contracts.actors.ratsha_storehouse_helper;
+  const ratshaRoleRef = ratsha.role_ref;
+  ratsha.role_ref = { ...ratshaRoleRef, id: persistenceMarker };
   const surrender = await runPhase4({
     state,
     contracts,
@@ -27,10 +27,10 @@ test('only surrender activates the party-local commitment and projects the knife
     checkRequest
   });
   assert.equal(
-    surrender.npcRequest.knowledge.private_persistence_marker,
+    surrender.npcRequest.npc.social_role.role_ref,
     persistenceMarker
   );
-  delete ratsha.knowledge_profile_snapshot.private_persistence_marker;
+  ratsha.role_ref = ratshaRoleRef;
   const surrenderedState = projectPhase4Negotiation({
     state,
     contracts,
@@ -72,5 +72,5 @@ test('only surrender activates the party-local commitment and projects the knife
     checkResult: checkResult(contracts.check.check_id, 'success'),
     offerStage,
     checkRequest
-  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  }), { code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE' });
 });

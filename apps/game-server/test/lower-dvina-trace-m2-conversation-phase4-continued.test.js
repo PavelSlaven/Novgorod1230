@@ -69,8 +69,7 @@ test('Ratsha responds once to the post-elapsed surrender demand boundary', async
   );
   assert.deepEqual(
     exchange.npcRequest.knowledge,
-    currentContracts.actors.ratsha_storehouse_helper
-      .knowledge_profile_snapshot
+    { beliefs: [], hypotheses: [], known_facts: [] }
   );
 });
 
@@ -137,17 +136,17 @@ test('Ratsha check admission maps success to surrender and failure to hostile fo
     }
   }
   for (const [index, [responseKind, band, code]] of [
-    ['lie', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['bargain', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['speech', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['silence', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['leave_conversation', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['combat_handoff', 'success', 'TURN_NPC_PLAN_INVALID'],
-    ['surrender', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['lie', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['speech', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['silence', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['leave_conversation', 'severe_failure', 'TURN_NPC_PLAN_INVALID']
+    ['lie', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['bargain', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['speech', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['silence', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['leave_conversation', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['combat_handoff', 'success', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['surrender', 'severe_failure', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['lie', 'severe_failure', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['speech', 'severe_failure', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['silence', 'severe_failure', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'],
+    ['leave_conversation', 'severe_failure', 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE']
   ].entries()) {
     await assert.rejects(runPhase4({ state, contracts,
       rawText: 'Что ты ответишь?', inputDigest: digest('0123456789a'[index]),
@@ -173,7 +172,7 @@ test('Ratsha combat handoff rejects a target outside the request safe context',
         plan.handoff.target_actor_refs = [ref('npc', 'unknown-target')];
         return plan;
       }
-    }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
+    }), ({ code }) => code === 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
   });
 
 test('player combat handoff reaches the persisted combat boundary', async () => {

@@ -7,12 +7,20 @@ import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } fr
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
-import { currentSceneObservationProjection, ownNpcProjection } from
+import { projectNpcConversationSubject } from '@rus/npc-runtime';
+import { currentSceneObservationProjection } from
   '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const subjectOf = (extra = {}) => projectNpcConversationSubject({
+  npc_ref: ref('npc', 'npc-1'),
+  npc_snapshot: { instance_id: 'npc-1' },
+  current_activity_snapshot: { status: 'idle', can_continue_automatically: false },
+  ...extra
+});
+const subject = subjectOf();
 function request(required = {}) {
   return {
     schema: 'npc_conversation_response_request_v1', request_id: 'npc-request',
@@ -20,11 +28,12 @@ function request(required = {}) {
     state_version: 1, requested_at: { whole_minutes: '1', subminute_numerator: '0', subminute_denominator: '1' },
     npc_ref: ref('npc', 'npc-1'), decision_reasons: { significance: 'material', categories: ['communication'],
       signal_refs: [ref('npc_decision_signal', 'signal-1')], perceived_changes: ['Игрок обратился к NPC.'] },
-    npc: {}, perceived_message: { source_statement_ref: ref('conversation_statement', 'statement-1'),
+    npc: subject.npc, perceived_message: { source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1') },
-    public_conversation_history: [], knowledge: {}, memory: {}, social_context: {}, available_resources: [],
+    public_conversation_history: [], knowledge: subject.knowledge, memory: subject.memory, social_context: {}, available_resources: subject.available_resources,
     allowed_references: { actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
-      entity_refs: [ref('item', 'item-1')], knowledge_refs: [], combat_target_refs: [] },
+      entity_refs: [ref('item', 'item-1')], knowledge_refs: [...subject.knowledge_refs],
+      combat_target_refs: [] },
     decision_scope: { conversation_mode: true, action_handoff_available: false, combat_handoff_available: false,
       allowed_attribute_refs: ['influence'], allowed_skill_refs: ['conversation'], allowed_check_profile_refs: ['hard'],
       allowed_duration_classes: ['domain_owned'], operation_contract: { emit_interaction: {} }, ...required }
@@ -71,7 +80,7 @@ test('speech audit rejects invented past work from a current schedule',
       status: 'active',
       summary: 'Сейчас осматривает и чинит принадлежащие ему сети.'
     } } };
-    input.memory = { records: [], received_messages: [] };
+    input.memory = { recent_events: [], received_messages: [] };
     const unsupported = plan(input);
     unsupported.speech.utterance_text =
       'На рассвете я был у реки и проверял сети.';
@@ -98,7 +107,7 @@ test('speech audit rejects invented past work from a current schedule',
     assert.match(fixture.calls[0].messages[0].content,
       /memory\.current_observations grounds only its exact present fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Mandatory failure: when memory\.records has no exact supporting record/u);
+      /Mandatory failure: when memory\.recent_events has no exact supporting event/u);
     assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 
@@ -107,7 +116,7 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
   input.npc = { machine_state: { current_activity: {
     status: 'active', summary: 'Сейчас перебирает верёвки.'
   } } };
-  input.memory = { records: [], received_messages: [] };
+  input.memory = { recent_events: [], received_messages: [] };
   const unsupported = plan(input);
   unsupported.speech.utterance_text =
     'Вчера до твоего прихода я видел людей у переправы.';
@@ -142,9 +151,9 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
 test('first-contact identity and guarded behavior are required and repaired',
   async () => {
     const input = request();
-    input.npc = { identity_state: { canonical_name: 'Еремей' } };
+    input.npc = { identity: { name_or_label: 'Еремей' } };
     input.social_context = {
-      first_contact_introduction: { canonical_name: 'Еремей' },
+      first_contact_introduction: {},
       npc_behavior: { required_interaction_tag: 'withhold' }
     };
     const incomplete = plan(input);
@@ -212,9 +221,9 @@ test('semantic repair rejects a changed speech act or contribution kind', async 
       revalidateStateVersion: async () => input.state_version,
       maxRepairAttempts: 1
     }), (error) => {
-      assert.equal(error.code, 'TURN_NPC_MODEL_FAILED');
-      assert.equal(error.details.cause,
-        'NPC semantic repair must preserve contribution kind and speech act.');
+      assert.equal(error.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+      assert.equal(error.details.category, 'semantic');
+      assert.deepEqual(error.details.repair_kinds_used, ['semantic']);
       return true;
     });
     assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
@@ -232,9 +241,9 @@ test('semantic repair passes the original response and cited facts to the model'
       source_type: 'direct_perception', observed_at: input.requested_at,
       fact_text: 'На очаге не видно пламени.'
     };
-    input.memory = { records: [], received_messages: [],
-      current_observations: [observation] };
-    input.allowed_references.knowledge_refs.push(observation.observation_ref);
+    const observed = subjectOf({ current_observations: [observation] });
+    input.memory = observed.memory;
+    input.allowed_references.knowledge_refs = observed.knowledge_refs;
     const original = plan(input);
     original.speech.claims = [{ claim_id: 'fire',
       content_summary: observation.fact_text, form: 'assertion',
@@ -278,8 +287,12 @@ test('a grounded model repair is accepted after the first speech audit fails',
       ...input.decision_reasons, state_version: String(input.state_version)
     });
     input.boundary_id = boundary.boundary_id;
-    input.npc = { identity_state: { canonical_name: 'Еремей' } };
-    input.memory = { records: [], received_messages: [] };
+    input.npc = projectNpcConversationSubject({ npc_ref: input.npc_ref,
+      npc_snapshot: { instance_id: 'npc-1',
+        identity_state: { canonical_name: 'Еремей' } },
+      current_activity_snapshot: { status: 'idle',
+        can_continue_automatically: false } }).npc;
+    input.available_resources = input.npc.available_resources;
     input.public_conversation_history = [{
       speaker_ref: ref('player_character', 'player-1'),
       utterance_text: 'Спрашиваю про лодочника Онисима и крушение.'
@@ -315,8 +328,7 @@ test('a grounded model repair is accepted after the first speech audit fails',
     ]);
     const repairInput = JSON.parse(fixture.calls[2].messages[1].content);
     assert.deepEqual(repairInput.request, input);
-    assert.deepEqual(repairInput.original_output,
-      assembleNpcConversationPlan(original, input));
+    assert.deepEqual(repairInput.original_output, original);
     assert.deepEqual(repairInput.validation_errors, [{
       code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
       category: 'semantic_grounding', retryable: true,
@@ -346,7 +358,8 @@ test('two grounding failures return a typed error without a canned NPC response'
     validateFreshPlan: model.validateFreshPlan,
     revalidateStateVersion: async () => input.state_version,
     maxRepairAttempts: 1
-  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  }), (error) => error.code === 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'
+    && error.details.category === 'semantic');
   assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
     'npc_conversation_responder', 'npc_conversation_grounding_auditor',
     'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor'
@@ -361,7 +374,9 @@ test('two grounding failures return a typed error without a canned NPC response'
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();
   input.allowed_references.entity_refs.push(ref('route', 'route-1'));
-  input.allowed_references.knowledge_refs.push(ref('knowledge_scope', 'knowledge-1'));
+  input.allowed_references.knowledge_refs = subjectOf({
+    additional_knowledge_refs: [ref('knowledge_scope', 'knowledge-1')]
+  }).knowledge_refs;
   input.decision_scope.operation_contract = { disclose_known_route: { owner: '@rus/visibility-knowledge-memory',
     route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1' } };
   const [, candidate] = npcConversationCandidates(input);
@@ -387,9 +402,10 @@ test('conversation production model receives planner-selected role, material, an
   const input = request();
   input.requested_at = { whole_minutes: String(365 * 1440),
     subminute_numerator: '0', subminute_denominator: '1' };
-  input.npc = ownNpcProjection({ ref: input.npc_ref, instance_id: 'npc-1',
-    role_ref: { id: 'nov_role_fisher', source: 'approved_scenario_profile' },
-    identity_state: {}, machine_state: {} });
+  input.npc = projectNpcConversationSubject({ npc_ref: input.npc_ref,
+    npc_snapshot: { instance_id: 'npc-1',
+      role_ref: { id: 'nov_role_fisher', source: 'approved_scenario_profile' },
+      identity_state: {}, machine_state: {} } }).npc;
   input.actor = { role_ref: 'untrusted-role' };
   input.npc_safe_state = { role_ref: 'untrusted-safe-role' };
   let query;

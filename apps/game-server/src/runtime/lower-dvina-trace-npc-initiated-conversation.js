@@ -10,12 +10,10 @@ import {
   createM2ConversationContext,
   executeM2ConversationExchange
 } from './lower-dvina-trace-m2-conversation-exchange.js';
-import {
-  allowedNpcContributionReferences,
-  ownKnowledgeProjection,
-  ownMemoryProjection,
-  ownNpcProjection
-} from './lower-dvina-trace-m2-conversation-projections.js';
+import { allowedNpcContributionReferences } from
+  './lower-dvina-trace-m2-conversation-projections.js';
+import { npcConversationSubject } from
+  './lower-dvina-trace-m2-conversation-subject.js';
 import { classifyOrdinaryConversationPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import { PHASE7_REST_PROGRESS_EFFECT_REF } from
@@ -132,8 +130,8 @@ function conversationActorRefs(state, npc, operation) {
 
 function initialDecision({ context, npc, operation, actorStepRequest }) {
   const npcRef = ref('npc', npc.instance_id);
-  const subjectiveNpc = { ...npc, ref: npcRef,
-    knowledge_records: npc.knowledge_records ?? [] };
+  const subject = npcConversationSubject({
+    actor: npc, npcRef, state: context.state });
   const signal = buildNpcDecisionSignal({ occurred_at: context.state.clock,
     category: 'objective', significance: 'material', source_event_ref:
       ref('npc_actor_step_request', actorStepRequest.request_id),
@@ -154,12 +152,14 @@ function initialDecision({ context, npc, operation, actorStepRequest }) {
       categories: structuredClone(boundary.categories),
       signal_refs: structuredClone(boundary.signal_refs),
       perceived_changes: ['NPC initiated a conversation.'] },
-    npc: ownNpcProjection(subjectiveNpc), perceived_message: null,
-    public_conversation_history: [], knowledge: ownKnowledgeProjection(subjectiveNpc),
-    memory: ownMemoryProjection(subjectiveNpc, context.state, npcRef), social_context: {
+    npc: subject.npc, perceived_message: null,
+    public_conversation_history: [], knowledge: subject.knowledge,
+    memory: subject.memory, social_context: {
       delivery_cues: [], claims_are_speaker_assertions_not_objective_truth: true,
-      conversation_goal: operation.conversation_goal }, available_resources: [],
-    allowed_references: allowedNpcContributionReferences(context),
+      conversation_goal: operation.conversation_goal },
+    available_resources: subject.available_resources,
+    allowed_references: allowedNpcContributionReferences(context, {
+      knowledgeRefs: subject.knowledge_refs }),
     decision_scope: { conversation_mode: true, action_handoff_available: false,
       combat_handoff_available: false, allowed_attribute_refs: [],
       allowed_skill_refs: [], allowed_check_profile_refs: [],

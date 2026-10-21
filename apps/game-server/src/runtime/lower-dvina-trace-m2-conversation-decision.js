@@ -5,9 +5,6 @@ import {
 import {
   allowedNpcContributionReferences,
   currentSceneObservationProjection,
-  ownKnowledgeProjection,
-  ownMemoryProjection,
-  ownNpcProjection,
   perceivedChanges,
   receivedConversationMessage,
   visibleConversationContributionFor
@@ -20,8 +17,11 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { fullyPerceivedCurrentOffer } from
   './lower-dvina-trace-m2-conversation-offer-privacy.js';
-import { npcConversationDecisionCapability, npcPresentationContext } from
+import { npcCharacterProfile, npcConversationDecisionCapability,
+  npcPresentationContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
+import { npcConversationSubject } from
+  './lower-dvina-trace-m2-conversation-subject.js';
 import { projectCampFireState } from
   './lower-dvina-trace-player-safe-state.js';
 export function buildNpcBoundary(context, working) {
@@ -71,6 +71,13 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
   const currentObservations = currentSceneObservationProjection(
     context.state, currentScene.sensory_details
   );
+  const subject = npcConversationSubject({
+    actor: context.targetActor,
+    npcRef: context.targetRef,
+    state: context.state,
+    currentObservations,
+    character: npcCharacterProfile(context)
+  });
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
     request_id: `npc-conversation-request:${boundary.boundary_id}:${
@@ -89,7 +96,7 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
         presentedEvidenceRecognized
       })
     },
-    npc: ownNpcProjection(context.targetActor),
+    npc: subject.npc,
     perceived_message: perceivedMessage === undefined ? null : {
       source_statement_ref: perceivedMessage.source_statement_ref,
       perception_result_ref: perceivedMessage.perception_result_ref
@@ -100,13 +107,8 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
       perceivedMessage,
       latestContribution
     ),
-    knowledge: ownKnowledgeProjection(context.targetActor),
-    memory: ownMemoryProjection(
-      context.targetActor,
-      context.state,
-      context.targetRef,
-      currentObservations
-    ),
+    knowledge: subject.knowledge,
+    memory: subject.memory,
     social_context: {
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
@@ -121,21 +123,11 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
           }
         : {})
     },
-    available_resources: context.phase === 'phase_4'
-      && context.targetRef.entity_id === context.contracts.actors
-        ?.ratsha_storehouse_helper?.instance_id
-      ? [{
-          resource_ref: context.contracts.knifeTransition
-            .transition_profile_id,
-          current_access: 'self_controlled_until_committed_surrender'
-      }]
-      : [],
+    available_resources: subject.available_resources,
     allowed_references: allowedNpcContributionReferences(context, {
       entityRefs: presentedEvidenceRecognized
         ? [ref('evidence', context.contracts.ids.evidence)] : [],
-      knowledgeRefs: currentObservations.map(
-        ({ observation_ref: observationRef }) => observationRef
-      )
+      knowledgeRefs: subject.knowledge_refs
     }),
     decision_scope: {
       conversation_mode: true,

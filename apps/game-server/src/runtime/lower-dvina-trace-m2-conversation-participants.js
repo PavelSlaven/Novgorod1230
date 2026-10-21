@@ -64,11 +64,22 @@ export function npcConversationDecisionCapability(context) {
     || actorLocation === playerLocation;
 }
 
+function isEremeyPhase3(context) {
+  return context.phase === 'phase_3'
+    && context.targetActor?.ref === context.contracts.ids?.eremeyRef;
+}
+
+export function npcCharacterProfile(context) {
+  if (!isEremeyPhase3(context)) return null;
+  return {
+    goals: context.contracts.npcPolicy.goals,
+    fears: context.contracts.npcPolicy.fears,
+    stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded'
+  };
+}
+
 export function npcPresentationContext(context, latestContribution) {
-  if (context.phase !== 'phase_3'
-      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef) {
-    return {};
-  }
+  if (!isEremeyPhase3(context)) return {};
   const name = context.targetActor?.identity_state?.canonical_name;
   const greeted = latestContribution?.speaker_ref?.entity_kind
       === 'player_character'
@@ -87,15 +98,10 @@ export function npcPresentationContext(context, latestContribution) {
     : null;
   return {
     ...(greeted && typeof name === 'string' && name.trim() && heardName === null
-      ? { first_contact_introduction: { canonical_name: name.trim() } } : {}),
-    npc_behavior: {
-      current_stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded',
-      goals: structuredClone(context.contracts.npcPolicy.goals),
-      fears: structuredClone(context.contracts.npcPolicy.fears),
-      ...(context.evidencePresented ? {} : {
-        required_interaction_tag: 'withhold'
-      })
-    }
+      ? { first_contact_introduction: {} } : {}),
+    ...(context.evidencePresented ? {} : {
+      npc_behavior: { required_interaction_tag: 'withhold' }
+    })
   };
 }
 

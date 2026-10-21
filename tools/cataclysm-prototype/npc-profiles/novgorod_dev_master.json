@@ -1,0 +1,190 @@
+{
+  "template_id": "novgorod_dev_master",
+  "npc_snapshot": {
+    "profile_level": "key",
+    "identity_state": {
+      "age_range": "средних лет",
+      "origin": "Руса"
+    },
+    "social_role": {
+      "role_ref": "nov_role_craftsman_master",
+      "status": "плотник, хозяин своего двора",
+      "authority": [],
+      "dependencies": []
+    },
+    "temperament": [
+      {
+        "temperament_ref": "novgorod-dev-master-temperament-1",
+        "summary": "Неторопливый и немногословный; говорит просто и коротко.",
+        "state": "steady",
+        "intensity": "high"
+      },
+      {
+        "temperament_ref": "novgorod-dev-master-temperament-2",
+        "summary": "Гордится своим ремеслом; на понукание и грубость не заискивает, отвечает сухо и с достоинством, может резко осадить.",
+        "state": "steady",
+        "intensity": "medium"
+      }
+    ],
+    "values": [
+      {
+        "value_ref": "novgorod-dev-master-value-1",
+        "summary": "Своё добро бережёт и чужому без спросу не даёт.",
+        "state": "held",
+        "intensity": "high"
+      },
+      {
+        "value_ref": "novgorod-dev-master-value-2",
+        "summary": "Держится обычая: церковь, пост и праздник — как у соседей.",
+        "state": "held",
+        "intensity": "medium"
+      }
+    ],
+    "goals": [
+      {
+        "goal_ref": "novgorod-dev-master-goal-1",
+        "summary": "Доделать начатую работу по дереву.",
+        "state": "active",
+        "priority": "medium"
+      },
+      {
+        "goal_ref": "novgorod-dev-master-goal-2",
+        "summary": "Никому не открывать, откуда у меня кресало.",
+        "state": "active",
+        "priority": "high"
+      }
+    ],
+    "fears": [
+      {
+        "fear_ref": "novgorod-dev-master-fear-1",
+        "summary": "Что про кресало дознаются и назовут меня вором.",
+        "state": "active",
+        "intensity": "medium"
+      }
+    ],
+    "obligations": []
+  },
+  "knowledge_snapshot": {
+    "known_facts": [
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-yard"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Этот двор — мой: здесь я живу и работаю.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-firesteel-years"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Кресалом я огонь развожу.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-secret-firesteel"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Кресало я когда-то подобрал на торгу: его обронил чужой человек, а я не вернул.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "claim:ordinary-life-carpenter-works-wood-with-tools"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Я плотник. Бревно и доску тешу топором, пазы и гнёзда выбираю долотом, прежде всё размечаю. От работы — щепа да стружка.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "claim:ha-firesteel-ignition"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Огонь я кресалом высекаю. Не всякий раз с первого удара займётся.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Днём в избе светло у двери, по углам темно. Вечером светит печь. Солнце сядет — а край неба ещё долго светлый, коли не облачно.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-house"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "На моём дворе изба, рублена из брёвен. В избе печь: ею и греюсь, и варю.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-work-now"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "У двери бревно лежит — его и тешу.",
+        "state": "known",
+        "confidence": "medium"
+      }
+    ],
+    "beliefs": [
+      {
+        "belief_ref": {
+          "entity_kind": "belief",
+          "entity_id": "novgorod-dev-master-belief-sun"
+        },
+        "source_event_ref": null,
+        "summary": "Солнце ходит по небу Божьим велением, как от века заведено: утром встаёт, вечером заходит.",
+        "state": "held",
+        "confidence": "certain"
+      },
+      {
+        "belief_ref": {
+          "entity_kind": "belief",
+          "entity_id": "novgorod-dev-master-belief-stranger"
+        },
+        "source_event_ref": null,
+        "summary": "Чужой человек мне не помеха, коли по делу пришёл; а к топору своему чужого не подпущу.",
+        "state": "held",
+        "confidence": "medium"
+      }
+    ],
+    "hypotheses": []
+  }
+}

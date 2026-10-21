@@ -292,8 +292,8 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
   );
   const persistenceMarker =
     'eremey-private-request-knowledge-must-not-reach-state-payload';
-  eremey.knowledge_profile_snapshot.private_persistence_marker =
-    persistenceMarker;
+  const eremeyRoleRef = eremey.role_ref;
+  eremey.role_ref = { ...eremeyRoleRef, id: persistenceMarker };
   const contracts = resolveTracePhase3Contracts({
     state,
     bundle: revision14Bundle
@@ -342,11 +342,10 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
   );
   assert.deepEqual(
     disclosed.npcRequest.knowledge,
-    contracts.actors.find(({ ref: actorRef }) =>
-      actorRef === 'eremey_fisher').knowledge_profile_snapshot
+    { beliefs: [], hypotheses: [], known_facts: [] }
   );
   assert.equal(
-    disclosed.npcRequest.knowledge.private_persistence_marker,
+    disclosed.npcRequest.npc.social_role.role_ref,
     persistenceMarker
   );
   const currentObservation = disclosed.npcRequest.memory
@@ -501,7 +500,7 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     /Private semantic exchange/u
   );
 
-  delete eremey.knowledge_profile_snapshot.private_persistence_marker;
+  eremey.role_ref = eremeyRoleRef;
   const phase3StatePayload = projectPhase3Conversation({
     state,
     contracts,

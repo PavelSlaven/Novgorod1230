@@ -11,7 +11,8 @@ import {
   buildNpcConversationResponseRequest,
   buildNpcDecisionBoundary,
   buildNpcDecisionSignal,
-  buildNpcSemanticDecisionTrace
+  buildNpcSemanticDecisionTrace,
+  projectNpcConversationSubject
 } from '@rus/npc-runtime';
 import { projectConversationAudience } from '@rus/visibility-knowledge-memory';
 import {
@@ -84,6 +85,15 @@ export function semanticWriterFixture() {
     signal_refs: [ref('npc_decision_signal', signal.signal_id)],
     state_version: '2'
   });
+  const subject = projectNpcConversationSubject({
+    npc_ref: npc,
+    npc_snapshot: { instance_id: 'eremey' },
+    current_activity_snapshot: {
+      status: 'idle',
+      can_continue_automatically: false
+    },
+    additional_knowledge_refs: [ref('knowledge_scope', 'eremey-route')]
+  });
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
     request_id: 'npc-conversation-request-1',
@@ -99,21 +109,21 @@ export function semanticWriterFixture() {
       signal_refs: [ref('npc_decision_signal', signal.signal_id)],
       perceived_changes: ['Услышан вопрос о дороге.']
     },
-    npc: {},
+    npc: subject.npc,
     perceived_message: {
       source_statement_ref:
         ref('conversation_statement', playerStatement.statement_id),
       perception_result_ref: playerPerception
     },
     public_conversation_history: [playerStatement],
-    knowledge: {},
-    memory: {},
+    knowledge: subject.knowledge,
+    memory: subject.memory,
     social_context: {},
-    available_resources: [],
+    available_resources: subject.available_resources,
     allowed_references: {
       actor_refs: [npc, player],
       entity_refs: [ref('route', 'camp-to-shed')],
-      knowledge_refs: [ref('knowledge_scope', 'eremey-route')],
+      knowledge_refs: subject.knowledge_refs,
       combat_target_refs: []
     },
     decision_scope: {

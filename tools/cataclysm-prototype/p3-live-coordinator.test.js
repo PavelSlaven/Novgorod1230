@@ -7,20 +7,28 @@ import path from 'node:path';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
 import { createLlmSettingsOwner } from '@rus/game-server';
-import { startP3LiveCoordinator } from './p3-live-coordinator.mjs';
+import { loadP3DevConfig, startP3LiveCoordinator } from './p3-live-coordinator.mjs';
 import { createP3RoleRuntime } from './p3-boundary.js';
 import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
 import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
+import { npcProjection } from './p3-test-frames.js';
+
+const withNpcs = (base, npcs) => ({ ...base, actors: [...base.actors, ...npcs],
+  npc_projections: npcs.map(({ actor_id: actorId, position, name }) =>
+    npcProjection(actorId, { position, name })) });
 
 const observation = { schema: 'p3_native_observation_v1', turn: 10, revision: 10,
   actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] }],
   items: [], targets: [{ target_ref: 'tile:east', position: [61, 60, 0] }] };
 
-test('wire accepts only configured Qwen alias and its backend id', () => {
-  assert.equal(matchesP3WireModelId('qwen3.8-27b-uncensored-w4a16-tp2'), true);
-  assert.equal(matchesP3WireModelId('qwen3.8-27b'), true);
-  assert.equal(matchesP3WireModelId('qwen3.8-27b-other'), false);
-  assert.equal(matchesP3WireModelId('qwen3.8-72b'), false);
+test('wire accepts the requested model id or the backend id of the configured alias only', () => {
+  const alias = 'qwen3.8-27b-uncensored-w4a16-tp2';
+  assert.equal(matchesP3WireModelId(alias, alias), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b', alias), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b', 'other-model'), false);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b-other', alias), false);
+  assert.equal(matchesP3WireModelId('qwen3.8-72b', alias), false);
+  assert.equal(matchesP3WireModelId('other-model', 'other-model'), true);
 });
 
 function plan(request, operation) {
@@ -35,7 +43,7 @@ function plan(request, operation) {
     direct_result_kind: null, reason_code: 'native_action', reason: 'Attempt a native action.' };
 }
 
-async function fixture(t, decide, decideNpc = null, execute = null) {
+async function fixture(t, decide, decideNpc = null, execute = null, config = null) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-live-'));
   const socketPath = process.platform === 'win32' ? `\\\\.\\pipe\\p3-live-${randomUUID()}`
     : path.join(dir, 'p3.sock');
@@ -45,8 +53,10 @@ async function fixture(t, decide, decideNpc = null, execute = null) {
       api_key: 'synthetic-test' } } });
   let calls = 0;
   const roles = [];
+  const journal = [];
   const coordinator = await startP3LiveCoordinator({ socketPath, settingsOwner, env: {},
-    ...(execute ? { execute } : {}),
+    journal: record => journal.push(record),
+    ...(execute ? { execute } : {}), ...(config ? { config } : {}),
     runtimeFactory: execute ? createP3RoleRuntime : ({ budget }) => {
       const runner = budget.wrap({ async run({ role_id, request }) {
         calls++;
@@ -63,7 +73,8 @@ async function fixture(t, decide, decideNpc = null, execute = null) {
         npcConversationModel };
     } });
   t.after(async () => { await coordinator.close(); await rm(dir, { recursive: true, force: true }); });
-  return { coordinator, get calls() { return calls; }, get roles() { return [...roles]; }, async client() {
+  return { coordinator, get calls() { return calls; }, get roles() { return [...roles]; },
+    get journal() { return [...journal]; }, async client() {
     const socket = connect(socketPath);
     const channel = createP3LiveChannel(socket);
     await once(socket, 'connect');
@@ -225,7 +236,7 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
           assert.equal(response.type, 'result');
           assert.equal(response.status, 'refused');
           assert.equal(response.code, 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
-          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается');
+          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается. Черновик, не сохранено.');
           assert.equal(response.applied_operations, 0);
           assert.equal(response.goal_result, 'not_achieved');
         } else {
@@ -248,10 +259,12 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
 
 test('witnesses, missing target, unheard target and vanished target do not call NPC model', async t => {
   const utterance = 'Слышите?';
-  const npc8 = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
-  const npc9 = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [60, 61, 0] };
-  const actors = [...observation.actors, npc8, npc9];
-  const sceneObservation = { ...observation, actors };
+  const npc8 = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const npc9 = { actor_ref: 'npc:9', actor_id: '9', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const { actors, ...sceneBase } = withNpcs(observation, [npc8, npc9]);
+  const sceneObservation = { ...sceneBase, actors };
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -302,9 +315,11 @@ test('witnesses, missing target, unheard target and vanished target do not call 
 
 test('confirmed native listener gets one NPC model reply and native speech', async t => {
   const utterance = 'Слышишь меня?';
-  const npc = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [61, 60, 0] };
-  const witness = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [60, 61, 0] };
-  const sceneObservation = { ...observation, actors: [...observation.actors, witness, npc] };
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const witness = { actor_ref: 'npc:8', actor_id: '8', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const sceneObservation = withNpcs(observation, [witness, npc]);
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -345,23 +360,165 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
   assert.equal(second.request.primitive, 'speak');
   assert.equal(second.request.actor_id, '9');
   assert.deepEqual(second.request.args, { utterance: 'Слышу.' });
+  assert.deepEqual(second.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
   channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
     operation_id: second.request.operation_id, status: 'applied', goal_result: 'achieved',
-    native_effect: { effect_status: 'confirmed', speakerId: '9', utterance: 'Слышу.',
-      actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
+    native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+      utterance: 'Слышу.', actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
   const result = await channel.receive();
   assert.equal(result.status, 'completed');
   assert.equal(result.applied_operations, 2);
   assert.equal(scene.calls, 3);
+  assert.equal(scene.journal.length, 1);
+  const [phrase] = scene.journal;
+  assert.deepEqual({ id: phrase.id, outcome: phrase.outcome, code: phrase.code,
+    category: phrase.category, calls: phrase.calls }, { id: '10', outcome: 'ok', code: null,
+    category: null, calls: 3 });
+  assert.ok(Number.isInteger(phrase.t_enter) && phrase.t_native_reply >= phrase.t_enter);
+  assert.equal(Object.hasOwn(phrase, 'script_respellings'), false);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_grounding_auditor']);
   socket.end();
 });
 
+test('Latin lookalikes in the NPC reply are respelled before native speech and journaled with the phrase', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const witness = { actor_ref: 'npc:8', actor_id: '8', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const sceneObservation = withNpcs(observation, [witness, npc]);
+  const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), request => ({
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: request.allowed_references.actor_refs[1],
+    intended_addressee_refs: [request.allowed_references.actor_refs[1]],
+    affected_actor_refs: [], speech: { utterance_text: 'Здpавствуй.',
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: 'brief', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' }));
+  const { socket, channel } = await scene.client();
+  channel.bind('10');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:9' });
+  assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+  const first = await channel.receive();
+  assert.equal(first.request.primitive, 'speak');
+  assert.deepEqual(first.request.references, { actors: [{ ref: 'npc:9', id: '9' }] });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['8', '9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: sceneObservation });
+  const npcPhase = await channel.receive();
+  assert.equal(npcPhase.role_id, 'npc_conversation_responder', JSON.stringify(npcPhase));
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_grounding_auditor');
+  const second = await channel.receive();
+  assert.equal(second.request.primitive, 'speak');
+  assert.equal(second.request.actor_id, '9');
+  assert.deepEqual(second.request.args, { utterance: 'Здравствуй.' });
+  assert.deepEqual(second.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: second.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+      utterance: 'Здравствуй.', actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'completed');
+  assert.equal(result.applied_operations, 2);
+  assert.equal(scene.calls, 3);
+  assert.equal(scene.journal.length, 1);
+  const [phrase] = scene.journal;
+  assert.deepEqual({ id: phrase.id, outcome: phrase.outcome, code: phrase.code,
+    category: phrase.category, calls: phrase.calls }, { id: '10', outcome: 'ok', code: null,
+    category: null, calls: 3 });
+  assert.ok(Number.isInteger(phrase.t_enter) && phrase.t_native_reply >= phrase.t_enter);
+  assert.deepEqual(phrase.script_respellings, [{ path: '$.speech.utterance_text',
+    before: 'Здpавствуй', after: 'Здравствуй' }]);
+  assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
+    'npc_conversation_grounding_auditor']);
+  socket.end();
+});
+
+test('dev config is seven calls per turn and rejects the process budget key', async () => {
+  assert.deepEqual(await loadP3DevConfig(), { turnCallBudget: 7, npcMaxRepairAttempts: 2 });
+  for (const config of [{ modelCallBudget: 30, npcMaxRepairAttempts: 1 },
+    { turnCallBudget: 7, modelCallBudget: 30, npcMaxRepairAttempts: 2 },
+    { turnCallBudget: 0, npcMaxRepairAttempts: 2 }, { turnCallBudget: 73, npcMaxRepairAttempts: 2 },
+    { turnCallBudget: 7, npcMaxRepairAttempts: 3 }]) {
+    await assert.rejects(startP3LiveCoordinator({ socketPath: 'unused', config }),
+      /P3_LIVE_CONFIG_INVALID/);
+  }
+});
+
+test('turn call limit refuses the extra call with its own text and resets on the next intent', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const sceneObservation = withNpcs(observation, [npc]);
+  const scene = await fixture(t, request => request.remaining_intent === utterance
+    ? { ...plan(request, {}), resolution: 'direct', goal_result: 'achieved', operations: [],
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+        utterance_text: utterance, input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } } }
+    : plan(request, { op: 'request_movement', actor_ref: 'avatar', target_ref: 'tile:east',
+      movement_kind: 'local' }), () => ({}), null, { turnCallBudget: 2, npcMaxRepairAttempts: 2 });
+  const first = await scene.client();
+  first.channel.bind('20');
+  first.channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:9' });
+  assert.equal((await first.channel.receive()).role_id, 'turn_step_planner');
+  const speech = await first.channel.receive();
+  first.channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: speech.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await first.channel.receive()).type, 'observe');
+  first.channel.send({ type: 'observation', observation: sceneObservation });
+  assert.equal((await first.channel.receive()).role_id, 'npc_conversation_responder');
+  const refused = await first.channel.receive();
+  assert.equal(refused.type, 'result');
+  assert.equal(refused.status, 'refused');
+  assert.equal(refused.code, 'P3_TURN_CALL_BUDGET_EXHAUSTED');
+  assert.equal(refused.applied_operations, 1);
+  assert.equal(refused.goal_result, 'partially_achieved');
+  assert.equal(refused.message, 'Предел вызовов модели на ход (2) исчерпан, ход остановлен. Черновик, не сохранено.');
+  assert.equal(scene.calls, 2);
+  assert.deepEqual(scene.journal.map(({ id, outcome, code, category, calls }) =>
+    ({ id, outcome, code, category, calls })), [{ id: '20', outcome: 'failure',
+    code: 'P3_TURN_CALL_BUDGET_EXHAUSTED', category: null, calls: 2 }]);
+  first.socket.end();
+  const second = await scene.client();
+  second.channel.bind('21');
+  second.channel.send({ type: 'intent', intent: 'Шаг на восток', observation });
+  assert.equal((await second.channel.receive()).role_id, 'turn_step_planner');
+  const move = await second.channel.receive();
+  second.channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: move.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed' }, before: { turn: 10 }, after: { turn: 11 } },
+    observation: { ...observation, turn: 11, revision: 11 } });
+  assert.equal((await second.channel.receive()).status, 'completed');
+  assert.equal(scene.coordinator.budget.turnCalls, 1);
+  assert.equal(scene.calls, 3);
+  second.socket.end();
+});
+
 test('two bad NPC replies stop after one repair without a native NPC operation', async t => {
   const utterance = 'Ответь';
-  const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
-  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const sceneObservation = withNpcs(observation, [npc]);
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
@@ -387,20 +544,71 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   assert.equal(result.status, 'refused');
   assert.equal(result.applied_operations, 1);
   assert.equal(result.goal_result, 'partially_achieved');
-  assert.equal(result.message, 'Выбранный собеседник не ответил.');
+  assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+  assert.equal(result.category, 'format');
+  assert.equal(result.message,
+    'Жирко: ответа нет — ответ модели не прошёл проверку формы. Черновик, не сохранено.');
   assert.equal(scene.calls, 3);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_responder_format_repair']);
+  assert.deepEqual(scene.journal.map(({ outcome, code, category, calls, t_native_reply }) =>
+    ({ outcome, code, category, calls, t_native_reply })), [{ outcome: 'failure',
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', category: 'format', calls: 3,
+    t_native_reply: null }]);
   socket.end();
+});
+
+test('another NPC failure after the player spoke names the listener and is not a contract verdict', async t => {
+  for (const [name, speaker] of [['Жирко', 'Жирко']]) {
+    await t.test(speaker, async t => {
+      const utterance = 'Ответь';
+      const npc = { actor_ref: 'npc:8', actor_id: '8', name,
+        visible: true, position: [61, 60, 0] };
+      const sceneObservation = withNpcs(observation, [npc]);
+      const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+        goal_result: 'achieved', operations: [],
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+          utterance_text: utterance, input_mode: 'verbatim',
+          delivery: { loudness: 2, duration_class: 'brief' } } }), () => {
+        throw new Error('backend down');
+      });
+      const { socket, channel } = await scene.client();
+      channel.bind('12');
+      channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+        target_actor_ref: 'npc:8' });
+      await channel.receive();
+      const first = await channel.receive();
+      channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+        operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+        native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+          actualHeardListenerIds: ['8'] }, before: { turn: 10 }, after: { turn: 10 } } });
+      assert.equal((await channel.receive()).type, 'observe');
+      channel.send({ type: 'observation', observation: sceneObservation });
+      assert.equal((await channel.receive()).role_id, 'npc_conversation_responder');
+      const result = await channel.receive();
+      assert.equal(result.code, 'TURN_NPC_MODEL_FAILED');
+      assert.equal(Object.hasOwn(result, 'category'), false);
+      assert.equal(result.message,
+        `${speaker}: ответа нет — обработка ответа прервана. Черновик, не сохранено.`);
+      assert.doesNotMatch(result.message, /Мастер|не ответил/u);
+      assert.deepEqual(scene.journal.map(({ outcome, code, category }) =>
+        ({ outcome, code, category })), [{ outcome: 'failure', code: 'TURN_NPC_MODEL_FAILED',
+        category: null }]);
+      socket.end();
+    });
+  }
 });
 
 test('registered NPC responder repairs grounding through the real role path', async t => {
   for (const repairAccepted of [true, false]) {
     await t.test(repairAccepted ? 'accepted repair speaks its exact words' : 'rejected repair stays silent', async t => {
       const utterance = 'На площади волк. Ты видел его раньше?';
-      const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
-      const witness = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [60, 61, 0] };
-      const sceneObservation = { ...observation, actors: [...observation.actors, npc, witness] };
+      const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+        position: [61, 60, 0] };
+      const witness = { actor_ref: 'npc:9', actor_id: '9', name: 'Ратибор', visible: true,
+        position: [60, 61, 0] };
+      const sceneObservation = withNpcs(observation, [npc, witness]);
       const roles = [];
       const responderInputs = [];
       const responderOutputs = [];
@@ -461,10 +669,12 @@ test('registered NPC responder repairs grounding through the real role path', as
         assert.equal(next.request.actor_id, '8');
         assert.equal(next.request.primitive, 'speak');
         assert.deepEqual(next.request.args, { utterance: repairedUtterance });
+        assert.deepEqual(next.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
         channel.send({ type: 'readback', readback: {
           schema: 'p3_native_operation_readback_v1', operation_id: next.request.operation_id,
           status: 'applied', goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
-            speakerId: '8', utterance: repairedUtterance, actualHeardListenerIds: ['7'] },
+            speakerId: '8', contribution_kind: 'speech', utterance: repairedUtterance,
+            actualHeardListenerIds: ['7'] },
           before: { turn: 11 }, after: { turn: 12 } } });
       } else {
         assert.equal(next.type, 'result');
@@ -474,9 +684,11 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.equal(result.status, repairAccepted ? 'completed' : 'refused');
       assert.equal(result.applied_operations, repairAccepted ? 2 : 1);
       if (!repairAccepted) {
-        assert.equal(result.code, 'TURN_NPC_PLAN_INVALID');
+        assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+        assert.equal(result.category, 'semantic');
         assert.equal(result.goal_result, 'partially_achieved');
-        assert.equal(result.message, 'Выбранный собеседник не ответил.');
+        assert.equal(result.message,
+          'Жирко: ответа нет — ответ модели не прошёл проверку смысла. Черновик, не сохранено.');
       }
       assert.deepEqual(roles, ['turn_step_planner', 'npc_conversation_responder',
         'npc_conversation_grounding_auditor', 'npc_conversation_responder_format_repair',
@@ -484,15 +696,39 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.equal(responderInputs.length, 2);
       assert.equal(audits, 2);
       assert.equal(scene.coordinator.budget.calls, 5);
+      assert.equal(scene.journal.length, 1);
+      const [phrase] = scene.journal;
+      assert.equal(phrase.id, repairAccepted ? '201' : '202');
+      assert.deepEqual(phrase.roles.map(({ role_id, repair_kind, ok }) =>
+        ({ role_id, repair_kind, ok })), [['turn_step_planner', null],
+        ['npc_conversation_responder', null], ['npc_conversation_grounding_auditor', null],
+        ['npc_conversation_responder_format_repair', 'semantic'],
+        ['npc_conversation_grounding_auditor', null]].map(([role_id, repair_kind]) =>
+        ({ role_id, repair_kind, ok: true })));
+      assert.ok(phrase.roles.every(({ ms }) => Number.isInteger(ms) && ms >= 0));
+      assert.deepEqual({ outcome: phrase.outcome, code: phrase.code, category: phrase.category,
+        calls: phrase.calls }, repairAccepted
+        ? { outcome: 'repair', code: null, category: null, calls: 5 }
+        : { outcome: 'failure', code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE',
+          category: 'semantic', calls: 5 });
+      assert.ok(Number.isInteger(phrase.t_enter));
+      if (repairAccepted) assert.ok(phrase.t_native_reply >= phrase.t_enter);
+      else assert.equal(phrase.t_native_reply, null);
       const perceptionRef = { entity_kind: 'perception_result',
         entity_id: `p3-heard-${playerOperation.request.operation_id}-8` };
       assert.deepEqual(responderInputs[0].npc_ref, { entity_kind: 'npc', entity_id: '8' });
       assert.deepEqual(responderInputs[0].memory, { current_observations: [{
         observation_ref: perceptionRef,
-        fact_text: `NPC услышал реплику игрока ${JSON.stringify(utterance)}.` }] });
+        fact_text: `Слышу реплику, обращённую ко мне. Говорящий: незнакомый человек. Слова: «${utterance}».`,
+        observed_at: { whole_minutes: '0', subminute_numerator: '11', subminute_denominator: '60' },
+        source_type: 'direct_perception' }], recent_events: [] });
       assert.deepEqual(responderInputs[0].perceived_message.perception_result_ref, perceptionRef);
-      assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [perceptionRef]);
-      assert.deepEqual(responderInputs[0].knowledge, {});
+      assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [
+        { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' },
+        { entity_kind: 'npc_identity', entity_id: '8' }, perceptionRef]);
+      assert.deepEqual(responderInputs[0].knowledge, { known_facts: [{
+        fact_ref: { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' }, state: 'known',
+        summary: 'Я мужчина.' }], beliefs: [] });
       assert.deepEqual(responderInputs[1].request, responderInputs[0]);
       assert.deepEqual(responderInputs[1].original_output.speech, responderOutputs[0].speech);
       assert.equal(responderInputs[1].validation_errors[0].category, 'semantic_grounding');

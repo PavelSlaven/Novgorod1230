@@ -1,0 +1,128 @@
+[
+  {
+    "id": "flint_steel",
+    "copy-from": "flint_steel",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "кресало", "str_pl": "кресала" },
+    "description": "Стальное кресало с кремнём: им высекают искру на трут, чтобы развести огонь."
+  },
+  {
+    "id": "tinder",
+    "copy-from": "tinder",
+    "type": "ITEM",
+    "subtypes": [ "AMMO" ],
+    "name": { "str_sp": "трут" },
+    "description": "Сухой трут: мелко разделённый горючий материал, легко занимается от искры."
+  },
+  {
+    "id": "firewood",
+    "copy-from": "firewood",
+    "type": "ITEM",
+    "name": { "str": "полено", "str_pl": "поленья" },
+    "description": "Колотое полено для очага; горит долго и ровно."
+  },
+  {
+    "id": "stick",
+    "copy-from": "stick",
+    "type": "ITEM",
+    "name": { "str": "палка", "str_pl": "палки" },
+    "description": "Ровная крепкая палка по руке: можно опереться, можно и ударить."
+  },
+  {
+    "id": "stick_common",
+    "copy-from": "stick_common",
+    "type": "ITEM",
+    "name": { "str": "кривая палка", "str_pl": "кривые палки" },
+    "description": "Палка в руку толщиной, чуть кривая: для поделок почти не годится, и бить ею неудобно."
+  },
+  {
+    "id": "tunic",
+    "copy-from": "tunic",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "рубаха", "str_pl": "рубахи" },
+    "description": "Простая длинная рубаха до колен."
+  },
+  {
+    "id": "loincloth_fur",
+    "copy-from": "loincloth_fur",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "меховая набедренная повязка", "str_pl": "меховые набедренные повязки" },
+    "description": "Меховая шкура, повязанная на бёдрах."
+  },
+  {
+    "id": "footrags_leather",
+    "copy-from": "footrags_leather",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "кожаные обмотки на ноги (пара)" },
+    "description": "Куски кожи, обмотанные вокруг ступней; лучше, чем босиком."
+  },
+  {
+    "id": "leather_pouch",
+    "copy-from": "leather_pouch",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "кожаный кошель", "str_pl": "кожаные кошели" },
+    "description": "Небольшой кошель из кожи, подвешенный к поясу; в него влезает мелочь вроде кресала и трута."
+  },
+  {
+    "id": "straw_basket",
+    "copy-from": "straw_basket",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "соломенная корзина", "str_pl": "соломенные корзины" },
+    "description": "Плетённая из соломы корзина для мелкой поклажи."
+  },
+  {
+    "id": "ax",
+    "copy-from": "ax",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "плотницкий топор", "str_pl": "плотницкие топоры" },
+    "description": "Плотницкий топор на деревянном топорище."
+  },
+  {
+    "id": "chisel",
+    "copy-from": "chisel",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "долото", "str_pl": "долота" },
+    "description": "Долото плотника: им выбирают пазы и гнёзда."
+  },
+  {
+    "id": "pants",
+    "copy-from": "pants",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "порты" },
+    "description": "Простые порты, собранные по ноге.",
+    "variants": []
+  },
+  {
+    "id": "leather_belt",
+    "copy-from": "leather_belt",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "кожаный пояс", "str_pl": "кожаные пояса" },
+    "description": "Кожаный ремень с пряжкой."
+  },
+  {
+    "id": "footrags_wool",
+    "copy-from": "footrags_wool",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "онучи" },
+    "description": "Полосы ткани, которые мотают вокруг стопы и голени."
+  },
+  {
+    "id": "mocassins",
+    "copy-from": "mocassins",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "поршни" },
+    "description": "Мягкая кожаная обувь из цельного куска."
+  }
+]

@@ -1361,9 +1361,57 @@ NPC-safe context. `primary_addressee_ref`, `intended_addressee_refs`,
 — в `combat_target_refs`. Синтаксически корректная, но отсутствующая в этих
 наборах ссылка отклоняется до factual commit.
 
+### 24.1. Форма `npc`, `knowledge` и `memory`
+
+Поля `npc`, `knowledge` и `memory` имеют форму одноимённых полей
+`npc_action_decision_request_v1` (`npc_autonomous_decision_contract.md` §15).
+Их строит одна общая NPC-safe проекция `@rus/npc-runtime` из сохранённых
+снимков NPC. Второй формы тех же понятий для разговора нет.
+
+- `npc`: `profile_level`; `identity {name_or_label, age_range, origin}`;
+  `social_role {role_ref, status, authority[], dependencies[]}`;
+  `attributes[]`; `skills[]`; `body_state`; `mood`;
+  `temperament[] {temperament_ref, summary, state, intensity}`;
+  `values[] {value_ref, summary, state, intensity}`;
+  `goals[] {goal_ref, summary, state, priority}`;
+  `fears[] {fear_ref, summary, state, intensity}`;
+  `obligations[] {obligation_ref, actor_ref, summary, status}`;
+  `relationships[] {relationship_ref, actor_ref, relation, status, trust, hostility, dependency}`;
+  `current_activity {activity_ref, summary, status, can_continue_automatically}`;
+  `available_resources[]`. Поле `available_resources` верхнего уровня запроса
+  совпадает с `npc.available_resources` той же проекции.
+- `knowledge`:
+  `known_facts[] {fact_ref, source_event_ref, resource_ref, process_ref, summary, state, confidence}`;
+  `beliefs[] {belief_ref, source_event_ref, summary, state, confidence}`;
+  `hypotheses[] {hypothesis_ref, source_event_ref, summary, state, confidence}`.
+  Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
+- `memory`: `recent_events[]` и `relevant_long_term_events[]`
+  `{event_ref, source_event_ref, summary, occurred_at}`;
+  `previous_decisions[] {request_ref, boundary_ref}`. Разговор добавляет
+  `current_observations[] {observation_ref, source_type: "direct_perception", observed_at, fact_text}`
+  и `received_messages[]` — записи §33.1, полученные этим NPC как слушателем.
+- `state` и `confidence` берут значения из словарей автономного контракта;
+  `occurred_at` и `observed_at` — игровое время; `summary` и `fact_text` —
+  строки.
+- Ссылка — EntityRef `{entity_kind, entity_id}`. Ref известного факта
+  (`known_fact`), убеждения (`belief`), гипотезы (`hypothesis`), события
+  памяти (`memory_event`), наблюдения (`perception_result`) и идентичности
+  NPC (`npc_identity`) входит в `allowed_references.knowledge_refs` в
+  каноническом порядке. Ref видимой вещи входит в `entity_refs`.
+- Поле личности, которого нет в сохранённом снимке, остаётся контрактным
+  `null` или пустым массивом. Код сценария его не подставляет.
+
+Разговорная память. Сырая запись — `{kind: heard | said | silence,
+speaker_ref, listener_ref, text, turn}`; её хранит владелец состояния мира
+(в живом пути CDDA — значения самого NPC). Схему записи и её проекцию в
+`memory.recent_events` и `public_conversation_history` задаёт
+`@rus/visibility-knowledge-memory`; запрос собирает `@rus/npc-runtime`.
+В живом пути CDDA `conversation_id` постоянен для пары NPC — игрок; полная
+сессия разговора (§7) остаётся за `@rus/turn`.
+
 ## 25. Контекст NPC
 
-NPC responder получает:
+NPC responder получает перечисленное ниже в форме §24.1:
 
 ### Восприятие
 
@@ -1899,7 +1947,28 @@ Narrator:
 1. исходный factual state не меняется;
 2. вызывается repair prompt;
 3. repair получает исходный request, исходный output и validation errors;
-4. repair может исправить только форму, refs и enum values;
+4. repair может исправить только форму, refs и enum values, а также написание
+   слова, в котором смешаны латиница и кириллица. Словом считается непрерывная
+   последовательность букв и диакритических знаков. Такое слово исправляется
+   в две ступени:
+   1. до проверки формы код заменяет в нём латинские буквы-двойники
+      кириллическими того же начертания по таблице ниже. Замена касается только
+      `speech.utterance_text`, `speech.claims[].content_summary` и
+      `interpretation.grounded_contribution` и только слов, в которых есть и
+      кириллица, и латиница. Латинские буквы вне таблицы, слова без кириллицы и
+      слова без латиницы не меняются. Начертание текста для читателя не
+      меняется, модель не вызывается, попытка repair не расходуется. Каждая
+      замена записывается в `script_respellings` решения: путь, слово до замены
+      и после неё;
+   2. слово, в котором после замены осталась латиница, получает ошибку
+      `mixed_script_word` с цитатой после замены. Format repair получает
+      исходный output уже после замены и переписывает это слово кириллицей,
+      остальной текст не меняется.
+
+   | Латиница | a | c | e | o | p | x | y | A | B | C | E | H | K | M | O | P | T | X |
+   |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+   | Кириллица | а | с | е | о | р | х | у | А | В | С | Е | Н | К | М | О | Р | Т | Х |
+
 5. repair не может заменить смысл решения другим.
 
 После второй ошибки возвращается typed LLM contract failure.
@@ -1916,6 +1985,21 @@ Narrator:
 
 ответ считается неприменимым.
 
+Неприменимый по опоре ответ NPC получает одну semantic repair попытку той же
+моделью. Сюда относятся ссылка вне `allowed_references`, неизвестный NPC факт,
+утверждение без claim и замечание аудитора опоры речи (§37.4). Repair получает
+исходный request, исходный output модели (объект либо `original_output_text`,
+если output не разобран как JSON) и замечания с путём и цитатой. Он сохраняет
+`contribution_kind`, адресатов, `dominant_act`, `intent` и всё подкреплённое.
+Неподкреплённое утверждение он подкрепляет точной ссылкой, убирает или
+переводит в собственную неуверенность NPC. Фактов, актов и operations он не
+добавляет.
+
+Format repair (§37.1) и semantic repair — по одной попытке на решение NPC, в
+любом порядке. Исправленный ответ проходит те же проверки формы и опоры.
+Повторная ошибка того же вида или `{"status": "unrepairable"}` дают
+`conversation_llm_contract_failure` с категорией (§45).
+
 Код не выбирает «похожую» реплику и не исправляет характер NPC.
 
 ### 37.3. Data gap
@@ -1930,6 +2014,33 @@ Data gap возникает, если для необходимого дейст
 - actor state field, без которого решение невозможно.
 
 Обычный разговор без специального правила не должен hard-block из-за отсутствия декоративных исторических деталей.
+
+### 37.4. Аудитор опоры речи NPC
+
+До factual commit каждый ответ NPC с `contribution_kind = speech` проверяет
+роль `npc_conversation_grounding_auditor`. Это та же локальная модель, что
+отвечает за NPC; решением она не владеет.
+
+- Вход — `{request, plan}`: NPC-safe запрос §24 и план ответа §26.
+- Выход — `{"pass": bool, "concerns": [{kind, path, quote}]}`: при
+  `pass = false` каждое замечание называет вид, путь в плане и цитату.
+- Аудитор проверяет каждое фактическое утверждение в реплике, claims,
+  `reason` и `interpretation` против запроса. Фактическое утверждение —
+  утверждение о мире, людях, событиях, вещах или прошлом самого NPC;
+  определение одно для отвечающей модели и аудитора.
+- Утверждение проходит в одном из трёх видов:
+  1. знание с опорой — claim со ссылкой на известный факт, событие памяти,
+     наблюдение или воспринятую реплику из `allowed_references`;
+  2. собственное убеждение NPC — claim со ссылкой на `belief`;
+  3. сознательная ложь — claim `speaker_posture = knowingly_false` со ссылкой
+     на скрываемый факт; в мир она идёт только как сказанное (§15.4), не как
+     истина.
+- Четвёртый вид — выдумка, выданная за знание, без опоры. Это отказ.
+- «Не знаю», «не помню» и иная собственная неуверенность NPC проходят без
+  ссылки.
+- Отказ аудитора — semantic-ошибка: ответ получает semantic repair по §37.2.
+- Аудитор не переписывает реплику, не выбирает решение NPC и не вызывает
+  другие роли.
 
 ---
 
@@ -2283,6 +2394,7 @@ NPC_CONVERSATION_RESPONSE_REQUEST:
 - удалить запрещённое поле;
 - исправить enum или тип;
 - заменить ссылку на точную уже использованную допустимую ссылку;
+- переписать кириллицей слово, в котором смешаны латиница и кириллица, не меняя остальной текст;
 - привести JSON к требуемой форме.
 
 Запрещено:
@@ -2800,6 +2912,11 @@ idempotency_conflict
 hidden_information_leak
 ```
 
+`conversation_llm_contract_failure` несёт `category: format | semantic` по
+причине отказа: ответ не прошёл проверку схемы или формы — `format`; прошёл
+форму, но не прошёл проверку опоры, ссылок, акта или аудитора опоры речи —
+`semantic`.
+
 `conversation_exchange_limit_reached` по умолчанию завершает текущий exchange на player boundary, а не откатывает уже валидное working state.
 
 ---
@@ -3069,6 +3186,7 @@ invariants:
   - The request contains only messages and conversation history actually perceived by this NPC.
   - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
+  - The npc, knowledge and memory fields use the npc_action_decision_request_v1 shapes built by the shared NPC-safe projection; memory additionally carries current_observations and received_messages.
   - Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.
   - Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.
   - activity.duration_class belongs to decision_scope.allowed_duration_classes.

@@ -1,0 +1,18 @@
+[
+  {
+    "type": "faction",
+    "id": "novgorod_dev_master_household",
+    "name": "Двор Жирко",
+    "likes_u": 0,
+    "respects_u": 0,
+    "known_by_u": false,
+    "size": 1,
+    "power": 1,
+    "fac_food_supply": [ [ 0, { "calories": 1, "vitamins": {  } } ] ],
+    "wealth": 1,
+    "relations": {
+      "novgorod_dev_master_household": { "knows your voice": true, "share my stuff": true, "guard your stuff": true }
+    },
+    "description": "Двор плотника Жирко: он сам, его дом и добро."
+  }
+]

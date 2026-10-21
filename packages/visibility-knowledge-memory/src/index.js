@@ -3,6 +3,8 @@ import {
   computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
+import { projectConversationMemory, validateConversationMemoryRecord } from './conversation-memory.js';
+import { resolveEvidenceConclusions } from './evidence-resolution.js';
 
 export {
   projectConversationAudience,
@@ -14,7 +16,11 @@ export {
   projectActorPortraitSpecV1
 } from
   './active-conversation-interlocutor.js';
-export { resolveEvidenceConclusions } from './evidence-resolution.js';
+export {
+  projectConversationMemory,
+  resolveEvidenceConclusions,
+  validateConversationMemoryRecord
+};
 export { resolveAuthoredStatementEvidence } from './statement-evidence.js';
 export {
   CompletionResolutionError,

@@ -273,6 +273,30 @@ test('failed NPC conversation diagnostics retain only allowlisted enum scope', a
   }
 });
 
+test('failed NPC conversation contract keeps its category and stable codes only', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', details: {
+      contract_error: 'conversation_llm_contract_failure', category: 'semantic',
+      repair_kinds_used: ['format', 'semantic'], validation_errors: [
+        { code: 'reference_not_allowed', category: 'semantic_grounding',
+          path: '$.speech.claims[0].source_knowledge_refs[0]',
+          quote: 'secret ref', message: 'secret provider output' },
+        { code: 'mixed_script_word', category: 'format',
+          path: '$.speech.utterance_text', quote: 'secret word' },
+        { code: 'hidden-party-42', path: '$.hidden', message: 'secret prompt' }
+      ], original_output: 'secret output' }
+  } });
+  assert.deepEqual(report.failure, {
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', category: 'semantic',
+    validation_codes: ['reference_not_allowed', 'mixed_script_word']
+  });
+  const serialized = JSON.stringify(report.failure);
+  for (const secret of ['secret ref', 'secret word', 'secret provider output',
+    'hidden-party-42', 'secret prompt', 'secret output']) {
+    assert.equal(serialized.includes(secret), false);
+  }
+});
+
 test('explicit validation scopes retain only stable allowlisted categories', () => {
   const npc = buildLlmTurnReport({ failure: {
     code: 'TURN_NPC_PLAN_INVALID', validation_codes: ['invalid_enum'],

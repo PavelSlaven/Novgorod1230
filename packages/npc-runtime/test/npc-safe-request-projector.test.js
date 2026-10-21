@@ -7,7 +7,9 @@ import {
 import {
   buildNpcActionDecisionRequestFromSnapshots,
   npcSafeSnapshotHasEntityEvidence,
+  projectNpcConversationSubject,
   projectNpcSafeResourceSnapshots,
+  projectNpcSafeSubject,
   validateNpcActionDecisionRequest
 } from '../src/semantic-decision-contracts.js';
 
@@ -550,4 +552,239 @@ test('NPC-safe projector prefers authored perceived change summaries', () => {
   assert.equal(validateNpcActionDecisionRequest(request), true);
   assert.equal(request.decision_reasons.perceived_changes[0],
     'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed');
+});
+
+const speaker = ref('npc', 'speaker');
+
+function richSnapshots() {
+  return {
+    npc_snapshot: {
+      instance_id: 'speaker',
+      profile_level: 'key',
+      role_ref: { id: 'reeve' },
+      identity_state: {
+        canonical_name: 'Ратша', age_range: 'adult', origin: 'Новгород',
+        hidden_name: 'secret'
+      },
+      social_role: {
+        status: 'старшина',
+        authority: [{ actor_ref: ref('npc', 'villager'), role_ref: 'elder',
+          scope_ref: 'village', status: 'active', hidden_grant: 'secret' }],
+        dependencies: [{ actor_ref: ref('npc', 'prince'), role_ref: 'lord',
+          scope_ref: 'land', status: 'sworn' }]
+      },
+      attributes: [{ attribute_ref: 'influence', label: 'Влияние', value: 4 }],
+      skills: [{ skill_ref: 'communication', label: 'Красноречие', value: 3 }],
+      temperament: [{ temperament_ref: 'calm', summary: 'сдержан', state: 'stable',
+        intensity: 'low', hidden_trait: 'secret' }],
+      values: [{ value_ref: 'honour', summary: 'держит слово', state: 'held',
+        intensity: 'high' }],
+      goals: [{ goal_ref: 'harvest', summary: 'собрать урожай', state: 'active',
+        priority: 'high' }],
+      fears: [{ fear_ref: 'raid', summary: 'набег', state: 'latent',
+        intensity: 'medium' }],
+      obligations: [{ obligation_ref: 'tribute', actor_ref: ref('npc', 'prince'),
+        summary: 'дань князю', status: 'pending' }],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: 'watch-gate', summary: 'стоит на страже', status: 'running',
+      can_continue_automatically: true, hidden_activity_state: 'secret'
+    },
+    body_snapshot: {
+      summary: 'устал',
+      conditions: [{ condition_ref: 'tired', hidden_cause: 'secret' }]
+    },
+    mood_snapshot: { state: 'спокоен', intensity: 'low', internal_reason: 'secret' },
+    relationship_snapshots: [{ relationship_ref: 'rel-1', actor_ref: 'actor-1',
+      relation: 'знакомый', status: 'known', trust: 'high', hidden_history: 'secret' }],
+    resource_snapshots: [{ resource_ref: 'resource-1', template_ref: 'wood',
+      holder_npc_id: 'speaker', hidden_contents: { hidden: 'secret' } }],
+    perception_snapshot: {
+      perceived_changes: [{ source_event_ref: ref('event', 'event-1'),
+        summary: 'Смена началась.' }],
+      visible_objects: [{ object_ref: 'resource-1', summary: 'дрова',
+        hidden_owner: 'secret' }]
+    },
+    knowledge_snapshot: {
+      known_facts: ['primitive payload', {
+        fact_ref: ref('known_fact', 'fact-1'), source_event_ref: ref('event', 'event-1'),
+        resource_ref: 'resource-1', process_ref: null, summary: 'ворота закрыты',
+        state: 'known', confidence: 'high', hidden_truth: 'secret'
+      }],
+      beliefs: [{ belief_ref: ref('belief', 'belief-1'), source_event_ref: null,
+        summary: 'сосед честен', state: 'held', confidence: 'medium' }],
+      hypotheses: [{ hypothesis_ref: ref('hypothesis', 'hypothesis-1'),
+        summary: 'лодка у пристани', state: 'open', confidence: 'low' }]
+    },
+    memory_snapshot: {
+      recent_events: [{ event_ref: ref('memory_event', 'recent-1'),
+        source_event_ref: ref('event', 'event-1'), summary: 'смена началась',
+        occurred_at: occurredAt, hidden_detail: 'secret' }],
+      relevant_long_term_events: [{ event_ref: ref('memory_event', 'old-1'),
+        summary: 'прошлогодний набег', occurred_at: { ...occurredAt,
+          whole_minutes: '1' } }],
+      previous_decisions: [{ request_ref: 'request-0', boundary_ref: 'boundary-0',
+        hidden_choice: 'secret' }]
+    }
+  };
+}
+
+function richAutoRequest(snapshots) {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt, category: 'objective', significance: 'material',
+    source_event_ref: ref('event', 'event-1'), subject_ref: speaker, scope_refs: [],
+    perception_required: false, source_perception_ref: null, causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: speaker, decision_mode: 'autonomous', scheduled_at: occurredAt,
+    significance: 'material', categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'), state_version: '1'
+  });
+  return buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: { request_id: 'request-rich', root_turn_id: 'turn-rich',
+      committed_state_version: 1, working_revision: 1, decision_index: 1 },
+    boundary, ...snapshots, resolved_signals: [signal], operation_contract: {}
+  });
+}
+
+test('the AUTO request carries exactly the shared safe subject projection', () => {
+  const snapshots = richSnapshots();
+  const request = richAutoRequest(snapshots);
+  const subject = projectNpcSafeSubject(snapshots);
+  assert.deepEqual(Object.keys(subject), ['npc', 'knowledge', 'memory']);
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  for (const key of ['npc', 'knowledge', 'memory']) {
+    assert.deepEqual(request[key], subject[key]);
+    assert.equal(JSON.stringify(request[key]), JSON.stringify(subject[key]));
+  }
+  assert.equal(subject.npc.temperament.length, 1);
+  assert.equal(subject.npc.obligations.length, 1);
+  assert.equal(subject.npc.available_resources.length, 1);
+  assert.equal(subject.knowledge.known_facts.length, 1);
+  assert.equal(subject.knowledge.hypotheses.length, 1);
+  assert.equal(subject.memory.relevant_long_term_events.length, 1);
+  assert.equal(subject.memory.previous_decisions.length, 1);
+  assert.doesNotMatch(JSON.stringify(subject), /hidden|secret|primitive/u);
+});
+
+test('the safe subject projection tolerates absent optional snapshots', () => {
+  const subject = projectNpcSafeSubject({
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+  });
+  assert.deepEqual(subject.knowledge,
+    { known_facts: [], beliefs: [], hypotheses: [] });
+  assert.deepEqual(subject.memory,
+    { recent_events: [], relevant_long_term_events: [], previous_decisions: [] });
+  assert.equal(subject.npc.mood, null);
+});
+
+const observation = {
+  observation_ref: ref('perception_result', 'observation-1'),
+  source_type: 'direct_perception',
+  observed_at: occurredAt,
+  fact_text: 'Я вижу, что ворота закрыты.'
+};
+
+test('the conversation subject adds observations, messages and canonical refs', () => {
+  const snapshots = richSnapshots();
+  const safe = projectNpcSafeSubject(snapshots);
+  const received = [{ message_id: 'message-1', utterance_text: 'Где лодка?' }];
+  const input = {
+    npc_ref: speaker,
+    ...snapshots,
+    current_observations: [observation],
+    received_messages: received,
+    additional_knowledge_refs: [
+      ref('item_part', 'a-first'), ref('item', 'z-last'),
+      ref('known_fact', 'fact-1'), ref('location', 'yard')
+    ]
+  };
+  const subject = projectNpcConversationSubject(input);
+  assert.deepEqual(Object.keys(subject),
+    ['npc', 'knowledge', 'memory', 'available_resources', 'knowledge_refs']);
+  assert.deepEqual(subject.npc, safe.npc);
+  assert.deepEqual(subject.knowledge, safe.knowledge);
+  const { current_observations: observations, received_messages: messages,
+    ...memory } = subject.memory;
+  assert.deepEqual(memory, safe.memory);
+  assert.deepEqual(observations, [observation]);
+  assert.deepEqual(messages, received);
+  assert.notEqual(observations, input.current_observations);
+  assert.notEqual(observations[0], observation);
+  assert.notEqual(messages[0], received[0]);
+  assert.deepEqual(subject.available_resources, safe.npc.available_resources);
+  assert.notEqual(subject.available_resources, subject.npc.available_resources);
+  assert.equal(subject.available_resources.length, 1);
+  assert.deepEqual(subject.knowledge_refs, [
+    ref('belief', 'belief-1'),
+    ref('hypothesis', 'hypothesis-1'),
+    ref('item', 'z-last'),
+    ref('item_part', 'a-first'),
+    ref('known_fact', 'fact-1'),
+    ref('location', 'yard'),
+    ref('memory_event', 'old-1'),
+    ref('memory_event', 'recent-1'),
+    ref('npc_identity', 'speaker'),
+    ref('perception_result', 'observation-1')
+  ]);
+});
+
+test('the conversation subject defaults to no observations and no messages', () => {
+  const subject = projectNpcConversationSubject({
+    npc_ref: speaker,
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+  });
+  assert.deepEqual(subject.memory, { recent_events: [], relevant_long_term_events: [],
+    previous_decisions: [], current_observations: [], received_messages: [] });
+  assert.deepEqual(subject.available_resources, []);
+  assert.deepEqual(subject.knowledge_refs, [ref('npc_identity', 'speaker')]);
+});
+
+test('the conversation subject rejects every ref that is not an entity ref', () => {
+  const broken = (change) => {
+    const snapshots = richSnapshots();
+    change(snapshots);
+    return () => projectNpcConversationSubject({ npc_ref: speaker, ...snapshots,
+      current_observations: [observation] });
+  };
+  assert.doesNotThrow(broken(() => {}));
+  assert.throws(broken((snapshots) => {
+    snapshots.knowledge_snapshot.known_facts[1].fact_ref = 'fact-1';
+  }), TypeError);
+  assert.throws(broken((snapshots) => {
+    delete snapshots.knowledge_snapshot.beliefs[0].belief_ref;
+  }), TypeError);
+  assert.throws(broken((snapshots) => {
+    snapshots.knowledge_snapshot.hypotheses[0].hypothesis_ref = 7;
+  }), TypeError);
+  assert.throws(broken((snapshots) => {
+    snapshots.memory_snapshot.recent_events[0].event_ref = 'recent-1';
+  }), TypeError);
+  assert.throws(broken((snapshots) => {
+    snapshots.memory_snapshot.relevant_long_term_events[0].event_ref = null;
+  }), TypeError);
+  const base = {
+    npc_ref: speaker,
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+  };
+  assert.throws(() => projectNpcConversationSubject({ ...base,
+    current_observations: [{ ...observation, observation_ref: 'observation-1' }] }),
+  TypeError);
+  assert.throws(() => projectNpcConversationSubject({ ...base,
+    additional_knowledge_refs: ['location:yard'] }), TypeError);
+  assert.throws(() => projectNpcConversationSubject({ ...base,
+    additional_knowledge_refs: [{ entity_kind: 'location' }] }), TypeError);
+  assert.throws(() => projectNpcConversationSubject({ ...base,
+    npc_ref: 'speaker' }), TypeError);
+});
+
+test('the shared subject projections are exported from the package index', async () => {
+  const index = await import('../src/index.js');
+  assert.equal(index.projectNpcSafeSubject, projectNpcSafeSubject);
+  assert.equal(index.projectNpcConversationSubject, projectNpcConversationSubject);
 });

@@ -38,12 +38,17 @@
 #include "item.h"
 #include "item_location.h"
 #include "item_uid.h"
+#include "json.h"
+#include "json_loader.h"
 #include "map.h"
 #include "map_helpers.h"
+#include "math_parser_diag_value.h"
+#include "novgorod_semantic.h"
 #include "npc.h"
 #include "player_activity.h"
 #include "player_helpers.h"
 #include "rng.h"
+#include "sounds.h"
 #include "path_info.h"
 #include "zzip.h"
 #include "worldfactory.h"
@@ -380,4 +385,117 @@ TEST_CASE( "Novgorod native save and resume probe", "[.][novgorod_persistence]" 
               << ",\"bootstrap_ms\":" << novgorod_p4_bootstrap_ms
               << ",\"disk_rock_uids\":" << disk_rock_json.str() << "}\n";
     p4_emit_stdout( result.str() );
+}
+
+TEST_CASE( "Novgorod conversation memory survives the native NPC serialization round trip",
+           "[novgorod_live]" )
+{
+    static bool loop_started = false;
+    if( !loop_started ) {
+        g->set_test_action_queue( { action_ident( ACTION_PAUSE ) } );
+        g->do_turn();
+        loop_started = true;
+    }
+    clear_avatar();
+    clear_map();
+    clear_npcs();
+    avatar &you = get_avatar();
+    map &here = get_map();
+    calendar::turn = calendar::turn_zero + 12_hours;
+    you.setpos( here, tripoint_bub_ms( 60, 60, 0 ) );
+    for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
+        here.ter_set( p, ter_str_id( "t_floor" ) );
+    }
+    here.invalidate_map_cache( 0 );
+    here.build_map_cache( 0 );
+    here.update_visibility_cache( 0 );
+    npc &listener = spawn_npc( point_bub_ms( 61, 62 ), "NPC_debug" );
+    listener.death_eocs.clear();
+    listener.set_attitude( NPCATT_NULL );
+    listener.assign_activity( wait_activity_actor( 1_hours ) );
+    const std::string listener_id = std::to_string( listener.getID().get_value() );
+    const std::string avatar_id = std::to_string( you.getID().get_value() );
+    const std::string key = "novgorod_conversation_memory";
+    constexpr int record_count = 200;
+
+    std::vector<std::string> utterances;
+    for( int i = 0; i < record_count; ++i ) {
+        const std::string utterance = "Реплика " + std::to_string( i ) + " %s \"кавычки\" <npc_val:x>";
+        utterances.push_back( utterance );
+        std::ostringstream request;
+        JsonOut out( request );
+        out.start_object();
+        out.member( "schema", "p3_native_operation_request_v1" );
+        out.member( "operation_id", "memory-round-trip" );
+        out.member( "actor_id", avatar_id );
+        out.member( "primitive", "speak" );
+        out.member( "expected_native_observation" );
+        out.start_object();
+        out.member( "actor_id", avatar_id );
+        out.member( "turn", to_turn<int>( calendar::turn ) );
+        out.end_object();
+        out.member( "args" );
+        out.start_object();
+        out.member( "utterance", utterance );
+        out.member( "delivery" );
+        out.start_object();
+        out.member( "loudness", 3 );
+        out.member( "duration_class", "instant" );
+        out.end_object();
+        out.end_object();
+        out.member( "references" );
+        out.start_object();
+        out.member( "actors" );
+        out.start_array();
+        out.write( "npc:" + listener_id );
+        out.end_array();
+        out.end_object();
+        out.end_object();
+        const JsonObject object = json_loader::from_string( request.str() ).get_object();
+        object.allow_omitted_members();
+        you.set_moves( 1000 );
+        sounds::reset_sounds();
+        auto result = novgorod_semantic::apply_operation( object );
+        REQUIRE( result.applied );
+        sounds::process_sound_markers( &listener );
+        result = novgorod_semantic::finish_operation();
+        REQUIRE( result.applied );
+        calendar::turn += 1_seconds;
+    }
+
+    const diag_value *stored = listener.maybe_get_value( key );
+    REQUIRE( stored != nullptr );
+    const std::string before = stored->str();
+    {
+        const JsonValue parsed = json_loader::from_string( before );
+        const JsonArray array = parsed.get_array();
+        REQUIRE( array.size() == record_count );
+        int index = 0;
+        for( const JsonObject record : array ) {
+            record.allow_omitted_members();
+            CHECK( record.get_string( "kind" ) == "heard" );
+            CHECK( record.get_string( "text" ) == utterances[index] );
+            ++index;
+        }
+    }
+
+    std::ostringstream with_value;
+    {
+        JsonOut jsout( with_value );
+        listener.serialize( jsout );
+    }
+    npc fresh;
+    fresh.deserialize( json_loader::from_string( with_value.str() ).get_object() );
+    const diag_value *restored = fresh.maybe_get_value( key );
+    REQUIRE( restored != nullptr );
+    CHECK( restored->str() == before );
+
+    listener.remove_value( key );
+    std::ostringstream without_value;
+    {
+        JsonOut jsout( without_value );
+        listener.serialize( jsout );
+    }
+    std::cout << "NOVGOROD_CONVERSATION_MEMORY_VALUES_BYTES="
+              << ( with_value.str().size() - without_value.str().size() ) << std::endl;
 }

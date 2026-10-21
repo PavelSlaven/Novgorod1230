@@ -3,8 +3,10 @@ import { diagnoseNpcCombatIntentPlan } from '@rus/contracts/combat-v1';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
-  diagnoseConversationPlanDominantAct,
+  diagnoseConversationPlan,
+  diagnoseMixedScriptRepair,
   diagnoseNpcStepPlan,
+  respellMixedScriptHomoglyphs,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
   validateNpcCombatDecisionRequest,
@@ -16,6 +18,7 @@ import {
 } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
 const inFlightDecisions = new Map();
+const CONVERSATION_CONTRACT_FAILURE = 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE';
 const MAX_STALE_REBUILDS = 8;
 function fail(code, message, details = {}) {
   throw turnFailure(code, message, details);
@@ -103,14 +106,17 @@ function replayProposal(trace, boundary, request, orderedSignals) {
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-function plannedProposal(boundary, request, orderedSignals, plan) {
+function plannedProposal(boundary, request, orderedSignals, plan,
+  scriptRespellings = []) {
   return immutable({
     status: 'planned',
     plan,
     trace: null,
     signal_ids_to_consume: boundary.signal_refs.map(
       ({ entity_id }) => entity_id),
-    decision_context: decisionContext(boundary, request, orderedSignals)
+    decision_context: decisionContext(boundary, request, orderedSignals),
+    ...(scriptRespellings.length > 0
+      ? { script_respellings: scriptRespellings } : {})
   });
 }
 function domainRejectedProposal(boundary, request, orderedSignals, plan,
@@ -150,6 +156,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   let currentSignals = orderedSignals;
   let staleRebuilds = 0;
   let repairAttempts = 0;
+  const repairKindsUsed = [];
+  const scriptRespellings = [];
   decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
     let repair = null;
@@ -157,13 +165,24 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
     let semanticRepairUsed = false;
     let rawPlan;
     while (true) {
+      let rawText;
+      let rawOutput;
       try {
         rawPlan = await semanticModel(safeRequest, immutable({
           boundary: currentBoundary,
           repair
         }));
       } catch (error) {
-        if (repair === null && error?.code === 'json_parse_failed') {
+        if (mode === 'conversation'
+            && error?.code === CONVERSATION_CONTRACT_FAILURE) {
+          throw conversationContractFailure(currentRequest, currentBoundary,
+            error.details?.category, repairKindsUsed,
+            error.details?.validation_errors ?? []);
+        }
+        if (mode === 'conversation' && error?.code === 'json_parse_failed') {
+          rawPlan = null;
+          rawText = typeof error.raw_text === 'string' ? error.raw_text : '';
+        } else if (repair === null && error?.code === 'json_parse_failed') {
           rawPlan = {};
         } else {
           throw turnFailure('TURN_NPC_MODEL_FAILED',
@@ -175,6 +194,14 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
               cause: error instanceof Error ? error.message : String(error)
             });
         }
+      }
+      if (mode === 'conversation' && rawText === undefined) {
+        const raw = semanticModel.originalOutputOf?.(rawPlan) ?? rawPlan;
+        const respelled = respellMixedScriptHomoglyphs(rawPlan);
+        rawOutput = raw === rawPlan ? respelled.output
+          : respellMixedScriptHomoglyphs(raw).output;
+        rawPlan = respelled.output;
+        scriptRespellings.push(...respelled.respellings);
       }
 
       const expectedStateVersion = requestStateVersion(currentRequest, mode);
@@ -235,6 +262,35 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         continue decisionLoop;
       }
 
+      if (mode === 'conversation') {
+        const verdict = await conversationVerdict({ rawPlan, rawOutput,
+          rawText, repair, request: safeRequest, validatePlan,
+          validateFreshPlan });
+        if (verdict === null) break;
+        if (!verdict.repairable) {
+          fail('TURN_NPC_PLAN_NOT_APPLICABLE',
+            'NPC semantic response is outside the conversation contract', {
+              request_id: currentRequest.request_id,
+              boundary_id: currentBoundary.boundary_id,
+              validation_errors: verdict.errors });
+        }
+        const kind = verdict.errors.some(
+          ({ category }) => category !== 'format') ? 'semantic' : 'format';
+        if (repairKindsUsed.includes(kind)
+            || repairKindsUsed.length >= maxRepairAttempts) {
+          throw conversationContractFailure(currentRequest, currentBoundary,
+            kind, repairKindsUsed, verdict.errors);
+        }
+        repairKindsUsed.push(kind);
+        repair = immutable({
+          kind,
+          ...(rawText === undefined
+            ? { original_output: safeModelOutput(rawOutput) }
+            : { original_output_text: rawText }),
+          validation_errors: verdict.errors
+        });
+        continue;
+      }
       const structurallyValid = validatePlanForMode(
         rawPlan, safeRequest, mode);
       const domainResult = structurallyValid
@@ -243,13 +299,6 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       if (structurallyValid && domainResult?.pass !== false) break;
       if (domainResult?.pass === false
           && domainResult.fresh_semantic_repair !== true) {
-        if (mode === 'conversation') {
-          fail('TURN_NPC_PLAN_NOT_APPLICABLE',
-            'NPC semantic response is outside the conversation contract', {
-              request_id: currentRequest.request_id,
-              boundary_id: currentBoundary.boundary_id,
-              validation_errors: domainResult.errors });
-        }
         return domainRejectedProposal(currentBoundary, currentRequest,
           currentSignals, rawPlan, domainResult);
       }
@@ -280,16 +329,49 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
     }
 
     return plannedProposal(
-      currentBoundary, currentRequest, currentSignals, rawPlan);
+      currentBoundary, currentRequest, currentSignals, rawPlan,
+      scriptRespellings);
   }
 }
 
 function structuralPlanErrors(plan, request, mode) {
   if (mode === 'combat') return diagnoseNpcCombatIntentPlan(plan, request);
-  if (mode === 'conversation') {
-    return diagnoseConversationPlanDominantAct(plan);
-  }
   return diagnoseNpcStepPlan(plan, request);
+}
+
+async function conversationVerdict({ rawPlan, rawOutput, rawText, repair,
+  request, validatePlan, validateFreshPlan }) {
+  if (rawText !== undefined) {
+    return { repairable: true, errors: [{ code: 'json_parse_failed',
+      category: 'format', path: '$',
+      message: 'Response must be exactly one JSON object.' }] };
+  }
+  const errors = diagnoseConversationPlan(rawPlan, request);
+  if (errors.length > 0) return { repairable: true, errors };
+  if (repair?.validation_errors.some(({ code }) =>
+    code === 'mixed_script_word')) {
+    const respelled = diagnoseMixedScriptRepair(repair.original_output,
+      rawOutput, repair.validation_errors);
+    if (respelled.length > 0) return { repairable: true, errors: respelled };
+  }
+  const domainResult = await planDomainResult(rawPlan, request, validatePlan,
+    validateFreshPlan);
+  if (domainResult === null) return null;
+  return { repairable: domainResult.fresh_semantic_repair === true,
+    errors: domainResult.errors };
+}
+
+function conversationContractFailure(request, boundary, category,
+  repairKindsUsed, validationErrors) {
+  return turnFailure(CONVERSATION_CONTRACT_FAILURE,
+    'NPC conversation reply failed its contract after the allowed repairs', {
+      request_id: request.request_id,
+      boundary_id: boundary.boundary_id,
+      contract_error: 'conversation_llm_contract_failure',
+      category: category === 'semantic' ? 'semantic' : 'format',
+      repair_kinds_used: [...repairKindsUsed],
+      validation_errors: immutable(validationErrors)
+    });
 }
 
 async function rebuildStaleDecision({ boundary, request, rawPlan,

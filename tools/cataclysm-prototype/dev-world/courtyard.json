@@ -14,7 +14,7 @@
         "........................",
         "........................",
         "........WWWWWWWW........",
-        "........W______W........",
+        "........W_____OW........",
         "........W_T____W........",
         "........W______W........",
         "........W______W........",
@@ -35,16 +35,21 @@
         "W": "t_wall_wood",
         "_": "t_floor",
         "T": "t_floor",
+        "O": "t_floor",
         "+": "t_door_c"
       },
-      "furniture": { "T": "f_table" },
+      "furniture": { "T": "f_table", "O": "f_clay_oven" },
       "place_loot": [
         { "item": "flint_steel", "x": 11, "y": 10, "chance": 100 },
         { "item": "tinder", "x": 11, "y": 10, "chance": 100 },
         { "item": "firewood", "x": 10, "y": 12, "chance": 100 },
-        { "item": "stick", "x": 10, "y": 12, "chance": 100 }
+        { "item": "stick", "x": 10, "y": 12, "chance": 100 },
+        { "item": "straw_basket", "x": 9, "y": 12, "chance": 100 },
+        { "item": "stick_common", "x": 13, "y": 12, "chance": 100 },
+        { "item": "log", "x": 12, "y": 15, "chance": 100 }
       ],
-      "place_npcs": [ { "class": "novgorod_dev_master", "x": 13, "y": 11 } ]
+      "place_npcs": [ { "class": "novgorod_dev_master", "x": 13, "y": 11, "unique_id": "novgorod_dev_master" } ],
+      "faction_owner": [ { "id": "novgorod_dev_master_household", "x": [ 0, 23 ], "y": [ 0, 23 ] } ]
     }
   }
 ]

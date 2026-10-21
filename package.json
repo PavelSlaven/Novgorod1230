@@ -224,7 +224,7 @@
     "runtime-catalog:operator": "node tools/runtime-catalog-activation/src/cli.js",
     "lower-dvina:first-playable:production": "node scripts/run-lower-dvina-first-playable-production.mjs",
     "lower-dvina:v3:production-cutover": "node scripts/run-lower-dvina-v3-production-cutover.mjs",
-    "test:cataclysm-p3": "node --test tools/cataclysm-prototype/p3-boundary.test.js tools/cataclysm-prototype/p3-live-coordinator.test.js && node tools/architecture/run-p3-python-tests.mjs"
+    "test:cataclysm-p3": "node --test tools/cataclysm-prototype/p3-boundary.test.js tools/cataclysm-prototype/p3-live-coordinator.test.js tools/cataclysm-prototype/p3-npc-input.acceptance.test.js && node tools/architecture/run-p3-python-tests.mjs"
   },
   "dependencies": {
     "embedded-postgres": "16.14.0-beta.17",

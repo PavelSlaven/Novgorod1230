@@ -23,6 +23,7 @@ const SOURCE_HEADER = ['Путь', 'Вид', 'Статус по CONTRACT_INDEX',
 const ABILITY_HEADER = ['id', 'Игрок может…', 'Глава', 'Этап/часть', 'Статус', 'Доказательство'];
 const STAGE_HEADER = ['Этап', 'Цель', 'Зависит от', 'Статус', 'Проверено способностей'];
 const CRITERION_HEADER = ['Критерий', 'id способностей', 'Доказательство', 'Итог'];
+const CRITERION_RESULTS = new Set(['выполнен', 'не выполнен', 'не проверен']);
 const DECISION_HEADER = ['D', 'Дата', 'Цитата или пересказ', 'Главы', 'URL GitHub, если есть'];
 const CHAPTER_HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
@@ -127,12 +128,50 @@ async function fileExists(path) {
 }
 
 async function trackedSources(root) {
-  const { stdout } = await execFileAsync('git', ['ls-files', ...SOURCE_PATHS], {
+  const { stdout } = await execFileAsync('git', ['ls-files', '-z', ...SOURCE_PATHS], {
     cwd: root,
     encoding: 'utf8',
     maxBuffer: 4 * 1024 * 1024
   });
-  return stdout.trim().split(/\r?\n/u).filter(Boolean);
+  return stdout.split('\0').filter(Boolean);
+}
+
+function indexStatuses(root, content) {
+  const indexPath = 'data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md';
+  const statuses = new Map();
+  const add = (cell, status) => {
+    const match = /^\[([^\]]+)\]\(([^)]+)\)$/u.exec(cell);
+    if (!match || !status) throw new Error(`Неоднозначная строка CONTRACT_INDEX: ${cell}`);
+    const absolute = resolve(root, dirname(indexPath), decodeURIComponent(match[2]));
+    const path = relative(root, absolute).replaceAll('\\', '/');
+    if (path === '..' || path.startsWith('../')) throw new Error(`Путь вне CONTRACT_INDEX: ${cell}`);
+    const value = status.replaceAll('`', '');
+    if (statuses.has(path) && statuses.get(path) !== value) {
+      throw new Error(`Разные статусы CONTRACT_INDEX: ${path}`);
+    }
+    statuses.set(path, value);
+  };
+  for (const name of [
+    '3. Governing source',
+    '4. Explicit active contracts',
+    '5. Explicit non-production, migration and supporting contracts',
+    '6. Compatibility navigation',
+    '7. Domain guides and legacy/supporting documents'
+  ]) {
+    const body = section(content, name);
+    const entries = table(body, []);
+    for (const row of entries.rows) {
+      if (row.length !== 3) throw new Error(`Неоднозначная строка CONTRACT_INDEX: ${row.join(' | ')}`);
+      add(row[0], row[1]);
+    }
+    if (name === '3. Governing source') {
+      for (const line of body) {
+        const match = /^- (\[[^\]]+\]\([^)]+\)) —/u.exec(line);
+        if (match) add(match[1], 'GOVERNING');
+      }
+    }
+  }
+  return statuses;
 }
 
 async function designFiles(root, errors) {
@@ -196,11 +235,17 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   if (!sameHeader(sources.header, SOURCE_HEADER)) errors.push(error('P3', 'неверная схема таблицы источников'));
   const sourceRows = sources.rows.filter((row) => row.length === 6);
   if (sources.rows.length !== sourceRows.length) errors.push(error('P3', 'неверная схема строки источника'));
+  const contractIndex = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md'), 'utf8');
+  const statuses = indexStatuses(root, contractIndex);
   const sourceNames = new Set();
   for (const row of sourceRows) {
     const name = row[0].replaceAll('`', '');
     if (sourceNames.has(name)) errors.push(error('P3', `повторный путь источника: ${name}`));
     sourceNames.add(name);
+    const expectedStatus = statuses.get(name) ?? 'нет в индексе';
+    if (row[2] !== expectedStatus) {
+      errors.push(error('P14', `статус источника расходится с CONTRACT_INDEX: ${name}: ${row[2]} ≠ ${expectedStatus}`));
+    }
     if (!FATES.has(row[4])) errors.push(error('P3', `неверная судьба источника: ${name}`));
     if (['заменяется родным CDDA', 'история'].includes(row[4]) &&
         /живёт как норма|переписать на P7/u.test(row[5])) {
@@ -276,9 +321,10 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
       errors.push(error('P7', `этап способности неверен: ${id}`));
       continue;
     }
-    const tally = totals.get(stageNumber) ?? { total: 0, checked: 0 };
+    const tally = totals.get(stageNumber) ?? { total: 0, checked: 0, working: 0 };
     tally.total += 1;
     if (status === 'проверено в игре') tally.checked += 1;
+    if (status === 'в работе') tally.working += 1;
     totals.set(stageNumber, tally);
   }
   for (const [path, content] of files) {
@@ -320,13 +366,16 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
       continue;
     }
     seenStages.add(number);
-    const tally = totals.get(number) ?? { total: 0, checked: 0 };
+    const tally = totals.get(number) ?? { total: 0, checked: 0, working: 0 };
     const expected = tally.total ? `${tally.checked} из ${tally.total}` : '—';
     if (row[4] !== expected) errors.push(error('P7', `счёт этапа неверен: ${number}, ожидается ${expected}`));
     if (!['сделано', 'идёт', 'не начат'].includes(row[3])) {
       errors.push(error('P7', `неизвестный статус этапа: ${number}`));
     }
     if (row[3] === 'сделано' && (tally.total === 0 || tally.checked !== tally.total)) {
+      errors.push(error('P7', `статус этапа неверен: ${number}`));
+    }
+    if (row[3] === 'не начат' && (tally.checked > 0 || tally.working > 0)) {
       errors.push(error('P7', `статус этапа неверен: ${number}`));
     }
   }
@@ -365,6 +414,10 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
         continue;
       }
       const ids = row[1]?.match(ID) ?? [];
+      if (!CRITERION_RESULTS.has(row[3]) ||
+          (row[3] === 'выполнен' && ['', '—', 'Нет.'].includes(row[2].trim()))) {
+        errors.push(error('P11', `неверный итог или доказательство критерия части ${number}: ${row[0]}`));
+      }
       if (!ids.length) errors.push(error('P11', `критерий без id: ${row[0] ?? ''}`));
       for (const id of ids) {
         if (!abilityById.has(id)) errors.push(error('P11', `критерий ссылается на неизвестный id: ${id}`));

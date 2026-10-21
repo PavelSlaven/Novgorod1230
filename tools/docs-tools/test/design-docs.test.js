@@ -8,6 +8,7 @@ import { checkDesignDocs } from '../src/design-docs.js';
 
 const PREFIX = '> status: REFERENCE / DOMAIN GUIDE. Проверочная страница. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.';
 const SOURCE = 'docs/governance/PRODUCT_CONSTITUTION.md';
+const INDEX = 'data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md';
 const HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
   'Решения владельца', 'Расхождения и открытые вопросы', 'Источники', 'Этап'
@@ -95,7 +96,22 @@ async function fixture() {
   const systems = join(design, 'systems');
   await mkdir(systems, { recursive: true });
   await mkdir(join(root, 'docs/governance'), { recursive: true });
+  await mkdir(join(root, 'data/knowledge-source/corpus/DOCUMENTS'), { recursive: true });
   await writeFile(join(root, SOURCE), '# PC\n');
+  await writeFile(join(root, INDEX), [
+    '# Контрактный индекс', '',
+    '## 3. Governing source', '',
+    '| Документ | Статус | Scope |',
+    '|---|---|---|',
+    '| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | Правила. |',
+    '',
+    '- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — продуктовая конституция;',
+    '',
+    '## 4. Explicit active contracts', '',
+    '## 5. Explicit non-production, migration and supporting contracts', '',
+    '## 6. Compatibility navigation', '',
+    '## 7. Domain guides and legacy/supporting documents', ''
+  ].join('\n'));
   await writeFile(join(design, 'GDD.md'), hub());
   await writeFile(join(design, 'SOURCES.md'), sources());
   for (let number = 1; number <= 17; number += 1) {
@@ -141,6 +157,8 @@ const red = [
   ['P7: неизвестный статус этапа', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | готово |'))],
   ['P7: преждевременное «сделано»', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | сделано |'))],
   ['P7: N=0 нельзя сделать', 'P7', async (f) => withHub(f, (s) => s.replace('| 2. Этап | Цель | 0 | не начат | — |', '| 2. Этап | Цель | 0 | сделано | — |'))],
+  ['P7: не начат при K>0', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | не начат |'))],
+  ['P7: не начат при работе', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт | 1 из 17 |', '| 0. База CDDA | Основа | — | не начат | 0 из 17 |').replace('| 01 | 0 | проверено в игре | [протокол](../governance/PRODUCT_CONSTITUTION.md) |', '| 01 | 0 | не начато |  |'))],
   ['P8: лишний md в корне', 'P8', async (f) => writeFile(pathOf(f, 'EXTRA.md'), '# extra')],
   ['P8: лишний не-md в корне', 'P8', async (f) => writeFile(pathOf(f, 'extra.txt'), 'extra')],
   ['P8: лишний md в systems', 'P8', async (f) => writeFile(join(f.systems, '18-extra.md'), '# extra')],
@@ -160,6 +178,11 @@ const red = [
   ['P11: id критерия отсутствует', 'P11', async (f) => withHub(f, (s) => s.replace('| Выполнить действие | 01.01 |', '| Выполнить действие | 17.99 |'))],
   ['P11: неверный заголовок критериев', 'P11', async (f) => withHub(f, (s) => s.replace('| Критерий | id способностей |', '| Проверка | id способностей |'))],
   ['P11: отсутствует таблица части', 'P11', async (f) => withHub(f, (s) => s.replace('**Часть 1.** Проверка.', '**Секция 1.** Проверка.'))],
+  ['P11: недопустимый итог критерия', 'P11', async (f) => withHub(f, (s) => s.replace('| — | не проверен |', '| — | готово |'))],
+  ['P11: выполнен без доказательства', 'P11', async (f) => withHub(f, (s) => s.replace('| — | не проверен |', '|  | выполнен |'))],
+  ['P11: выполнен с заглушкой вместо доказательства', 'P11', async (f) => withHub(f, (s) => s.replace('| — | не проверен |', '| — | выполнен |'))],
+  ['P14a: статус источника изменён', 'P14', async (f) => withSources(f, (s) => s.replace('| governance-pc | GOVERNING |', '| governance-pc | ACTIVE |'))],
+  ['P14b: статус изменён в индексе', 'P14', async (f) => edit(join(f.root, INDEX), (s) => s.replace('- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — продуктовая конституция;\n', '').replace('## 4. Explicit active contracts', '## 4. Explicit active contracts\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) | `ACTIVE` | Продуктовая конституция. |'))],
   ['P13a: решение главы отсутствует в указателе', 'P13', async (f) => edit(chapterOf(f), (s) => s.replace('- **D1, 2026-10-21.**', '- **D2, 2026-10-21.**'))],
   ['P13b: глава указателя не содержит решение', 'P13', async (f) => withSources(f, (s) => s.replace('| D1 | 2026-10-21 | Пересказ решения для fixture. | 01 |', '| D1 | 2026-10-21 | Пересказ решения для fixture. | 02 |'))],
   ['P12: источник главы не в реестре', 'P12', async (f) => {
@@ -189,6 +212,20 @@ test('tracked вложенный prototype evidence не требует стро
   assert.ok(!registry.includes(`\`${nested}\``));
   const result = await checkDesignDocs(root);
   assert.deepEqual(result.errors, []);
+});
+
+test('tracked кириллический путь требует точную строку источника и проходит с ней', async () => {
+  const f = await fixture();
+  const name = 'docs/plans/проверка.md';
+  await mkdir(join(f.root, 'docs/plans'));
+  await writeFile(join(f.root, name), '# Проверка\n');
+  execFileSync('git', ['init', '--quiet'], { cwd: f.root });
+  execFileSync('git', ['add', '--', SOURCE, name], { cwd: f.root });
+  const missing = await checkDesignDocs(f.root);
+  assert.ok(missing.errors.includes(`[GDD:P1] отсутствует строка источника: ${name}`), missing.errors.join('\n'));
+  await withSources(f, (s) => s.replace('|---|---|---|---|---|---|\n', `|---|---|---|---|---|---|\n| \`${name}\` | plan | нет в индексе | 01 | история | Проверка. |\n`));
+  const present = await checkDesignDocs(f.root);
+  assert.deepEqual(present.errors, []);
 });
 
 test('настоящая папка docs/design проходит все правила', async () => {

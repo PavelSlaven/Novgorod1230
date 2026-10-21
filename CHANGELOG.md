@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(design): единый дизайн-документ под CDDA — хаб `docs/design/GDD.md`, 17 глав по системам, реестр источников `SOURCES.md`, этапы и прогресс «Игрок может…» с доказательствами; проверка `docs/design` в `docs:check`; справка, не норма (D271) (#835)
 - docs(governance): навык `caveman` убран из репозитория — строка AGENTS.md, WR §18.1, карта в `docs/governance/README.md`, копии в `.agents/skills` и `.claude/skills`; обязателен только `ponytail`; лимит размера AGENTS.md в тесте docs-tools — 32 KiB, лимит строк снят (#788)
 - ci(cataclysm): Windows-сборка `cataclysm-tiles.exe` в GitHub Actions родным рецептом `release.yml` CDDA того же SHA (vcpkg, msbuild, `windist.ps1`) с overlays прототипа и модом `dev-world`; тайлсет, `.mo` и шейдеры из официального Windows-архива того же SHA; порядок overlays — единый `native-overlays.txt`, накладывает `apply-overlays.sh` для Linux и Windows (#810)
 - feat(cataclysm): dev-запуск в графике (SDL3 3.4.10, UltimateCataclysm) с официальным русским переводом: `run-p3-dev.sh` по умолчанию, `run-p3-dev.ps1 -Tiles` (без ключа — текст); runtime root через родной `cmake --install` с атомарной подменой под `session.lock`, перевод и тайлсет из закреплённого архива CDDA, `keycode` для горячих клавиш при русской раскладке; проверено на servak в Xvfb с программным рендером (#795)

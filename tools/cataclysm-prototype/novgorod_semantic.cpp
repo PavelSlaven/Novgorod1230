@@ -43,6 +43,7 @@
 #include "json_loader.h"
 #include "lightmap.h"
 #include "map.h"
+#include "map_scale_constants.h"
 #include "messages.h"
 #include "npc.h"
 #include "npc_class.h"
@@ -153,9 +154,8 @@ std::vector<frame_item> npc_visible_items( const npc &guy, map &here )
         add_item_with_contents( items, *worn_item, "worn" );
     }
     std::vector<frame_item> ground;
-    const int range = guy.sight_range( here.ambient_light_at( guy.pos_bub() ) );
-    for( const tripoint_bub_ms &pos : here.points_in_radius( guy.pos_bub(), std::max( range, 0 ) ) ) {
-        if( !here.inbounds( pos ) || !here.has_items( pos ) || !guy.sees( here, pos ) ) {
+    for( const tripoint_bub_ms &pos : here.points_in_radius( guy.pos_bub(), MAX_VIEW_DISTANCE ) ) {
+        if( !here.inbounds( pos ) || !here.sees_some_items( pos, guy ) || !guy.sees( here, pos ) ) {
             continue;
         }
         for( const item &it : here.i_at( pos ) ) {

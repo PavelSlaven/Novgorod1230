@@ -86,7 +86,8 @@ test('speech audit rejects invented past work from a current schedule',
       'На рассвете я был у реки и проверял сети.';
     unsupported.speech.dominant_act = 'inform';
     const fixture = runner(() => ({ pass: false, concerns: [{
-      kind: 'unsupported_past_activity'
+      kind: 'unsupported_past_activity', path: '$.speech.utterance_text',
+      quote: 'На рассвете я был у реки и проверял сети'
     }] }));
     const result = await createLowerDvinaTraceNpcSemanticModel(
       fixture).validateFreshPlan(unsupported, input);
@@ -121,7 +122,8 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
   unsupported.speech.utterance_text =
     'Вчера до твоего прихода я видел людей у переправы.';
   const fixture = runner(() => ({ pass: false, concerns: [{
-    kind: 'unsupported_past_observation'
+    kind: 'unsupported_past_observation', path: '$.speech.utterance_text',
+    quote: 'Вчера до твоего прихода я видел людей у переправы'
   }] }));
 
   const result = await createLowerDvinaTraceNpcSemanticModel(
@@ -131,10 +133,33 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
     ['unsupported_past_observation']);
 });
 
+test('speech auditor rejects every concern missing a required path or quote', async t => {
+  const kind = 'unsupported_past_activity';
+  for (const [name, concern] of [
+    ['both missing', { kind }],
+    ['quote missing', { kind, path: '$.speech.utterance_text' }],
+    ['empty path', { kind, path: '', quote: 'Работа сама себя не сделает' }],
+    ['blank quote', { kind, path: '$.speech.utterance_text', quote: '  ' }],
+    ['extra key', { kind, path: '$.speech.utterance_text',
+      quote: 'Работа сама себя не сделает', extra: true }]
+  ]) {
+    await t.test(name, async () => {
+      const input = request();
+      const fixture = runner(() => ({ pass: false, concerns: [concern] }));
+      const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+      await assert.rejects(model.validateFreshPlan(plan(input), input),
+        error => error.code === 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID');
+      assert.equal(fixture.calls.length, 1);
+    });
+  }
+});
+
 test('source-free NPC claims fail before the semantic auditor call', async () => {
   const input = request();
   const unsupported = plan(input);
-  unsupported.speech.claims = [{ claim_id: 'unsupported',
+  unsupported.speech.claims = [{ claim_id: 'uncertain',
+    content_summary: 'Я не знаю.', form: 'assertion', speaker_posture: 'uncertain',
+    source_knowledge_refs: [], mentioned_entity_refs: [] }, { claim_id: 'unsupported',
     content_summary: 'Неподтверждённый факт.', form: 'assertion',
     speaker_posture: 'believed_true', source_knowledge_refs: [],
     mentioned_entity_refs: [] }];
@@ -143,9 +168,27 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
   const result = await createLowerDvinaTraceNpcSemanticModel(
     fixture).validateFreshPlan(unsupported, input);
 
+  assert.equal(result.errors.length, 1);
+  assert.equal(result.errors[0].path, '$.speech.claims[1].source_knowledge_refs');
+  assert.equal(result.errors[0].quote, 'Неподтверждённый факт.');
   assert.deepEqual(result.errors[0].concern_kinds,
     ['claim_without_source_knowledge']);
   assert.equal(fixture.calls.length, 0);
+});
+
+test('speech auditor accepts a quote whose words are elsewhere in the plan', async () => {
+  const input = request();
+  const output = plan(input);
+  output.speech.utterance_text = 'Работа сама себя не сделает.';
+  const path = '$.speech.claims[1].source_knowledge_refs';
+  const quote = 'Работа сама себя не сделает';
+  const fixture = runner(() => ({ pass: false, concerns: [
+    { kind: 'unsupported_assertion', path, quote } ] }));
+  const result = await createLowerDvinaTraceNpcSemanticModel(fixture)
+    .validateFreshPlan(output, input);
+  assert.equal(result.pass, false);
+  assert.deepEqual(result.errors.map(({ path: actualPath, quote: actualQuote }) =>
+    ({ path: actualPath, quote: actualQuote })), [{ path, quote }]);
 });
 
 test('first-contact identity and guarded behavior are required and repaired',
@@ -212,7 +255,8 @@ test('semantic repair rejects a changed speech act or contribution kind', async 
     const fixture = runner((call) => {
       if (call.role_id === 'npc_conversation_responder') return original;
       if (call.role_id === 'npc_conversation_responder_format_repair') return output;
-      return { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] };
+      return { pass: false, concerns: [{ kind: 'unsupported_past_observation',
+        path: '$.speech.utterance_text', quote: 'Вчера я видел лодку у берега' }] };
     });
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
     await assert.rejects(requestNpcSemanticDecision({
@@ -307,7 +351,9 @@ test('a grounded model repair is accepted after the first speech audit fails',
       if (call.role_id === 'npc_conversation_responder_format_repair') return output;
       const { plan: audited } = JSON.parse(call.messages[1].content);
       return audited.speech.utterance_text === original.speech.utterance_text
-        ? { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] }
+        ? { pass: false, concerns: [{ kind: 'unsupported_past_observation',
+          path: '$.speech.utterance_text',
+          quote: 'Онисима я не знаю и после крушения его не видел' }] }
         : { pass: true, concerns: [] };
     });
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
@@ -333,6 +379,8 @@ test('a grounded model repair is accepted after the first speech audit fails',
       code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
       category: 'semantic_grounding', retryable: true,
       concern_kinds: ['unsupported_past_observation'],
+      path: '$.speech.utterance_text',
+      quote: 'Онисима я не знаю и после крушения его не видел',
       message: 'Rewrite the complete response without unsupported factual assertions.'
     }]);
   });
@@ -349,7 +397,8 @@ test('two grounding failures return a typed error without a canned NPC response'
   const original = plan(input);
   original.speech.utterance_text = 'Вчера я видел лодку у берега.';
   const fixture = runner((call) => call.role_id === 'npc_conversation_grounding_auditor'
-    ? { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] }
+    ? { pass: false, concerns: [{ kind: 'unsupported_past_observation',
+      path: '$.speech.utterance_text', quote: 'Вчера я видел лодку у берега' }] }
     : original);
   const model = createLowerDvinaTraceNpcSemanticModel(fixture);
 

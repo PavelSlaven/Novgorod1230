@@ -80,7 +80,8 @@ const unparsed = (rawText) => ({ status: 'parse_error', raw_text: rawText,
   error: { code: 'json_parse_failed', message: 'Unexpected end of JSON input' } });
 const auditPass = json({ pass: true, concerns: [] });
 const auditFail = json({ pass: false,
-  concerns: [{ kind: 'unsupported_past_observation' }] });
+  concerns: [{ kind: 'unsupported_past_observation',
+    path: '$.speech.utterance_text', quote: 'Вчера я видел лодку у берега' }] });
 
 function provider(script) {
   const calls = [];

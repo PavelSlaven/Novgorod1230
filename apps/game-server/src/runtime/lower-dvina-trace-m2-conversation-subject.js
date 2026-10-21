@@ -9,17 +9,11 @@ const NO_ACTIVITY = Object.freeze({
   can_continue_automatically: false
 });
 
-function policyEntries(values, refKey) {
-  return (values ?? []).flatMap((value) => (typeof value === 'string'
-    && value.length > 0 ? [{ [refKey]: value, summary: value }] : []));
-}
-
 export function npcConversationSubject({
   actor,
   npcRef,
   state,
-  currentObservations = currentSceneObservationProjection(state),
-  character = null
+  currentObservations = currentSceneObservationProjection(state)
 }) {
   if (!plainRecord(actor.identity_state) || !plainRecord(actor.machine_state)) {
     fail(
@@ -36,15 +30,9 @@ export function npcConversationSubject({
   }
   return projectNpcConversationSubject({
     npc_ref: npcRef,
-    npc_snapshot: character === null ? actor : {
-      ...actor,
-      goals: policyEntries(character.goals, 'goal_ref'),
-      fears: policyEntries(character.fears, 'fear_ref')
-    },
+    npc_snapshot: actor,
     current_activity_snapshot: NO_ACTIVITY,
-    relationship_snapshots: character === null ? [] : [{
-      actor_ref: state.actor_id, relation: null, status: character.stance
-    }],
+    relationship_snapshots: actor.relationships ?? [],
     resource_snapshots: [...(state.containers ?? []), ...(state.items ?? [])],
     current_observations: currentObservations,
     received_messages: (state.received_messages ?? []).filter(

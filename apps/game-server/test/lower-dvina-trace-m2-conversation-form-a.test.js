@@ -41,14 +41,8 @@ test('phase 3 request carries the NPC subject in form A', async () => {
   assert.equal(validateNpcConversationResponseSubject(request), true);
   assert.equal(request.npc.identity.name_or_label,
     eremey.identity_state.canonical_name);
-  assert.deepEqual(request.npc.goals.map(({ summary }) => summary),
-    contracts.npcPolicy.goals);
-  assert.deepEqual(request.npc.goals.map(({ goal_ref: goalRef }) => goalRef),
-    contracts.npcPolicy.goals);
-  assert.deepEqual(request.npc.fears.map(({ summary }) => summary),
-    contracts.npcPolicy.fears);
-  assert.deepEqual(request.npc.fears.map(({ fear_ref: fearRef }) => fearRef),
-    contracts.npcPolicy.fears);
+  assert.deepEqual(request.npc.goals, []);
+  assert.deepEqual(request.npc.fears, []);
   assert.deepEqual(request.social_context.npc_behavior,
     { required_interaction_tag: 'withhold' });
   assert.deepEqual(request.social_context.first_contact_introduction, {});
@@ -59,11 +53,6 @@ test('phase 3 request carries the NPC subject in form A', async () => {
   assert.equal(Object.hasOwn(request.memory, 'current_observations'), true);
   assert.equal(refKeys(request.allowed_references.knowledge_refs).includes(
     `npc_identity:${eremey.instance_id}`), true);
-  const stance = request.npc.relationships.filter(
-    ({ actor_ref: actorRef }) => actorRef === state.actor_id
-  );
-  assert.equal(stance.length, 1);
-  assert.equal(stance[0].status, 'guarded');
   assert.equal(JSON.stringify(request).includes('knowledge_profile_snapshot'),
     false);
 });
@@ -91,7 +80,7 @@ test('the NPC subject requires the knowledge scope snapshot and never projects i
   }
 });
 
-test('presented evidence turns the stance into cooperation and drops the required tag',
+test('presented evidence drops the required interaction tag',
   async () => {
     const state = phase3State();
     const contracts = resolveTracePhase3Contracts({
@@ -108,9 +97,6 @@ test('presented evidence turns the stance into cooperation and drops the require
 
     assert.equal(validateNpcConversationResponseSubject(request), true);
     assert.equal(Object.hasOwn(request.social_context, 'npc_behavior'), false);
-    assert.equal(request.npc.relationships.find(
-      ({ actor_ref: actorRef }) => actorRef === state.actor_id
-    )?.status, 'cooperation_enabled');
   });
 
 test('a background fisher request is valid form A without behavior fields',

@@ -174,7 +174,8 @@ test('uncertain source-free claims reach the auditor', async (t) => {
     const value = plan(input);
     value.speech.claims = [claim('uncertain', 'one')];
     const { calls, model } = provider(input, { auditor: { pass: false,
-      concerns: [{ kind: 'auditor_concern' }] } });
+      concerns: [{ kind: 'auditor_concern', path: '$.speech.claims[0].content_summary',
+        quote: 'Я не уверен' }] } });
     const result = await model.validateFreshPlan(value, input);
     assert.equal(result.pass, false);
     assert.equal(calls.length, 1);
@@ -407,7 +408,8 @@ test('responder system prompts never offer unrepairable', async (t) => {
     const fixture = request();
     const { calls, providerCalls, model } = provider(fixture.input,
       { auditor: { pass: false,
-        concerns: [{ kind: 'unsupported_assertion' }] } });
+        concerns: [{ kind: 'unsupported_assertion', path: '$.speech.utterance_text',
+          quote: 'Я отвечу' }] } });
     const result = await decide(fixture, model);
     assert.equal(result.status, 'planned');
     const repairCall = calls.find(({ role_id }) => role_id === REPAIR);

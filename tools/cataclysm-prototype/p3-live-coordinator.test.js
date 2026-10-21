@@ -43,7 +43,8 @@ function plan(request, operation) {
     direct_result_kind: null, reason_code: 'native_action', reason: 'Attempt a native action.' };
 }
 
-async function fixture(t, decide, decideNpc = null, execute = null, config = null) {
+async function fixture(t, decide, decideNpc = null, execute = null, config = null,
+  auditNpc = () => true) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-live-'));
   const socketPath = process.platform === 'win32' ? `\\\\.\\pipe\\p3-live-${randomUUID()}`
     : path.join(dir, 'p3.sock');
@@ -61,7 +62,7 @@ async function fixture(t, decide, decideNpc = null, execute = null, config = nul
       const runner = budget.wrap({ async run({ role_id, request }) {
         calls++;
         roles.push(role_id);
-        if (role_id === 'npc_conversation_grounding_auditor') return true;
+        if (role_id === 'npc_conversation_grounding_auditor') return auditNpc(request, calls);
         return role_id?.startsWith('npc_') ? decideNpc(request, calls) : decide(request, calls);
       } });
       const npcConversationModel = decideNpc && ((request, context) =>
@@ -450,6 +451,67 @@ test('Latin lookalikes in the NPC reply are respelled before native speech and j
   socket.end();
 });
 
+test('a rejected NPC reply keeps its respelling in the phrase journal', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const sceneObservation = withNpcs(observation, [npc]);
+  const scene = await fixture(t, request => ({ ...plan(request, {}),
+    resolution: 'direct', goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), (request, calls) => ({
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: request.allowed_references.actor_refs[1],
+    intended_addressee_refs: [request.allowed_references.actor_refs[1]],
+    affected_actor_refs: [], speech: { utterance_text: calls === 4
+      ? 'Здравствуй.' : 'Здpавствуй.',
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: 'brief', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null, reason: 'Ответ.'
+  }), null, { turnCallBudget: 7, npcMaxRepairAttempts: 1 }, () => ({
+    pass: false, errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+      category: 'semantic_grounding', retryable: true,
+      path: '$.speech.utterance_text', quote: 'Здравствуй' }]
+  }));
+  const { socket, channel } = await scene.client();
+  channel.bind('12');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:9' });
+  assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+  const first = await channel.receive();
+  assert.equal(first.request.primitive, 'speak');
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: sceneObservation });
+  for (const role of ['npc_conversation_responder', 'npc_conversation_grounding_auditor',
+    'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor']) {
+    assert.equal((await channel.receive()).role_id, role);
+  }
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+  assert.equal(result.category, 'semantic');
+  assert.equal(scene.journal.length, 1);
+  const [phrase] = scene.journal;
+  assert.equal(phrase.outcome, 'failure');
+  assert.equal(phrase.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+  assert.equal(phrase.category, 'semantic');
+  assert.deepEqual(phrase.script_respellings, [{ path: '$.speech.utterance_text',
+    before: 'Здpавствуй', after: 'Здравствуй' }]);
+  socket.end();
+});
+
 test('dev config is seven calls per turn and rejects the process budget key', async () => {
   assert.deepEqual(await loadP3DevConfig(), { turnCallBudget: 7, npcMaxRepairAttempts: 2 });
   for (const config of [{ modelCallBudget: 30, npcMaxRepairAttempts: 1 },
@@ -626,7 +688,10 @@ test('registered NPC responder repairs grounding through the real role path', as
               delivery: { loudness: 2, duration_class: 'brief' } } };
         } else if (roleId === 'npc_conversation_grounding_auditor') {
           const pass = ++audits === 2 && repairAccepted;
-          output = { pass, concerns: pass ? [] : [{ kind: 'unsupported_past_observation' }] };
+          output = { pass, concerns: pass ? [] : [{
+            kind: 'unsupported_past_observation', path: '$.speech.utterance_text',
+            quote: audits === 1 ? 'Я видел его утром.' : repairedUtterance
+          }] };
         } else {
           assert.ok(['npc_conversation_responder', 'npc_conversation_responder_format_repair'].includes(roleId));
           responderInputs.push(payload);

@@ -49,10 +49,14 @@ export async function auditFreshNpcSpeech({
   roleRunner, plan, request, requestWire = (value) => value
 }) {
   if (plan?.contribution_kind !== 'speech') return true;
-  if (plan.speech.claims.some(
-    (claim) => claim.source_knowledge_refs.length === 0
+  const unsupportedClaims = plan.speech.claims.flatMap((claim, index) =>
+    claim.source_knowledge_refs.length === 0
       && claim.speaker_posture !== 'uncertain'
-  )) return unsupported([{ kind: 'claim_without_source_knowledge' }]);
+      ? [{ kind: 'claim_without_source_knowledge',
+        path: `$.speech.claims[${index}].source_knowledge_refs`,
+        quote: claim.content_summary }]
+      : []);
+  if (unsupportedClaims.length > 0) return unsupported(unsupportedClaims);
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'npc_conversation_grounding_auditor',
@@ -77,8 +81,8 @@ function unsupported(concerns) {
     category: 'semantic_grounding',
     retryable: true,
     concern_kinds: [kind],
-    ...(path === undefined ? {} : { path }),
-    ...(quote === undefined ? {} : { quote }),
+    path,
+    quote,
     message: 'Rewrite the complete response without unsupported factual assertions.'
   })) };
 }
@@ -90,8 +94,8 @@ function valid(value) {
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
-      && Object.keys(concern).every((key) => ['kind', 'path', 'quote'].includes(key))
-      && typeof concern.kind === 'string' && concern.kind.trim().length > 0
-      && ['path', 'quote'].every((key) => concern[key] === undefined
-        || typeof concern[key] === 'string'));
+      && Object.keys(concern).length === 3
+      && ['kind', 'path', 'quote'].every((key) => Object.hasOwn(concern, key)
+        && typeof concern[key] === 'string'
+        && concern[key].trim().length > 0));
 }

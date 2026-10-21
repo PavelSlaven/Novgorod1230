@@ -80,6 +80,10 @@ function safeModelOutput(rawPlan) {
     return null;
   }
 }
+function scriptRespellingsField(scriptRespellings) {
+  return scriptRespellings.length > 0
+    ? { script_respellings: immutable(scriptRespellings) } : {};
+}
 function repairContext(rawPlan, validationErrors = null) {
   return immutable({
     original_output: safeModelOutput(rawPlan),
@@ -130,13 +134,15 @@ function domainRejectedProposal(boundary, request, orderedSignals, plan,
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-function staleDiscardedProposal(boundary, request, orderedSignals) {
+function staleDiscardedProposal(boundary, request, orderedSignals,
+  scriptRespellings = []) {
   return immutable({
     status: 'stale_discarded',
     plan: null,
     trace: null,
     signal_ids_to_consume: [],
-    decision_context: decisionContext(boundary, request, orderedSignals)
+    decision_context: decisionContext(boundary, request, orderedSignals),
+    ...scriptRespellingsField(scriptRespellings)
   });
 }
 async function requestFreshDecision({ boundary, request, orderedSignals,
@@ -161,6 +167,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
     let repair = null;
+    let actAnchor = null;
     let structuralRepairUsed = false;
     let semanticRepairUsed = false;
     let rawPlan;
@@ -177,7 +184,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             && error?.code === CONVERSATION_CONTRACT_FAILURE) {
           throw conversationContractFailure(currentRequest, currentBoundary,
             error.details?.category, repairKindsUsed,
-            error.details?.validation_errors ?? []);
+            error.details?.validation_errors ?? [], scriptRespellings);
         }
         if (mode === 'conversation' && error?.code === 'json_parse_failed') {
           rawPlan = null;
@@ -191,7 +198,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
               : 'NPC format repair request failed', {
               request_id: currentRequest.request_id,
               boundary_id: currentBoundary.boundary_id,
-              cause: error instanceof Error ? error.message : String(error)
+              cause: error instanceof Error ? error.message : String(error),
+              ...scriptRespellingsField(scriptRespellings)
             });
         }
       }
@@ -245,7 +253,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         });
         if (rebuilt === null) {
           return staleDiscardedProposal(
-            currentBoundary, currentRequest, currentSignals);
+            currentBoundary, currentRequest, currentSignals, scriptRespellings);
         }
         staleRebuilds += 1;
         if (staleRebuilds > MAX_STALE_REBUILDS) {
@@ -266,20 +274,28 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         const verdict = await conversationVerdict({ rawPlan, rawOutput,
           rawText, repair, request: safeRequest, validatePlan,
           validateFreshPlan });
+        if (rawText === undefined && rawOutput !== null
+          && typeof rawOutput === 'object' && !Array.isArray(rawOutput)
+          && [Object.prototype, null].includes(Object.getPrototypeOf(rawOutput))
+          && (verdict === null || !verdict.errors.some(
+            ({ category }) => category === 'format'))) {
+          actAnchor = rawOutput;
+        }
         if (verdict === null) break;
         if (!verdict.repairable) {
           fail('TURN_NPC_PLAN_NOT_APPLICABLE',
             'NPC semantic response is outside the conversation contract', {
               request_id: currentRequest.request_id,
               boundary_id: currentBoundary.boundary_id,
-              validation_errors: verdict.errors });
+              validation_errors: verdict.errors,
+              ...scriptRespellingsField(scriptRespellings) });
         }
         const kind = verdict.errors.some(
-          ({ category }) => category !== 'format') ? 'semantic' : 'format';
+          ({ category }) => category === 'format') ? 'format' : 'semantic';
         if (repairKindsUsed.includes(kind)
             || repairKindsUsed.length >= maxRepairAttempts) {
           throw conversationContractFailure(currentRequest, currentBoundary,
-            kind, repairKindsUsed, verdict.errors);
+            kind, repairKindsUsed, verdict.errors, scriptRespellings);
         }
         repairKindsUsed.push(kind);
         repair = immutable({
@@ -287,7 +303,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
           ...(rawText === undefined
             ? { original_output: safeModelOutput(rawOutput) }
             : { original_output_text: rawText }),
-          validation_errors: verdict.errors
+          validation_errors: verdict.errors,
+          ...(actAnchor === null ? {} : { act_anchor: safeModelOutput(actAnchor) })
         });
         continue;
       }
@@ -362,7 +379,7 @@ async function conversationVerdict({ rawPlan, rawOutput, rawText, repair,
 }
 
 function conversationContractFailure(request, boundary, category,
-  repairKindsUsed, validationErrors) {
+  repairKindsUsed, validationErrors, scriptRespellings = []) {
   return turnFailure(CONVERSATION_CONTRACT_FAILURE,
     'NPC conversation reply failed its contract after the allowed repairs', {
       request_id: request.request_id,
@@ -370,7 +387,8 @@ function conversationContractFailure(request, boundary, category,
       contract_error: 'conversation_llm_contract_failure',
       category: category === 'semantic' ? 'semantic' : 'format',
       repair_kinds_used: [...repairKindsUsed],
-      validation_errors: immutable(validationErrors)
+      validation_errors: immutable(validationErrors),
+      ...scriptRespellingsField(scriptRespellings)
     });
 }
 

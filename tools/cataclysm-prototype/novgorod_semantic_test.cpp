@@ -24,6 +24,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "coordinates.h"
 #include "debug.h"
 #include "display.h"
 #include "faction.h"
@@ -1900,6 +1901,130 @@ TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items
         CHECK( exported[0].kind == "said" );
     }
     CHECK( exported_found );
+}
+
+TEST_CASE( "Novgorod NPC sees only visible contents of furniture containers", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    map &here = get_map();
+    for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
+        here.i_clear( p );
+    }
+    const character_id guy_id = make_npc( 60, 62 );
+    npc &guy = npc_by_id( guy_id );
+    clear_character( guy, true );
+    guy.setpos( here, tripoint_bub_ms( 60, 62, 0 ) );
+    const tripoint_bub_ms distant_oven( 62, 62, 0 );
+    const tripoint_bub_ms sealed_crate( 60, 63, 0 );
+    const tripoint_bub_ms adjacent_oven( 59, 62, 0 );
+    REQUIRE( here.furn_set( distant_oven, furn_str_id( "f_clay_oven" ) ) );
+    REQUIRE( here.furn_set( sealed_crate, furn_str_id( "f_crate_c" ) ) );
+    REQUIRE( here.furn_set( adjacent_oven, furn_str_id( "f_clay_oven" ) ) );
+    const std::string firewood_ref = uid_ref( here.add_item( distant_oven,
+                                     item( itype_id( "firewood" ) ) ) );
+    const std::string stick_ref = uid_ref( here.add_item( sealed_crate,
+                                  item( itype_id( "stick" ) ) ) );
+    const std::string rock_ref = uid_ref( here.add_item( adjacent_oven,
+                                 item( itype_id( "rock" ) ) ) );
+    REQUIRE( here.has_items( distant_oven ) );
+    REQUIRE( here.has_items( sealed_crate ) );
+    REQUIRE( here.has_items( adjacent_oven ) );
+    refresh_visibility();
+    REQUIRE( guy.sees( here, distant_oven ) );
+    REQUIRE( guy.sees( here, sealed_crate ) );
+    REQUIRE( guy.sees( here, adjacent_oven ) );
+    REQUIRE_FALSE( here.sees_some_items( distant_oven, guy ) );
+    REQUIRE_FALSE( here.sees_some_items( sealed_crate, guy ) );
+    REQUIRE( here.sees_some_items( adjacent_oven, guy ) );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    bool found = false;
+    bool firewood_seen = false;
+    bool stick_seen = false;
+    bool rock_seen = false;
+    for( const JsonObject projection : observation.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        found = true;
+        for( const JsonObject row : projection.get_array( "visible_items" ) ) {
+            row.allow_omitted_members();
+            const std::string ref = row.get_string( "item_ref" );
+            firewood_seen |= ref == firewood_ref;
+            stick_seen |= ref == stick_ref;
+            if( ref == rock_ref ) {
+                rock_seen = true;
+                CHECK( row.get_string( "placement" ) == "ground" );
+            }
+        }
+    }
+    REQUIRE( found );
+    CHECK_FALSE( firewood_seen );
+    CHECK_FALSE( stick_seen );
+    CHECK( rock_seen );
+}
+
+TEST_CASE( "Novgorod NPC sees lit distant items without seeing dark distant items", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    map &here = get_map();
+    for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
+        here.i_clear( p );
+    }
+    const character_id guy_id = make_npc( 60, 62 );
+    npc &guy = npc_by_id( guy_id );
+    clear_character( guy, true );
+    guy.setpos( here, tripoint_bub_ms( 60, 62, 0 ) );
+    const auto previous_turn = calendar::turn;
+    calendar::turn = calendar::turn_zero;
+    g->reset_light_level();
+    const tripoint_bub_ms rock_pos( 72, 62, 0 );
+    const tripoint_bub_ms dark_pos( 60, 82, 0 );
+    const std::string rock_ref = uid_ref( here.add_item( rock_pos,
+                                 item( itype_id( "rock" ) ) ) );
+    const std::string dark_ref = uid_ref( here.add_item( dark_pos,
+                                 item( itype_id( "stick" ) ) ) );
+    REQUIRE( here.add_field( rock_pos + tripoint_rel_ms( 0, 1, 0 ), fd_fire, 1 ) );
+    refresh_visibility();
+    REQUIRE( rl_dist( guy.pos_bub(), rock_pos ) >
+             guy.sight_range( here.ambient_light_at( guy.pos_bub() ) ) );
+    REQUIRE( guy.sees( here, rock_pos ) );
+    REQUIRE_FALSE( guy.sees( here, dark_pos ) );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    bool found = false;
+    bool rock_seen = false;
+    bool dark_seen = false;
+    for( const JsonObject projection : observation.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        found = true;
+        for( const JsonObject row : projection.get_array( "visible_items" ) ) {
+            row.allow_omitted_members();
+            const std::string ref = row.get_string( "item_ref" );
+            if( ref == rock_ref ) {
+                rock_seen = true;
+                CHECK( row.get_string( "placement" ) == "ground" );
+            }
+            dark_seen |= ref == dark_ref;
+        }
+    }
+    REQUIRE( found );
+    CHECK( rock_seen );
+    CHECK_FALSE( dark_seen );
+    calendar::turn = previous_turn;
+    g->reset_light_level();
 }
 
 TEST_CASE( "Novgorod frame exports native labels of the observed avatar, scene and NPC work",

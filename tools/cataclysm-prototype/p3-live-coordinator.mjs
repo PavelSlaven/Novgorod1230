@@ -114,7 +114,13 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           ? error.code ?? error.message : 'P3_LIVE_REQUEST_FAILED';
       const category = code === 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE'
         && ['format', 'semantic'].includes(error.details?.category) ? error.details.category : null;
-      if (phrase) Object.assign(phrase, { code, category });
+      if (phrase) {
+        Object.assign(phrase, { code, category });
+        const respellings = error?.details?.script_respellings;
+        if (Array.isArray(respellings) && respellings.length > 0) {
+          phrase.script_respellings = respellings;
+        }
+      }
       if (!socket.destroyed && socket.writable && error?.message !== 'P3_LIVE_CONNECTION_CLOSED') {
         channel.send({ type: 'result', status: 'refused', code, ...(category ? { category } : {}),
           applied_operations: unknown ? null : adapter?.appliedOperations ?? 0,

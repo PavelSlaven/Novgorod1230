@@ -67,13 +67,15 @@ function withoutCurrentPhrase(records, { playerRef, npcRef, utterance, turns }) 
   return records;
 }
 
+// Thresholds follow npc::opinion_text in src/npc.cpp.
 function trustLevel(value) {
-  if (value === 0) return undefined;
-  return value < 0 ? 'low' : value < 5 ? 'medium' : 'high';
+  if (value <= -3) return 'low';
+  if (value <= 2) return undefined;
+  return value <= 4 ? 'medium' : 'high';
 }
 
 function hostilityLevel(value) {
-  return value <= 0 ? 'none' : value < 5 ? 'mild' : 'strong';
+  return value <= 2 ? 'none' : value <= 5 ? 'mild' : 'strong';
 }
 
 function perceptionRefOfItem(turn, npcId, uid) {
@@ -145,7 +147,8 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
   const records = withoutCurrentPhrase(converted,
     { playerRef, npcRef, utterance, turns: currentTurns });
   const acquainted = records.some(({ speaker_ref: speaker, listener_ref: listener }) =>
-    sameRef(speaker, playerRef) || sameRef(listener, playerRef));
+    (sameRef(speaker, playerRef) && sameRef(listener, npcRef))
+    || (sameRef(speaker, npcRef) && sameRef(listener, playerRef)));
   const female = projection.gender === 'female';
   const relation = acquainted
     ? `человек, с которым я уже ${female ? 'говорила' : 'говорил'}` : 'незнакомый человек';

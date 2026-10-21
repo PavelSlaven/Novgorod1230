@@ -1331,6 +1331,49 @@ test('the current phrase heard between the readback turns is removed once and an
   });
 });
 
+test('a witness of another conversation meets the player as a stranger', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй, мастер.', 5, '8'),
+        heardRecord('Как жизнь?', 11)] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    const readback = { ...playerSpeechReadback({ utterance: 'Как жизнь?', turn: 12 }),
+      before: { turn: 9 } };
+    await harness.run('Как жизнь?', { playerReadback: readback });
+    const [request] = harness.requests;
+    assert.deepEqual([request.npc.relationships[0].status, request.npc.relationships[0].relation],
+      ['first_meeting', 'незнакомый человек']);
+    assert.match(request.memory.current_observations.at(-1).fact_text,
+      /Говорящий: незнакомый человек/u);
+    assert.equal(request.memory.recent_events.some(({ summary }) =>
+      summary.startsWith('Чужая реплика')), true);
+  });
+});
+
+test('a witness of another NPC speaking to the player is still a stranger', async () => {
+  await withProfilesDir(async profilesDir => {
+    const frame = replyFrame({ projections: [npcProjection('9', { conversation_memory: [{
+      kind: 'heard', speaker_ref: 'npc:8', listener_ref: 'avatar',
+      text: 'Проходи.', turn: 5 }] })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+    await harness.run('Как жизнь?');
+    assert.equal(harness.requests[0].npc.relationships[0].status, 'first_meeting');
+  });
+});
+
+test('a direct heard, said, or silent exchange establishes acquaintance', async () => {
+  await withProfilesDir(async profilesDir => {
+    for (const record of [saidRecord('Слышу тебя.', 6), silenceRecord(6),
+      heardRecord('Здравствуй.', 5)]) {
+      const frame = replyFrame({ projections: [npcProjection('9', {
+        conversation_memory: [record] })] });
+      const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback, profilesDir });
+      await harness.run('Как жизнь?');
+      assert.equal(harness.requests[0].npc.relationships[0].status, 'acquainted', record.kind);
+    }
+  });
+});
+
 test('the native null activity reaches the NPC as idle and a real activity as in progress', async () => {
   await withProfilesDir(async profilesDir => {
     const activity = async activityId => {
@@ -1811,10 +1854,42 @@ test('P3 NPC resource without a Russian perceived name gets no label key', async
 });
 
 test('P3 NPC trust reaches the responder as a level and neutral trust is omitted', async () => {
-  for (const [trust, expected] of [[0, []], [-3, ['low']], [2, ['medium']], [7, ['high']]]) {
+  for (const [trust, expected] of [[0, []], [-3, ['low']], [3, ['medium']], [7, ['high']]]) {
     const { calls } = await captureNpcWire(toAudit, {
       opinion_of_avatar: { trust, fear: 0, value: 0, anger: 0 } });
     assert.deepEqual(wireValuesOf(calls[0].after, 'trust'), expected, String(trust));
+  }
+});
+
+test('a witness first meeting reaches the responder model as a stranger', async () => {
+  const { requests, calls } = await captureNpcWire(toAudit, {
+    conversation_memory: [heardRecord('Здравствуй, мастер.', 5, '8')] });
+  assert.equal(requests[0].npc.relationships[0].status, 'first_meeting');
+  assert.equal(calls[0].roleId, 'npc_conversation_responder');
+  const modelInput = JSON.stringify(calls[0].after);
+  assert.match(modelInput, /незнакомый человек/u);
+  assert.doesNotMatch(modelInput, /человек, с которым я уже говорил/u);
+});
+
+test('NPC opinion levels use native trust bands', async t => {
+  for (const [trust, expected] of [[-3, ['low']], [-2, []], [0, []], [2, []],
+    [3, ['medium']], [5, ['high']]]) {
+    await t.test(`trust ${trust}`, async () => {
+      const { calls } = await captureNpcWire(toAudit, {
+        opinion_of_avatar: { trust, fear: 0, value: 0, anger: 0 } });
+      assert.deepEqual(wireValuesOf(calls[0].after, 'trust'), expected);
+    });
+  }
+});
+
+test('NPC opinion levels use native anger bands', async t => {
+  for (const [anger, expected] of [[2, ['none']], [3, ['mild']],
+    [5, ['mild']], [6, ['strong']]]) {
+    await t.test(`anger ${anger}`, async () => {
+      const { calls } = await captureNpcWire(toAudit, {
+        opinion_of_avatar: { trust: 0, fear: 0, value: 0, anger } });
+      assert.deepEqual(wireValuesOf(calls[0].after, 'hostility'), expected);
+    });
   }
 });
 

@@ -108,7 +108,7 @@ function planFor(sourceRequest, utteranceText) {
   };
 }
 
-async function decideWithRebuilds(utterances, staleAfterCalls) {
+async function decideWithRebuilds(utterances, staleAfterCalls, discard = false) {
   const calls = [];
   const rebuilds = [];
   const result = await requestNpcSemanticDecision({
@@ -123,6 +123,7 @@ async function decideWithRebuilds(utterances, staleAfterCalls) {
       staleAfterCalls.includes(calls.length) ? expected + 1 : expected,
     rebuildDecisionContext: async ({ current_state_version: version }) => {
       rebuilds.push(version);
+      if (discard) return null;
       return {
         boundary: boundary(version),
         request: request(version),
@@ -134,6 +135,17 @@ async function decideWithRebuilds(utterances, staleAfterCalls) {
 }
 
 const at = '$.speech.utterance_text';
+
+test('a stale discarded proposal keeps the respelling from its model answer', async () => {
+  const { result, calls, rebuilds } = await decideWithRebuilds(
+    ['Здpавствуй.'], [1], true);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(rebuilds, [3]);
+  assert.equal(result.status, 'stale_discarded');
+  assert.deepEqual(result.script_respellings, [
+    { path: at, before: 'Здpавствуй', after: 'Здравствуй' }
+  ]);
+});
 
 test('script respellings from an answer discarded by a stale-state rebuild stay in the decision', async () => {
   const { result, calls, rebuilds } = await decideWithRebuilds(

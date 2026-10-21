@@ -69,15 +69,6 @@ function isEremeyPhase3(context) {
     && context.targetActor?.ref === context.contracts.ids?.eremeyRef;
 }
 
-export function npcCharacterProfile(context) {
-  if (!isEremeyPhase3(context)) return null;
-  return {
-    goals: context.contracts.npcPolicy.goals,
-    fears: context.contracts.npcPolicy.fears,
-    stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded'
-  };
-}
-
 export function npcPresentationContext(context, latestContribution) {
   if (!isEremeyPhase3(context)) return {};
   const name = context.targetActor?.identity_state?.canonical_name;

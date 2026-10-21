@@ -67,7 +67,7 @@ function plan(input) {
       response_expectation: { kind: 'none', target_refs: [] } },
     interpretation: { intent: 'ответить', grounded_contribution: 'дать ответ',
       adaptation: 'literal' }, resolution: 'automatic',
-    activity: { duration_class: 'domain_owned', effort: 'none' },
+    activity: { duration_class: input.decision_scope.allowed_duration_classes[0], effort: 'none' },
     supporting_operations: [], check: null, handoff: null,
     reason: 'NPC chooses to answer.'
   };
@@ -158,3 +158,141 @@ test('a sibling prefix error does not permit an act field to change', async () =
     return true;
   });
 });
+
+test('a dotted primary addressee descendant permits that act field to change',
+  async () => {
+    const { input } = fixture();
+    input.decision_scope.allowed_duration_classes = ['brief'];
+    input.allowed_references.actor_refs.push(ref('npc', 'npc-2'));
+    const original = plan(input);
+    original.intended_addressee_refs.push(ref('npc', 'npc-2'));
+    const repaired = structuredClone(original);
+    repaired.primary_addressee_ref = ref('npc', 'npc-2');
+    const { model } = modelWith(input, null, repaired);
+    const result = await model(input, { repair: { kind: 'format',
+      original_output: original, validation_errors: [{ code: 'invalid_type',
+        category: 'format', path: '$.primary_addressee_ref.entity_id',
+        message: 'The addressee identifier is invalid.' }] } });
+    assert.deepEqual(result.primary_addressee_ref, ref('npc', 'npc-2'));
+  });
+
+async function scriptedDecision(outputs) {
+  const { input, boundary } = fixture();
+  input.decision_scope.allowed_duration_classes = ['brief'];
+  const calls = [];
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: {
+    async run(call) {
+      const output = outputs[calls.length]?.(input);
+      assert.notEqual(output, undefined, `Unexpected role: ${call.role_id}`);
+      calls.push({ role_id: call.role_id, repair_kind: call.repair_kind });
+      return { output };
+    }
+  } });
+  const outcome = await requestNpcSemanticDecision({ boundary, request: input,
+    semanticModel: model, validateFreshPlan: model.validateFreshPlan,
+    revalidateStateVersion: async () => input.state_version })
+    .then((value) => ({ value }), (error) => ({ error }));
+  return { calls, ...outcome };
+}
+
+const auditPass = () => ({ pass: true, concerns: [] });
+const roleKinds = (calls) => calls.map(({ role_id, repair_kind }) =>
+  repair_kind === undefined ? role_id : `${role_id}:${repair_kind}`);
+const changedActErrors = (error) => error.details.validation_errors
+  .map(({ code, path }) => ({ code, path }));
+
+test('format repair cannot change intent while a reference error remains',
+  async () => {
+    const { calls, error } = await scriptedDecision([
+      (input) => { const value = plan(input);
+        value.interpretation.adaptation = 'not_allowed'; return value; },
+      (input) => { const value = plan(input);
+        value.interpretation.intent = 'солгать';
+        value.affected_actor_refs = [ref('npc', 'npc-ghost')]; return value; },
+      (input) => { const value = plan(input);
+        value.interpretation.intent = 'солгать'; return value; },
+      auditPass
+    ]);
+    assert.equal(error?.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+    assert.equal(error.details.category, 'semantic');
+    assert.deepEqual(error.details.repair_kinds_used, ['format']);
+    assert.deepEqual(changedActErrors(error), [{ code: 'format_repair_changed_act',
+      path: '$.interpretation.intent' }]);
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:format`]);
+  });
+
+test('semantic repair missing interpretation can receive format repair',
+  async () => {
+    const { calls, value } = await scriptedDecision([
+      (input) => { const result = plan(input);
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      (input) => { const result = plan(input);
+        delete result.interpretation; return result; },
+      plan, auditPass
+    ]);
+    assert.equal(value?.status, 'planned');
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:semantic`,
+      `${REPAIR}:format`, AUDITOR]);
+  });
+
+test('semantic repair returning a status object can receive format repair',
+  async () => {
+    const { calls, value } = await scriptedDecision([
+      (input) => { const result = plan(input);
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      () => ({ status: 'cannot' }), plan, auditPass
+    ]);
+    assert.equal(value?.status, 'planned');
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:semantic`,
+      `${REPAIR}:format`, AUDITOR]);
+  });
+
+test('format repair cannot replace the act lost by semantic repair',
+  async () => {
+    const { calls, error } = await scriptedDecision([
+      (input) => { const result = plan(input);
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      (input) => { const result = plan(input);
+        delete result.interpretation; return result; },
+      (input) => { const result = plan(input);
+        result.interpretation.intent = 'солгать'; return result; }
+    ]);
+    assert.equal(error?.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+    assert.equal(error.details.category, 'semantic');
+    assert.deepEqual(changedActErrors(error), [{ code: 'format_repair_changed_act',
+      path: '$.interpretation.intent' }]);
+    assert.deepEqual(error.details.repair_kinds_used, ['semantic', 'format']);
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:semantic`,
+      `${REPAIR}:format`]);
+  });
+
+test('complete semantic repair still cannot change the dominant act',
+  async () => {
+    const { calls, error } = await scriptedDecision([
+      (input) => { const result = plan(input);
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      (input) => { const result = plan(input);
+        result.speech.dominant_act = 'question'; return result; }
+    ]);
+    assert.equal(error?.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+    assert.equal(error.details.category, 'semantic');
+    assert.deepEqual(error.details.repair_kinds_used, ['semantic']);
+    assert.deepEqual(changedActErrors(error), [{ code: 'semantic_repair_changed_act',
+      path: '$.speech.dominant_act' }]);
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:semantic`]);
+  });
+
+test('format errors take priority over reference errors after semantic repair',
+  async () => {
+    const { calls, value } = await scriptedDecision([
+      (input) => { const result = plan(input);
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      (input) => { const result = plan(input);
+        delete result.interpretation;
+        result.affected_actor_refs = [ref('npc', 'npc-ghost')]; return result; },
+      plan, auditPass
+    ]);
+    assert.equal(value?.status, 'planned');
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:semantic`,
+      `${REPAIR}:format`, AUDITOR]);
+  });

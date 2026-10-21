@@ -17,7 +17,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { fullyPerceivedCurrentOffer } from
   './lower-dvina-trace-m2-conversation-offer-privacy.js';
-import { npcCharacterProfile, npcConversationDecisionCapability,
+import { npcConversationDecisionCapability,
   npcPresentationContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import { npcConversationSubject } from
@@ -75,8 +75,7 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
     actor: context.targetActor,
     npcRef: context.targetRef,
     state: context.state,
-    currentObservations,
-    character: npcCharacterProfile(context)
+    currentObservations
   });
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',

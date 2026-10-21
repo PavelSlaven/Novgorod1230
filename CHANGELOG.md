@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- fix(npc-conversation): промпты repair больше не предлагают модели выход `unrepairable`, repair формы проверяет сохранение акта только для исправленного ответа, прошедшего проверку формы, а сомнение NPC без ссылки передаётся аудитору (#817)
 - feat(npc-runtime,turn): латинские двойники в смешанных словах реплики NPC заменяет код до проверки формы, на первом ответе и на каждом repair, без вызова модели; замены возвращаются как `script_respellings` и пишутся в журнал фразы p3; норма §37.1 п. 4 (#816)
 - ci(cataclysm): Windows-сборка `cataclysm-tiles.exe` в GitHub Actions родным рецептом `release.yml` CDDA того же SHA (vcpkg, msbuild, `windist.ps1`) с overlays прототипа и модом `dev-world`; тайлсет, `.mo` и шейдеры из официального Windows-архива того же SHA; порядок overlays — единый `native-overlays.txt`, накладывает `apply-overlays.sh` для Linux и Windows (#810)
 - feat(cataclysm): dev-запуск в графике (SDL3 3.4.10, UltimateCataclysm) с официальным русским переводом: `run-p3-dev.sh` по умолчанию, `run-p3-dev.ps1 -Tiles` (без ключа — текст); runtime root через родной `cmake --install` с атомарной подменой под `session.lock`, перевод и тайлсет из закреплённого архива CDDA, `keycode` для горячих клавиш при русской раскладке; проверено на servak в Xvfb с программным рендером (#795)

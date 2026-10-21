@@ -249,7 +249,7 @@ test('NPC required candidate is validator-valid and preserves operation', async 
 
   const fixture = runner(() => npcPlan(request));
   const plan = await createLowerDvinaTraceNpcSemanticModel(fixture)(request, {
-    repair: { original_output: { schema: 'invalid' }, validation_errors: [] }
+    repair: { original_output: npcPlan(request), validation_errors: [] }
   });
   assert.equal(validateConversationContributionPlan(plan, request), true);
   assert.equal(fixture.calls.length, 1);

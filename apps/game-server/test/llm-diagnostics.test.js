@@ -297,6 +297,23 @@ test('failed NPC conversation contract keeps its category and stable codes only'
   }
 });
 
+test('failed NPC conversation format repair preserves a safe act code and scope', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', details: {
+      category: 'semantic', validation_errors: [
+        { code: 'format_repair_changed_act', path: '$.speech.dominant_act',
+          message: 'secret provider output' }
+      ]
+    }
+  } });
+  assert.deepEqual(report.failure, {
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', category: 'semantic',
+    validation_codes: ['format_repair_changed_act'],
+    validation_scopes: ['speech_dominant_act']
+  });
+  assert.equal(JSON.stringify(report.failure).includes('secret provider output'), false);
+});
+
 test('explicit validation scopes retain only stable allowlisted categories', () => {
   const npc = buildLlmTurnReport({ failure: {
     code: 'TURN_NPC_PLAN_INVALID', validation_codes: ['invalid_enum'],

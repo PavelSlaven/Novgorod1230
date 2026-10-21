@@ -38,7 +38,8 @@ const SAFE_NPC_VALIDATION_CODES = new Set([
   'invalid_type', 'envelope_mismatch', 'reference_not_allowed',
   'mixed_script_word', 'mixed_script_repair_changed_text',
   'conversation_contribution_schema_invalid', 'json_parse_failed',
-  'semantic_repair_changed_act', 'repair_declared_unrepairable',
+  'semantic_repair_changed_act', 'format_repair_changed_act',
+  'repair_declared_unrepairable',
   'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
   'TRACE_NPC_REQUIRED_PRESENTATION_MISSING'
 ]);

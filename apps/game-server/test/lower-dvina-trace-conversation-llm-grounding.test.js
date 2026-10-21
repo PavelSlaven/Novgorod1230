@@ -385,7 +385,7 @@ test('route contract candidate reaches initial and repair prompts', async () => 
   const { schema, request_id, boundary_id, conversation_id, exchange_id, state_version, speaker_ref, ...semantic } = candidate;
   const fixture = runner(() => semantic);
   const model = createLowerDvinaTraceNpcSemanticModel(fixture);
-  for (const context of [{}, { repair: { original_output: { invalid: true }, validation_errors: ['invalid route operation'] } }]) {
+  for (const context of [{}, { repair: { original_output: semantic, validation_errors: ['invalid route operation'] } }]) {
     const result = await model(input, context);
     assert.equal(validateConversationContributionPlan(result, input), true);
     assert.deepEqual(result.supporting_operations, candidate.supporting_operations);

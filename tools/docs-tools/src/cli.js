@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
 import { checkDocumentationOutputs, writeDocumentationOutputs } from './documentation-policy-v2.js';
+import { checkDesignDocs } from './design-docs.js';
 import { writeKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 import {
   checkWorldBaseSchemaReference,
@@ -23,10 +24,11 @@ if (command === 'generate') {
   console.log(`Documentation generated: ${[...result.files, ...knowledge.files, worldBaseSchema.path, partyRuntimeSchema.path].sort().join(', ')}`);
 } else if (command === 'check') {
   const result = await checkDocumentationOutputs(root);
+  const design = await checkDesignDocs(root);
   const schemaErrors = [];
   await checkWorldBaseSchemaReference({ root }).catch((error) => schemaErrors.push(error.message));
   await checkPartyRuntimeSchemaReference({ root }).catch((error) => schemaErrors.push(error.message));
-  const errors = [...result.errors, ...schemaErrors];
+  const errors = [...result.errors, ...design.errors, ...schemaErrors];
   if (errors.length) {
     console.error(`Documentation check failed:\n${errors.map((item) => `- ${item}`).join('\n')}`);
     process.exitCode = 1;

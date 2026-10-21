@@ -6,7 +6,8 @@
 
 | Трек | Цель | Где истина |
 |---|---|---|
-| Runtime | переход к общему рантайму живого мира: сначала M2c «Процедурная материализация мест», затем M3–M8 | [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98), milestone [Runtime M3–M8](https://github.com/PavelSlaven/Novgorod1230/milestone/2); текущий этап подтверждает владелец |
+| CDDA | вертикальный срез и следующие этапы | [Этапы GDD](../design/GDD.md); доказательства способностей — там же |
+| Runtime | спит; судьба старого движка решается на P7 | [GDD](../design/GDD.md), раздел «Старый движок»; [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98), milestone [Runtime M3–M8](https://github.com/PavelSlaven/Novgorod1230/milestone/2) |
 | Backlog | снять временные оговорки роутера и индекса, затем техдолг по LW | issues без milestone, label `P2` раньше `P3` |
 | World Knowledge | исправить цепочку WK по аудиту [#151](https://github.com/PavelSlaven/Novgorod1230/issues/151) | CR [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152), [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153); очерёдность относительно M2c назначает владелец |
 | Экономика | базовая условная единица (БУЕ = 1 мг чистого серебра), курсы по регионам и эпохам, якорные цены и ценовые полосы c1230; модуль экономики — отдельным CR после данных (D44) | [#184](https://github.com/PavelSlaven/Novgorod1230/issues/184) |

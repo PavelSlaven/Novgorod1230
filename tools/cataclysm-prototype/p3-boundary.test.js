@@ -1743,11 +1743,11 @@ function wireValuesOf(value, key) {
 
 test('P3 NPC wire keeps the base system messages byte for byte', async () => {
   const golden = {
-    npc_conversation_responder: '8711979aac6332354f090d454eeed5364b5b88bbc3079092865624f47fbe98d1',
+    npc_conversation_responder: '593b8500997f8268cf04d107968fe5c49113e1857d7f005dd5b1dcdce99eb2b6',
     npc_conversation_responder_format_repair:
-      'df69debca76f40c6919e5e5e1e896174037683e9dc64c7d5fd0e8192cad159b5',
+      'a1230666347909ba49ceeb72756c6fc43c78926315e284b722cbdccf49d4a22f',
     npc_conversation_grounding_auditor:
-      'e33d06c4fa76ef1105c7a294786aee07d964e302ab910d54c09b9c1452166710' };
+      'f18874f9592430bdbb1715424343fc58ed3495d122b85bb2e2d872ae13685086' };
   const repair = await captureNpcWire(toRepair);
   const audit = await captureNpcWire(toAudit);
   const calls = [repair.calls[0], repair.calls[1], audit.calls[1]];

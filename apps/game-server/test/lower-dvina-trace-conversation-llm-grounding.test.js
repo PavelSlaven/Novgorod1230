@@ -100,7 +100,7 @@ test('speech audit rejects invented past work from a current schedule',
     assert.match(fixture.calls[0].messages[0].content,
       /current_activity describes only requested_at/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Past first-person activity or observation needs an exact memory record/u);
+      /Past first-person activity or observation, including a denial, needs an exact knowledge\.known_facts entry or event from memory\.recent_events or memory\.relevant_long_term_events/u);
     assert.match(fixture.calls[0].messages[0].content,
       /empty or missing memory never proves a negative past observation/u);
     assert.match(fixture.calls[0].messages[0].content,
@@ -108,7 +108,7 @@ test('speech audit rejects invented past work from a current schedule',
     assert.match(fixture.calls[0].messages[0].content,
       /memory\.current_observations grounds only its exact present fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Mandatory failure: when memory\.recent_events has no exact supporting event/u);
+      /Mandatory failure: reject a first-person assertion that the NPC saw, did, or experienced something earlier, or that it did not, unless a knowledge\.known_facts entry or event from memory\.recent_events or memory\.relevant_long_term_events is cited in source_knowledge_refs/u);
     assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 

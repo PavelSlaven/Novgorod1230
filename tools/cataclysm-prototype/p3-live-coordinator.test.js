@@ -786,7 +786,7 @@ test('registered NPC responder repairs grounding through the real role path', as
         observation_ref: perceptionRef,
         fact_text: `Слышу реплику, обращённую ко мне. Говорящий: незнакомый человек. Слова: «${utterance}».`,
         observed_at: { whole_minutes: '0', subminute_numerator: '11', subminute_denominator: '60' },
-        source_type: 'direct_perception' }], recent_events: [] });
+        source_type: 'direct_perception' }], recent_events: [], relevant_long_term_events: [] });
       assert.deepEqual(responderInputs[0].perceived_message.perception_result_ref, perceptionRef);
       assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [
         { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' },

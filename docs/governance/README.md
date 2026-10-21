@@ -30,7 +30,7 @@
 | 16. Минимальность и YAGNI | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 17. Жёсткий запрет гипотетической integrity/security-инфраструктуры | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 18. Начало работы над задачей | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
-| 18.1. Обязательные навыки `caveman` и `ponytail` (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 18.1. Обязательный навык `ponytail` (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 18.2. Задача под ведущим (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 19. Изучение репозитория и инструменты | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 20. Документация и её владельцы | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |

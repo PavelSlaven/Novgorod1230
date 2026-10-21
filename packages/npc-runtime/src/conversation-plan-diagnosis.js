@@ -85,19 +85,53 @@ function slotTypeErrors(slot) {
 function scannedTexts(plan) {
   if (!plainRecord(plan)) return [];
   const texts = [];
+  const scan = (path, holder, key) => texts.push([path, holder[key], holder, key]);
   if (plainRecord(plan.speech)) {
-    texts.push(['$.speech.utterance_text', plan.speech.utterance_text]);
+    scan('$.speech.utterance_text', plan.speech, 'utterance_text');
     if (Array.isArray(plan.speech.claims)) {
       plan.speech.claims.forEach((claim, index) => {
-        if (plainRecord(claim)) texts.push([`$.speech.claims[${index}].content_summary`, claim.content_summary]);
+        if (plainRecord(claim)) scan(`$.speech.claims[${index}].content_summary`, claim, 'content_summary');
       });
     }
   }
-  if (plainRecord(plan.interpretation)) texts.push(['$.interpretation.grounded_contribution', plan.interpretation.grounded_contribution]);
+  if (plainRecord(plan.interpretation)) scan('$.interpretation.grounded_contribution', plan.interpretation, 'grounded_contribution');
   return texts.filter(([, text]) => typeof text === 'string');
 }
 
-const mixedWords = (text) => [...text.matchAll(WORD)].map(([word]) => word).filter((word) => CYRILLIC.test(word) && LATIN.test(word));
+const mixedScript = (word) => CYRILLIC.test(word) && LATIN.test(word);
+const mixedWords = (text) => [...text.matchAll(WORD)].map(([word]) => word).filter(mixedScript);
+const LATIN_LOOKALIKES = new Map([...'aceopxyABCEHKMOPTX'].map((latin, index) =>
+  [latin, 'асеорхуАВСЕНКМОРТХ'[index]]));
+const respellWord = (word) => (mixedScript(word)
+  ? [...word].map((letter) => LATIN_LOOKALIKES.get(letter) ?? letter).join('') : word);
+
+function scannedTextHolders(output) {
+  const copy = { ...output };
+  if (plainRecord(output.speech)) {
+    copy.speech = { ...output.speech };
+    if (Array.isArray(output.speech.claims)) {
+      copy.speech.claims = output.speech.claims.map((claim) => (plainRecord(claim) ? { ...claim } : claim));
+    }
+  }
+  if (plainRecord(output.interpretation)) copy.interpretation = { ...output.interpretation };
+  return copy;
+}
+
+export function respellMixedScriptHomoglyphs(output) {
+  if (!scannedTexts(output).some(([, text]) => text.replace(WORD, respellWord) !== text)) {
+    return { output, respellings: [] };
+  }
+  const respelled = scannedTextHolders(output);
+  const respellings = [];
+  for (const [path, text, holder, key] of scannedTexts(respelled)) {
+    holder[key] = text.replace(WORD, (before) => {
+      const after = respellWord(before);
+      if (after !== before) respellings.push({ path, before, after });
+      return after;
+    });
+  }
+  return { output: respelled, respellings };
+}
 
 function envelopeErrors(plan, request) {
   const errors = [];

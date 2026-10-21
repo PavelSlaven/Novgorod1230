@@ -1,0 +1,111 @@
+name: windows-build
+
+on:
+  push:
+    branches: [windows-build]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency: windows-build-${{ github.ref }}
+
+env:
+  CDDA_SHA: 0d8843f1c500052c3e026e3da6f8edaf5e00b626
+  CDDA_OFFICIAL_ZIP: https://github.com/CleverRaven/Cataclysm-DDA/releases/download/cdda-experimental-2026-10-18-0359/cdda-windows-with-graphics-x64-2026-10-18-0359.zip
+
+jobs:
+  windows-tiles:
+    name: Windows Tiles x64 MSVC
+    runs-on: windows-2022
+    env:
+      ZSTD_CLEVEL: 17
+    steps:
+      # The overlays were cut from an LF tree; CDDA's .gitattributes would otherwise check sources out as CRLF on Windows.
+      - name: Check out with LF line endings
+        run: git config --global core.autocrlf input
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          repository: CleverRaven/Cataclysm-DDA
+          ref: ${{ env.CDDA_SHA }}
+          persist-credentials: false
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          path: novgorod
+          sparse-checkout: tools/cataclysm-prototype
+          persist-credentials: false
+      - name: Apply Novgorod overlays
+        shell: bash
+        run: bash novgorod/tools/cataclysm-prototype/apply-overlays.sh --source .
+      # Upstream's compose-tilesets and build-translations jobs build from master and need a Transifex secret,
+      # so the tileset, translations and shaders come from the official build of the same commit instead.
+      - name: Take tileset, translations and shaders from the official build of the same commit
+        run: |
+          $official = "$env:RUNNER_TEMP\cdda-official"
+          Invoke-WebRequest $env:CDDA_OFFICIAL_ZIP -OutFile "$official.zip"
+          Expand-Archive "$official.zip" $official
+          if (-not (Select-String -Quiet -SimpleMatch "commit sha: $env:CDDA_SHA" "$official\VERSION.txt")) {
+            throw "Official build is not commit $env:CDDA_SHA"
+          }
+          Copy-Item -Recurse "$official\gfx\UltimateCataclysm" gfx\UltimateCataclysm
+          Copy-Item -Recurse -Force "$official\lang\mo\*" lang\mo\
+          Copy-Item -Force "$official\data\shaders\*" data\shaders\
+      - name: Mark shader artifacts fresh
+        shell: bash
+        run: |
+          touch data/shaders/build-*.stamp data/shaders/*.spv data/shaders/*.dxil data/shaders/*.msl
+      - name: Add the dev world mod
+        run: Copy-Item -Recurse novgorod\tools\cataclysm-prototype\dev-world data\mods\novgorod_dev_world
+      - name: Install dependencies (windows msvc) (1/4)
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce
+      - name: Install dependencies (windows msvc) (2/4)
+        uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
+          vcpkgGitCommitId: 'f6672d8e480ccdecddfad3fd1b838ba369ffe6cd'
+      - name: Install dependencies (windows msvc) (3/4)
+        run: |
+          vcpkg integrate install --vcpkg-root '${{ runner.workspace }}\b\vcpkg'
+      - name: Cache vcpkg packages (Windows)
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: msvc-full-features/vcpkg_installed
+          key: vcpkg-installed-sdl3-${{ hashFiles('msvc-full-features/vcpkg.json', '.github/vcpkg_triplets/x64-windows-static.cmake') }}-f6672d8e480ccdecddfad3fd1b838ba369ffe6cd
+      - name: Create VERSION.TXT
+        shell: bash
+        run: |
+          cat >VERSION.txt <<EOL
+          build type: novgorod-cdda-windows-tiles-x64
+          build number: ${{ github.run_number }}
+          commit sha: ${CDDA_SHA}
+          commit url: https://github.com/CleverRaven/Cataclysm-DDA/commit/${CDDA_SHA}
+          novgorod commit sha: ${{ github.sha }}
+          novgorod run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EOL
+      - name: Build CDDA (windows msvc)
+        env:
+          BACKTRACE: 1
+          CDDA_RELEASE_BUILD: 1
+          VCPKG_OVERLAY_TRIPLETS: ${{ github.workspace }}\.github\vcpkg_triplets
+        run: |
+          msbuild -m -p:Configuration=Release -p:Platform=x64 "-target:Cataclysm-vcpkg-static;JsonFormatter-vcpkg-static;zzip" msvc-full-features\Cataclysm-vcpkg-static.sln
+          .\build-scripts\windist.ps1
+      - name: Check package contents
+        run: |
+          $required = 'cataclysm-tiles.exe', 'VERSION.txt', 'data\json', 'data\core',
+            'data\mods\novgorod_dev_world\modinfo.json', 'gfx\UltimateCataclysm\tile_config.json',
+            'lang\mo\ru\LC_MESSAGES\cataclysm-dda.mo'
+          $missing = @($required | Where-Object { -not (Test-Path "bindist\$_") })
+          if (-not (Get-ChildItem bindist\data\shaders -Filter *.dxil)) { $missing += 'data\shaders\*.dxil' }
+          if (-not (Get-ChildItem bindist -Filter *mpg123*.dll)) { $missing += '*mpg123*.dll' }
+          if (-not (Select-String -Quiet -SimpleMatch NOVGOROD_P4_MODE bindist\cataclysm-tiles.exe)) {
+            $missing += 'Novgorod overlays in cataclysm-tiles.exe'
+          }
+          if ($missing) { throw "Missing from bindist: $($missing -join ', ')" }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: novgorod-cdda-windows-tiles-x64
+          path: bindist
+          retention-days: 30
+          if-no-files-found: error

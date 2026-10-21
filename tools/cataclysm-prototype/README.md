@@ -10,12 +10,140 @@ Novgorod и не открывает пользовательские saves. Fixt
 фактические проверки и ограничения — [результат задания 03](TASK03-LIVE-RESULT.md).
 Это отдельный игровой запуск; команды старого smoke ниже остаются стендом.
 
+## Графика и русский язык
+
+`run-p3-dev.sh` по умолчанию открывает графический `runtime/cataclysm-tiles` с
+официальным русским переводом и тайлсетом UltimateCataclysm, текстовая игра —
+`run-p3-dev.sh --text`. `run-p3-dev.ps1` на Windows по умолчанию запускает
+текстовую игру, графику — с ключом `-Tiles`: окно WSLg может не появиться на
+рабочем столе Windows. Если выбранного бинаря нет, запускалка останавливается и
+не переключает режим сама; без графического бинаря она называет оба выхода:
+текстовую версию и команду подготовки runtime.
+
+Перевод и тайлсет берутся из закреплённого официального архива CDDA
+`cdda-experimental-2026-10-18-0359` (Linux, with graphics); URL и sha256 —
+в [`prepare_p3_runtime.py`](prepare_p3_runtime.py). Из архива используются
+только `lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo` и `gfx/UltimateCataclysm/`,
+его бинари не запускаются. Архив скачивается один раз в новый пустой каталог
+`~/cdda-assets/cdda-experimental-2026-10-18-0359/graphics/`; без него скрипт
+подготовки печатает точную команду `curl` и ожидаемый sha256.
+
+Графическую сборку делает [`build-tiles.sh`](build-tiles.sh) (в WSL). Он
+повторяет рецепт CDDA `.github/actions/setup-sdl3-stack`: SDL `release-3.4.10`,
+SDL_image `release-3.4.4` и SDL_ttf `release-3.2.2` клонируются с закреплёнными
+коммитами (при расхождении HEAD сборка останавливается) и ставятся в свой
+префикс, по умолчанию `~/.local/share/novgorod/sdl3-3.4.10`. SDL3_mixer не
+нужен: звук выключен (`-DSOUND=OFF`). Затем в `$CDDA/build-tiles` (или
+`--build-dir`) собирается цель `cataclysm-tiles` с `-DTILES=ON` и
+`-DUSE_PREFIX_DATA_DIR=OFF`: при умолчании CMake игра ищет перевод в
+`/usr/local/share/locale`, а не в `lang/mo` рядом с runtime, и молча
+остаётся на английском. Поэтому и текстовые сборки ниже конфигурируются с
+`-DUSE_PREFIX_DATA_DIR=OFF`. Автотесты при этом остаются на английском: они
+задают `USE_LANG=en` в своём userdir.
+Пакеты сборки — список рецепта без пяти звуковых библиотек SDL3_mixer, плюс
+`glslang-tools` для шейдеров:
+
+```sh
+sudo apt-get install -y libfreetype-dev libharfbuzz-dev libjpeg-dev libpng-dev \
+  libwebp-dev libtiff-dev libasound2-dev libpulse-dev libx11-dev libxext-dev \
+  libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxrender-dev libxss-dev \
+  libxtst-dev libxkbcommon-dev libwayland-dev libwayland-bin wayland-protocols \
+  libdecor-0-dev libdrm-dev libgbm-dev libudev-dev libegl-dev libgl-dev \
+  libgles-dev libvulkan-dev libpipewire-0.3-dev libdbus-1-dev libibus-1.0-dev \
+  glslang-tools
+bash tools/cataclysm-prototype/apply-overlays.sh --source "$CDDA"
+bash tools/cataclysm-prototype/build-tiles.sh --source "$CDDA"
+```
+
+`apply-overlays.sh` накладывает на свежий checkout закреплённого SHA overlays
+из [`native-overlays.txt`](native-overlays.txt) — единственного списка порядка —
+и копирует `novgorod_semantic.cpp/.h` в `src/`; на первом патче, который не
+ложится, он останавливается. Тест — `python3 -m unittest test_apply_overlays`
+в этом каталоге.
+
+## Windows-сборка в GitHub Actions
+
+[`windows-build.yml`](../../.github/workflows/windows-build.yml) собирает
+`cataclysm-tiles.exe` строкой «Windows Tiles x64 MSVC» родного `release.yml`
+того же SHA: vcpkg, кэш портов, `msbuild`, `windist.ps1`. Перед сборкой тот же
+`apply-overlays.sh` накладывает overlays, мод `dev-world` кладётся в
+`data/mods/novgorod_dev_world`. Тайлсет `gfx/UltimateCataclysm`, `lang/mo` и
+готовые шейдеры `data/shaders` берутся из официального Windows-архива
+`cdda-experimental-2026-10-18-0359` (его `VERSION.txt` должен называть тот же
+SHA). Исполняемые файлы архива не копируются и не запускаются. Родные задания
+тайлсетов и переводов собирают `master` и требуют секрет Transifex.
+
+Пока workflow нет в default branch, `gh workflow run windows-build.yml` недоступен:
+сборку запускает push в ветку `windows-build` (fast-forward, без force), после
+merge — также `gh workflow run windows-build.yml`. Артефакт
+`novgorod-cdda-windows-tiles-x64` хранится 30 дней: это каталог
+`bindist/` с exe, DLL, `data/`, `gfx/`, `lang/mo/` и `VERSION.txt` (SHA CDDA,
+коммит Novgorod, ссылка на прогон). Скачать последний успешный из ветки `windows-build`:
+
+```sh
+gh run download "$(gh run list -R PavelSlaven/Novgorod1230 -w windows-build.yml -b windows-build -s success -L 1 --json databaseId -q '.[0].databaseId')" \
+  -R PavelSlaven/Novgorod1230 -n novgorod-cdda-windows-tiles-x64 -D <пустой каталог>
+```
+
+Или конкретный прогон: `gh run download <ID прогона> -R PavelSlaven/Novgorod1230 -n novgorod-cdda-windows-tiles-x64 -D <пустой каталог>`.
+
+Игра запускается из этого каталога с `--basepath <каталог>\` (завершающий
+слеш обязателен): в MSVC-сборке `data`, `gfx` и `lang/mo` ищутся от базы. Ключ
+`USE_PREFIX_DATA_DIR=OFF` относится только к CMake-сборке Linux.
+
+С этим артефактом `--datadir` не передавать: `gfx` лежит рядом с exe, а
+`--datadir` ищет его в `data/gfx`, и игра падает при построении списка тайлсетов.
+Рабочий вызов — `--basepath` и `--userdir`.
+
+Проверки модов в workflow нет: `--check-mods` возвращает 1 даже для чистого
+`dda`, и на раннере, и локально; причина не установлена. Загрузку мода
+проверяет ручной запуск артефакта.
+
+Шейдеры родная цель `compile_shaders` компилирует в `data/shaders` исходника,
+поэтому runtime готовится после графической сборки.
+
+Runtime root готовит скрипт (в WSL, из корня этого репозитория):
+
+```sh
+python3 -I tools/cataclysm-prototype/prepare_p3_runtime.py \
+  --runtime-root "$HOME/cataclysm-<задача>/runtime-root" \
+  --source "$CDDA" \
+  --text-build "$CDDA/build-clang-release" \
+  --tiles-build "$CDDA/build-tiles" \
+  --fixture <каталог с save/ и config/options.json>
+```
+
+`--source` — исходник CDDA с overlays прототипа; `--text-build` и
+`--tiles-build` — каталоги сборок CMake (нужен хотя бы один) с
+`CMAKE_BUILD_TYPE=Release` и `USE_PREFIX_DATA_DIR=OFF`, иначе скрипт
+отказывает. Скрипт сверяет sha256 архива до любых записей, берёт
+`run/session.lock` (запущенная игра — отказ, runtime не меняется) и собирает
+новый runtime рядом, во временном каталоге: родной `cmake --install` каждой
+сборки, затем перевод, мод `dev-world`, тайлсет и копия `gfx/` в `data/gfx`
+(с `--datadir` игра ищет тайлсеты там, `src/path_info.cpp:538-544`). Готовый
+каталог подменяет `runtime` переименованием; при ошибке прежний runtime
+остаётся. В `data/CMakeLists.txt` CDDA перечислен каталог `help`, которого в
+исходнике нет; без него `cmake --install` падает, поэтому скрипт создаёт пустой
+`data/help` и печатает об этом строку. `build-tiles.sh` конфигурирует сборку с
+`-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON`: иначе установка срезает путь к
+SDL3 из префикса. В
+`fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true`,
+`TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. В родном режиме
+`keychar` при русской раскладке буквенные горячие клавиши приходят кириллицей
+и не срабатывают (`g` → «неизвестная клавиша»); в `keycode` они работают при
+любой раскладке, а окно F12 само включает текстовый ввод и принимает кириллицу.
+`--fixture` нужен только для нового runtime root:
+существующий fixture не заменяется. Уже созданный `userdir` скрипт не трогает,
+поэтому в начатом мире язык и графика меняются в настройках игры или через
+`--reset` (прежний userdir сохраняется рядом).
+
 ## Среда
 
 Проверенная платформа: Windows 11 Pro 10.0.26200, WSL2 Ubuntu 24.04.4,
 ядро Linux 6.6.114.1, Intel i9-12900K, 24 логических CPU для WSL, 31 GiB RAM
-и 8 GiB swap. Исходник находится в Linux filesystem WSL:
-`/home/slaven/cataclysm-vertical-slice`.
+и 8 GiB swap. Общий закреплённый checkout — `/home/slaven/cataclysm-recovery`
+в Linux filesystem WSL; он только для чтения. Команды ниже собирают свою копию в
+новом каталоге ext4: `CDDA` в них — этот каталог, например `CDDA=$HOME/cataclysm-<задача>`.
 Инструменты: CMake 3.28.3, Ninja 1.11.1, Git 2.43.0, GCC 13.3.0 и Clang
 19.1.1. Текущая сборка использует Clang; версии и параметры записываются в
 `CMakeCache.txt` рядом с build directory.
@@ -39,25 +167,25 @@ smoke подтверждены ниже. Независимая повторна
 ```sh
 git clone --depth=1 --no-checkout \
   https://github.com/CleverRaven/Cataclysm-DDA.git \
-  /home/slaven/cataclysm-vertical-slice
-git -C /home/slaven/cataclysm-vertical-slice fetch --depth=1 origin \
+  $CDDA
+git -C $CDDA fetch --depth=1 origin \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice checkout --detach \
+git -C $CDDA checkout --detach \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice rev-parse HEAD
+git -C $CDDA rev-parse HEAD
 ```
 
 Последняя команда должна вывести закреплённый SHA выше. Сконфигурировать
 headless curses build с native tests и собрать максимум на восьми jobs:
 
 ```sh
-cmake -S /home/slaven/cataclysm-vertical-slice \
-  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+cmake -S $CDDA \
+  -B $CDDA/build-clang-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 \
   -DTILES=OFF -DCURSES=ON -DTESTS=ON -DBUILD_TESTING=ON \
-  -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
+  -DCATA_CCACHE=OFF -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA/build-clang-release \
   --parallel 8
 ```
 
@@ -65,7 +193,7 @@ cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
 и пользовательскими каталогами из корня исходников:
 
 ```sh
-cd /home/slaven/cataclysm-vertical-slice
+cd $CDDA
 ./build-clang-release/tests/cata_test --rng-seed 17 \
   --user-dir=/tmp/cdda-novgorod-upstream-smoke-activity '[activity]'
 ./build-clang-release/tests/cata_test --rng-seed 17 \
@@ -77,21 +205,22 @@ cd /home/slaven/cataclysm-vertical-slice
 fixture tests:
 
 ```sh
-NOVGOROD=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-vertical-slice/Novgorod
-git -C /home/slaven/cataclysm-vertical-slice apply --check \
+NOVGOROD=/mnt/c/Users/Slaven/Documents/Novgorod
+git -C $CDDA apply --check \
   "$NOVGOROD/tools/cataclysm-prototype/native-input.patch"
-git -C /home/slaven/cataclysm-vertical-slice apply \
+git -C $CDDA apply \
   "$NOVGOROD/tools/cataclysm-prototype/native-input.patch"
 cp "$NOVGOROD/tools/cataclysm-prototype/novgorod_slice_test.cpp" \
-  /home/slaven/cataclysm-vertical-slice/tests/novgorod_slice_test.cpp
-cmake -S /home/slaven/cataclysm-vertical-slice \
-  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+  $CDDA/tests/novgorod_slice_test.cpp
+cmake -S $CDDA \
+  -B $CDDA/build-clang-release -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release \
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA/build-clang-release \
   --parallel 8
-cd /home/slaven/cataclysm-vertical-slice
+cd $CDDA
 ./build-clang-release/tests/cata_test --rng-seed 17 \
   --user-dir=/home/slaven/cataclysm-evidence/new-slice-run '[novgorod_slice]'
 ```
@@ -127,19 +256,20 @@ harness, а не общий headless runtime или готовность P3–P6
 
 ```sh
 git clone --depth=1 --no-checkout https://github.com/CleverRaven/Cataclysm-DDA.git \
-  /home/slaven/cataclysm-vertical-slice-repeat
-git -C /home/slaven/cataclysm-vertical-slice-repeat fetch --depth=1 origin \
+  $CDDA-repeat
+git -C $CDDA-repeat fetch --depth=1 origin \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-git -C /home/slaven/cataclysm-vertical-slice-repeat checkout --detach \
+git -C $CDDA-repeat checkout --detach \
   0d8843f1c500052c3e026e3da6f8edaf5e00b626
-cmake -S /home/slaven/cataclysm-vertical-slice-repeat \
-  -B /home/slaven/cataclysm-vertical-slice-repeat/build-clang-release-repeat \
+cmake -S $CDDA-repeat \
+  -B $CDDA-repeat/build-clang-release-repeat \
   -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice-repeat/build-clang-release-repeat \
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
+cmake --build $CDDA-repeat/build-clang-release-repeat \
   --parallel 8
-cd /home/slaven/cataclysm-vertical-slice-repeat
+cd $CDDA-repeat
 ./build-clang-release-repeat/tests/cata_test --rng-seed 17 \
   --user-dir=/tmp/cdda-novgorod-upstream-repeat '[activity],[npc]'
 ```
@@ -164,19 +294,15 @@ P4 — отдельный исследовательский gate CR [#758](http
 при десериализации, native RNG state и добавляют opt-in preload host.
 Их наличие само по себе не закрывает P4.
 
-После установки `native-input.patch` в свежий checkout закреплённого SHA
-добавить overlays в указанном порядке. `NOVGOROD` указывает на текущий checkout
+`NATIVE` — новый чистый checkout закреплённого SHA (раздел «Checkout и сборка»,
+`$CDDA`); на него `apply-overlays.sh` накладывает в порядке `native-overlays.txt`
+все девять overlays, включая `native-live-input` и `native-autosave-options`,
+которых не было в прежнем цикле P4. `NOVGOROD` указывает на текущий checkout
 этого репозитория в WSL. Все test sources копируются из той же ревизии:
 
 ```sh
-NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
-for overlay in native-persistence native-item-identity native-rng-state native-preload native-semantic-input native-control-tests; do
-  if [ "$overlay" = native-control-tests ]; then
-    grep -F 'it->uid() != nxt->uid()' "$NATIVE/src/json.h" >/dev/null || exit 1
-  fi
-  git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
-  git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
-done
+NATIVE="$CDDA"
+bash "$NOVGOROD/tools/cataclysm-prototype/apply-overlays.sh" --source "$NATIVE" || exit 1
 for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test; do
   cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
   cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
@@ -185,7 +311,8 @@ cmake -S "$NATIVE" \
   -B "$NATIVE/build-clang-release" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
-  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
+  -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build "$NATIVE/build-clang-release" --parallel 8
 ```
 
@@ -202,7 +329,7 @@ ENOSPC внедряется записью в `/dev/full`. Это process-crash 
 
 ```sh
 P4="$NOVGOROD/tools/cataclysm-prototype/generations.py"
-NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
+NATIVE="$CDDA"
 BINARY="$NATIVE/build-clang-release/tests/cata_test"
 python3 "$NOVGOROD/tools/cataclysm-prototype/test_generations.py"
 python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
@@ -258,9 +385,7 @@ focused `cata_test` (11 cases / 98 assertions); известные item/JSON/pic
 controls запускаются отдельно и только по явному `-Controls`. Результаты task01
 зафиксированы в `evidence/task01-native/` и в dated artifacts.
 
-Последовательность шести overlays важна: сначала `native-input.patch`, затем
-`native-persistence.patch`, `native-item-identity.patch`, `native-rng-state.patch`,
-`native-preload.patch` и последним `native-semantic-input.patch`. Семантический
+Последовательность overlays важна; она задана только в `native-overlays.txt`. Семантический
 patch содержит P3 native seams и nested item-location fix; preload patch
 единолично добавляет `preload` в P4 mode, сохраняя `create`, `apply` и `read`.
 P3 доступен только для bare native test agent. Свободная речь и авторская

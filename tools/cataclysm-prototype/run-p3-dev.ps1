@@ -1,6 +1,7 @@
 param(
     [switch] $NativeOnly,
     [switch] $Reset,
+    [switch] $Tiles,
     [string] $RuntimeRoot = "/home/slaven/cataclysm-recovery/task03-dev"
 )
 $ErrorActionPreference = "Stop"
@@ -9,6 +10,11 @@ if ($LASTEXITCODE -ne 0) { throw "Не удалось определить WSL-�
 $arguments = @($launcher, "--runtime-root", $RuntimeRoot)
 if ($NativeOnly) { $arguments += "--native-only" }
 if ($Reset) { $arguments += "--reset" }
+if ($Tiles) {
+    Write-Host "Окно WSLg может не появиться на рабочем столе Windows; текстовая версия запускается без ключа -Tiles."
+} else {
+    $arguments += "--text"
+}
 $previousWslEnv = $env:WSLENV
 $previousSettingsPath = $env:RUS_LLM_SETTINGS_PATH
 try {

@@ -19,9 +19,12 @@ class DevLauncherTest(unittest.TestCase):
         self.root = Path(self.temp.name)
         for relative in ["runtime/data/gfx", "runtime/gfx", "fixture/save/novgorod-dev", "run"]:
             (self.root / relative).mkdir(parents=True)
-        self.binary = self.root / "runtime/cataclysm"
+        self.binary = self.root / "runtime/cataclysm-tiles"
         self.binary.write_text("#!/usr/bin/env bash\nprintf '%s\\n' \"$@\" > ../argv.txt\n")
         self.binary.chmod(0o755)
+        self.text_binary = self.root / "runtime/cataclysm"
+        self.text_binary.write_text("#!/usr/bin/env bash\nprintf '%s\\n' \"$@\" > ../text-argv.txt\n")
+        self.text_binary.chmod(0o755)
         (self.root / "fixture/save/novgorod-dev/seed.txt").write_text("seed")
         config = self.root / "fixture/config"
         config.mkdir()
@@ -46,6 +49,35 @@ class DevLauncherTest(unittest.TestCase):
         self.assertEqual((self.root / "argv.txt").read_text().splitlines(),
                          ["--datadir", str(self.root / "runtime/data") + "/", "--userdir",
                           str(self.root / "userdir") + "/", "--world", "novgorod-dev"])
+
+    def test_default_launch_runs_tiles_binary(self):
+        result = self.launch()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.root / "argv.txt").exists())
+        self.assertFalse((self.root / "text-argv.txt").exists())
+
+    def test_text_flag_runs_curses_binary_with_same_argv(self):
+        result = self.launch("--text")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((self.root / "argv.txt").exists())
+        self.assertEqual((self.root / "text-argv.txt").read_text().splitlines(),
+                         ["--datadir", str(self.root / "runtime/data") + "/", "--userdir",
+                          str(self.root / "userdir") + "/", "--world", "novgorod-dev"])
+
+    def test_missing_tiles_binary_names_both_ways_out(self):
+        self.binary.unlink()
+        result = self.launch()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--text", result.stderr)
+        self.assertIn("prepare_p3_runtime.py", result.stderr)
+        self.assertFalse((self.root / "text-argv.txt").exists())
+        self.assertFalse((self.root / "userdir").exists())
+
+    def test_missing_text_binary_is_not_replaced_by_tiles(self):
+        self.text_binary.unlink()
+        self.assertNotEqual(self.launch("--text").returncode, 0)
+        self.assertFalse((self.root / "argv.txt").exists())
+        self.assertFalse((self.root / "userdir").exists())
 
     def test_explicit_reset_preserves_previous_userdir(self):
         self.assertEqual(self.launch().returncode, 0)

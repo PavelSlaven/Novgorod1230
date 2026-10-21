@@ -1970,6 +1970,7 @@ Narrator:
    | Кириллица | а | с | е | о | р | х | у | А | В | С | Е | Н | К | М | О | Р | Т | Х |
 
 5. repair не может заменить смысл решения другим.
+   Код сравнивает в исходном output и в ответе repair `contribution_kind`, `speech.dominant_act`, `primary_addressee_ref`, `intended_addressee_refs` и `interpretation.intent`. Изменение такого поля допустимо, только если validation errors называют его путь, путь внутри него или его предка, кроме корня `$`; иначе ответ отклоняется как `conversation_llm_contract_failure` с категорией `semantic` (§45). Если исходный output не разобран как JSON или не является объектом, сравнения нет.
 
 После второй ошибки возвращается typed LLM contract failure.
 
@@ -2406,12 +2407,6 @@ NPC_CONVERSATION_RESPONSE_REQUEST:
 - превращать speech в silence или handoff;
 - менять automatic на check_required либо наоборот без явного исходного содержания;
 - создавать новые факты, refs или operations.
-
-Если смысл нельзя сохранить при исправлении формы, верни:
-
-{
-  "status": "unrepairable"
-}
 
 REPAIR_INPUT:
 

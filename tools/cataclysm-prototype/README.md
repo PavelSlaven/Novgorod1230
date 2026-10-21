@@ -51,8 +51,53 @@ sudo apt-get install -y libfreetype-dev libharfbuzz-dev libjpeg-dev libpng-dev \
   libdecor-0-dev libdrm-dev libgbm-dev libudev-dev libegl-dev libgl-dev \
   libgles-dev libvulkan-dev libpipewire-0.3-dev libdbus-1-dev libibus-1.0-dev \
   glslang-tools
+bash tools/cataclysm-prototype/apply-overlays.sh --source "$CDDA"
 bash tools/cataclysm-prototype/build-tiles.sh --source "$CDDA"
 ```
+
+`apply-overlays.sh` накладывает на свежий checkout закреплённого SHA overlays
+из [`native-overlays.txt`](native-overlays.txt) — единственного списка порядка —
+и копирует `novgorod_semantic.cpp/.h` в `src/`; на первом патче, который не
+ложится, он останавливается. Тест — `python3 -m unittest test_apply_overlays`
+в этом каталоге.
+
+## Windows-сборка в GitHub Actions
+
+[`windows-build.yml`](../../.github/workflows/windows-build.yml) собирает
+`cataclysm-tiles.exe` строкой «Windows Tiles x64 MSVC» родного `release.yml`
+того же SHA: vcpkg, кэш портов, `msbuild`, `windist.ps1`. Перед сборкой тот же
+`apply-overlays.sh` накладывает overlays, мод `dev-world` кладётся в
+`data/mods/novgorod_dev_world`. Тайлсет `gfx/UltimateCataclysm`, `lang/mo` и
+готовые шейдеры `data/shaders` берутся из официального Windows-архива
+`cdda-experimental-2026-10-18-0359` (его `VERSION.txt` должен называть тот же
+SHA). Исполняемые файлы архива не копируются и не запускаются. Родные задания
+тайлсетов и переводов собирают `master` и требуют секрет Transifex.
+
+Пока workflow нет в default branch, `gh workflow run windows-build.yml` недоступен:
+сборку запускает push в ветку `windows-build` (fast-forward, без force), после
+merge — также `gh workflow run windows-build.yml`. Артефакт
+`novgorod-cdda-windows-tiles-x64` хранится 30 дней: это каталог
+`bindist/` с exe, DLL, `data/`, `gfx/`, `lang/mo/` и `VERSION.txt` (SHA CDDA,
+коммит Novgorod, ссылка на прогон). Скачать последний успешный из ветки `windows-build`:
+
+```sh
+gh run download "$(gh run list -R PavelSlaven/Novgorod1230 -w windows-build.yml -b windows-build -s success -L 1 --json databaseId -q '.[0].databaseId')" \
+  -R PavelSlaven/Novgorod1230 -n novgorod-cdda-windows-tiles-x64 -D <пустой каталог>
+```
+
+Или конкретный прогон: `gh run download <ID прогона> -R PavelSlaven/Novgorod1230 -n novgorod-cdda-windows-tiles-x64 -D <пустой каталог>`.
+
+Игра запускается из этого каталога с `--basepath <каталог>\` (завершающий
+слеш обязателен): в MSVC-сборке `data`, `gfx` и `lang/mo` ищутся от базы. Ключ
+`USE_PREFIX_DATA_DIR=OFF` относится только к CMake-сборке Linux.
+
+С этим артефактом `--datadir` не передавать: `gfx` лежит рядом с exe, а
+`--datadir` ищет его в `data/gfx`, и игра падает при построении списка тайлсетов.
+Рабочий вызов — `--basepath` и `--userdir`.
+
+Проверки модов в workflow нет: `--check-mods` возвращает 1 даже для чистого
+`dda`, и на раннере, и локально; причина не установлена. Загрузку мода
+проверяет ручной запуск артефакта.
 
 Шейдеры родная цель `compile_shaders` компилирует в `data/shaders` исходника,
 поэтому runtime готовится после графической сборки.
@@ -249,19 +294,15 @@ P4 — отдельный исследовательский gate CR [#758](http
 при десериализации, native RNG state и добавляют opt-in preload host.
 Их наличие само по себе не закрывает P4.
 
-После установки `native-input.patch` в свежий checkout закреплённого SHA
-добавить overlays в указанном порядке. `NOVGOROD` указывает на текущий checkout
+`NATIVE` — новый чистый checkout закреплённого SHA (раздел «Checkout и сборка»,
+`$CDDA`); на него `apply-overlays.sh` накладывает в порядке `native-overlays.txt`
+все девять overlays, включая `native-live-input` и `native-autosave-options`,
+которых не было в прежнем цикле P4. `NOVGOROD` указывает на текущий checkout
 этого репозитория в WSL. Все test sources копируются из той же ревизии:
 
 ```sh
-NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
-for overlay in native-persistence native-item-identity native-rng-state native-preload native-semantic-input native-control-tests; do
-  if [ "$overlay" = native-control-tests ]; then
-    grep -F 'it->uid() != nxt->uid()' "$NATIVE/src/json.h" >/dev/null || exit 1
-  fi
-  git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
-  git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
-done
+NATIVE="$CDDA"
+bash "$NOVGOROD/tools/cataclysm-prototype/apply-overlays.sh" --source "$NATIVE" || exit 1
 for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test; do
   cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
   cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
@@ -288,7 +329,7 @@ ENOSPC внедряется записью в `/dev/full`. Это process-crash 
 
 ```sh
 P4="$NOVGOROD/tools/cataclysm-prototype/generations.py"
-NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
+NATIVE="$CDDA"
 BINARY="$NATIVE/build-clang-release/tests/cata_test"
 python3 "$NOVGOROD/tools/cataclysm-prototype/test_generations.py"
 python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
@@ -344,9 +385,7 @@ focused `cata_test` (11 cases / 98 assertions); известные item/JSON/pic
 controls запускаются отдельно и только по явному `-Controls`. Результаты task01
 зафиксированы в `evidence/task01-native/` и в dated artifacts.
 
-Последовательность шести overlays важна: сначала `native-input.patch`, затем
-`native-persistence.patch`, `native-item-identity.patch`, `native-rng-state.patch`,
-`native-preload.patch` и последним `native-semantic-input.patch`. Семантический
+Последовательность overlays важна; она задана только в `native-overlays.txt`. Семантический
 patch содержит P3 native seams и nested item-location fix; preload patch
 единолично добавляет `preload` в P4 mode, сохраняя `create`, `apply` и `read`.
 P3 доступен только для bare native test agent. Свободная речь и авторская

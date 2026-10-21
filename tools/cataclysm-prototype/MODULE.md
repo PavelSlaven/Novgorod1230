@@ -64,14 +64,12 @@ Dev launcher читает только собственный постоянны
 Исполняемый путь — upstream `cata_test`; task01 smoke использует P3
 `create`/`apply` speech probe, nested item/UID regressions и item/JSON/pickup
 controls.
-Порядок подключения: `native-input`, `native-persistence`, `native-item-identity`,
-`native-rng-state`, `native-preload`, затем `native-semantic-input`; после них
-test-only `native-control-tests` проверяет сохранение каждого UID и чтение legacy RLE. Preload
+Порядок подключения overlays — единственный список [`native-overlays.txt`](native-overlays.txt);
+его накладывает [`apply-overlays.sh`](apply-overlays.sh) и копирует `novgorod_semantic.cpp/.h`
+в src, этим скриптом пользуются Linux-сборка и Windows-сборка в Actions.
+Test-only `native-control-tests` проверяет сохранение каждого UID и чтение legacy RLE. Preload
 единолично включает P4 preload, semantic patch его не откатывает. Исходная ревизия и команды — в
-[README](README.md).
-После этих семи overlay подключается `native-live-input`, затем
-`native-autosave-options`. `novgorod_semantic.cpp/.h` копируются в src,
-`novgorod_semantic_test.cpp` и `novgorod_autosave_test.cpp` — в tests.
+[README](README.md). `novgorod_semantic_test.cpp` и `novgorod_autosave_test.cpp` копируются в tests.
 Общие observation/apply/readback принадлежат src; test wrapper сохраняет
 диагностические snapshots вне живого observation.
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или

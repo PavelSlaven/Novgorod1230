@@ -747,7 +747,7 @@ test('a format repair may only respell the mixed-script words it was given',
         }
         assert.equal(calls.length, 2);
         assert.ok(calls[1].repair.validation_errors.some(({ code, quote }) =>
-          code === 'mixed_script_word' && quote === 'протoku'));
+          code === 'mixed_script_word' && quote === 'протоku'));
       });
     }
   });

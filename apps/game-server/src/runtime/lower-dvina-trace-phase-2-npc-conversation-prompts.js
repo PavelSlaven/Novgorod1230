@@ -142,7 +142,7 @@ export function npcConversationInstructions(repair, request = null) {
     'Never hide an unsupported assertion by leaving speech.claims empty.',
     'A received or public-history message proves only that its speaker said those words, not that the described fact is true.',
     'Never change another speaker\'s I or we claim into the NPC\'s own first-person',
-    'memory or participation; attribute it to that speaker or state uncertainty.',
+    'memory or participation; attribute it to that speaker.',
     'Keep the speaker perspective coherent with npc_ref and npc. References to the',
     'person currently being addressed may denote this NPC: when the player addresses',
     'the wounded, bound, named, or otherwise described speaker, answer about that',
@@ -152,8 +152,8 @@ export function npcConversationInstructions(repair, request = null) {
     'knowledge.known_facts is what the speaker knows. knowledge.beliefs is what the',
     'speaker sincerely believes. Never explain anything with knowledge the speaker',
     'does not have. memory.recent_events is what the speaker heard, said, saw, and',
-    'did earlier; when it has no matching event, the NPC has no memory of that event,',
-    'and admission rules and received allegations cannot supply one.',
+    'did earlier; without a matching event, that field, admission rules, and',
+    'received allegations cannot support a claim to remember it.',
     'memory.current_observations contains only exact present facts directly',
     'perceptible to this co-located NPC. Such a fact may be asserted only with',
     'its exact observation_ref in speech.claims.source_knowledge_refs. It never',
@@ -161,7 +161,7 @@ export function npcConversationInstructions(repair, request = null) {
     'npc.current_activity is only the exact activity at requested_at.',
     'It never proves where the NPC was, what the NPC did, or what the NPC saw at',
     'an earlier time. Past first-person activity or observation requires an exact',
-    'memory.recent_events entry; without one, answer with uncertainty and invent no explanation.',
+    'memory.recent_events entry; without one, omit that past claim and invent no explanation.',
     'npc.identity.name_or_label is the only authority for the speaker own name;',
     'npc.identity and npc.social_role are the speaker own name, age, origin, and craft,',
     'and a claim about them cites {"entity_kind":"npc_identity","entity_id":"<copy npc_ref.entity_id>"}.',
@@ -246,9 +246,8 @@ export function npcConversationInstructions(repair, request = null) {
     'Never infer a current object, condition, resource, amenity, availability,',
     'or permission from a plausible place or social situation; exact supplied',
     'subjective evidence is required. Missing or empty memory is not evidence',
-    'that the NPC did not previously see or experience something. Instead of inventing',
-    'a negative observation, the speaker says in the speaker own character and manner',
-    'that this is not remembered or not known.',
+    'that the NPC did not previously see or experience something; never invent',
+    'a negative observation from it.',
     ...(requiredCandidate === null ? [] : [
       'Required conversation candidate: the server binds every non-placeholder value; replace only semantic placeholders.',
       JSON.stringify(stripNpcEnvelope(requiredCandidate))
@@ -259,13 +258,13 @@ export function npcConversationInstructions(repair, request = null) {
     ]),
     ...(Array.isArray(request?.available_resources)
       && request.available_resources.length === 0 ? [
-      'Final authority constraint: available_resources is empty. Do not say or imply that this NPC or another NPC owns, carries, can fetch, give, or lend any requested item; refuse or state uncertainty without creating that affordance.'
+      'Final authority constraint: available_resources is empty. Do not say or imply that this NPC or another NPC owns, carries, can fetch, give, or lend any requested item; refuse without creating that affordance.'
     ] : []),
     ...(typeof routeContext?.destination_label === 'string' ? [
       `Final route constraint: the only permitted route content is that a way leads to ${JSON.stringify(routeContext.destination_label)}. Do not add warmth, shelter, supplies, people, sightings, directions, distance, or conditions at the destination.`
     ] : []),
     semanticRepair
-      ? 'Use only exact request evidence, attach matching claim source refs for every retained factual assertion, and otherwise answer with uncertainty or refusal. Keep the same decision boundary, dominant_act, and intent, and do not add an operation.'
+      ? 'Use only exact request evidence and attach matching claim source refs for every retained factual assertion. Keep the same decision boundary, dominant_act, and intent, and do not add an operation.'
       : repair ? '' : 'Ordinary valid speech is allowed without a scenario outcome operation.'
   ].join(' ');
 }

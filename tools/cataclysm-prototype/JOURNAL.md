@@ -148,7 +148,7 @@
   - Провод p3: `projectP3NpcWire` убирает `null`, восемь служебных ключей, пустые значения, которых system не называет, и копию `available_resources` внутри `npc`. System всех трёх ролей совпадает с базой байт в байт.
   - Ресурсы получают русскую `label`, и только из `p3-npc-subject.js`. Общая модель и аудитор берут `requestWire` с тождеством по умолчанию, поэтому вне p3 провод прежний.
   - Родное наблюдение даёт внешность (`get_visible_worn_items`, оружие, мокрая одежда, пол, раны), окружение (`time_approx`, свет клетки аватара, погода) и `job_description` класса.
-  - Данные — дословно по DATA-OK-fix04, включая поправку `"variants": []` у `pants`. Без неё родные варианты давали «burgundy khaki pants».
+  - Данные — дословно по DATA-OK-fix04 с поправкой распорядителя к §3 от 2026-10-21: прежний кошель героя `leather_pouch` сохранён. Также включена поправка `"variants": []` у `pants`. Без неё родные варианты давали «burgundy khaki pants».
 - 2026-10-20T22:05Z — Проверки FIX-04.
   - JS: `node --test` трёх файлов p3 — 99/99. Замороженная приёмка `p3-npc-input.acceptance.test.js` не тронута, sha256 `e8656087…671c`.
   - `npm run test:apps`: 1805 тестов, 1804 pass, 1 skipped, 0 fail. `architecture:check` OK.
@@ -169,3 +169,7 @@
     - свет NPC: `light_label` один на кадр, с клетки аватара;
     - пустое `job_description` проверяет только JS-тест D2, родного класса с пустым описанием нет;
     - провод «после» ждёт захвата «6» с поддельного провода. Вызовов Qwen не было.
+- 2026-10-21T00:10Z — FIX-04, возврат по ревью (RETURN-1).
+  - `p3-boundary.test.js`: тест «planner sees the native items first, in frame order, with their use methods and no native type». Порча `use_methods` и разворот порядка `current.items` в `p3-boundary.js` дают по одному падению этого теста (100 тестов, 99 pass); на коде 100/100. Логи `part1/fix04/logs/fix04-planner-items-{red-use_methods,red-order,green}.log`.
+  - Python p3 в WSL на ccc443ed8 — `Ran 52 tests`, OK (`part1/fix04/logs/python-p3.log`).
+  - Смысловая правка «после»: захват на стенде 8b7295ee8 тем же путём, что 247, с подставным `pass:false` аудитора (seq 3). 5 запросов: планировщик, ответчик, аудитор, смысловая правка, аудитор. Вызовов Qwen не было.

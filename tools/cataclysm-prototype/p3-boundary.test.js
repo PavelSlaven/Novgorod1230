@@ -1473,6 +1473,30 @@ test('planner request names the selected interlocutor and offers speech only wit
     .some(({ op }) => op === 'emit_interaction'), true);
 });
 
+test('planner sees the native items first, in frame order, with their use methods and no native type',
+  async () => {
+    const current = { ...replyFrame({ turn: 3 }), items: [
+      { item_ref: 'item:21', item_uid: '21', type: 'flint_steel', label: 'кресало',
+        placement: 'held', holder: '7', use_methods: ['firestarter'] },
+      { item_ref: 'item:22', item_uid: '22', type: 'leather_belt', label: 'кожаный пояс',
+        placement: 'held', holder: '7', use_methods: ['holster'] },
+      { item_ref: 'item:23', item_uid: '23', type: 'ax', label: 'плотницкий топор',
+        placement: 'held', holder: '7', use_methods: ['activate', 'chop'] }] };
+    const seen = [];
+    await assert.rejects(runP3TurnStep({ intent: 'Осмотрись', observation: current,
+      nativeAdapter: { writeOperationRequest: async () => { throw new Error('unused'); },
+        readOperationReadback: async () => { throw new Error('unused'); } },
+      operationId: 'planner-items', nativeSpeechOnly: true, targetActorRef: null,
+      turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
+    assert.deepEqual(seen[0].player_safe_state.visible_entities.slice(0, 3), [
+      { item_ref: 'item:21', item_uid: '21', label: 'кресало', placement: 'held', holder: '7',
+        use_methods: ['firestarter'], entity_ref: '21' },
+      { item_ref: 'item:22', item_uid: '22', label: 'кожаный пояс', placement: 'held', holder: '7',
+        use_methods: ['holster'], entity_ref: '22' },
+      { item_ref: 'item:23', item_uid: '23', label: 'плотницкий топор', placement: 'held', holder: '7',
+        use_methods: ['activate', 'chop'], entity_ref: '23' }]);
+  });
+
 function chosenOperationOutput(request, selected) {
   return { interpretation: { player_goal: request.remaining_intent,
     grounded_attempt: request.remaining_intent, adaptation: 'literal' },

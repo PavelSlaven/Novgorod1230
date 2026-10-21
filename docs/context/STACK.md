@@ -113,6 +113,6 @@
   `@AGENTS.md` — свой в каждом worktree. Это не репозиторный источник истины и не новая норма.
 - Skills (процедуры): `.agents/skills/` (Codex, Cursor, Copilot) и `.claude/skills/` (Claude Code; Cursor и Copilot
   тоже читают). Копии одинаковые; канон указан в поле `metadata.canonical` каждого `SKILL.md`. Процедуры проекта —
-  заглушки на `docs/process/*`, `docs/work/LEGACY_WARNINGS.md` или governance; `caveman` и `ponytail` — полные копии
-  upstream (`metadata.source`), обязательны по AGENTS.md §18.1.
+  заглушки на `docs/process/*`, `docs/work/LEGACY_WARNINGS.md` или governance; `ponytail` — полная копия
+  upstream (`metadata.source`), обязателен по AGENTS.md §18.1.
 - Документация инструментов — [LINKS.md](LINKS.md).

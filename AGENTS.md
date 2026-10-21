@@ -89,7 +89,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Процедуры (skills)
 
-Обязательные навыки: `caveman` (full) — в общении Claude с владельцем; Codex и другие исполнители его не применяют; `ponytail` (full) — в задачах разработки; правила — WR §18.1.
+Обязательный навык: `ponytail` (full) — в задачах разработки; правила — WR §18.1.
 
 - `change-request` — [CHANGE_REQUEST](docs/process/CHANGE_REQUEST.md)
 - `context-dump` — [CONTEXT_DUMP](docs/process/CONTEXT_DUMP.md)

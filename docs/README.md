@@ -58,4 +58,4 @@
 
 Что не является источником истины и куда переносить решения — WR §2.
 
-Skills лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`: процедуры проекта — заглушки с каноном в `docs/process/` или governance; обязательные навыки `caveman` и `ponytail` (AGENTS.md §18.1) — полные копии upstream с указанием источника.
+Skills лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`: процедуры проекта — заглушки с каноном в `docs/process/` или governance; обязательный навык `ponytail` (AGENTS.md §18.1) — полная копия upstream с указанием источника.

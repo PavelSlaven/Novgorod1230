@@ -121,7 +121,7 @@ export function npcConversationInstructions(repair, request = null) {
   ) === true;
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each unsupported assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, intent, and every supported assertion. For each listed assertion do exactly one of three things: cite in its claim the exact ref from allowed_references.knowledge_refs that states it; remove it; or turn it into the speaker own doubt or not knowing, said in the speaker own character and manner. Add no new fact, act, or operation. A current_observation permits only its exact fact_text with its exact source ref.'
+      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each rejected assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, intent, and every supported assertion. Change or remove each rejected assertion at its listed path, including its words in utterance_text, or add to its claim an exact ref from allowed_references.knowledge_refs absent from the original claims and supporting what the visible speech says; the auditor will check its meaning again. Turn the assertion into the speaker\'s doubt or not knowing only when no matching known fact, belief, memory event, observation, or perceived message is in the request; keep the speaker\'s character and manner. If the fact is in knowledge.known_facts, cite its exact ref, omit it from the visible speech, conceal it without a false assertion using withheld with the known fact ref, or use knowingly_false with that ref for a deliberate lie, including a false denial of knowing. Changing only content_summary, form, or speaker_posture while the rejected utterance_text and old refs remain is not a repair. Add no new fact, act, or operation. A current_observation permits only its exact fact_text with its exact source ref.'
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: original_output is your own previous answer exactly as returned; original_output_text is present instead when it was not valid JSON. validation_errors lists every form error with its path. Fix only those paths: structure, refs, and enum values. When dominant_act is listed, choose the allowed value that names the act the utterance already performs; otherwise keep dominant_act. When a word that mixes Latin and Cyrillic letters is listed, rewrite only the spelling of that word in Cyrillic letters. Keep everything else in utterance_text, the addressees, and the meaning unchanged.'
     ] : []),
@@ -136,12 +136,11 @@ export function npcConversationInstructions(repair, request = null) {
     'property, or event from the spelling of an identifier.',
     'A player request or desire is not evidence that its subject exists.',
     'Knowledge admission rules describe permitted categories, not known facts.',
-    'Every factual assertion in utterance_text, reason, or interpretation must be',
-    'supported by an exact memory record, an exact player-safe observable fact, or',
-    'an exact permitted operation player_safe_context. Otherwise express uncertainty',
-    'or say that the speaker does not know. Never hide an unsupported assertion by',
-    'leaving speech.claims empty. A received or public-history message proves only',
-    'that its speaker said those words, not that the described fact is true.',
+    'Every factual assertion in utterance_text, reason, or interpretation needs matching exact request evidence from knowledge, memory, npc_identity, the perceived message, player-safe observation, or permitted operation player_safe_context.',
+    'Say that the speaker does not know or is uncertain only when no matching known fact, belief, memory event, observation, or perceived message is in the request.',
+    'A known fact may be omitted or concealed by a supported withheld claim; a false denial of knowing requires knowingly_false with the exact known fact ref.',
+    'Never hide an unsupported assertion by leaving speech.claims empty.',
+    'A received or public-history message proves only that its speaker said those words, not that the described fact is true.',
     'Never change another speaker\'s I or we claim into the NPC\'s own first-person',
     'memory or participation; attribute it to that speaker or state uncertainty.',
     'Keep the speaker perspective coherent with npc_ref and npc. References to the',

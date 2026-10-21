@@ -16,22 +16,21 @@ export const PLAYER_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   supporting_operations: [], check: null, handoff: null
 });
 export const FACTUAL_ASSERTION_RULE = [
-  'A factual assertion is a statement about the world, a place, a person, an object,',
-  'an earlier event, or the speaker own name, origin, craft, or possessions.',
-  'Greetings, questions, requests, refusals, uncertainty, not knowing, and the speaker',
-  'present feelings or opinions are not factual assertions by themselves; a factual',
-  'assertion inside any of them, such as who owns a thing named in a refusal, still',
-  'needs its claim.'
+  'A factual assertion states something about the world, a place, a person, an object, an earlier event, or the speaker own name, origin, craft, or possessions.',
+  'Greetings, questions, invitations, offers, requests, refusals, genuine uncertainty, genuine not knowing, and the speaker present feelings or opinions are not factual assertions by themselves.',
+  'A factual premise inside any of them still needs its claim; a false denial of known information needs a knowingly_false claim.'
 ].join(' ');
 export const CLAIM_KINDS_RULE = [
-  'Every claim is one of four kinds. Knowledge: speaker_posture believed_true, and',
-  'source_knowledge_refs cite the exact known fact, memory event, current observation,',
-  'npc_identity, or perceived_message ref that states it. Belief: speaker_posture',
-  'believed_true, source_knowledge_refs cite the exact knowledge.beliefs ref, and the',
-  'utterance says it as the speaker own belief. Deliberate lie: speaker_posture',
-  'knowingly_false, and source_knowledge_refs cite the exact known fact that the lie',
-  'contradicts or hides; a lie is only something said and never becomes a fact of the',
-  'world. Any other assertion presented as knowledge is an invention and is not allowed.'
+  'Ground each claim by its meaning.',
+  'Knowledge: speaker_posture believed_true; source_knowledge_refs cite the exact known fact, memory event, current observation, npc_identity, or perceived_message ref that supports the assertion.',
+  'A cited message proves only what was said, not its truth.',
+  'Belief: speaker_posture believed_true; source_knowledge_refs cite the exact knowledge.beliefs ref, which supports the speaker\'s belief, not objective truth.',
+  'Do not automatically disclose speaker_posture in utterance_text.',
+  'Genuine uncertainty: speaker_posture uncertain applies only when no known fact, belief, memory event, observation, or perceived message in the request answers what the speaker says they do not know or remember, however phrased; uncertainty itself needs no ref.',
+  'Withholding: speaker_posture withheld conceals a known fact, including a secret, without a false assertion; source_knowledge_refs cite the exact known fact concealed.',
+  'Deliberate lie: speaker_posture knowingly_false; source_knowledge_refs cite the exact known fact contradicted or hidden, including by a false denial of knowledge; the lie remains speech, never world truth.',
+  'For speaker_posture mixed, check the factual parts separately.',
+  'Unsupported assertions presented as knowledge are inventions.'
 ].join(' ');
 
 export const NPC_CONVERSATION_PLAN_SHAPE = JSON.stringify({

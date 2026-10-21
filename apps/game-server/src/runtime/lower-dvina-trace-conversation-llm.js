@@ -81,10 +81,12 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         message: 'The repair declared the response unrepairable.' }]);
     }
     const plan = assembleNpcConversationPlan(response.output, request);
+    const repairedPlan = repair ? respellMixedScriptHomoglyphs(plan).output : null;
+    const repairHasFormatErrors = repair && diagnoseConversationPlan(repairedPlan, request)
+      .some(({ category }) => category === 'format');
     if (repair && (!Object.hasOwn(repair, 'original_output_text')
       || Object.hasOwn(repair, 'act_anchor'))
-      && diagnoseConversationPlan(respellMixedScriptHomoglyphs(plan).output, request)
-        .every(({ category }) => category !== 'format')) {
+      && !repairHasFormatErrors) {
       const hasAnchor = Object.hasOwn(repair, 'act_anchor');
       const original = hasAnchor ? repair.act_anchor : repair.original_output;
       if (original !== null && typeof original === 'object' && !Array.isArray(original)
@@ -104,8 +106,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         }
       }
     }
-    if (semanticRepair) {
-      const unresolved = unresolvedSemanticRepairQuotes(repair, plan, request);
+    if (semanticRepair && !repairHasFormatErrors) {
+      const unresolved = unresolvedSemanticRepairQuotes(repair, repairedPlan, request);
       if (unresolved.length > 0) {
         throw conversationContractFailure(true, unresolved);
       }
@@ -140,6 +142,12 @@ function unresolvedSemanticRepairQuotes(repair, plan, request) {
     .flatMap((error) => {
       if (error?.category !== 'semantic_grounding'
         || typeof error.quote !== 'string') return [];
+      if (Array.isArray(error.concern_kinds)
+        && error.concern_kinds.length === 1
+        && error.concern_kinds[0] === 'claim_without_source_knowledge'
+        && /^\$\.speech\.claims\[(0|[1-9]\d*)\]\.source_knowledge_refs$/u.test(error.path)) {
+        return [];
+      }
       const quote = normalizeVisibleText(error.quote);
       if (!quote.trim() || !originalVisible.includes(quote)
         || !repairedVisible.includes(quote)) return [];
@@ -148,7 +156,9 @@ function unresolvedSemanticRepairQuotes(repair, plan, request) {
       const repairedClaim = plan?.speech?.claims?.[claimIndex];
       if (claimIndex !== null && claimRecord(originalClaim)
         && claimRecord(repairedClaim)
-        && hasNewAllowedKnowledgeRef(originalClaim, repairedClaim, request)) {
+        ? hasNewAllowedKnowledgeRef(originalClaim, repairedClaim, request)
+        : hasNewAllowedKnowledgeRefAcrossClaims(
+          repair.original_output?.speech?.claims, plan?.speech?.claims, request)) {
         return [];
       }
       return [{ code: 'semantic_repair_unresolved_quote',
@@ -173,10 +183,22 @@ function claimRecord(value) {
 }
 
 function hasNewAllowedKnowledgeRef(originalClaim, repairedClaim, request) {
-  const originalRefs = Array.isArray(originalClaim.source_knowledge_refs)
-    ? originalClaim.source_knowledge_refs : [];
-  const repairedRefs = Array.isArray(repairedClaim.source_knowledge_refs)
-    ? repairedClaim.source_knowledge_refs : [];
+  return hasNewAllowedKnowledgeRefAmong(
+    knowledgeRefs(originalClaim), knowledgeRefs(repairedClaim), request);
+}
+
+function hasNewAllowedKnowledgeRefAcrossClaims(originalClaims, repairedClaims, request) {
+  return hasNewAllowedKnowledgeRefAmong(
+    Array.isArray(originalClaims) ? originalClaims.flatMap(knowledgeRefs) : [],
+    Array.isArray(repairedClaims) ? repairedClaims.flatMap(knowledgeRefs) : [],
+    request);
+}
+
+function knowledgeRefs(claim) {
+  return Array.isArray(claim?.source_knowledge_refs) ? claim.source_knowledge_refs : [];
+}
+
+function hasNewAllowedKnowledgeRefAmong(originalRefs, repairedRefs, request) {
   const allowedRefs = request.allowed_references?.knowledge_refs;
   return Array.isArray(allowedRefs) && repairedRefs.some((ref) =>
     typeof ref?.entity_kind === 'string' && typeof ref?.entity_id === 'string'

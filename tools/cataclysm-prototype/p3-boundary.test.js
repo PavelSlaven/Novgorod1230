@@ -1702,7 +1702,7 @@ test('P3 NPC wire keeps the base system messages byte for byte', async () => {
   const golden = {
     npc_conversation_responder: '959eecf0ae3c6a301357aebf0418cf1f45d2c83b691aa40c63c71a20b678fbe5',
     npc_conversation_responder_format_repair:
-      '895e95fbfa9c9ed16e5dfb119058a45896c28f19db1507532cb70e9ab364d05e',
+      'd54018c4dac353f10939ff67ed7785b3ae8b6c085839b8b37f737ca5ff0f0b06',
     npc_conversation_grounding_auditor:
       '72f9852721961ffa02a01824c9bee90d2636e9549185f7b7ad8ed756f82fd7e6' };
   const repair = await captureNpcWire(toRepair);

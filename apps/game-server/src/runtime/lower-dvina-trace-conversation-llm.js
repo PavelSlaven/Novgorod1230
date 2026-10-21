@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
+import { validateConversationContributionPlan } from '@rus/npc-runtime';
 import { serverError } from '../errors.js';
 import {
   npcConversationInstructions,
@@ -87,6 +88,22 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         path, message: 'A semantic repair must keep the contribution kind, speech act, addressees and intent.' })));
     }
     const plan = assembleNpcConversationPlan(response.output, request);
+    if (repair && !semanticRepair && !Object.hasOwn(repair, 'original_output_text')
+      && repair.original_output !== null && typeof repair.original_output === 'object'
+      && !Array.isArray(repair.original_output)
+      && validateConversationContributionPlan(plan, request)) {
+      const errors = Array.isArray(repair.validation_errors)
+        ? repair.validation_errors : [];
+      const changedFormatAct = changedActPaths(response.output, repair.original_output)
+        .filter((path) => !errors.some(({ path: errorPath }) =>
+          coversActPath(errorPath, path)));
+      if (changedFormatAct.length > 0) {
+        throw conversationContractFailure(true, changedFormatAct.map((path) => ({
+          code: 'format_repair_changed_act', category: 'semantic_grounding', path,
+          message: 'A format repair changed an act field outside its validation errors.'
+        })));
+      }
+    }
     if (plan !== null && typeof plan === 'object') {
       originalOutputs.set(plan, response.output);
     }
@@ -112,6 +129,15 @@ function changedActPaths(output, original) {
   return ACT_PATHS.filter((path) => !isDeepStrictEqual(
     valueAt(output, path), valueAt(original, path)))
     .map((path) => `$.${path.join('.')}`);
+}
+
+function coversActPath(errorPath, actPath) {
+  if (typeof errorPath !== 'string' || errorPath === '$') return false;
+  return errorPath === actPath
+    || errorPath.startsWith(`${actPath}.`)
+    || errorPath.startsWith(`${actPath}[`)
+    || actPath.startsWith(`${errorPath}.`)
+    || actPath.startsWith(`${errorPath}[`);
 }
 
 function valueAt(value, path) {

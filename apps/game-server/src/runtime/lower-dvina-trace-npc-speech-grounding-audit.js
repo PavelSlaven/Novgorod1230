@@ -51,6 +51,7 @@ export async function auditFreshNpcSpeech({
   if (plan?.contribution_kind !== 'speech') return true;
   if (plan.speech.claims.some(
     (claim) => claim.source_knowledge_refs.length === 0
+      && claim.speaker_posture !== 'uncertain'
   )) return unsupported([{ kind: 'claim_without_source_knowledge' }]);
   const response = await roleRunner.run({
     scope: 'turn_runtime',

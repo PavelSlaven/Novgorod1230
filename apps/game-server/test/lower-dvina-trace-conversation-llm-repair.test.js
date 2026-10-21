@@ -208,7 +208,7 @@ test('the repair call takes its kind from the decision loop', async (t) => {
           return { output: repaired };
         } } });
       const outcome = await model(fixture.input, { repair: { ...(given ? { kind: given } : {}),
-        original_output: original, validation_errors: [{ code: 'x', category, path: '$' }] } })
+        original_output: original, validation_errors: [{ code: 'x', category, path: '$.speech.dominant_act' }] } })
         .then((value) => value, (error) => error);
       assert.equal(inputs[0].repair_kind, kind);
       assert.equal(Object.hasOwn(JSON.parse(inputs[0].messages[1].content), 'kind'), false);

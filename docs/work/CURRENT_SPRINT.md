@@ -6,7 +6,7 @@
 
 | Трек | Цель | Где истина |
 |---|---|---|
-| CDDA | вертикальный срез и следующие этапы | [Этапы GDD](../design/GDD.md); доказательства способностей — там же |
+| CDDA | вертикальный срез и [следующие этапы GDD](../design/GDD.md) | [PR #793](https://github.com/PavelSlaven/Novgorod1230/pull/793), [#834](https://github.com/PavelSlaven/Novgorod1230/issues/834) и [протоколы живых прогонов](../../tools/cataclysm-prototype/JOURNAL.md); GDD даёт производную сводку |
 | Runtime | спит; судьба старого движка решается на P7 | [GDD](../design/GDD.md), раздел «Старый движок»; [PR #98](https://github.com/PavelSlaven/Novgorod1230/pull/98), milestone [Runtime M3–M8](https://github.com/PavelSlaven/Novgorod1230/milestone/2) |
 | Backlog | снять временные оговорки роутера и индекса, затем техдолг по LW | issues без milestone, label `P2` раньше `P3` |
 | World Knowledge | исправить цепочку WK по аудиту [#151](https://github.com/PavelSlaven/Novgorod1230/issues/151) | CR [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152), [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153); очерёдность относительно M2c назначает владелец |

@@ -1,10 +1,10 @@
-> status: REFERENCE / DOMAIN GUIDE. Глава описывает факты мира, субъективное знание персонажей и безопасную передачу фактов в речь и прозу. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
+> status: REFERENCE / DOMAIN GUIDE. Глава описывает факты мира и знания персонажей. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
 
 # 12. Знания мира (WK) и граница знания
 
 ## Замысел
 
-В мире есть факты, но персонажи знают лишь часть из них, могут ошибаться и могут узнавать новое. World Knowledge (WK) даёт модели проверяемые фактические основания для текущей задачи; само извлечение сведений не становится разрешением на изменение мира. Если обязательного факта нет или он не применим, система сохраняет различие между неизвестным, неподтверждённым и фактическим, а модель не заполняет пробел своей памятью. Так активный WK контракт формулирует границу между factual layer и semantic reasoning ([world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+Персонажи знают часть фактов, ошибаются и узнают новое. WK даёт проверенные сведения, сохраняя различие между неизвестным и установленным; память модели не заменяет факт. Извлечение не меняет мир ([world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
 
 1. Игрок спрашивает кузнеца о предмете, которого в 1230 году человек не мог знать → получает ответ в пределах знания мастера либо человеческое признание незнания → видит реплику, а не сухой статус базы → CDDA хранит простые переменные, но не происхождение знания (нет покрытия для полной модели; [карта, §1, строка 27](../../context/cdda-native-map/areas/03-conversation.md)) → WK подаёт проверенные факты, доступ NPC их ограничивает, conversation owner формирует речь.
 2. Игрок читает рассказ о произошедшей сцене → рассказчик описывает только то, что герой увидел, услышал или узнал → проза не раскрывает скрытого участника и не подставляет современное объяснение → CDDA может фильтровать отдельные сообщения по видимости, но не строит целый безопасный рассказ (частичное покрытие; [карта, §1, строка 10](../../context/cdda-native-map/areas/07-narration-log.md)) → projection owner подготавливает подтверждённый player-safe контекст, narrator пишет только из него.
@@ -17,7 +17,7 @@
 
 ## Родное CDDA
 
-Карта CDDA сверена по upstream-пину, указанному в индексе; строки §1 показывают готовые механизмы и их границы, но не интеграцию в игровой runtime Новгорода ([native-map INDEX.md:9–11](../../context/cdda-native-map/INDEX.md)).
+Карта описывает upstream-пин, не интеграцию Новгорода ([native-map INDEX.md:9–11](../../context/cdda-native-map/INDEX.md)).
 
 | Родной механизм | Покрытие карты и предел |
 |---|---|
@@ -28,42 +28,46 @@
 
 ## Наш слой и владелец
 
-- **Расширяем** родные переменные знанием с происхождением и границей доступа: `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
-- **Расширяем** родную видимость и фильтрацию отдельных сообщений: `@rus/visibility-knowledge-memory` владеет player-safe контекстом и памятью знаний ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)); `@rus/narration` пишет прозу из подтверждённых фактов ([MODULE.md](../../../packages/narration/MODULE.md)). Native карта не подтверждает сквозную проверку всего контекста рассказа.
-- **Используем** игровой шаг для вызова владельцев в установленном порядке: `@rus/turn` организует шаг, а факты и состояния готовят доменные owners ([turn_step_llm_contract.md:10–59](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). WK не определяет успех просьбы игрока.
-- Для знания NPC используется owner access policy и контекст конкретного персонажа. Conversation owner формирует реплику, NPC decision owner принимает решения; модель не получает полный мир автоматически. Это граница передачи данных между владельцами, а не отдельный новый «WK-движок».
-
-Точные границы реализации задают MODULE owners. Второй owner фактов, знания NPC или player-safe narration не вводится.
+- **Используем** переменные как хранилище; происхождение и доступ к знаниям NPC остаются у knowledge owner. `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+- **Используем** родную видимость клеток; **расширяем** память и фильтрацию отдельных сообщений сквозной player-safe проекцией: `@rus/visibility-knowledge-memory` владеет player-safe контекстом и памятью знаний ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)); `@rus/narration` пишет прозу из подтверждённых фактов ([MODULE.md](../../../packages/narration/MODULE.md)). Native карта не подтверждает сквозную проверку всего контекста рассказа.
+- **Используем** существующий игровой шаг Новгорода до P7 для вызова владельцев в установленном порядке: `@rus/turn` организует шаг, а факты и состояния готовят доменные owners ([turn_step_llm_contract.md:10–59](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). WK не определяет успех просьбы игрока.
+- Conversation owner пишет реплику, NPC decision owner принимает решение; оба получают только разрешённое знание персонажа.
 
 ## Решения владельца
 
-- **D15, 2026-09-26:** запись решения владельца: решения NPC получают WK как сведения об устройстве мира, а речь ограничивается знаниями человека 1230 года. [Комментарий #5846022014](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014). Позднее D167 распространило ограничение доступа и на решения NPC.
-- **D18, 2026-09-26 — пересказ записи D18; слов владельца в записи нет.** Будущие для даты партии события не поступают ни в речь, ни в прозу, ни в знания NPC, даже с пометкой о неприменимости. [Комментарий #5846025182](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846025182).
-- **D20, 2026-09-26:** запись решения владельца: рассказчик получает из WK только видимое и известное персонажу; современные научные объяснения в прозу не выводятся. [Комментарий #5846311836](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846311836).
-- **D164, 2026-10-08:** WK задумывалась для любого игрового запроса, «не только в разговорах и знаниях NPC, но и при любом другом запросе». [Комментарий #6116723787](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787).
-- **D165, 2026-10-08:** «Как раз полнота знаний в базе избавит нас от галлюцинаций у малой модели. Особенно если мы будем размечать по NPC, к каким знаниям у них есть доступ, а какие они знать не могут. И делать это на уровне кода.» [Комментарий #6116723787](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787).
-- **D167, 2026-10-08:** «Ограничивать доступом и решения NPC, а не только речь - да. Исключения биографии - позже.» Дословная запись владельца от 2026-10-08; работа по доступу — [#618](https://github.com/PavelSlaven/Novgorod1230/issues/618).
+- **2026-09-25, номер D не присвоен, пересказ записи:** WK даёт модели сведения об устройстве мира, медицине, ремесле и праве, игровая база содержит то, что исполняет код; это разные хранилища.
+- **D15, 2026-09-26, пересказ:** речь ограничена знаниями человека 1230 года; прежнее открытие всей WK решениям NPC заменено D167, доступ меняется новой утверждённой ревизией pack ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014)).
+- **D16, 2026-09-26, пересказ:** WK подключается рассказчику и интерпретатору реплик игрока ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014)).
+- **D18, 2026-09-26, пересказ:** не наступившие по дате партии события не попадают ни в один вход модели, даже как неприменимые сведения ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846025182)).
+- **D19, 2026-09-26, пересказ:** голод начинается 14.09.1230, до этой даты его нет в игре и срезе WK ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846311836)).
+- **D20, 2026-09-26, пересказ:** рассказчик получает только видимое и известное герою, современные научные объяснения не выводятся в прозу ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846311836)).
+- **D22, 2026-09-26, пересказ:** голод длится до конца 1231 года; поздние события внутри него имеют отдельные даты или фазы раскрытия ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5848564249)).
+- **2026-09-26, номер D не присвоен, пересказ записи:** на поздней стадии знания и слухи различаются по социальной группе; текущая разметка доступа должна сохранять возможность такого развития, не делать всё общедоступным.
+- **D59, 2026-10-01, пересказ:** WK подаёт правильную технологию и процесс любого сложного действия, включая изобретение игрока; недостаточность данных и механики проверяется по игровым ситуациям ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5926596803)).
+- **D60, 2026-10-01, пересказ:** ограничение эпохой охватывает речь, знания и поведение NPC; будущие события и сведения из памяти модели не становятся знанием персонажа ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5928266458)).
+- **D93, 2026-10-06, пересказ:** принята русская player-safe проекция B для WK planner с меньшим числом пустых планов; точность оставлена отдельным улучшением, провал её прежнего порога не скрывается ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6003221448)).
+- **D164, 2026-10-08, дословно:** WK нужна «не только в разговорах и знаниях NPC, но и при любом другом запросе» ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D165, 2026-10-08, пересказ:** код ограничивает доступ отдельно для каждого NPC; рыбак без знания ковки честно признаёт незнание ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D167, 2026-10-08, дословно:** «Ограничивать доступом и решения NPC, а не только речь - да. Исключения биографии - позже.» Заменяет эту часть D15 ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D169, 2026-10-08, пересказ:** оставшиеся после наполнения пробелы допускают независимо проверенную игровую реконструкцию; она не выдаётся модели за установленный факт ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
 
 ## Расхождения и открытые вопросы
 
-- `world_knowledge_platform_implementation_contract.md` имеет статус `ACTIVE`, но статус контракта не означает, что каждый возможный pack или consumer включён. CONTRACT_INDEX указывает, что Giga/vector путь обязателен, runtime определяется актуальными release/binding, а WK pilot pack остаётся `reviewed/not_active` ([CONTRACT_INDEX.md:99, 165–167](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)). Нельзя сообщать игроку, будто pilot pack уже доступен в runtime.
-- 12.01 отнесена к части 1 и связана с PR #793; это не подтверждает, что способность прошла живую приёмку. Технический пробел #693 не заменяет путь части 1.
-- 12.02 относится к части 6. Фильтр видимости CDDA и наличие WK не доказывают безопасную прозу; приёмка проверяет фактический consumer path.
-- Approved pack, binding каждого consumer и доступность данных NPC устанавливаются по профилю и коду. Неизвестный факт остаётся пробелом до подтверждения источником или exact mechanic.
+Открытого вопроса владельцу по этим источникам нет. Граница active контракта и pilot pack указана в разделе «Этап».
 
 ## Источники
 
-- `data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md` — статусы active WK и scope matrix строк 99, 165–167.
-- `data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md` — назначение, полнота знания и запрет превращать пробел в модельную догадку.
-- `data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md` — границы решения NPC.
-- `data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md` — роль narrator и владельцев в игровом шаге.
-- `docs/context/cdda-native-map/INDEX.md` — upstream-пин и правила чтения карты.
-- `docs/context/cdda-native-map/areas/03-conversation.md` — §1: переменные и хранилище знания NPC.
-- `docs/context/cdda-native-map/areas/06-movement-world-map.md` — §1: знание маршрута и отличие `for_npc()`.
-- `docs/context/cdda-native-map/areas/07-narration-log.md` — §1: фильтрация сообщений по видимости.
-- `docs/context/cdda-native-map/areas/11-ui-display.md` — §1: native visibility и map memory.
-- `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md` — факт места, actor knowledge и player-safe projection.
+- [CONTRACT_INDEX.md](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) — статусы WK.
+- [WK contract](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md) — знание и пробел.
+- [NPC decision contract](../../../data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md) — решения NPC.
+- [Turn contract](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md) — игровой шаг.
+- [Индекс native карты](../../context/cdda-native-map/INDEX.md) — upstream-пин.
+- [Разговор](../../context/cdda-native-map/areas/03-conversation.md) — хранилище NPC.
+- [Перемещение](../../context/cdda-native-map/areas/06-movement-world-map.md) — знание маршрута.
+- [Журнал](../../context/cdda-native-map/areas/07-narration-log.md) — видимость сообщений.
+- [Экран](../../context/cdda-native-map/areas/11-ui-display.md) — зрение и память карты.
+- [Spatial standard](../../../data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md) — факт и знание.
 
 ## Этап
 
-Глава задаёт продуктовую границу между фактами WK, знанием NPC и безопасной прозой. Статус нормы задают активный контракт, pack, профили, bindings, owners, код и тесты. Pilot pack остаётся `reviewed/not_active`; 12.01 и 12.02 требуют своих игровых доказательств и не объявляются принятыми по одному наличию документации.
+12.01 относится к части 1 и [PR #793](https://github.com/PavelSlaven/Novgorod1230/pull/793), но живая приёмка отсутствует ([хаб:68–80](../GDD.md)). 12.02 требует проверки безопасной прозы в части 6 ([хаб:129–135](../GDD.md)): `add_msg` не фильтрует знание героя ([карта:10](../../context/cdda-native-map/areas/07-narration-log.md)). ACTIVE контракт требует Giga/vector, но pilot pack остаётся `reviewed/not_active` ([индекс:99,165–167](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)); доступ NPC устанавливают профиль и код. Статусы способностей — в хабе.

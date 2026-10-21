@@ -12,6 +12,7 @@
 - generated manifest и проверкой reproducibility;
 - canonical-path, seed-source и dated-artifact policy checks;
 - проверкой и пересборкой сводной таблицы нужд в `docs/context/cdda-native-map/INDEX.md` (§6) из таблиц `areas/*.md` (`src/cdda-native-map-table.js`, тест `test/cdda-native-map-table.test.js`).
+- проверкой структуры и перекрёстных ссылок `docs/design/**` (`src/design-docs.js`, тест `test/design-docs.test.js`).
 
 ## Не делает
 

@@ -23,6 +23,7 @@ const SOURCE_HEADER = ['Путь', 'Вид', 'Статус по CONTRACT_INDEX',
 const ABILITY_HEADER = ['id', 'Игрок может…', 'Глава', 'Этап/часть', 'Статус', 'Доказательство'];
 const STAGE_HEADER = ['Этап', 'Цель', 'Зависит от', 'Статус', 'Проверено способностей'];
 const CRITERION_HEADER = ['Критерий', 'id способностей', 'Доказательство', 'Итог'];
+const DECISION_HEADER = ['D', 'Дата', 'Цитата или пересказ', 'Главы', 'URL GitHub, если есть'];
 const CHAPTER_HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
   'Решения владельца', 'Расхождения и открытые вопросы', 'Источники', 'Этап'
@@ -80,6 +81,28 @@ function table(sectionLines, header) {
 
 function sameHeader(actual, expected) {
   return actual.length === expected.length && actual.every((cell, index) => cell === expected[index]);
+}
+
+function chapterNumbers(value) {
+  const numbers = new Set();
+  for (const match of value.matchAll(/\b(0[1-9]|1[0-7])(?:[–-](0[1-9]|1[0-7]))?\b/gu)) {
+    const start = Number(match[1]);
+    const end = Number(match[2] ?? match[1]);
+    for (let number = start; number <= end; number += 1) {
+      numbers.add(String(number).padStart(2, '0'));
+    }
+  }
+  return numbers;
+}
+
+function decisionNumbers(value) {
+  const numbers = new Set();
+  for (const match of value.matchAll(/\bD(\d+)(?:[–-]D?(\d+))?\b/gu)) {
+    const start = Number(match[1]);
+    const end = Number(match[2] ?? match[1]);
+    for (let number = start; number <= end; number += 1) numbers.add(`D${number}`);
+  }
+  return numbers;
 }
 
 function markdownLinks(text) {
@@ -192,6 +215,27 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   for (const path of required) {
     if (!sourceNames.has(path)) errors.push(error('P1', `отсутствует строка источника: ${path}`));
   }
+  const decisions = table(section(files.get(`${DESIGN}/SOURCES.md`) ?? '', 'Решения владельца'), DECISION_HEADER);
+  const indexedDecisions = new Set();
+  if (sameHeader(decisions.header, DECISION_HEADER)) {
+    for (const row of decisions.rows) {
+      if (row.length !== 5 || !/^D\d+$/u.test(row[0])) continue;
+      for (const chapter of chapterNumbers(row[3])) indexedDecisions.add(`${row[0]}/${chapter}`);
+    }
+  }
+  const chapterDecisions = new Set();
+  for (const [path, content] of files) {
+    if (!path.includes('/systems/')) continue;
+    const chapter = /\/systems\/(\d{2})-/u.exec(path)?.[1];
+    for (const decision of decisionNumbers(section(content, 'Решения владельца').join('\n'))) {
+      chapterDecisions.add(`${decision}/${chapter}`);
+    }
+  }
+  for (const key of new Set([...indexedDecisions, ...chapterDecisions])) {
+    if (!indexedDecisions.has(key) || !chapterDecisions.has(key)) {
+      errors.push(error('P13', `решение и указатель расходятся: ${key}`));
+    }
+  }
   const hub = files.get(`${DESIGN}/GDD.md`) ?? '';
   const abilities = table(section(hub, 'Прогресс: игрок может…'), ABILITY_HEADER);
   if (!sameHeader(abilities.header, ABILITY_HEADER)) errors.push(error('P4', 'неверная схема таблицы способностей'));
@@ -290,11 +334,36 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
     if (!seenStages.has(String(number))) errors.push(error('P7', `отсутствует этап: ${number}`));
   }
   const stageSection = section(hub, 'Этапы');
-  for (let index = 0; index < stageSection.length; index += 1) {
-    if (!stageSection[index].startsWith('| Критерий | id способностей |')) continue;
-    const criteria = table(stageSection.slice(index), CRITERION_HEADER);
-    if (!sameHeader(criteria.header, CRITERION_HEADER)) continue;
+  const parts = stageSection.flatMap((line, index) => {
+    const match = /^\*\*Часть ([1-7])\.\*\*/u.exec(line);
+    return match ? [{ number: match[1], index }] : [];
+  });
+  for (let number = 1; number <= 7; number += 1) {
+    const occurrences = parts.filter((part) => part.number === String(number));
+    if (occurrences.length !== 1) {
+      errors.push(error('P11', `ожидалась одна таблица критериев части ${number}`));
+      continue;
+    }
+    const begin = occurrences[0].index + 1;
+    const nextPart = parts.find((part) => part.index >= begin)?.index ?? stageSection.length;
+    const nextStage = stageSection.findIndex((line, index) => index >= begin && /^### [2-5]\./u.test(line));
+    const end = Math.min(nextPart, nextStage < 0 ? stageSection.length : nextStage);
+    const block = stageSection.slice(begin, end);
+    const tableStarts = block.flatMap((line, index) => line.startsWith('|') && (index === 0 || !block[index - 1].startsWith('|')) ? [index] : []);
+    if (tableStarts.length !== 1) {
+      errors.push(error('P11', `ожидалась одна таблица критериев части ${number}`));
+      continue;
+    }
+    const criteria = table(block.slice(tableStarts[0]), CRITERION_HEADER);
+    if (!sameHeader(criteria.header, CRITERION_HEADER) || criteria.rows.length === 0) {
+      errors.push(error('P11', `неверная таблица критериев части ${number}`));
+      continue;
+    }
     for (const row of criteria.rows) {
+      if (row.length !== 4) {
+        errors.push(error('P11', `неверная строка критерия части ${number}`));
+        continue;
+      }
       const ids = row[1]?.match(ID) ?? [];
       if (!ids.length) errors.push(error('P11', `критерий без id: ${row[0] ?? ''}`));
       for (const id of ids) {

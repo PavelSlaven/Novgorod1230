@@ -27,6 +27,7 @@ function chapter(number) {
     PREFIX, '', `# Глава ${number}`, '',
     ...HEADINGS.flatMap((heading) => {
       if (heading === 'Что может игрок') return [`## ${heading}`, '', `- **${id}.** ${ability(id)}`, ''];
+      if (heading === 'Решения владельца' && number === '01') return [`## ${heading}`, '', '- **D1, 2026-10-21.** Решение для fixture.', ''];
       return [`## ${heading}`, '', `Содержание ${heading}.`, ''];
     })
   ].join('\n');
@@ -59,9 +60,12 @@ function hub() {
     '| 0. База CDDA | Основа | — | идёт | 1 из 17 |',
     ...[1, 2, 3, 4, 5].map((number) => `| ${number}. Этап | Цель | 0 | не начат | — |`),
     '', '### 1. Срез', '',
-    '| Критерий | id способностей | Доказательство | Итог |',
-    '|---|---|---|---|',
-    '| Выполнить действие | 01.01 | — | не проверен |', ''
+    ...[1, 2, 3, 4, 5, 6, 7].flatMap((number) => [
+      `**Часть ${number}.** Проверка.`, '',
+      '| Критерий | id способностей | Доказательство | Итог |',
+      '|---|---|---|---|',
+      '| Выполнить действие | 01.01 | — | не проверен |', ''
+    ])
   ]);
   section.set('Прогресс: игрок может…', [
     '## Прогресс: игрок может…', '',
@@ -78,7 +82,10 @@ function sources() {
     '| Путь | Вид | Статус по CONTRACT_INDEX | Главы | Судьба при CDDA | Основание |',
     '|---|---|---|---|---|---|',
     `| \`${SOURCE}\` | governance-pc | GOVERNING | 01–17 | живёт как норма | §3 живёт как норма на пути CDDA. |`,
-    '', '## Решения владельца', '', 'Нет.', ''
+    '', '## Решения владельца', '',
+    '| D | Дата | Цитата или пересказ | Главы | URL GitHub, если есть |',
+    '|---|---|---|---|---|',
+    '| D1 | 2026-10-21 | Пересказ решения для fixture. | 01 | |', ''
   ].join('\n');
 }
 
@@ -151,6 +158,10 @@ const red = [
   ['P9: якорь в относительной ссылке', 'P9', async (f) => withHub(f, (s) => s.replace('../governance/PRODUCT_CONSTITUTION.md', '../governance/PRODUCT_CONSTITUTION.md#section'))],
   ['P10: первая строка без статуса', 'P10', async (f) => withSources(f, (s) => s.replace(PREFIX, '# Нет статуса'))],
   ['P11: id критерия отсутствует', 'P11', async (f) => withHub(f, (s) => s.replace('| Выполнить действие | 01.01 |', '| Выполнить действие | 17.99 |'))],
+  ['P11: неверный заголовок критериев', 'P11', async (f) => withHub(f, (s) => s.replace('| Критерий | id способностей |', '| Проверка | id способностей |'))],
+  ['P11: отсутствует таблица части', 'P11', async (f) => withHub(f, (s) => s.replace('**Часть 1.** Проверка.', '**Секция 1.** Проверка.'))],
+  ['P13a: решение главы отсутствует в указателе', 'P13', async (f) => edit(chapterOf(f), (s) => s.replace('- **D1, 2026-10-21.**', '- **D2, 2026-10-21.**'))],
+  ['P13b: глава указателя не содержит решение', 'P13', async (f) => withSources(f, (s) => s.replace('| D1 | 2026-10-21 | Пересказ решения для fixture. | 01 |', '| D1 | 2026-10-21 | Пересказ решения для fixture. | 02 |'))],
   ['P12: источник главы не в реестре', 'P12', async (f) => {
     await writeFile(join(f.root, 'docs/README.md'), '# docs\n');
     await edit(chapterOf(f), (s) => s.replace('## Источники\n\nСодержание Источники.', '## Источники\n\n- [README](../../../docs/README.md) — карта.'));
@@ -158,7 +169,11 @@ const red = [
 ];
 
 for (const [name, rule, mutate] of red) {
-  test(name, async () => {
+  test(name, async (t) => {
+    if (process.platform === 'win32' && /symlink|другом регистре/u.test(name)) {
+      t.skip('Windows не даёт надёжно создать этот элемент fixture без специальных прав или учёта регистра.');
+      return;
+    }
     const f = await fixture();
     await mutate(f);
     const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });

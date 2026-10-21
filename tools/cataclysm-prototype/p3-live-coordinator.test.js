@@ -11,7 +11,7 @@ import { loadP3DevConfig, startP3LiveCoordinator } from './p3-live-coordinator.m
 import { createP3RoleRuntime } from './p3-boundary.js';
 import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
 import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
-import { npcProjection } from './p3-test-frames.js';
+import { npcProjection, speechPlan } from './p3-test-frames.js';
 
 const withNpcs = (base, npcs) => ({ ...base, actors: [...base.actors, ...npcs],
   npc_projections: npcs.map(({ actor_id: actorId, position, name }) =>
@@ -798,6 +798,259 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.deepEqual(responderInputs[1].original_output.speech, responderOutputs[0].speech);
       assert.equal(responderInputs[1].validation_errors[0].category, 'semantic_grounding');
       assert.deepEqual(playerReadback.after, { turn: 11 });
+      socket.end();
+    });
+  }
+});
+
+test('live NPC speech distinguishes unsupported assertions from lawful replies', async t => {
+  const cases = [
+    { name: 'future outcome asserted as a promise',
+      player: 'Принесёшь мне завтра лодку?',
+      unsupported: 'Обещаю: завтра лодка будет ждать тебя на берегу.',
+      grounded: 'Не знаю, получится ли это.',
+      concern: 'unsupported_future_outcome',
+      path: '$.speech.claims[0]', quote: 'завтра лодка будет ждать тебя на берегу' },
+    { name: 'unseen item asserted to be present',
+      player: 'Что лежит в закрытом сундуке?',
+      unsupported: 'В закрытом сундуке лежит серебряное кольцо.',
+      grounded: 'Не знаю.',
+      concern: 'unsupported_unseen_item',
+      path: '$.speech.utterance_text', quote: 'В закрытом сундуке лежит серебряное кольцо.' },
+    { name: 'past sighting invented from the player question',
+      player: 'Ты видел волка утром?',
+      unsupported: 'Да, утром я видел волка у реки.',
+      grounded: 'Не помню, видел ли я волка утром.',
+      concern: 'unsupported_past_observation',
+      path: '$.speech.utterance_text', quote: 'Да, утром я видел волка у реки.' }
+  ];
+  for (const [caseIndex, entry] of cases.entries()) {
+    for (const keepsQuote of [true, false]) {
+      await t.test(`${entry.name}: ${keepsQuote ? 'repair keeps rejected quote' : 'repair removes rejected quote'}`, async t => {
+        const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+          position: [61, 60, 0] };
+        const sceneObservation = withNpcs(observation, [npc]);
+        const providerCalls = [];
+        const providerReplies = [];
+        const scene = await fixture(t, null, null, async ({ roleId, messages }) => {
+          const payload = JSON.parse(messages.find(({ role }) => role === 'user').content);
+          providerCalls.push({ roleId, messages: structuredClone(messages), payload });
+          let output;
+          if (roleId === 'turn_step_planner') {
+            output = { ...plan(payload, {}), resolution: 'direct', goal_result: 'achieved',
+              operations: [], activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+              direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+                utterance_text: entry.player, input_mode: 'verbatim',
+                delivery: { loudness: 2, duration_class: 'brief' } } };
+          } else if (roleId === 'npc_conversation_grounding_auditor') {
+            const firstAudit = providerCalls.filter(call =>
+              call.roleId === 'npc_conversation_grounding_auditor').length === 1;
+            output = { pass: !firstAudit, concerns: firstAudit ? [{ kind: entry.concern,
+              path: entry.path, quote: entry.quote }] : [] };
+          } else {
+            assert.ok(['npc_conversation_responder',
+              'npc_conversation_responder_format_repair'].includes(roleId));
+            const request = payload.request ?? payload;
+            output = speechPlan(request, roleId === 'npc_conversation_responder'
+              || keepsQuote ? entry.unsupported : entry.grounded);
+            if (entry.path === '$.speech.claims[0]' && (roleId === 'npc_conversation_responder'
+                || keepsQuote)) {
+              const sourceRef = request.allowed_references.knowledge_refs.find(ref =>
+                ref.entity_kind === 'known_fact');
+              assert.ok(sourceRef);
+              output.speech.claims = [{ claim_id: 'boat-tomorrow',
+                content_summary: roleId === 'npc_conversation_responder'
+                  ? 'Завтра лодка будет ждать тебя на берегу.'
+                  : 'Я намерен привести лодку завтра.',
+                form: 'assertion', speaker_posture: 'believed_true',
+                source_knowledge_refs: [structuredClone(sourceRef)],
+                mentioned_entity_refs: [] }];
+            }
+          }
+          providerReplies.push({ roleId, output: structuredClone(output) });
+          return { status: 'ok', parsed_json: output };
+        });
+        const { socket, channel } = await scene.client();
+        channel.bind(String(830 + caseIndex * 2 + (keepsQuote ? 0 : 1)));
+        channel.send({ type: 'intent', intent: entry.player, observation: sceneObservation,
+          target_actor_ref: npc.actor_ref });
+        assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+        const playerOperation = await channel.receive();
+        assert.equal(playerOperation.request.primitive, 'speak');
+        channel.send({ type: 'readback', readback: {
+          schema: 'p3_native_operation_readback_v1',
+          operation_id: playerOperation.request.operation_id, status: 'applied',
+          goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
+            speakerId: '7', utterance: entry.player, actualHeardListenerIds: ['8'] },
+          before: { turn: 10 }, after: { turn: 11 } } });
+        assert.equal((await channel.receive()).type, 'observe');
+        channel.send({ type: 'observation', observation: { ...sceneObservation,
+          turn: 11, revision: 11 } });
+        const expectedRoles = ['npc_conversation_responder',
+          'npc_conversation_grounding_auditor', 'npc_conversation_responder_format_repair'];
+        for (const role of expectedRoles) assert.equal((await channel.receive()).role_id, role);
+        let next = await channel.receive();
+        if (keepsQuote) {
+          while (next.type === 'role_phase') next = await channel.receive();
+          socket.destroy();
+          assert.equal(next.type, 'result');
+          assert.equal(next.status, 'refused');
+          assert.equal(next.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+          assert.equal(next.category, 'semantic');
+          assert.equal(next.applied_operations, 1);
+          assert.deepEqual(providerReplies.map(({ roleId }) => roleId),
+            ['turn_step_planner', ...expectedRoles]);
+          const repairInput = providerCalls.find(call =>
+            call.roleId === 'npc_conversation_responder_format_repair').payload;
+          const repairOutput = providerReplies.find(({ roleId }) =>
+            roleId === 'npc_conversation_responder_format_repair').output;
+          assert.equal(repairInput.original_output.speech.utterance_text, entry.unsupported);
+          const expectedSpeech = structuredClone(repairInput.original_output.speech);
+          if (entry.path === '$.speech.claims[0]') {
+            assert.equal(expectedSpeech.claims[0].content_summary,
+              'Завтра лодка будет ждать тебя на берегу.');
+            expectedSpeech.claims[0].content_summary = 'Я намерен привести лодку завтра.';
+          }
+          assert.deepEqual(repairOutput.speech, expectedSpeech);
+          return;
+        }
+        assert.equal(next.role_id, 'npc_conversation_grounding_auditor');
+        const replyOperation = await channel.receive();
+        assert.equal(replyOperation.type, 'operation');
+        assert.equal(replyOperation.request.primitive, 'speak');
+        assert.equal(replyOperation.request.actor_id, '8');
+        assert.equal(replyOperation.request.args.utterance, entry.grounded);
+        assert.notEqual(replyOperation.request.args.utterance, entry.unsupported);
+        channel.send({ type: 'readback', readback: {
+          schema: 'p3_native_operation_readback_v1',
+          operation_id: replyOperation.request.operation_id, status: 'applied',
+          goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
+            speakerId: '8', contribution_kind: 'speech', utterance: entry.grounded,
+            actualHeardListenerIds: ['7'] }, before: { turn: 11 }, after: { turn: 12 } } });
+        const result = await channel.receive();
+        assert.equal(result.status, 'completed');
+        assert.equal(result.applied_operations, 2);
+        assert.deepEqual(providerReplies.map(({ roleId }) => roleId),
+          ['turn_step_planner', ...expectedRoles, 'npc_conversation_grounding_auditor']);
+        const audits = providerCalls.filter(call =>
+          call.roleId === 'npc_conversation_grounding_auditor');
+        assert.equal(audits[0].payload.plan.speech.utterance_text, entry.unsupported);
+        assert.equal(audits[1].payload.plan.speech.utterance_text, entry.grounded);
+        assert.deepEqual(providerReplies.filter(({ roleId }) =>
+          roleId === 'npc_conversation_grounding_auditor').map(({ output }) => output.pass),
+          [false, true]);
+        socket.end();
+      });
+    }
+  }
+});
+
+test('live NPC repair may add a permitted source while the auditor decides its meaning', async t => {
+  for (const [index, auditAccepted] of [false, true].entries()) {
+    await t.test(auditAccepted ? 'new source accepted by auditor reaches native speech'
+      : 'new source rejected by auditor stays silent', async t => {
+      const utterance = 'Ты мужчина?';
+      const reply = 'Я мужчина.';
+      const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+        position: [61, 60, 0] };
+      const sceneObservation = withNpcs(observation, [npc]);
+      const providerCalls = [];
+      const scene = await fixture(t, null, null, async ({ roleId, messages }) => {
+        const payload = JSON.parse(messages.find(({ role }) => role === 'user').content);
+        providerCalls.push({ roleId, payload });
+        let output;
+        if (roleId === 'turn_step_planner') {
+          output = { ...plan(payload, {}), resolution: 'direct', goal_result: 'achieved',
+            operations: [], activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+            direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+              utterance_text: utterance, input_mode: 'verbatim',
+              delivery: { loudness: 2, duration_class: 'brief' } } };
+        } else if (roleId === 'npc_conversation_grounding_auditor') {
+          const auditNumber = providerCalls.filter(call =>
+            call.roleId === 'npc_conversation_grounding_auditor').length;
+          const pass = auditNumber === 2 && auditAccepted;
+          output = { pass, concerns: pass ? [] : [{ kind: 'unsupported_assertion',
+            path: '$.speech.claims[0]', quote: reply }] };
+        } else {
+          assert.ok(['npc_conversation_responder',
+            'npc_conversation_responder_format_repair'].includes(roleId));
+          const request = payload.request ?? payload;
+          const identityRef = request.allowed_references.knowledge_refs.find(ref =>
+            ref.entity_kind === 'npc_identity');
+          const factRef = request.allowed_references.knowledge_refs.find(ref =>
+            ref.entity_kind === 'known_fact');
+          assert.ok(identityRef && factRef);
+          output = speechPlan(request, reply);
+          output.speech.claims = [{ claim_id: 'own-gender', content_summary: reply,
+            form: 'assertion', speaker_posture: 'believed_true',
+            source_knowledge_refs: [structuredClone(identityRef),
+              ...(roleId === 'npc_conversation_responder_format_repair'
+                ? [structuredClone(factRef)] : [])],
+            mentioned_entity_refs: [] }];
+        }
+        return { status: 'ok', parsed_json: output };
+      });
+      const { socket, channel } = await scene.client();
+      channel.bind(String(836 + index));
+      channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+        target_actor_ref: npc.actor_ref });
+      assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+      const playerOperation = await channel.receive();
+      assert.equal(playerOperation.request.primitive, 'speak');
+      channel.send({ type: 'readback', readback: {
+        schema: 'p3_native_operation_readback_v1',
+        operation_id: playerOperation.request.operation_id, status: 'applied',
+        goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
+          speakerId: '7', utterance, actualHeardListenerIds: ['8'] },
+        before: { turn: 10 }, after: { turn: 11 } } });
+      assert.equal((await channel.receive()).type, 'observe');
+      channel.send({ type: 'observation', observation: { ...sceneObservation,
+        turn: 11, revision: 11 } });
+      for (const role of ['npc_conversation_responder', 'npc_conversation_grounding_auditor',
+        'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor']) {
+        assert.equal((await channel.receive()).role_id, role);
+      }
+      const responder = providerCalls.find(call =>
+        call.roleId === 'npc_conversation_responder').payload;
+      const repair = providerCalls.find(call =>
+        call.roleId === 'npc_conversation_responder_format_repair').payload;
+      const audits = providerCalls.filter(call =>
+        call.roleId === 'npc_conversation_grounding_auditor');
+      assert.equal(repair.original_output.speech.utterance_text, reply);
+      assert.equal(audits[0].payload.plan.speech.utterance_text, reply);
+      assert.equal(audits[1].payload.plan.speech.utterance_text, reply);
+      const initialClaim = audits[0].payload.plan.speech.claims[0];
+      const repairedClaim = audits[1].payload.plan.speech.claims[0];
+      const knownFactRef = responder.allowed_references.knowledge_refs.find(ref =>
+        ref.entity_kind === 'known_fact');
+      assert.deepEqual(repairedClaim, { ...initialClaim,
+        source_knowledge_refs: [...initialClaim.source_knowledge_refs, knownFactRef] });
+      assert.equal(repairedClaim.source_knowledge_refs.every(ref =>
+        responder.allowed_references.knowledge_refs.some(allowed =>
+          allowed.entity_kind === ref.entity_kind && allowed.entity_id === ref.entity_id)), true);
+      const next = await channel.receive();
+      if (!auditAccepted) {
+        assert.equal(next.type, 'result');
+        assert.equal(next.status, 'refused');
+        assert.equal(next.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+        assert.equal(next.category, 'semantic');
+        assert.equal(next.applied_operations, 1);
+        socket.end();
+        return;
+      }
+      assert.equal(next.type, 'operation');
+      assert.equal(next.request.primitive, 'speak');
+      assert.equal(next.request.actor_id, '8');
+      assert.equal(next.request.args.utterance, reply);
+      channel.send({ type: 'readback', readback: {
+        schema: 'p3_native_operation_readback_v1',
+        operation_id: next.request.operation_id, status: 'applied',
+        goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
+          speakerId: '8', contribution_kind: 'speech', utterance: reply,
+          actualHeardListenerIds: ['7'] }, before: { turn: 11 }, after: { turn: 12 } } });
+      const result = await channel.receive();
+      assert.equal(result.status, 'completed');
+      assert.equal(result.applied_operations, 2);
       socket.end();
     });
   }

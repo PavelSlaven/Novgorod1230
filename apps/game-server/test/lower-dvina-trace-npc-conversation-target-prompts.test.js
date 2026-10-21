@@ -7,6 +7,8 @@ import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { auditFreshNpcSpeech } from
   '../src/runtime/lower-dvina-trace-npc-speech-grounding-audit.js';
+import { CLAIM_KINDS_RULE, FACTUAL_ASSERTION_RULE } from
+  '../src/runtime/lower-dvina-trace-phase-2-conversation-prompt-contract.js';
 
 const targets = JSON.parse(await readFile(new URL(
   './fixtures/npc-conversation-target-prompts.json', import.meta.url), 'utf8'));
@@ -63,6 +65,80 @@ for (const [name, build] of Object.entries(builders)) {
 }
 
 const occurrences = (text, part) => text.split(part).length - 1;
+
+test('one complete claim-kind rule reaches every NPC speech system prompt',
+  async () => {
+    for (const [name, build] of Object.entries(builders)) {
+      const produced = await build(targets[name].user);
+      assert.equal(occurrences(produced, CLAIM_KINDS_RULE), 1, name);
+    }
+  });
+
+test('the claim-kind rule marks genuine uncertainty separately', () => {
+  assert.match(CLAIM_KINDS_RULE, /\buncertain\b/iu);
+  assert.match(CLAIM_KINDS_RULE,
+    /\b(?:unknown|not know|does not know|lack of knowledge)\b/iu);
+});
+
+test('the claim-kind rule marks withheld knowledge of a secret', () => {
+  assert.match(CLAIM_KINDS_RULE, /\bwithheld\b/iu);
+  assert.match(CLAIM_KINDS_RULE, /\bsecret\b/iu);
+  assert.match(CLAIM_KINDS_RULE, /\bknown\b/iu);
+});
+
+test('the claim-kind rule requires exact source references', () => {
+  assert.match(CLAIM_KINDS_RULE, /\bsource_knowledge_refs\b/iu);
+  assert.match(CLAIM_KINDS_RULE, /\bexact\b/iu);
+  assert.match(CLAIM_KINDS_RULE, /\bknown fact\b/iu);
+});
+
+test('semantic repair calls for a visible change to rejected speech',
+  async () => {
+    const system = await builders.semantic_repair(targets.semantic_repair.user);
+    const repairRule = system.split('Return only one plain JSON object')[0];
+    assert.match(repairRule, /\b(?:unsupported|rejected)\b/iu);
+    assert.match(repairRule, /\b(?:utterance_text|visible|spoken)\b/iu);
+    assert.match(repairRule, /\b(?:change|remove|replace|rewrite)\b/iu);
+  });
+
+test('semantic repair separates missing knowledge from a withheld known fact',
+  async () => {
+    const system = await builders.semantic_repair(targets.semantic_repair.user);
+    const repairRule = system.split('Return only one plain JSON object')[0];
+    assert.match(repairRule, /\b(?:known_facts|known fact)\b/iu);
+    assert.match(repairRule, /\b(?:not know|unknown|uncertain|doubt)\b/iu);
+    assert.match(repairRule, /\b(?:withhold|withheld|conceal|hide)\b/iu);
+  });
+
+async function auditorSpecificSystem() {
+  const system = await builders.auditor(targets.auditor.user);
+  return system.replace(FACTUAL_ASSERTION_RULE, '')
+    .replace(CLAIM_KINDS_RULE, '');
+}
+
+test('the auditor checks facts embedded in ignorance and invitations',
+  async () => {
+    const system = await auditorSpecificSystem();
+    assert.match(system, /\b(?:not know|does not know|ignorance)\b/iu);
+    assert.match(system, /\b(?:inside|embedded|within)\b/iu);
+    assert.match(system, /\b(?:invite|invitation|offer)\b/iu);
+  });
+
+test('the auditor judges visible speech instead of a hidden claim summary',
+  async () => {
+    const system = await auditorSpecificSystem();
+    assert.match(system, /\butterance_text\b/iu);
+    assert.match(system, /\bcontent_summary\b/iu);
+    assert.match(system, /\b(?:visible|spoken|heard)\b/iu);
+  });
+
+test('the auditor compares cited memory content with the utterance',
+  async () => {
+    const system = await auditorSpecificSystem();
+    assert.match(system, /\bmemory\.recent_events\b/iu);
+    assert.match(system,
+      /(?:memory\.recent_events[\s\S]{0,220}utterance_text|utterance_text[\s\S]{0,220}memory\.recent_events)/iu);
+  });
 
 test('the name authority rule is stated once and the old tail is gone',
   async () => {

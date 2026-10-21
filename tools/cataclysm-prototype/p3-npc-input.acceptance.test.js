@@ -418,3 +418,65 @@ test('D2: translated NPC work reaches the responder and empty work is omitted', 
   }
   assert.equal(failures.length, 0, `D2 model input: ${failures.join('; ')}`);
 });
+
+test('B3: Zhirko receives separate approved woodworking facts and citation refs', async () => {
+  const catalog = JSON.parse(await readFile(new URL(
+    '../../data/world-catalogs/novgorod/world-knowledge/production-v1/woodwork-ceramics.json',
+    import.meta.url), 'utf8'));
+  const approved = new Map(catalog.claims.filter(claim =>
+    claim.review_status === 'approved'
+      && claim.claim_ref.startsWith('claim:population-woodwork-')
+      && claim.predicate === 'attested_use'
+      && claim.object?.value === 'wk:craft_technology:woodworking')
+    .map(claim => [claim.claim_ref, claim]));
+  assert.ok(approved.size >= 3, 'canonical WK must contain at least three approved woodworking claims');
+
+  const frame = replyFrame({ projections: [npcProjection('9', {
+    template_id: 'novgorod_dev_master' })] });
+  let request;
+  await assert.rejects(runP3NativeNpcReply({
+    nativeAdapter: { refreshObservation: async () => structuredClone(frame) },
+    observation: frame, playerReadback: playerSpeechReadback({ utterance: 'Чем работаешь?' }),
+    targetActorRef: 'npc:9', semanticModel: async built => {
+      request = built;
+      throw new Error('request captured');
+    }
+  }), error => error?.code === 'TURN_NPC_MODEL_FAILED'
+    || error?.message === 'request captured');
+  assert.ok(request, 'production NPC request must reach the semantic boundary');
+
+  const facts = request.knowledge.known_facts.filter(fact =>
+    approved.has(fact.fact_ref?.entity_id));
+  const factIds = facts.map(fact => fact.fact_ref.entity_id);
+  assert.ok(factIds.length >= 3,
+    `Zhirko needs at least three separate approved woodworking facts; received ${factIds.length}`);
+  assert.equal(new Set(factIds).size, factIds.length,
+    'each approved woodworking claim must have its own known fact');
+  const citedIds = request.allowed_references.knowledge_refs
+    .filter(ref => approved.has(ref.entity_id)).map(ref => ref.entity_id);
+  assert.ok(citedIds.length >= 3,
+    `Zhirko needs at least three separate approved woodworking citation refs; received ${citedIds.length}`);
+  assert.deepEqual([...citedIds].sort(), [...factIds].sort(),
+    'each woodworking fact must have its own allowed citation ref');
+
+  const confidenceRank = { low: 1, medium: 2, high: 3, certain: 4 };
+  for (const fact of facts) {
+    assert.ok(confidenceRank[fact.confidence] <= confidenceRank[approved.get(fact.fact_ref.entity_id)
+      .qualifiers.confidence], `${fact.fact_ref.entity_id}: NPC confidence exceeds WK confidence`);
+    assert.equal(fact.resource_ref, null,
+      `${fact.fact_ref.entity_id}: historical knowledge must not become a present resource`);
+    assert.equal(fact.source_perception_ref, undefined,
+      `${fact.fact_ref.entity_id}: historical knowledge must not become a current observation`);
+  }
+  assert.equal(request.knowledge.known_facts.some(fact =>
+    fact.fact_ref.entity_id === 'claim:ordinary-life-carpenter-works-wood-with-tools'), false,
+  'the composite woodworking fact must be replaced by atomic WK claims');
+  assert.deepEqual(request.available_resources, [],
+    'WK woodworking claims must not materialize tools in the current scene');
+  assert.ok(request.memory.current_observations.every(observation =>
+    !approved.has(observation.observation_ref?.entity_id)),
+  'WK woodworking claims must not become current observations');
+  assert.ok(request.knowledge.known_facts.some(fact =>
+    fact.fact_ref.entity_id === 'novgorod-dev-master-yard'),
+  'the existing profile knowledge must still reach the production request');
+});

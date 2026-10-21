@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "a8906766d9e929b060917cc538c6369924eed5cc6c771f74574c025060295c74",
-      "bytes": 25827,
+      "sha256": "0ba599beda0cf4456fefb2d84f0c270a19c4a6ec29126879c2c9420b257cc62f",
+      "bytes": 26427,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -264,8 +264,8 @@
       "document_id": "npc-conversation-mode-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "file_name": "npc_conversation_mode_contract.md",
-      "sha256": "d091827d8756e97c1d69b13992357732805b993c500d8df6d663870f9c8e670b",
-      "bytes": 129728,
+      "sha256": "126bb46b870cf18bfb7a4ba35bc918a1210aff1b6c7928092c4e8a963b688564",
+      "bytes": 132886,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

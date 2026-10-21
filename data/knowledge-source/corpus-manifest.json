@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "a8906766d9e929b060917cc538c6369924eed5cc6c771f74574c025060295c74",
-      "bytes": 25827,
+      "sha256": "4f7bf66c0eb0e77dc92078185b39b5e97e9a9eae3b262fd076d5c556283ca5fe",
+      "bytes": 26386,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -244,8 +244,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "1bb6cb82c34d9e8da3539a0bad2d171b0039a4eed23bded72b6a9258d93e0b72",
-      "bytes": 103178,
+      "sha256": "90ac09a5213416c355783ce5b35267a442adb534738b8dbe5b045da8fabec1cb",
+      "bytes": 104703,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -393,8 +393,8 @@
       "document_id": "temporal-world-and-interruptible-activities",
       "canonical_path": "corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "sha256": "9d289fbd3003972a563fc54f6310c3387b45c46a1fed210be939f59defc6f264",
-      "bytes": 143923,
+      "sha256": "1245c26528b46ecfdb96fce8bf600fc5193f3085fc74902361fdaafe5e134540",
+      "bytes": 146281,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

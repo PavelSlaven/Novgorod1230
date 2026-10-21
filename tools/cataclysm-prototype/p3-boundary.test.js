@@ -1715,15 +1715,48 @@ test('P3 NPC wire keeps the base system messages byte for byte', async () => {
   }
 });
 
-test('P3 NPC wire is the projection of the unprojected message and keeps keys the system names',
+test('P3 NPC wire projects only the request and passes the rest of the repair message unchanged',
   async () => {
     const repair = await captureNpcWire(toRepair);
     const audit = await captureNpcWire(toAudit);
     for (const call of [repair.calls[0], repair.calls[1], audit.calls[1]]) {
       const named = new Set(call.system.match(/[A-Za-z0-9_]+/gu));
-      assert.deepEqual(call.after, projectP3NpcWire(call.before, call.system), call.roleId);
+      if (call.roleId === 'npc_conversation_responder_format_repair') {
+        const { request: beforeRequest, ...beforeRest } = call.before;
+        const { request: afterRequest, ...afterRest } = call.after;
+        assert.deepEqual(afterRequest, projectP3NpcWire(beforeRequest, call.system), call.roleId);
+        assert.deepEqual(afterRest, beforeRest, call.roleId);
+        assert.deepEqual(Object.keys(call.after), Object.keys(call.before), call.roleId);
+      } else {
+        assert.deepEqual(call.after, projectP3NpcWire(call.before, call.system), call.roleId);
+      }
       assert.deepEqual(lostNamedKeys(call.before, call.after, named), [], call.roleId);
       assert.notDeepEqual(namedEmptyKeys(call.after, named), [], call.roleId);
+    }
+  });
+
+test('P3 NPC repair receives the model own answer whole, with its null check and handoff',
+  async () => {
+    const { reason: _reason, ...formFailure } = wireSpeechOutput;
+    const unsupported = { pass: false, concerns: [{ kind: 'unsupported_fact',
+      path: '$.speech.utterance_text', quote: 'Слышу тебя' }] };
+    for (const [answer, auditor, kind] of [
+      [wireSpeechOutput, unsupported, 'MANDATORY SEMANTIC REPAIR'],
+      [formFailure, null, 'MANDATORY FORMAT REPAIR']]) {
+      const { calls } = await captureNpcWire(({ roleId }) => {
+        if (roleId === 'npc_conversation_responder') return answer;
+        if (roleId === 'npc_conversation_grounding_auditor' && auditor) return auditor;
+        return wireStop();
+      });
+      const repair = calls.find(call => call.roleId === 'npc_conversation_responder_format_repair');
+      assert.ok(repair, kind);
+      assert.ok(repair.system.includes(kind), kind);
+      assert.deepEqual(repair.after.original_output, JSON.parse(JSON.stringify(answer)), kind);
+      assert.deepEqual(repair.after.request, projectP3NpcWire(repair.before.request, repair.system),
+        kind);
+      assert.deepEqual(repair.after.validation_errors, repair.before.validation_errors, kind);
+      assert.deepEqual(Object.keys(repair.after), ['request', 'original_output', 'validation_errors'],
+        kind);
     }
   });
 

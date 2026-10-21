@@ -64,13 +64,13 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         content: system
       }, {
         role: 'user',
-        content: JSON.stringify(requestWire(repair ? {
-          request: modelRequest,
+        content: JSON.stringify(repair ? {
+          request: requestWire(modelRequest, system),
           ...(Object.hasOwn(repair, 'original_output_text')
             ? { original_output_text: repair.original_output_text }
             : { original_output: repair.original_output }),
           validation_errors: repair.validation_errors
-        } : modelRequest, system))
+        } : requestWire(modelRequest, system))
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });

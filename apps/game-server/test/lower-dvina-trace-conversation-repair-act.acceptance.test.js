@@ -407,9 +407,10 @@ test('responder system prompts never offer unrepairable', async (t) => {
   await t.test('semantic repair', async () => {
     const fixture = request();
     const { calls, providerCalls, model } = provider(fixture.input,
-      { auditor: { pass: false,
-        concerns: [{ kind: 'unsupported_assertion', path: '$.speech.utterance_text',
-          quote: 'Я отвечу' }] } });
+      { repair: plan(fixture.input, 'Я не знаю.'),
+        auditor: { pass: false,
+          concerns: [{ kind: 'unsupported_assertion', path: '$.speech.utterance_text',
+            quote: 'Я отвечу' }] } });
     const result = await decide(fixture, model);
     assert.equal(result.status, 'planned');
     const repairCall = calls.find(({ role_id }) => role_id === REPAIR);

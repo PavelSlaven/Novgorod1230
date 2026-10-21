@@ -259,3 +259,208 @@ test('a repair that declares itself unrepairable fails with its own kind',
       assert.equal(error.details.category, 'format');
     });
   });
+
+function claim(content, sources, claimId = 'claim-1') {
+  return { claim_id: claimId, content_summary: content, form: 'assertion',
+    speaker_posture: 'believed_true', source_knowledge_refs: sources,
+    mentioned_entity_refs: [] };
+}
+
+async function quoteGuardFailure({ original, repaired, concerns, expected = concerns,
+  allowedRefs = [] }) {
+  const fixture = request();
+  fixture.input.allowed_references.knowledge_refs.push(...allowedRefs);
+  fixture.input.allowed_references.knowledge_refs.sort((left, right) => {
+    const leftKey = `${left.entity_kind}\u0000${left.entity_id}`;
+    const rightKey = `${right.entity_kind}\u0000${right.entity_id}`;
+    return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0;
+  });
+  const { calls, model } = provider([
+    { role: RESPONDER, result: json(original) },
+    { role: AUDITOR, result: json({ pass: false, concerns }) },
+    { role: REPAIR, result: json(repaired) }
+  ]);
+  const error = await rejection(decide(fixture, model));
+  assert.equal(error.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+  assert.equal(error.details.category, 'semantic');
+  assert.deepEqual(error.details.validation_errors.map(({ code, path, quote }) =>
+    ({ code, path, quote })), expected.map(({ path, quote }) => ({
+    code: 'semantic_repair_unresolved_quote', path, quote
+  })));
+  assert.deepEqual(calls.map(({ role_id }) => role_id),
+    [RESPONDER, AUDITOR, REPAIR]);
+  return { calls, error };
+}
+
+test('semantic repair quote guard matches NFC and Unicode whitespace', async (t) => {
+  for (const { name, originalText, quote, repairedText } of [
+    { name: 'NFC', originalText: 'Я видел ле\u0308д у берега.',
+      quote: 'видел лёд у берега', repairedText: 'Я видел лёд у берега.' },
+    { name: 'Unicode whitespace', originalText: 'Я видел лёд у берега.',
+      quote: '\u00a0видел лёд у берега\u2003',
+      repairedText: 'Я видел\u00a0\u2003лёд\u00a0у\u2003берега.' }
+  ]) {
+    await t.test(name, async () => {
+      const fixture = request();
+      await quoteGuardFailure({
+        original: plan(fixture.input, originalText),
+        repaired: plan(fixture.input, repairedText),
+        concerns: [{ kind: 'unsupported_past_observation',
+          path: '$.speech.utterance_text', quote }]
+      });
+    });
+  }
+});
+
+test('semantic repair quote guard requires a new source on the cited claim', async (t) => {
+  const oldRef = ref('known_fact', 'old-fact');
+  const newRef = ref('known_fact', 'new-fact');
+  const quote = 'Лодка у берега';
+  const path = '$.speech.claims[0].source_knowledge_refs';
+  for (const { name, change } of [
+    { name: 'old source and hidden edits', change: (repaired) => {
+      repaired.speech.claims[0].content_summary = 'У берега стоит лодка.';
+      repaired.speech.claims[0].form = 'question';
+      repaired.speech.claims[0].speaker_posture = 'uncertain';
+    } },
+    { name: 'new source belongs to another claim', change: (repaired) => {
+      repaired.speech.claims[1].source_knowledge_refs.push(newRef);
+    } }
+  ]) {
+    await t.test(name, async () => {
+      const fixture = request();
+      const original = plan(fixture.input, `${quote}. Вода холодна.`);
+      original.speech.claims = [claim(quote, [oldRef]),
+        claim('Вода холодна', [oldRef], 'claim-2')];
+      const repaired = structuredClone(original);
+      change(repaired);
+      await quoteGuardFailure({ original, repaired,
+        concerns: [{ kind: 'unsupported_assertion', path, quote }],
+        allowedRefs: [oldRef, newRef] });
+    });
+  }
+});
+
+test('semantic repair quote guard rejects nonclaim and missing claim paths', async (t) => {
+  for (const path of ['$.speech.utterance_text', '$.speech.claims[2]']) {
+    await t.test(path, async () => {
+      const fixture = request();
+      const original = plan(fixture.input, 'Лодка у берега.');
+      await quoteGuardFailure({ original, repaired: structuredClone(original),
+        concerns: [{ kind: 'unsupported_assertion', path,
+          quote: 'Лодка у берега' }] });
+    });
+  }
+});
+
+test('semantic repair quote guard checks every rejected quote', async (t) => {
+  const oldRef = ref('known_fact', 'old-fact');
+  const newRef = ref('known_fact', 'new-fact');
+  const fixture = request();
+  const original = plan(fixture.input, 'Лодка у берега. Лёд на реке.');
+  original.speech.claims = [claim('Лодка у берега', [oldRef]),
+    claim('Лёд на реке', [oldRef], 'claim-2')];
+  const concerns = [
+    { kind: 'unsupported_assertion', path: '$.speech.claims[0]',
+      quote: 'Лодка у берега' },
+    { kind: 'unsupported_assertion', path: '$.speech.claims[1]',
+      quote: 'Лёд на реке' }
+  ];
+  await t.test('one source added and one quote unresolved', async () => {
+    const repaired = structuredClone(original);
+    repaired.speech.claims[0].source_knowledge_refs.push(newRef);
+    await quoteGuardFailure({ original, repaired, concerns,
+      expected: [concerns[1]], allowedRefs: [oldRef, newRef] });
+  });
+  await t.test('both quotes unresolved', async () => {
+    await quoteGuardFailure({ original, repaired: structuredClone(original),
+      concerns, allowedRefs: [oldRef, newRef] });
+  });
+});
+
+test('semantic repair quote guard precedes diagnosis of a new disallowed source',
+  async () => {
+    const oldRef = ref('known_fact', 'old-fact');
+    const disallowedRef = ref('known_fact', 'disallowed-fact');
+    const fixture = request();
+    const original = plan(fixture.input, 'Лодка у берега.');
+    original.speech.claims = [claim('Лодка у берега', [oldRef])];
+    const repaired = structuredClone(original);
+    repaired.speech.claims[0].source_knowledge_refs.push(disallowedRef);
+    const { error } = await quoteGuardFailure({ original, repaired,
+      concerns: [{ kind: 'unsupported_assertion', path: '$.speech.claims[0]',
+        quote: 'Лодка у берега' }], allowedRefs: [oldRef] });
+    assert.equal(error.details.validation_errors.length, 1);
+  });
+
+test('semantic repair quote guard ignores a quote absent from the original speech',
+  async () => {
+    const fixture = request();
+    const original = plan(fixture.input, 'Лодка у берега.');
+    const repaired = structuredClone(original);
+    const { calls, model } = provider([
+      { role: RESPONDER, result: json(original) },
+      { role: AUDITOR, result: json({ pass: false,
+        concerns: [{ kind: 'unsupported_assertion',
+          path: '$.speech.utterance_text', quote: 'Волк у леса' }] }) },
+      { role: REPAIR, result: json(repaired) },
+      { role: AUDITOR, result: auditPass }
+    ]);
+    const result = await decide(fixture, model);
+    assert.equal(result.status, 'planned');
+    assert.deepEqual(calls.map(({ role_id }) => role_id),
+      [RESPONDER, AUDITOR, REPAIR, AUDITOR]);
+    assert.equal(calls[3].user.plan.speech.utterance_text,
+      repaired.speech.utterance_text);
+  });
+
+test('semantic repair quote guard lets the auditor decide a new allowed source',
+  async (t) => {
+    for (const accepted of [false, true]) {
+      await t.test(`audit pass:${accepted}`, async () => {
+        const fixture = request();
+        const oldRef = ref('known_fact', 'old-fact');
+        const newRef = ref('known_fact', 'new-fact');
+        fixture.input.allowed_references.knowledge_refs.push(oldRef, newRef);
+        fixture.input.allowed_references.knowledge_refs.sort((left, right) => {
+          const leftKey = `${left.entity_kind}\u0000${left.entity_id}`;
+          const rightKey = `${right.entity_kind}\u0000${right.entity_id}`;
+          return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0;
+        });
+        const quote = 'Лодка у берега';
+        const path = '$.speech.claims[0]';
+        const original = plan(fixture.input, `${quote}.`);
+        original.speech.claims = [claim(quote, [oldRef])];
+        const repaired = structuredClone(original);
+        repaired.speech.claims[0].source_knowledge_refs.push(newRef);
+        const firstAudit = { pass: false, concerns: [
+          { kind: 'unsupported_assertion', path, quote }] };
+        const secondAudit = accepted ? auditPass : json(firstAudit);
+        const { calls, model } = provider([
+          { role: RESPONDER, result: json(original) },
+          { role: AUDITOR, result: json(firstAudit) },
+          { role: REPAIR, result: json(repaired) },
+          { role: AUDITOR, result: secondAudit }
+        ]);
+        const outcome = await decide(fixture, model).then((value) => value,
+          (error) => error);
+        assert.deepEqual(calls.map(({ role_id }) => role_id),
+          [RESPONDER, AUDITOR, REPAIR, AUDITOR]);
+        assert.deepEqual(calls[3].user.plan.speech.claims[0]
+          .source_knowledge_refs, [oldRef, newRef]);
+        if (accepted) {
+          assert.equal(outcome.status, 'planned');
+          assert.equal(outcome.plan.speech.utterance_text,
+            repaired.speech.utterance_text);
+        } else {
+          assert.equal(outcome.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+          assert.equal(outcome.details.category, 'semantic');
+          assert.deepEqual(outcome.details.validation_errors.map(
+            ({ code, path: errorPath, quote: errorQuote }) =>
+              ({ code, path: errorPath, quote: errorQuote })), [{
+            code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED', path, quote
+          }]);
+        }
+      });
+    }
+  });

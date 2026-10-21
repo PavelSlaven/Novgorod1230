@@ -104,6 +104,12 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         }
       }
     }
+    if (semanticRepair) {
+      const unresolved = unresolvedSemanticRepairQuotes(repair, plan, request);
+      if (unresolved.length > 0) {
+        throw conversationContractFailure(true, unresolved);
+      }
+    }
     if (plan !== null && typeof plan === 'object') {
       originalOutputs.set(plan, response.output);
     }
@@ -124,6 +130,64 @@ const ACT_PATHS = Object.freeze([
   ['contribution_kind'], ['speech', 'dominant_act'], ['primary_addressee_ref'],
   ['intended_addressee_refs'], ['interpretation', 'intent']
 ]);
+
+function unresolvedSemanticRepairQuotes(repair, plan, request) {
+  const originalText = repair.original_output?.speech?.utterance_text;
+  if (typeof originalText !== 'string') return [];
+  const originalVisible = normalizeVisibleText(originalText);
+  const repairedVisible = normalizeVisibleText(plan?.speech?.utterance_text);
+  return (Array.isArray(repair.validation_errors) ? repair.validation_errors : [])
+    .flatMap((error) => {
+      if (error?.category !== 'semantic_grounding'
+        || typeof error.quote !== 'string') return [];
+      const quote = normalizeVisibleText(error.quote);
+      if (!quote.trim() || !originalVisible.includes(quote)
+        || !repairedVisible.includes(quote)) return [];
+      const claimIndex = claimIndexAtPath(error.path);
+      const originalClaim = repair.original_output?.speech?.claims?.[claimIndex];
+      const repairedClaim = plan?.speech?.claims?.[claimIndex];
+      if (claimIndex !== null && claimRecord(originalClaim)
+        && claimRecord(repairedClaim)
+        && hasNewAllowedKnowledgeRef(originalClaim, repairedClaim, request)) {
+        return [];
+      }
+      return [{ code: 'semantic_repair_unresolved_quote',
+        category: 'semantic_grounding', path: error.path, quote: error.quote,
+        message: 'A semantic repair retained an unsupported quote without a new allowed claim reference.' }];
+    });
+}
+
+function normalizeVisibleText(value) {
+  return typeof value === 'string'
+    ? value.normalize('NFC').replace(/\p{White_Space}+/gu, ' ').trim() : '';
+}
+
+function claimIndexAtPath(path) {
+  if (typeof path !== 'string') return null;
+  const match = /^\$\.speech\.claims\[(0|[1-9]\d*)\](?=\.|\[|$)/u.exec(path);
+  return match === null ? null : Number(match[1]);
+}
+
+function claimRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function hasNewAllowedKnowledgeRef(originalClaim, repairedClaim, request) {
+  const originalRefs = Array.isArray(originalClaim.source_knowledge_refs)
+    ? originalClaim.source_knowledge_refs : [];
+  const repairedRefs = Array.isArray(repairedClaim.source_knowledge_refs)
+    ? repairedClaim.source_knowledge_refs : [];
+  const allowedRefs = request.allowed_references?.knowledge_refs;
+  return Array.isArray(allowedRefs) && repairedRefs.some((ref) =>
+    typeof ref?.entity_kind === 'string' && typeof ref?.entity_id === 'string'
+    && !originalRefs.some((original) => sameKnowledgeRef(ref, original))
+    && allowedRefs.some((allowed) => sameKnowledgeRef(ref, allowed)));
+}
+
+function sameKnowledgeRef(left, right) {
+  return left?.entity_kind === right?.entity_kind
+    && left?.entity_id === right?.entity_id;
+}
 
 function changedActPaths(output, original) {
   return ACT_PATHS.filter((path) => !isDeepStrictEqual(

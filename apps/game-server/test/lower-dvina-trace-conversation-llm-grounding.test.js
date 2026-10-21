@@ -396,10 +396,17 @@ test('two grounding failures return a typed error without a canned NPC response'
   input.boundary_id = boundary.boundary_id;
   const original = plan(input);
   original.speech.utterance_text = 'Вчера я видел лодку у берега.';
-  const fixture = runner((call) => call.role_id === 'npc_conversation_grounding_auditor'
-    ? { pass: false, concerns: [{ kind: 'unsupported_past_observation',
-      path: '$.speech.utterance_text', quote: 'Вчера я видел лодку у берега' }] }
-    : original);
+  const repaired = plan(input);
+  repaired.speech.utterance_text = 'Сегодня я видел волка у реки.';
+  const fixture = runner((call) => {
+    if (call.role_id === 'npc_conversation_responder_format_repair') return repaired;
+    if (call.role_id !== 'npc_conversation_grounding_auditor') return original;
+    const utterance = JSON.parse(call.messages[1].content).plan.speech.utterance_text;
+    return { pass: false, concerns: [{ kind: 'unsupported_past_observation',
+      path: '$.speech.utterance_text',
+      quote: utterance === original.speech.utterance_text
+        ? 'Вчера я видел лодку у берега' : 'Сегодня я видел волка у реки' }] };
+  });
   const model = createLowerDvinaTraceNpcSemanticModel(fixture);
 
   await assert.rejects(requestNpcSemanticDecision({
@@ -413,11 +420,12 @@ test('two grounding failures return a typed error without a canned NPC response'
     'npc_conversation_responder', 'npc_conversation_grounding_auditor',
     'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor'
   ]);
-  for (const call of fixture.calls.filter(({ role_id }) =>
-    role_id === 'npc_conversation_grounding_auditor')) {
-    assert.equal(JSON.parse(call.messages[1].content).plan.speech.utterance_text,
-      original.speech.utterance_text);
-  }
+  const audits = fixture.calls.filter(({ role_id }) =>
+    role_id === 'npc_conversation_grounding_auditor');
+  assert.equal(JSON.parse(audits[0].messages[1].content).plan.speech.utterance_text,
+    original.speech.utterance_text);
+  assert.equal(JSON.parse(audits[1].messages[1].content).plan.speech.utterance_text,
+    repaired.speech.utterance_text);
 });
 
 test('route contract candidate reaches initial and repair prompts', async () => {

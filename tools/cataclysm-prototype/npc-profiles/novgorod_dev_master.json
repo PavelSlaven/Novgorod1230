@@ -43,7 +43,7 @@
     "goals": [
       {
         "goal_ref": "novgorod-dev-master-goal-1",
-        "summary": "Доделать заказанную работу по дереву.",
+        "summary": "Доделать начатую работу по дереву.",
         "state": "active",
         "priority": "medium"
       },
@@ -86,7 +86,7 @@
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "Кресало у меня давно, не первый год; им я развожу огонь на дворе.",
+        "summary": "Кресалом я огонь развожу.",
         "state": "known",
         "confidence": "certain"
       },
@@ -110,7 +110,7 @@
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки.",
+        "summary": "Я плотник. Бревно и доску тешу топором, пазы и гнёзда выбираю долотом, прежде всё размечаю. От работы — щепа да стружка.",
         "state": "known",
         "confidence": "medium"
       },
@@ -122,7 +122,7 @@
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "Кресало исторически засвидетельствовано для высекания огня; успех зависит от реальных условий.",
+        "summary": "Огонь я кресалом высекаю. Не всякий раз с первого удара займётся.",
         "state": "known",
         "confidence": "medium"
       },
@@ -134,7 +134,31 @@
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "Видимое Солнце и тень могут быть лишь качественными ориентирами направления и времени суток; они не дают точного компаса, часа, положения, маршрута или результата навигации.",
+        "summary": "Днём в избе светло у двери, по углам темно. Вечером светит печь. Солнце сядет — а край неба ещё долго светлый, коли не облачно.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-house"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "На моём дворе изба, рублена из брёвен. В избе печь: ею и греюсь, и варю.",
+        "state": "known",
+        "confidence": "medium"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-master-work-now"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "У двери бревно лежит — его и тешу.",
         "state": "known",
         "confidence": "medium"
       }
@@ -149,6 +173,16 @@
         "summary": "Солнце ходит по небу Божьим велением, как от века заведено: утром встаёт, вечером заходит.",
         "state": "held",
         "confidence": "certain"
+      },
+      {
+        "belief_ref": {
+          "entity_kind": "belief",
+          "entity_id": "novgorod-dev-master-belief-stranger"
+        },
+        "source_event_ref": null,
+        "summary": "Чужой человек мне не помеха, коли по делу пришёл; а к топору своему чужого не подпущу.",
+        "state": "held",
+        "confidence": "medium"
       }
     ],
     "hypotheses": []

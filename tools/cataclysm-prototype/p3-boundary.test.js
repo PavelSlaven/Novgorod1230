@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -9,6 +10,7 @@ import { createLlmSettingsOwner } from '@rus/game-server';
 import { requestTurnStepPlanWithRepair } from '@rus/turn';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
 import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceNpcSemanticModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   applyP3CoordinatorSpeech,
@@ -26,6 +28,7 @@ import { validateNpcConversationResponseRequest,
   validateNpcConversationResponseSubject } from '@rus/npc-runtime';
 import { requireLiveObservation } from './p3-live-socket.js';
 import { loadP3NpcProfile } from './p3-npc-profile.js';
+import { projectP3NpcWire } from './p3-npc-subject.js';
 import { heardRecord, npcProjection, playerSpeechReadback, replyFrame, saidRecord,
   silencePlan, silenceRecord, speechPlan, visibleItem } from './p3-test-frames.js';
 
@@ -1470,6 +1473,30 @@ test('planner request names the selected interlocutor and offers speech only wit
     .some(({ op }) => op === 'emit_interaction'), true);
 });
 
+test('planner sees the native items first, in frame order, with their use methods and no native type',
+  async () => {
+    const current = { ...replyFrame({ turn: 3 }), items: [
+      { item_ref: 'item:21', item_uid: '21', type: 'flint_steel', label: 'кресало',
+        placement: 'held', holder: '7', use_methods: ['firestarter'] },
+      { item_ref: 'item:22', item_uid: '22', type: 'leather_belt', label: 'кожаный пояс',
+        placement: 'held', holder: '7', use_methods: ['holster'] },
+      { item_ref: 'item:23', item_uid: '23', type: 'ax', label: 'плотницкий топор',
+        placement: 'held', holder: '7', use_methods: ['activate', 'chop'] }] };
+    const seen = [];
+    await assert.rejects(runP3TurnStep({ intent: 'Осмотрись', observation: current,
+      nativeAdapter: { writeOperationRequest: async () => { throw new Error('unused'); },
+        readOperationReadback: async () => { throw new Error('unused'); } },
+      operationId: 'planner-items', nativeSpeechOnly: true, targetActorRef: null,
+      turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
+    assert.deepEqual(seen[0].player_safe_state.visible_entities.slice(0, 3), [
+      { item_ref: 'item:21', item_uid: '21', label: 'кресало', placement: 'held', holder: '7',
+        use_methods: ['firestarter'], entity_ref: '21' },
+      { item_ref: 'item:22', item_uid: '22', label: 'кожаный пояс', placement: 'held', holder: '7',
+        use_methods: ['holster'], entity_ref: '22' },
+      { item_ref: 'item:23', item_uid: '23', label: 'плотницкий топор', placement: 'held', holder: '7',
+        use_methods: ['activate', 'chop'], entity_ref: '23' }]);
+  });
+
 function chosenOperationOutput(request, selected) {
   return { interpretation: { player_goal: request.remaining_intent,
     grounded_attempt: request.remaining_intent, adaptation: 'literal' },
@@ -1580,4 +1607,245 @@ test('no prototype test file contains a private LAN address', async () => {
     }
   }
   assert.deepEqual(offenders, []);
+});
+
+const wirePlayer = { entity_kind: 'player_character', entity_id: '7' };
+const wireSpeechOutput = { contribution_kind: 'speech', primary_addressee_ref: wirePlayer,
+  intended_addressee_refs: [wirePlayer], affected_actor_refs: [],
+  speech: { utterance_text: 'Слышу тебя.', dominant_act: 'answer', interaction_tags: [],
+    topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } },
+  interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.', adaptation: 'literal' },
+  resolution: 'automatic', activity: { duration_class: 'brief', effort: 'none' },
+  supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' };
+const wireStop = () => { throw new Error('captured'); };
+const toRepair = ({ roleId }) => roleId === 'npc_conversation_responder'
+  ? { contribution_kind: 'speech' } : wireStop();
+const toAudit = ({ roleId }) => roleId === 'npc_conversation_responder'
+  ? wireSpeechOutput : wireStop();
+const WIRE_SERVICE_KEYS = ['request_id', 'boundary_id', 'conversation_id', 'exchange_id',
+  'state_version', 'requested_at', 'signal_refs', 'template_ref'];
+
+// Each call is replayed through the shared model without a wire projection, so the test compares
+// against the exact pre-projection user message of the same request.
+async function captureNpcWire(respond, projectionOverrides = {}) {
+  const sent = [];
+  const unprojected = [];
+  const requests = [];
+  const runtime = createP3RoleRuntime({ env: {}, settingsOwner: qwenSettingsOwner(),
+    execute: async value => {
+      sent.push({ roleId: value.roleId, messages: structuredClone(value.messages) });
+      return { status: 'ok', parsed_json: await respond(value),
+        provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+        scope: value.scope, role_id: value.roleId, durationMs: 1 };
+    } });
+  const identity = createLowerDvinaTraceNpcSemanticModel({ roleRunner: { run: async value => {
+    unprojected.push({ roleId: value.role_id, messages: structuredClone(value.messages) });
+    return { output: await respond({ roleId: value.role_id }) };
+  } } });
+  const projected = runtime.npcConversationModel;
+  const semanticModel = Object.assign(async (request, context) => {
+    requests.push(structuredClone(request));
+    await identity(request, context).catch(() => {});
+    return projected(request, context);
+  }, { originalOutputOf: projected.originalOutputOf,
+    validateFreshPlan: async (plan, request) => {
+      await identity.validateFreshPlan(plan, request).catch(() => {});
+      return projected.validateFreshPlan(plan, request);
+    } });
+  const frame = replyFrame({ projections: [npcProjection('9', { template_id: '',
+    visible_items: [visibleItem(31)], ...projectionOverrides })] });
+  await runP3NativeNpcReply({ nativeAdapter: { refreshObservation: async () => structuredClone(frame) },
+    observation: frame, playerReadback: playerSpeechReadback({ utterance: 'Здравствуй.', turn: 10 }),
+    semanticModel, targetActorRef: 'npc:9', maxRepairAttempts: 2 }).catch(() => {});
+  const message = (call, role) => call.messages.find(entry => entry.role === role).content;
+  assert.equal(sent.length, unprojected.length);
+  return { requests, calls: sent.map((call, index) => {
+    assert.equal(call.roleId, unprojected[index].roleId);
+    assert.equal(message(call, 'system'), message(unprojected[index], 'system'));
+    return { roleId: call.roleId, system: message(call, 'system'),
+      before: JSON.parse(message(unprojected[index], 'user')),
+      after: JSON.parse(message(call, 'user')) };
+  }) };
+}
+
+function lostNamedKeys(before, after, named, path = '') {
+  if (Array.isArray(before)) {
+    return before.flatMap((entry, index) => lostNamedKeys(entry, after?.[index], named,
+      `${path}[${index}]`));
+  }
+  if (before === null || typeof before !== 'object') return [];
+  return Object.entries(before).flatMap(([key, value]) => {
+    // The frozen acceptance contract forbids service keys and a second copy of the resources.
+    if (WIRE_SERVICE_KEYS.includes(key) || value === null
+        || (key === 'available_resources' && path.endsWith('.npc'))) return [];
+    if (!Object.hasOwn(after ?? {}, key)) return named.has(key) ? [`${path}.${key}`] : [];
+    return lostNamedKeys(value, after[key], named, `${path}.${key}`);
+  });
+}
+
+function namedEmptyKeys(value, named, path = '') {
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, entry]) => {
+    const empty = entry !== null && typeof entry === 'object' && Object.keys(entry).length === 0;
+    return [...(empty && named.has(key) ? [`${path}.${key}`] : []),
+      ...namedEmptyKeys(entry, named, `${path}.${key}`)];
+  });
+}
+
+function wireValuesOf(value, key) {
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([name, entry]) =>
+    [...(name === key ? [entry] : []), ...wireValuesOf(entry, key)]);
+}
+
+test('P3 NPC wire keeps the base system messages byte for byte', async () => {
+  const golden = {
+    npc_conversation_responder: '959eecf0ae3c6a301357aebf0418cf1f45d2c83b691aa40c63c71a20b678fbe5',
+    npc_conversation_responder_format_repair:
+      '895e95fbfa9c9ed16e5dfb119058a45896c28f19db1507532cb70e9ab364d05e',
+    npc_conversation_grounding_auditor:
+      '72f9852721961ffa02a01824c9bee90d2636e9549185f7b7ad8ed756f82fd7e6' };
+  const repair = await captureNpcWire(toRepair);
+  const audit = await captureNpcWire(toAudit);
+  const calls = [repair.calls[0], repair.calls[1], audit.calls[1]];
+  assert.deepEqual(calls.map(call => call.roleId), Object.keys(golden));
+  for (const call of calls) {
+    assert.equal(createHash('sha256').update(call.system).digest('hex'), golden[call.roleId],
+      call.roleId);
+  }
+});
+
+test('P3 NPC wire projects only the request and passes the rest of the repair message unchanged',
+  async () => {
+    const repair = await captureNpcWire(toRepair);
+    const audit = await captureNpcWire(toAudit);
+    for (const call of [repair.calls[0], repair.calls[1], audit.calls[1]]) {
+      const named = new Set(call.system.match(/[A-Za-z0-9_]+/gu));
+      if (call.roleId === 'npc_conversation_responder_format_repair') {
+        const { request: beforeRequest, ...beforeRest } = call.before;
+        const { request: afterRequest, ...afterRest } = call.after;
+        assert.deepEqual(afterRequest, projectP3NpcWire(beforeRequest, call.system), call.roleId);
+        assert.deepEqual(afterRest, beforeRest, call.roleId);
+        assert.deepEqual(Object.keys(call.after), Object.keys(call.before), call.roleId);
+      } else {
+        assert.deepEqual(call.after, projectP3NpcWire(call.before, call.system), call.roleId);
+      }
+      assert.deepEqual(lostNamedKeys(call.before, call.after, named), [], call.roleId);
+      assert.notDeepEqual(namedEmptyKeys(call.after, named), [], call.roleId);
+    }
+  });
+
+test('P3 NPC repair receives the model own answer whole, with its null check and handoff',
+  async () => {
+    const { reason: _reason, ...formFailure } = wireSpeechOutput;
+    const unsupported = { pass: false, concerns: [{ kind: 'unsupported_fact',
+      path: '$.speech.utterance_text', quote: 'Слышу тебя' }] };
+    for (const [answer, auditor, kind] of [
+      [wireSpeechOutput, unsupported, 'MANDATORY SEMANTIC REPAIR'],
+      [formFailure, null, 'MANDATORY FORMAT REPAIR']]) {
+      const { calls } = await captureNpcWire(({ roleId }) => {
+        if (roleId === 'npc_conversation_responder') return answer;
+        if (roleId === 'npc_conversation_grounding_auditor' && auditor) return auditor;
+        return wireStop();
+      });
+      const repair = calls.find(call => call.roleId === 'npc_conversation_responder_format_repair');
+      assert.ok(repair, kind);
+      assert.ok(repair.system.includes(kind), kind);
+      assert.deepEqual(repair.after.original_output, JSON.parse(JSON.stringify(answer)), kind);
+      assert.deepEqual(repair.after.request, projectP3NpcWire(repair.before.request, repair.system),
+        kind);
+      assert.deepEqual(repair.after.validation_errors, repair.before.validation_errors, kind);
+      assert.deepEqual(Object.keys(repair.after), ['request', 'original_output', 'validation_errors'],
+        kind);
+    }
+  });
+
+async function resourcesSentToEachRole(visibleItems) {
+  const repair = await captureNpcWire(toRepair, { visible_items: visibleItems });
+  const audit = await captureNpcWire(toAudit, { visible_items: visibleItems });
+  for (const request of [...repair.requests, ...audit.requests]) {
+    assert.equal(validateNpcConversationResponseRequest(request), true);
+    assert.deepEqual(request.npc.available_resources, request.available_resources);
+  }
+  return [repair.calls[0], repair.calls[1], audit.calls[1]].map(({ roleId, before, after }) => {
+    const request = (value) => value.request ?? value;
+    return { roleId, before: request(before).available_resources,
+      after: request(after).available_resources };
+  });
+}
+
+test('P3 NPC resources carry the perceived Russian label for held and ground items', async () => {
+  const roles = await resourcesSentToEachRole([visibleItem(31),
+    visibleItem(32, { type: 'chisel', label: 'долото', placement: 'carried' })]);
+  const expected = {
+    'item:31': ['огниво', 'firesteel', { location_ref: 'p3-scene', holder_npc_id: null }],
+    'item:32': ['долото', 'chisel', { location_ref: null, holder_npc_id: 'npc:9' }] };
+  assert.deepEqual(roles.map(role => role.roleId), ['npc_conversation_responder',
+    'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor']);
+  for (const { roleId, before, after } of roles) {
+    assert.deepEqual(after.map(resource => resource.resource_ref).sort(), ['item:31', 'item:32'],
+      roleId);
+    for (const resource of after) {
+      const [label, type, branch] = expected[resource.resource_ref];
+      const original = before.find(entry => entry.resource_ref === resource.resource_ref);
+      assert.deepEqual({ location_ref: original.location_ref,
+        holder_npc_id: original.holder_npc_id }, branch, roleId);
+      assert.equal(resource.label, label, roleId);
+      assert.match(resource.label, /\p{Script=Cyrillic}/u);
+      assert.notEqual(resource.label, type);
+      assert.notEqual(resource.label, original.template_ref);
+      assert.notEqual(resource.label, resource.resource_ref);
+    }
+  }
+});
+
+test('P3 NPC resource without a Russian perceived name gets no label key', async () => {
+  const roles = await resourcesSentToEachRole([
+    visibleItem(33, { type: 'stick', label: 'stick' }), visibleItem(34, { label: '' })]);
+  for (const { roleId, after } of roles) {
+    assert.equal(after.length, 2, roleId);
+    for (const resource of after) {
+      assert.equal(Object.hasOwn(resource, 'label'), false, `${roleId} ${resource.resource_ref}`);
+    }
+  }
+});
+
+test('P3 NPC trust reaches the responder as a level and neutral trust is omitted', async () => {
+  for (const [trust, expected] of [[0, []], [-3, ['low']], [2, ['medium']], [7, ['high']]]) {
+    const { calls } = await captureNpcWire(toAudit, {
+      opinion_of_avatar: { trust, fear: 0, value: 0, anger: 0 } });
+    assert.deepEqual(wireValuesOf(calls[0].after, 'trust'), expected, String(trust));
+  }
+});
+
+test('shared NPC conversation model sends the request unchanged without a wire projection',
+  async () => {
+    const { requests, calls } = await captureNpcWire(toAudit);
+    const [responder, auditor] = calls;
+    assert.deepEqual(responder.before, JSON.parse(JSON.stringify(requests[0])));
+    assert.deepEqual(auditor.before.request, responder.before);
+    assert.deepEqual(Object.keys(auditor.before), ['request', 'plan']);
+  });
+
+test('shared NPC conversation model sends a request without a p3 frame unchanged', async () => {
+  const targets = JSON.parse(await readFile(new URL(
+    '../../apps/game-server/test/fixtures/npc-conversation-target-prompts.json',
+    import.meta.url), 'utf8'));
+  const users = [];
+  const roleRunner = { run: async ({ messages }) => {
+    users.push(messages[1].content);
+    return { output: { pass: true, concerns: [] } };
+  } };
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner });
+  const repairOf = (user, kind) => ({ repair: { kind, original_output: user.original_output,
+    validation_errors: user.validation_errors } });
+  await model(targets.responder.user).catch(() => {});
+  await model(targets.format_repair.user.request, repairOf(targets.format_repair.user, 'format'))
+    .catch(() => {});
+  await model.validateFreshPlan(targets.auditor.user.plan, targets.auditor.user.request)
+    .catch(() => {});
+  const { request: _request, ...repairRest } = targets.format_repair.user;
+  assert.deepEqual(users, [JSON.stringify(targets.responder.user),
+    JSON.stringify({ request: targets.format_repair.user.request, ...repairRest }),
+    JSON.stringify(targets.auditor.user)]);
 });

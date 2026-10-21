@@ -75,5 +75,54 @@
     "subtypes": [ "ARMOR" ],
     "name": { "str": "соломенная корзина", "str_pl": "соломенные корзины" },
     "description": "Плетённая из соломы корзина для мелкой поклажи."
+  },
+  {
+    "id": "ax",
+    "copy-from": "ax",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "плотницкий топор", "str_pl": "плотницкие топоры" },
+    "description": "Плотницкий топор на деревянном топорище."
+  },
+  {
+    "id": "chisel",
+    "copy-from": "chisel",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "долото", "str_pl": "долота" },
+    "description": "Долото плотника: им выбирают пазы и гнёзда."
+  },
+  {
+    "id": "pants",
+    "copy-from": "pants",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "порты" },
+    "description": "Простые порты, собранные по ноге.",
+    "variants": []
+  },
+  {
+    "id": "leather_belt",
+    "copy-from": "leather_belt",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "кожаный пояс", "str_pl": "кожаные пояса" },
+    "description": "Кожаный ремень с пряжкой."
+  },
+  {
+    "id": "footrags_wool",
+    "copy-from": "footrags_wool",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "онучи" },
+    "description": "Полосы ткани, которые мотают вокруг стопы и голени."
+  },
+  {
+    "id": "mocassins",
+    "copy-from": "mocassins",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "поршни" },
+    "description": "Мягкая кожаная обувь из цельного куска."
   }
 ]

@@ -5,21 +5,23 @@
     "subtype": "collection",
     "entries": [
       { "item": "tunic" },
-      { "item": "loincloth_fur" },
-      { "item": "footrags_leather" }
+      { "item": "pants" },
+      { "item": "leather_belt" },
+      { "item": "footrags_wool" },
+      { "item": "mocassins" }
     ]
   },
   {
     "type": "item_group",
     "id": "novgorod_dev_master_carried",
     "subtype": "collection",
-    "entries": [ { "item": "straw_basket" } ]
+    "entries": [ { "item": "chisel" } ]
   },
   {
     "type": "item_group",
     "id": "novgorod_dev_master_weapon",
     "subtype": "collection",
-    "entries": [ { "item": "stick" } ]
+    "entries": [ { "item": "ax" } ]
   },
   {
     "type": "npc_class",

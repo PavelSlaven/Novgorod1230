@@ -42,7 +42,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
 }
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
-  worldKnowledgeGrounder = null } = {}) {
+  worldKnowledgeGrounder = null, requestWire = (value) => value } = {}) {
   requireRoleRunner(roleRunner);
   const originalOutputs = new WeakMap();
   const model = async function planNpcConversationResponse(request, context = {}) {
@@ -50,6 +50,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     const semanticRepair = repair?.kind === 'semantic';
     const modelRequest = worldKnowledgeGrounder == null ? request
       : await worldKnowledgeGrounder.ground(request, 'conversation');
+    const system = [npcConversationInstructions(repair, modelRequest),
+      ...worldKnowledgeFactualClosure(modelRequest)].join(' ');
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -59,17 +61,16 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: [npcConversationInstructions(repair, modelRequest),
-          ...worldKnowledgeFactualClosure(modelRequest)].join(' ')
+        content: system
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request: modelRequest,
+          request: requestWire(modelRequest, system),
           ...(Object.hasOwn(repair, 'original_output_text')
             ? { original_output_text: repair.original_output_text }
             : { original_output: repair.original_output }),
           validation_errors: repair.validation_errors
-        } : modelRequest)
+        } : requestWire(modelRequest, system))
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
@@ -95,7 +96,9 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     ? originalOutputs.get(plan) : undefined;
   model.validateFreshPlan = async (plan, request) => {
     const presentation = validateRequiredNpcPresentation(plan, request);
-    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+    return presentation ?? auditFreshNpcSpeech({
+      roleRunner, plan, request, requestWire
+    });
   };
   return model;
 }

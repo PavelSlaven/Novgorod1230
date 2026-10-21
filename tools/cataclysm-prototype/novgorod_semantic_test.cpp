@@ -25,6 +25,7 @@
 #include "cata_catch.h"
 #include "character.h"
 #include "debug.h"
+#include "display.h"
 #include "faction.h"
 #include "field.h"
 #include "field_type.h"
@@ -35,14 +36,17 @@
 #include "item_location.h"
 #include "json.h"
 #include "json_loader.h"
+#include "lightmap.h"
 #include "map.h"
 #include "map_helpers.h"
 #include "map_selector.h"
 #include "math_parser_diag_value.h"
 #include "messages.h"
 #include "npc.h"
+#include "npc_class.h"
 #include "npctalk.h"
 #include "novgorod_semantic.h"
+#include "output.h"
 #include "path_info.h"
 #include "player_helpers.h"
 #include "translations.h"
@@ -57,6 +61,7 @@ static const ter_str_id p3_ter_wall( "t_wall" );
 static const ter_str_id p3_ter_door_c( "t_door_c" );
 static const npc_template_id p3_talker( "NPC_debug" );
 static const efftype_id p3_deaf( "deaf" );
+static const efftype_id p3_bleed( "bleed" );
 
 void reset_p3_fixture()
 {
@@ -1895,6 +1900,129 @@ TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items
         CHECK( exported[0].kind == "said" );
     }
     CHECK( exported_found );
+}
+
+TEST_CASE( "Novgorod frame exports native labels of the observed avatar, scene and NPC work",
+           "[novgorod_live]" )
+{
+    const bool wet = GENERATE( true, false );
+    CAPTURE( wet );
+    reset_p3_fixture();
+    clear_npcs();
+    avatar &you = get_avatar();
+    map &here = get_map();
+    for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
+        here.i_clear( p );
+    }
+    you.male = wet;
+    REQUIRE( you.wear_item( item( itype_id( "tshirt" ) ), false ).has_value() );
+    you.set_wielded_item( item( itype_id( "rock" ) ) );
+    for( const bodypart_id &bp : you.get_all_body_parts() ) {
+        you.set_part_wetness( bp, 0 );
+    }
+    if( wet ) {
+        you.set_part_wetness( body_part_torso, 50 );
+    }
+    you.add_effect( p3_bleed, 10_minutes, body_part_arm_l );
+    const item &ground = here.add_item( you.pos_bub() + tripoint_rel_ms( 1, 0, 0 ),
+                                        item( itype_id( "stick" ) ) );
+    const std::string ground_uid = std::to_string( ground.uid().get_value() );
+    const character_id guy_id = make_npc( 60, 62 );
+    npc &guy = npc_by_id( guy_id );
+    guy.myclass = npc_class_id( "NC_NONE" );
+    const character_id idle_id = make_npc( 62, 61 );
+    npc &idle = npc_by_id( idle_id );
+    idle.myclass = npc_class_id( "NC_DOCTOR" );
+    refresh_visibility();
+    REQUIRE( guy.sees( here, static_cast<const Creature &>( you ) ) );
+    REQUIRE( you.sees( here, static_cast<const Creature &>( idle ) ) );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    observation.allow_omitted_members();
+
+    const JsonObject environment = observation.get_object( "environment" );
+    CHECK( environment.get_int( "hour" ) == hour_of_day<int>( calendar::turn ) );
+    CHECK( environment.get_bool( "is_night" ) == is_night( calendar::turn ) );
+    CHECK( environment.get_string( "time_label" ) == display::time_approx() );
+    CHECK( environment.get_string( "light_label" ) == get_light_level( std::max( 1.0,
+            LIGHT_AMBIENT_LIT - here.ambient_light_at( you.pos_bub() ) + 1.0 ) ).first );
+    CHECK( environment.get_string( "weather_label" )
+           == get_weather().weather_id->name.translated() );
+    CHECK_FALSE( environment.has_member( "light_level" ) );
+
+    bool wielded_row = false;
+    bool ground_row = false;
+    for( const JsonObject row : observation.get_array( "items" ) ) {
+        row.allow_omitted_members();
+        if( row.get_string( "item_uid" ) == std::to_string(
+                you.get_wielded_item()->uid().get_value() ) ) {
+            wielded_row = true;
+            CHECK( row.get_string( "label" ) == you.get_wielded_item()->type_name() );
+        } else if( row.get_string( "item_uid" ) == ground_uid ) {
+            ground_row = true;
+            CHECK( row.get_string( "label" ) == ground.type_name() );
+        }
+    }
+    CHECK( wielded_row );
+    CHECK( ground_row );
+
+    bool guy_found = false;
+    bool idle_found = false;
+    for( const JsonObject projection : observation.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) == id_text( idle ) ) {
+            idle_found = true;
+            CHECK( projection.get_string( "job_description" ) == idle.myclass->get_job_description() );
+            CHECK( projection.get_string( "job_description" ) != guy.myclass->get_job_description() );
+            continue;
+        }
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        guy_found = true;
+        CHECK( projection.get_string( "job_description" ) == guy.myclass->get_job_description() );
+        CHECK_FALSE( projection.get_string( "job_description" ).empty() );
+        bool avatar_seen = false;
+        for( const JsonObject actor : projection.get_array( "visible_actors" ) ) {
+            actor.allow_omitted_members();
+            if( actor.get_string( "actor_id" ) != std::to_string( you.getID().get_value() ) ) {
+                continue;
+            }
+            avatar_seen = true;
+            const JsonObject look = actor.get_object( "appearance" );
+            std::vector<std::string> worn;
+            for( const JsonObject worn_row : look.get_array( "worn_items" ) ) {
+                worn_row.allow_omitted_members();
+                worn.push_back( worn_row.get_string( "label" ) );
+            }
+            std::vector<std::string> visible;
+            bool tshirt_shown = false;
+            for( const item_location &worn_item : you.get_visible_worn_items() ) {
+                visible.push_back( worn_item->type_name() );
+                tshirt_shown = tshirt_shown || worn_item->typeId() == itype_id( "tshirt" );
+            }
+            CHECK( worn == visible );
+            CHECK( tshirt_shown );
+            const JsonObject held = look.get_object( "wielded_item" );
+            CHECK( held.get_string( "label" ) == you.get_wielded_item()->type_name() );
+            CHECK( held.get_string( "item_uid" ) == std::to_string(
+                       you.get_wielded_item()->uid().get_value() ) );
+            CHECK( look.get_bool( "wet" ) == wet );
+            CHECK( look.get_string( "sex_label" ) == ( wet ? _( "Male" ) : _( "Female" ) ) );
+            JsonArray wounds = look.get_array( "visible_wounds" );
+            REQUIRE( wounds.size() == 1 );
+            const JsonObject wound = wounds.next_object();
+            CHECK( wound.get_string( "body_part_id" ) == "arm_l" );
+            CHECK( wound.get_string( "label" )
+                   == you.get_effect( p3_bleed, body_part_arm_l ).disp_name() );
+        }
+        CHECK( avatar_seen );
+    }
+    CHECK( guy_found );
+    CHECK( idle_found );
 }
 
 TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native sound reaches",

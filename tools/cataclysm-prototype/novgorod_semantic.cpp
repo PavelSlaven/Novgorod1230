@@ -28,6 +28,8 @@
 #include "calendar.h"
 #include "cached_options.h"
 #include "character.h"
+#include "display.h"
+#include "effect.h"
 #include "field.h"
 #include "game.h"
 #include "game_constants.h"
@@ -39,15 +41,23 @@
 #include "item_location.h"
 #include "json.h"
 #include "json_loader.h"
+#include "lightmap.h"
 #include "map.h"
 #include "messages.h"
 #include "npc.h"
+#include "npc_class.h"
 #include "npctalk.h"
 #include "output.h"
 #include "popup.h"
 #include "sounds.h"
 #include "string_input_popup.h"
 #include "ui_manager.h"
+#include "weather.h"
+#include "weather_type.h"
+
+static const efftype_id effect_bandaged( "bandaged" );
+static const efftype_id effect_bite( "bite" );
+static const efftype_id effect_bleed( "bleed" );
 
 namespace novgorod_semantic
 {
@@ -177,6 +187,68 @@ void write_frame_item( JsonOut &out, const frame_item &entry )
     out.end_object();
 }
 
+void write_item_label( JsonOut &out, const item &it )
+{
+    out.start_object();
+    out.member( "item_uid", std::to_string( it.uid().get_value() ) );
+    out.member( "label", it.type_name() );
+    out.end_object();
+}
+
+void write_appearance( JsonOut &out, const Character &who )
+{
+    out.member( "appearance" );
+    out.start_object();
+    out.member( "worn_items" );
+    out.start_array();
+    for( const item_location &worn : who.get_visible_worn_items() ) {
+        write_item_label( out, *worn );
+    }
+    out.end_array();
+    out.member( "wielded_item" );
+    if( who.is_armed() ) {
+        write_item_label( out, *who.get_wielded_item() );
+    } else {
+        out.write_null();
+    }
+    const std::vector<bodypart_id> parts = who.get_all_body_parts();
+    out.member( "wet", std::any_of( parts.begin(), parts.end(), [&who]( const bodypart_id & bp ) {
+        return who.get_part_wetness( bp ) > 0;
+    } ) );
+    out.member( "sex_label", who.male ? _( "Male" ) : _( "Female" ) );
+    out.member( "visible_wounds" );
+    out.start_array();
+    for( const effect &eff : who.get_effects() ) {
+        const efftype_id &id = eff.get_id();
+        if( id != effect_bleed && id != effect_bite && id != effect_bandaged ) {
+            continue;
+        }
+        const std::string label = eff.disp_name();
+        if( label.empty() ) {
+            continue;
+        }
+        out.start_object();
+        out.member( "body_part_id", eff.get_bp().id().str() );
+        out.member( "label", label );
+        out.end_object();
+    }
+    out.end_array();
+    out.end_object();
+}
+
+void write_environment( JsonOut &out, const tripoint_bub_ms &pos, map &here )
+{
+    out.member( "environment" );
+    out.start_object();
+    out.member( "hour", hour_of_day<int>( calendar::turn ) );
+    out.member( "is_night", is_night( calendar::turn ) );
+    out.member( "time_label", display::time_approx() );
+    out.member( "light_label", get_light_level( std::max( 1.0,
+                LIGHT_AMBIENT_LIT - here.ambient_light_at( pos ) + 1.0 ) ).first );
+    out.member( "weather_label", get_weather().weather_id->name.translated() );
+    out.end_object();
+}
+
 void write_npc_physical_projections( JsonOut &out, const avatar &observer, map &here )
 {
     out.member( "npc_projections" );
@@ -211,12 +283,18 @@ void write_npc_physical_projections( JsonOut &out, const avatar &observer, map &
         out.member( "native_turn", to_turn<int>( calendar::turn ) );
         out.member( "activity_id", guy.activity.id().str() );
         out.member( "activity_moves_left", guy.activity.moves_left );
+        const std::string job_description = guy.myclass.is_valid()
+                                            ? guy.myclass->get_job_description() : std::string();
+        if( !job_description.empty() ) {
+            out.member( "job_description", job_description );
+        }
         out.member( "visible_actors" );
         out.start_array();
         if( guy.sees( here, static_cast<const Creature &>( observer ) ) ) {
             out.start_object();
             out.member( "actor_id", std::to_string( observer.getID().get_value() ) );
             out.member( "position", position_of( observer.pos_bub() ) );
+            write_appearance( out, observer );
             out.end_object();
         }
         for( const npc &other : g->all_npcs() ) {
@@ -286,6 +364,7 @@ void write_observation( JsonOut &out )
         out.end_object();
     }
     out.end_array();
+    write_environment( out, you.pos_bub(), here );
     write_npc_physical_projections( out, you, here );
     out.member( "items" );
     out.start_array();
@@ -294,6 +373,7 @@ void write_observation( JsonOut &out )
         out.member( "item_ref", "item:" + std::to_string( it->uid().get_value() ) );
         out.member( "item_uid", std::to_string( it->uid().get_value() ) );
         out.member( "type", it->typeId().str() );
+        out.member( "label", it->type_name() );
         out.member( "use_methods" );
         out.start_array();
         for( const auto &method : it->type->use_methods ) {
@@ -312,6 +392,7 @@ void write_observation( JsonOut &out )
             out.member( "item_ref", "item:" + std::to_string( it.uid().get_value() ) );
             out.member( "item_uid", std::to_string( it.uid().get_value() ) );
             out.member( "type", it.typeId().str() );
+            out.member( "label", it.type_name() );
             out.member( "use_methods" );
             out.start_array();
             for( const auto &method : it.type->use_methods ) {

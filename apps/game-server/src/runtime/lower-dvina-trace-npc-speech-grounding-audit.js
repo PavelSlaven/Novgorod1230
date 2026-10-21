@@ -45,7 +45,9 @@ const PROMPT = [
   'Do not infer hidden state, invent evidence, rewrite the plan, or call another role.'
 ].join(' ');
 
-export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
+export async function auditFreshNpcSpeech({
+  roleRunner, plan, request, requestWire = (value) => value
+}) {
   if (plan?.contribution_kind !== 'speech') return true;
   if (plan.speech.claims.some(
     (claim) => claim.source_knowledge_refs.length === 0
@@ -55,7 +57,7 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
     role_id: 'npc_conversation_grounding_auditor',
     request_identity: request.request_id,
     messages: [{ role: 'system', content: PROMPT }, {
-      role: 'user', content: JSON.stringify({ request, plan })
+      role: 'user', content: JSON.stringify(requestWire({ request, plan }, PROMPT))
     }],
     overrides: { temperature: 0, maxTokens: 256 }
   });

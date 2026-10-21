@@ -4,6 +4,7 @@ import {
   diagnoseConversationPlan,
   diagnoseMixedScriptRepair,
   projectNpcConversationSubject,
+  respellMixedScriptHomoglyphs,
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from '../src/index.js';
@@ -625,4 +626,48 @@ test('text that does not exist as a string in the original is not checked', () =
   const repaired = copy(original);
   repaired.interpretation.grounded_contribution = 'что угодно';
   assert.deepEqual(diagnoseMixedScriptRepair(original, repaired, []), []);
+});
+
+function respellingOutput() {
+  return {
+    speech: {
+      utterance_text: 'Здpавствуй, иди к протoku. OK, Peter.',
+      dominant_act: 'answer',
+      claims: [{ content_summary: 'Изба стоит.' }, 'не объект', { content_summary: 'Жиpко видел.' }]
+    },
+    interpretation: { intent: 'ответить нaм', grounded_contribution: 'Пoдтвердить.' },
+    reason: 'Здpавствуй вне реплики.',
+    unexpected: { kept: true }
+  };
+}
+
+test('lookalike respelling covers the scanned texts in order and leaves other letters and texts alone', () => {
+  const output = respellingOutput();
+  const before = copy(output);
+  const { output: respelled, respellings } = respellMixedScriptHomoglyphs(output);
+  assert.deepEqual(output, before);
+  assert.deepEqual(respellings, [
+    { path: '$.speech.utterance_text', before: 'Здpавствуй', after: 'Здравствуй' },
+    { path: '$.speech.utterance_text', before: MIXED, after: 'протоku' },
+    { path: '$.speech.claims[2].content_summary', before: 'Жиpко', after: 'Жирко' },
+    { path: '$.interpretation.grounded_contribution', before: 'Пoдтвердить', after: 'Подтвердить' }
+  ]);
+  const expected = copy(before);
+  expected.speech.utterance_text = 'Здравствуй, иди к протоku. OK, Peter.';
+  expected.speech.claims[2].content_summary = 'Жирко видел.';
+  expected.interpretation.grounded_contribution = 'Подтвердить.';
+  assert.deepEqual(respelled, expected);
+  assert.equal(respelled.unexpected, output.unexpected);
+});
+
+test('lookalike respelling returns the same value when nothing is respelled', () => {
+  const unchanged = respellingOutput();
+  unchanged.speech.utterance_text = 'OK, Peter. Иди к протmу.';
+  unchanged.speech.claims = [];
+  unchanged.interpretation.grounded_contribution = 'Подтвердить.';
+  for (const output of [unchanged, null, 'Здpавствуй', [respellingOutput()], {}]) {
+    const result = respellMixedScriptHomoglyphs(output);
+    assert.equal(result.output, output);
+    assert.deepEqual(result.respellings, []);
+  }
 });

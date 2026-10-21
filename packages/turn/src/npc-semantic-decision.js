@@ -6,6 +6,7 @@ import {
   diagnoseConversationPlan,
   diagnoseMixedScriptRepair,
   diagnoseNpcStepPlan,
+  respellMixedScriptHomoglyphs,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
   validateNpcCombatDecisionRequest,
@@ -105,14 +106,17 @@ function replayProposal(trace, boundary, request, orderedSignals) {
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-function plannedProposal(boundary, request, orderedSignals, plan) {
+function plannedProposal(boundary, request, orderedSignals, plan,
+  scriptRespellings = []) {
   return immutable({
     status: 'planned',
     plan,
     trace: null,
     signal_ids_to_consume: boundary.signal_refs.map(
       ({ entity_id }) => entity_id),
-    decision_context: decisionContext(boundary, request, orderedSignals)
+    decision_context: decisionContext(boundary, request, orderedSignals),
+    ...(scriptRespellings.length > 0
+      ? { script_respellings: scriptRespellings } : {})
   });
 }
 function domainRejectedProposal(boundary, request, orderedSignals, plan,
@@ -153,6 +157,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   let staleRebuilds = 0;
   let repairAttempts = 0;
   const repairKindsUsed = [];
+  const scriptRespellings = [];
   decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
     let repair = null;
@@ -161,6 +166,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
     let rawPlan;
     while (true) {
       let rawText;
+      let rawOutput;
       try {
         rawPlan = await semanticModel(safeRequest, immutable({
           boundary: currentBoundary,
@@ -188,6 +194,14 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
               cause: error instanceof Error ? error.message : String(error)
             });
         }
+      }
+      if (mode === 'conversation' && rawText === undefined) {
+        const raw = semanticModel.originalOutputOf?.(rawPlan) ?? rawPlan;
+        const respelled = respellMixedScriptHomoglyphs(rawPlan);
+        rawOutput = raw === rawPlan ? respelled.output
+          : respellMixedScriptHomoglyphs(raw).output;
+        rawPlan = respelled.output;
+        scriptRespellings.push(...respelled.respellings);
       }
 
       const expectedStateVersion = requestStateVersion(currentRequest, mode);
@@ -249,8 +263,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       }
 
       if (mode === 'conversation') {
-        const verdict = await conversationVerdict({ rawPlan, rawText,
-          repair, request: safeRequest, semanticModel, validatePlan,
+        const verdict = await conversationVerdict({ rawPlan, rawOutput,
+          rawText, repair, request: safeRequest, validatePlan,
           validateFreshPlan });
         if (verdict === null) break;
         if (!verdict.repairable) {
@@ -271,8 +285,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         repair = immutable({
           kind,
           ...(rawText === undefined
-            ? { original_output: safeModelOutput(
-              semanticModel.originalOutputOf?.(rawPlan) ?? rawPlan) }
+            ? { original_output: safeModelOutput(rawOutput) }
             : { original_output_text: rawText }),
           validation_errors: verdict.errors
         });
@@ -316,7 +329,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
     }
 
     return plannedProposal(
-      currentBoundary, currentRequest, currentSignals, rawPlan);
+      currentBoundary, currentRequest, currentSignals, rawPlan,
+      scriptRespellings);
   }
 }
 
@@ -325,8 +339,8 @@ function structuralPlanErrors(plan, request, mode) {
   return diagnoseNpcStepPlan(plan, request);
 }
 
-async function conversationVerdict({ rawPlan, rawText, repair, request,
-  semanticModel, validatePlan, validateFreshPlan }) {
+async function conversationVerdict({ rawPlan, rawOutput, rawText, repair,
+  request, validatePlan, validateFreshPlan }) {
   if (rawText !== undefined) {
     return { repairable: true, errors: [{ code: 'json_parse_failed',
       category: 'format', path: '$',
@@ -337,8 +351,7 @@ async function conversationVerdict({ rawPlan, rawText, repair, request,
   if (repair?.validation_errors.some(({ code }) =>
     code === 'mixed_script_word')) {
     const respelled = diagnoseMixedScriptRepair(repair.original_output,
-      semanticModel.originalOutputOf?.(rawPlan) ?? rawPlan,
-      repair.validation_errors);
+      rawOutput, repair.validation_errors);
     if (respelled.length > 0) return { repairable: true, errors: respelled };
   }
   const domainResult = await planDomainResult(rawPlan, request, validatePlan,

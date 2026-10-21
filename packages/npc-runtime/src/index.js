@@ -73,12 +73,12 @@ export {
 } from './reaction-policy.js';
 
 import { decideBoundedNpcAction as decideBoundedNpcActionInternal } from './bounded-decision.js';
-import { diagnoseConversationPlan, diagnoseMixedScriptRepair } from './conversation-plan-diagnosis.js';
+import { diagnoseConversationPlan, diagnoseMixedScriptRepair, respellMixedScriptHomoglyphs } from './conversation-plan-diagnosis.js';
 import { matchesOperationContract } from './operation-contract-match.js';
 import { proposeNpcReactionOptions as proposeNpcReactionOptionsInternal } from './reaction-options.js';
 import { NPC_RUNTIME_RESOURCE_LIMITS } from './runtime-configuration.js';
 
-export { diagnoseConversationPlan, diagnoseMixedScriptRepair, matchesOperationContract };
+export { diagnoseConversationPlan, diagnoseMixedScriptRepair, matchesOperationContract, respellMixedScriptHomoglyphs };
 
 export function proposeNpcReactionOptions(input = {}) {
   return proposeNpcReactionOptionsInternal(input, {

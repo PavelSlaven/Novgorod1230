@@ -375,6 +375,76 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
     category: phrase.category, calls: phrase.calls }, { id: '10', outcome: 'ok', code: null,
     category: null, calls: 3 });
   assert.ok(Number.isInteger(phrase.t_enter) && phrase.t_native_reply >= phrase.t_enter);
+  assert.equal(Object.hasOwn(phrase, 'script_respellings'), false);
+  assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
+    'npc_conversation_grounding_auditor']);
+  socket.end();
+});
+
+test('Latin lookalikes in the NPC reply are respelled before native speech and journaled with the phrase', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const witness = { actor_ref: 'npc:8', actor_id: '8', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const sceneObservation = withNpcs(observation, [witness, npc]);
+  const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), request => ({
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: request.allowed_references.actor_refs[1],
+    intended_addressee_refs: [request.allowed_references.actor_refs[1]],
+    affected_actor_refs: [], speech: { utterance_text: 'Здpавствуй.',
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: 'brief', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' }));
+  const { socket, channel } = await scene.client();
+  channel.bind('10');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:9' });
+  assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+  const first = await channel.receive();
+  assert.equal(first.request.primitive, 'speak');
+  assert.deepEqual(first.request.references, { actors: [{ ref: 'npc:9', id: '9' }] });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['8', '9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: sceneObservation });
+  const npcPhase = await channel.receive();
+  assert.equal(npcPhase.role_id, 'npc_conversation_responder', JSON.stringify(npcPhase));
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_grounding_auditor');
+  const second = await channel.receive();
+  assert.equal(second.request.primitive, 'speak');
+  assert.equal(second.request.actor_id, '9');
+  assert.deepEqual(second.request.args, { utterance: 'Здравствуй.' });
+  assert.deepEqual(second.request.references, { actors: [{ ref: 'avatar', id: '7' }] });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: second.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+      utterance: 'Здравствуй.', actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'completed');
+  assert.equal(result.applied_operations, 2);
+  assert.equal(scene.calls, 3);
+  assert.equal(scene.journal.length, 1);
+  const [phrase] = scene.journal;
+  assert.deepEqual({ id: phrase.id, outcome: phrase.outcome, code: phrase.code,
+    category: phrase.category, calls: phrase.calls }, { id: '10', outcome: 'ok', code: null,
+    category: null, calls: 3 });
+  assert.ok(Number.isInteger(phrase.t_enter) && phrase.t_native_reply >= phrase.t_enter);
+  assert.deepEqual(phrase.script_respellings, [{ path: '$.speech.utterance_text',
+    before: 'Здpавствуй', after: 'Здравствуй' }]);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_grounding_auditor']);
   socket.end();

@@ -91,6 +91,7 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           targetActorRef: message.target_actor_ref,
           maxRepairAttempts: config.npcMaxRepairAttempts }) : null;
       if (npcReply?.native_readback?.status === 'applied') phrase.t_native_reply = Date.now();
+      if (npcReply?.proposal?.script_respellings) phrase.script_respellings = npcReply.proposal.script_respellings;
       const readback = adapter.lastReadback;
       const applied = readback?.status === 'applied';
       const code = readback?.refusal?.code ?? (applied ? null : 'P3_LIVE_NO_NATIVE_ACTION');

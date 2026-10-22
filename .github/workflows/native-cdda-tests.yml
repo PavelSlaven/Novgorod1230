@@ -1,0 +1,83 @@
+name: Native CDDA tests
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/native-cdda-tests.yml
+      - tools/cataclysm-prototype/apply-overlays.sh
+      - tools/cataclysm-prototype/native-overlays.txt
+      - tools/cataclysm-prototype/native-*.patch
+      - tools/cataclysm-prototype/novgorod_*.cpp
+      - tools/cataclysm-prototype/novgorod_*.h
+      - tools/cataclysm-prototype/dev-world/**
+      - tools/cataclysm-prototype/run-native-tests-ci.sh
+      - tools/cataclysm-prototype/native_live_baseline.py
+      - tools/cataclysm-prototype/native-live-known-failures.json
+      - tools/cataclysm-prototype/test_native_live_baseline.py
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/native-cdda-tests.yml
+      - tools/cataclysm-prototype/apply-overlays.sh
+      - tools/cataclysm-prototype/native-overlays.txt
+      - tools/cataclysm-prototype/native-*.patch
+      - tools/cataclysm-prototype/novgorod_*.cpp
+      - tools/cataclysm-prototype/novgorod_*.h
+      - tools/cataclysm-prototype/dev-world/**
+      - tools/cataclysm-prototype/run-native-tests-ci.sh
+      - tools/cataclysm-prototype/native_live_baseline.py
+      - tools/cataclysm-prototype/native-live-known-failures.json
+      - tools/cataclysm-prototype/test_native_live_baseline.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-cdda-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-tests:
+    name: GCC 13 Release native tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - name: Checkout Novgorod
+        uses: actions/checkout@v4
+
+      - name: Verify GCC 13
+        run: |
+          gcc-13 --version
+          g++-13 --version
+          test "$(g++-13 -dumpversion | cut -d. -f1)" = 13
+
+      - name: Install ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      - name: Restore compiler cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: native-0d8843f-gcc13-release-${{ hashFiles('tools/cataclysm-prototype/native-overlays.txt', 'tools/cataclysm-prototype/native-*.patch', 'tools/cataclysm-prototype/novgorod_*.cpp', 'tools/cataclysm-prototype/novgorod_*.h', 'tools/cataclysm-prototype/apply-overlays.sh', 'tools/cataclysm-prototype/run-native-tests-ci.sh') }}
+          restore-keys: |
+            native-0d8843f-gcc13-release-
+
+      - name: Build and run native tests
+        env:
+          CI783_WORK_ROOT: ${{ runner.temp }}/native-cdda-work
+          CI783_LOG_DIR: ${{ runner.temp }}/native-cdda-logs
+          CI783_USE_CCACHE: "1"
+          CI783_JOBS: "4"
+        run: bash tools/cataclysm-prototype/run-native-tests-ci.sh
+
+      - name: Upload native logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-cdda-${{ github.sha }}
+          path: ${{ runner.temp }}/native-cdda-logs/
+          if-no-files-found: warn
+          retention-days: 14

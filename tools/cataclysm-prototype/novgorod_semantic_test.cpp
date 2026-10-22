@@ -33,6 +33,7 @@
 #include "flag.h"
 #include "game.h"
 #include "game_constants.h"
+#include "input_context.h"
 #include "item.h"
 #include "item_location.h"
 #include "json.h"
@@ -50,6 +51,7 @@
 #include "output.h"
 #include "path_info.h"
 #include "player_helpers.h"
+#include "player_activity.h"
 #include "translations.h"
 #include "type_id.h"
 #include "sounds.h"
@@ -2187,5 +2189,78 @@ TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native soun
         CHECK( heard.empty() );
     } else {
         CHECK( heard == std::vector<std::string>{ near_text } );
+    }
+}
+
+
+struct novgorod_input_test_access {
+    struct queue_snapshot {
+        std::vector<std::string> actions;
+        size_t index;
+        bool enabled;
+    };
+
+    static queue_snapshot clear_queue( game &state ) {
+        queue_snapshot previous{ state.test_action_queue, state.test_action_index,
+                                 state.test_action_queue_enabled };
+        state.test_action_queue.clear();
+        state.test_action_index = 0;
+        state.test_action_queue_enabled = false;
+        return previous;
+    }
+
+    static void restore_queue( game &state, const queue_snapshot &previous ) {
+        state.test_action_queue = previous.actions;
+        state.test_action_index = previous.index;
+        state.test_action_queue_enabled = previous.enabled;
+    }
+
+    static void read( game &state, std::string &action ) {
+        static_cast<void>( state.get_player_input( action ) );
+    }
+};
+
+TEST_CASE( "Novgorod leaves native input untouched without a pending live operation",
+           "[novgorod_input]" )
+{
+    SECTION( "active native activity" ) {
+        const char *id = GENERATE( "ACT_CRAFT", "ACT_READ", "ACT_WAIT", "ACT_TRY_SLEEP" );
+        reset_p3_fixture();
+        clear_novgorod_test_adjacent_selection();
+        REQUIRE( test_mode );
+        avatar &you = get_avatar();
+        const player_activity prior_activity = you.activity;
+        const novgorod_input_test_access::queue_snapshot prior_queue =
+            novgorod_input_test_access::clear_queue( *g );
+        you.activity = player_activity( activity_id( id ), 100 );
+        REQUIRE_FALSE( you.activity.is_null() );
+        std::string action;
+        std::string result;
+        try {
+            novgorod_input_test_access::read( *g, action );
+            result = "returned " + action;
+        } catch( const std::exception &error ) {
+            result = error.what();
+        }
+        you.activity = prior_activity;
+        novgorod_input_test_access::restore_queue( *g, prior_queue );
+        clear_novgorod_test_adjacent_selection();
+        CAPTURE( id, result );
+        CHECK( result == "input_manager::get_input_event called in test mode" );
+    }
+
+    SECTION( "adjacent selection" ) {
+        reset_p3_fixture();
+        clear_novgorod_test_adjacent_selection();
+        REQUIRE( test_mode );
+        std::string result;
+        try {
+            choose_adjacent( "Select an adjacent cell" );
+        } catch( const std::exception &error ) {
+            result = error.what();
+        }
+        clear_novgorod_test_adjacent_selection();
+        CAPTURE( result );
+        CHECK( result == "input_manager::get_input_event called in test mode" );
     }
 }

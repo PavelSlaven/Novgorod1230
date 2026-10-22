@@ -226,6 +226,48 @@ test('K2: grounding auditor receives the same projected NPC request', async () =
   assert.equal(failures.length, 0, `K2 grounding auditor input: ${wireFailureSummary(failures)}`);
 });
 
+test('K3: responder and auditor receive Russian visible world features', async () => {
+  const features = [
+    { kind: 'furniture', type: 'f_clay_oven', label: 'печь',
+      position: [72, 73, 0], absolute_position: [81234, 19283, 0],
+      target_ref: '72,73,0' },
+    { kind: 'terrain', type: 't_wall_wood', label: 'стена',
+      position: [73, 73, 0], absolute_position: [81235, 19283, 0],
+      target_ref: '73,73,0' }
+  ];
+  const frame = replyFrame({ projections: [npcProjection('9', { template_id: '',
+    visible_world_features: features })] });
+  const calls = await npcCalls(frame, { respond: ({ roleId }) => {
+    if (roleId === 'npc_conversation_responder') return semanticSpeech();
+    throw new Error('input captured');
+  } });
+  assert.deepEqual(calls.map(call => call.roleId),
+    ['npc_conversation_responder', 'npc_conversation_grounding_auditor']);
+  for (const call of calls) {
+    const user = call.messages.find(message => message.role === 'user').content;
+    const input = JSON.parse(user);
+    const observations = citableObservations(input);
+    assert.ok(observations.some(row => row.fact_text.includes('печь')),
+      call.roleId + ' must see the Russian furniture label');
+    assert.ok(observations.some(row => row.fact_text.includes('стена')),
+      call.roleId + ' must see the Russian terrain label');
+    const refs = valuesUnder(input, 'allowed_references')[0].entity_refs
+      .filter(ref => ['furniture', 'terrain'].includes(ref.entity_kind));
+    assert.equal(refs.length, 2);
+    assert.ok(refs.every(ref => /^[0-9a-f]{12}$/u.test(ref.entity_id)));
+    for (const nativeValue of ['f_clay_oven', 't_wall_wood', '81234', '81235',
+      '72,73,0', '73,73,0']) {
+      assert.equal(user.includes(nativeValue), false, call.roleId + ' leaked ' + nativeValue);
+    }
+  }
+  const englishFrame = replyFrame({ projections: [npcProjection('9', { template_id: '',
+    visible_world_features: [{ ...features[0], label: 'clay oven' }] })] });
+  const englishUser = await npcUser(englishFrame);
+  assert.equal(englishUser.includes('clay oven'), false);
+  assert.equal(valuesUnder(JSON.parse(englishUser), 'allowed_references')[0].entity_refs
+    .some(ref => ref.entity_kind === 'furniture'), false);
+});
+
 test('K3: responder and planner use perceived Russian item names without native item ids', async () => {
   const cases = [
     { uid: '41', type: 'flint_steel', label: 'кресало', branch: 'held' },

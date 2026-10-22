@@ -131,6 +131,51 @@ test('empty input and hidden snapshot are rejected before planning', async t => 
   assert.equal(scene.calls, 0);
 });
 
+test('invalid first observation records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  channel.bind('204');
+  channel.send({ type: 'intent', intent: 'Осмотрись',
+    observation: { ...observation, actors: [] } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_OBSERVATION_INVALID');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: '204', code: 'P3_LIVE_OBSERVATION_INVALID',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
+test('missing intent records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  channel.bind('205');
+  channel.send({ type: 'intent', intent: '', observation });
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_INTENT_REQUIRED');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: '205', code: 'P3_LIVE_INTENT_REQUIRED',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
+test('invalid first frame records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  socket.write('not-json\n');
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_MESSAGE_INVALID');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: null, code: 'P3_LIVE_MESSAGE_INVALID',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
 test('model failure and malformed output cannot send native operations', async t => {
   const scene = await fixture(t, (_request, calls) => {
     if (calls === 1) throw new Error('private URL and token must not leak');
@@ -525,7 +570,7 @@ test('dev config is seven calls per turn and rejects the process budget key', as
   }
 });
 
-test('turn call limit refuses the extra call with its own text and resets on the next intent', async t => {
+test('turn call limit refuses the extra call without player text and resets on the next intent', async t => {
   const utterance = 'Слышишь меня?';
   const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
     position: [61, 60, 0] };
@@ -621,7 +666,7 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   socket.end();
 });
 
-test('another NPC failure after the player spoke names the listener and is not a contract verdict', async t => {
+test('another NPC failure after the player spoke reports no new player text and is not a contract verdict', async t => {
   for (const [name, speaker] of [['Жирко', 'Жирко']]) {
     await t.test(speaker, async t => {
       const utterance = 'Ответь';

@@ -61,18 +61,16 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
     let ownsRequest = false;
     let adapter = null;
     let phrase = null;
+    let requestId = null;
+    let enteredAt = null;
     try {
       const message = await channel.receive();
-      const enteredAt = Date.now();
+      enteredAt = Date.now();
       channel.bind(message.id);
+      requestId = message.id;
       if (message.type !== 'intent' || typeof message.intent !== 'string'
           || !message.intent.trim()) throw new Error('P3_LIVE_INTENT_REQUIRED');
-      if (activeChannel) {
-        journal({ type: 'p3_phrase', id: message.id, t_enter: enteredAt,
-          t_native_reply: null, roles: [], outcome: 'failure', code: 'P3_LIVE_BUSY',
-          category: null, calls: 0 });
-        throw new Error('P3_LIVE_BUSY');
-      }
+      if (activeChannel) throw new Error('P3_LIVE_BUSY');
       const observation = requireLiveObservation(message.observation);
       activeChannel = channel;
       ownsRequest = true;
@@ -118,6 +116,9 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
         if (Array.isArray(respellings) && respellings.length > 0) {
           phrase.script_respellings = respellings;
         }
+      } else if (!ownsRequest) {
+        journal({ type: 'p3_phrase', id: requestId, t_enter: enteredAt,
+          t_native_reply: null, roles: [], outcome: 'failure', code, category, calls: 0 });
       }
       if (!socket.destroyed && socket.writable && error?.message !== 'P3_LIVE_CONNECTION_CLOSED') {
         channel.send({ type: 'result', status: 'refused', code, ...(category ? { category } : {}),

@@ -115,7 +115,10 @@ with socket.socket(socket.AF_UNIX) as client:
 PY
         rm -- "$socket"
     fi
-    "$node" "$launcher_dir/p3-live-coordinator.mjs" --socket "$socket" >"$run_dir/coordinator.log" 2>&1 9>&- &
+    session_id="$(date -u +%Y%m%dT%H%M%S%N)-$$"
+    session_utc="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf '{"type":"p3_session","id":"%s","utc":"%s"}\n' "$session_id" "$session_utc" >>"$run_dir/coordinator.log"
+    "$node" "$launcher_dir/p3-live-coordinator.mjs" --socket "$socket" >>"$run_dir/coordinator.log" 2>&1 9>&- &
     coordinator_pid=$!
     python3 - "$socket" "$coordinator_pid" <<'PY'
 import os

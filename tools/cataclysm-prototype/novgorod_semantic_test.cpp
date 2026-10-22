@@ -23,6 +23,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "cata_scope_helpers.h"
 #include "character.h"
 #include "coordinates.h"
 #include "debug.h"
@@ -48,11 +49,14 @@
 #include "npctalk.h"
 #include "novgorod_semantic.h"
 #include "output.h"
+#include "options_helpers.h"
 #include "path_info.h"
 #include "player_helpers.h"
 #include "translations.h"
 #include "type_id.h"
 #include "sounds.h"
+#include "weather.h"
+#include "weather_type.h"
 
 namespace
 {
@@ -63,6 +67,7 @@ static const ter_str_id p3_ter_door_c( "t_door_c" );
 static const npc_template_id p3_talker( "NPC_debug" );
 static const efftype_id p3_deaf( "deaf" );
 static const efftype_id p3_bleed( "bleed" );
+static const weather_type_id p3_sunny_weather( "sunny" );
 
 void reset_p3_fixture()
 {
@@ -195,6 +200,14 @@ void require_p3_wall_hides_npc( avatar &you, npc &subject )
                      candidates_before.end() );
         }
     }
+}
+
+int p3_native_heard_volume( Character &listener, const tripoint_bub_ms &source,
+                            int raw_volume )
+{
+    return static_cast<int>( ( raw_volume - get_weather().weather_id->sound_attn ) *
+                             listener.hearing_ability() ) -
+           rl_dist( listener.pos_bub().xy(), source.xy() );
 }
 
 std::string p3_request_path()
@@ -681,22 +694,46 @@ TEST_CASE( "Novgorod live stale request leaves native state unchanged", "[novgor
 TEST_CASE( "Novgorod live speech preserves tags and uses actual native hearing", "[novgorod_live]" )
 {
     reset_p3_fixture();
+    on_out_of_scope restore_light( [] { g->reset_light_level(); } );
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
+    REQUIRE( get_weather().weather_id == p3_sunny_weather );
     avatar &you = get_avatar();
     const std::string utterance = "<come_here> [literal] %s — Я сказал ровно это.";
     std::string actor = std::to_string( you.getID().get_value() );
     std::string addressees;
     std::string expected_sound = utterance;
-    SECTION( "avatar" ) {}
+    Character *speaker = &you;
+    Character *listener = nullptr;
+    SECTION( "avatar" ) {
+        for( npc &guy : g->all_npcs() ) {
+            if( !guy.is_deaf() ) {
+                listener = &guy;
+                break;
+            }
+        }
+    }
     SECTION( "NPC" ) {
         for( npc &guy : g->all_npcs() ) {
             if( !guy.is_deaf() ) {
                 actor = std::to_string( guy.getID().get_value() );
                 addressees = "[\"avatar\"]";
                 expected_sound = string_format( _( "%1$s saying \"%2$s\"" ), guy.get_name(), utterance );
+                speaker = &guy;
+                listener = &you;
                 break;
             }
         }
     }
+    REQUIRE( listener != nullptr );
+    if( const npc *npc_speaker = speaker->as_npc() ) {
+        REQUIRE( npc_speaker->danger_assessment() <= NPC_DANGER_VERY_LOW );
+    }
+    const int raw_volume = speaker->indoor_voice();
+    const int weather_attn = get_weather().weather_id->sound_attn;
+    const int heard_volume = p3_native_heard_volume( *listener, speaker->pos_bub(), raw_volume );
+    CAPTURE( raw_volume, weather_attn, heard_volume );
+    REQUIRE( heard_volume > 0 );
     sounds::reset_sounds();
     you.set_moves( 0 );
     const auto result = run_live_request( live_request( "speak", actor, utterance, {}, "", addressees ) );
@@ -1541,6 +1578,10 @@ std::string uid_ref( const item &it )
 TEST_CASE( "Novgorod NPC speech keeps native variable tags literal", "[novgorod_live]" )
 {
     reset_p3_fixture();
+    on_out_of_scope restore_light( [] { g->reset_light_level(); } );
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
+    REQUIRE( get_weather().weather_id == p3_sunny_weather );
     avatar &you = get_avatar();
     const std::vector<character_id> ids = fixture_ids();
     REQUIRE( ids.size() == 4 );
@@ -1553,6 +1594,14 @@ TEST_CASE( "Novgorod NPC speech keeps native variable tags literal", "[novgorod_
     you.set_value( "task04_secret", secret );
     npc &speaker = npc_by_id( ids[0] );
     npc &hearer = npc_by_id( ids[1] );
+    REQUIRE( speaker.danger_assessment() <= NPC_DANGER_VERY_LOW );
+    const int raw_volume = speaker.indoor_voice();
+    const int hearer_volume = p3_native_heard_volume( hearer, speaker.pos_bub(), raw_volume );
+    const int avatar_volume = p3_native_heard_volume( you, speaker.pos_bub(), raw_volume );
+    const int weather_attn = get_weather().weather_id->sound_attn;
+    CAPTURE( raw_volume, weather_attn, hearer_volume, avatar_volume );
+    REQUIRE( hearer_volume > 0 );
+    REQUIRE( avatar_volume > 0 );
     const std::string utterance = "<npc_val:task04_secret> <u_val:task04_secret> %s [x] — как есть";
     Messages::clear_messages();
     sounds::reset_sounds();
@@ -1739,6 +1788,10 @@ TEST_CASE( "Novgorod conversation memory records what was heard said and kept si
            "[novgorod_live]" )
 {
     reset_p3_fixture();
+    on_out_of_scope restore_light( [] { g->reset_light_level(); } );
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
+    REQUIRE( get_weather().weather_id == p3_sunny_weather );
     avatar &you = get_avatar();
     const std::vector<character_id> ids = fixture_ids();
     REQUIRE( ids.size() == 4 );
@@ -1785,6 +1838,12 @@ TEST_CASE( "Novgorod conversation memory records what was heard said and kept si
         CHECK( records[1].turn == records[0].turn + 5 );
     }
     SECTION( "NPC speech to the avatar" ) {
+        REQUIRE( speaker.danger_assessment() <= NPC_DANGER_VERY_LOW );
+        const int raw_volume = speaker.indoor_voice();
+        const int weather_attn = get_weather().weather_id->sound_attn;
+        const int heard_volume = p3_native_heard_volume( listener, speaker.pos_bub(), raw_volume );
+        CAPTURE( raw_volume, weather_attn, heard_volume );
+        REQUIRE( heard_volume > 0 );
         sounds::reset_sounds();
         you.set_moves( 0 );
         const int turn = to_turn<int>( calendar::turn );
@@ -1812,7 +1871,15 @@ TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items
 {
     const bool male = GENERATE( true, false );
     CAPTURE( male );
+    on_out_of_scope restore_scene( [] {
+        get_weather().set_nextweather( calendar::turn );
+        g->reset_light_level();
+    } );
+    restore_on_out_of_scope restore_turn( calendar::turn );
     reset_p3_fixture();
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
+    REQUIRE( get_weather().weather_id == p3_sunny_weather );
     clear_npcs();
     avatar &you = get_avatar();
     map &here = get_map();
@@ -1884,6 +1951,15 @@ TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items
     expected.push_back( { second_ref, "stick", stick_label, "ground", true, { 61, 65, 0 }, "your_followers" } );
     expected.push_back( { third_ref, "stick", stick_label, "ground", true, { 62, 62, 0 }, "" } );
 
+    const float first_light = here.ambient_light_at( tripoint_bub_ms( 64, 63, 0 ) );
+    const float second_light = here.ambient_light_at( tripoint_bub_ms( 61, 65, 0 ) );
+    const float third_light = here.ambient_light_at( tripoint_bub_ms( 62, 62, 0 ) );
+    const int weather_attn = get_weather().weather_id->sound_attn;
+    CAPTURE( first_light, second_light, third_light, weather_attn );
+    REQUIRE( hour_of_day<int>( calendar::turn ) == 12 );
+    REQUIRE( guy.sees( here, tripoint_bub_ms( 64, 63, 0 ) ) );
+    REQUIRE( guy.sees( here, tripoint_bub_ms( 61, 65, 0 ) ) );
+    REQUIRE( guy.sees( here, tripoint_bub_ms( 62, 62, 0 ) ) );
     std::ostringstream stream;
     JsonOut out( stream );
     novgorod_semantic::write_observation( out );
@@ -2227,6 +2303,10 @@ TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native soun
            "[novgorod_live]" )
 {
     reset_p3_fixture();
+    on_out_of_scope restore_light( [] { g->reset_light_level(); } );
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
+    REQUIRE( get_weather().weather_id == p3_sunny_weather );
     clear_npcs();
     const character_id near_id = make_npc( 59, 61 );
     const character_id far_id = make_npc( 125, 60 );
@@ -2234,6 +2314,19 @@ TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native soun
     const int loudness = GENERATE( 1, 2 );
     CAPTURE( loudness );
     const std::string near_text = id_text( npc_by_id( near_id ) );
+    const int raw_volume = loudness == 1 ? Character::minimum_voice_volume : get_avatar().indoor_voice();
+    const int near_volume = p3_native_heard_volume( npc_by_id( near_id ), get_avatar().pos_bub(),
+                            raw_volume );
+    const int far_volume = p3_native_heard_volume( npc_by_id( far_id ), get_avatar().pos_bub(),
+                           raw_volume );
+    const int weather_attn = get_weather().weather_id->sound_attn;
+    CAPTURE( raw_volume, weather_attn, near_volume, far_volume );
+    if( loudness == 1 ) {
+        REQUIRE( near_volume <= 0 );
+    } else {
+        REQUIRE( near_volume > 0 );
+        REQUIRE( far_volume <= 0 );
+    }
     const auto result = run_instant_avatar_speech( "тихо", "[\"npc:" + near_text + "\"]", loudness );
     REQUIRE( result.applied );
     const std::vector<std::string> heard = heard_ids( result.json );

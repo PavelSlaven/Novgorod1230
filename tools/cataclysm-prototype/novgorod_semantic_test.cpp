@@ -1186,7 +1186,8 @@ struct live_peer {
     int listener = -1;
     pid_t child = -1;
 
-    explicit live_peer( bool timeout, const std::string &expected_target = "" ) {
+    explicit live_peer( bool timeout, const std::string &expected_target = "",
+                        const std::string &result_message = "" ) {
         if( had_socket ) old_socket = std::getenv( "NOVGOROD_P3_SOCKET" );
         if( had_timeout ) old_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
         sockaddr_un address {};
@@ -1223,7 +1224,10 @@ struct live_peer {
             const std::string response = timeout ?
                 "{\"type\":\"role_phase\",\"id\":\"" + id + "\",\"timeout_ms\":1}\n" :
                 "{\"type\":\"operation\",\"id\":\"" + previous_id + "\",\"request\":{}}\n" +
-                "{\"type\":\"result\",\"id\":\"" + id + "\"}\n";
+                "{\"type\":\"result\",\"id\":\"" + id + "\"" +
+                ( result_message.empty() ? "" :
+                  ",\"status\":\"refused\",\"code\":\"TURN_NPC_CONVERSATION_CONTRACT_FAILURE\",\"category\":\"semantic\",\"message\":\"" +
+                  result_message + "\"" ) + "}\n";
             if( send( peer, response.data(), response.size(), MSG_NOSIGNAL ) !=
                 static_cast<ssize_t>( response.size() ) ) _exit( 5 );
             pollfd completion { peer, POLLIN, 0 };
@@ -1272,6 +1276,20 @@ TEST_CASE( "Novgorod real live client reconnects and discards foreign replies", 
     CHECK( calendar::turn == before.native_time );
     CHECK( get_avatar().get_moves() == before.moves );
     CHECK( get_avatar().activity.is_null() );
+}
+
+TEST_CASE( "Novgorod refused coordinator result stays out of native messages", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    Messages::clear_messages();
+    const native_snapshot before = take_snapshot();
+    const std::string marker = "SERVICE_MARKER";
+    live_peer peer( false, "", marker );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+    peer.completed();
+    CHECK( message_log().find( marker ) == std::string::npos );
+    CHECK( take_snapshot().world_signature == before.world_signature );
 }
 
 TEST_CASE( "Novgorod native CHAT selection reaches real intent frame", "[novgorod_live]" )

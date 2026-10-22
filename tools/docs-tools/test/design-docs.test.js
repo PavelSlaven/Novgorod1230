@@ -13,9 +13,19 @@ const HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
   'Решения владельца', 'Расхождения и открытые вопросы', 'Источники', 'Этап'
 ];
+const HUMAN_HEADINGS = [
+  'Какому столпу служит', 'Что чувствует игрок', 'Правила для игрока',
+  'Как игрок узнаёт о механике', 'Связи с другими механиками', 'Примеры ситуаций'
+];
+const TECH_HEADINGS = [
+  ...HEADINGS, 'Данные и числа', 'Состояния и события',
+  'Что сохраняется', 'Чек-лист', 'Как проверить готовность'
+];
 const HUB_HEADINGS = [
-  'О документе', 'Игра коротко', 'Основа: CDDA и наш слой', 'Системы', 'Этапы',
-  'Прогресс: игрок может…', 'Старый движок', 'Открытые вопросы владельцу', 'Словарь'
+  '1. Обзор', '2. Цикл и прогрессия', '3. Механики', '4. Системы и баланс',
+  '5. Мир', '6. Сюжет и персонажи', '7. Ощущения', '8. Интерфейс',
+  '9. Техника', '10. Контент', '11. Объём и план', '12. Выпуск и бизнес',
+  '13. Как работаем', '14. Открытые вопросы'
 ];
 
 function ability(id) {
@@ -25,18 +35,20 @@ function ability(id) {
 function chapter(number) {
   const id = `${number}.01`;
   return [
-    PREFIX, '', `# Глава ${number}`, '',
-    ...HEADINGS.flatMap((heading) => {
-      if (heading === 'Что может игрок') return [`## ${heading}`, '', `- **${id}.** ${ability(id)}`, ''];
-      if (heading === 'Решения владельца' && number === '01') return [`## ${heading}`, '', '- **D1, 2026-10-21.** Решение для fixture.', ''];
-      return [`## ${heading}`, '', `Содержание ${heading}.`, ''];
+    PREFIX, '', `# ${number}. Глава`, '', '## Для человека', '',
+    ...HUMAN_HEADINGS.flatMap((heading) => [`### ${heading}`, '', `Содержание ${heading}.`, '']),
+    '## Для разработчика и нейросети', '',
+    ...TECH_HEADINGS.flatMap((heading) => {
+      if (heading === 'Что может игрок') return [`### ${heading}`, '', `- **${id}.** ${ability(id)}`, ''];
+      if (heading === 'Решения владельца' && number === '01') return [`### ${heading}`, '', '- **D1, 2026-10-21.** Решение для fixture.', ''];
+      return [`### ${heading}`, '', `Содержание ${heading}.`, ''];
     })
   ].join('\n');
 }
 
 function hub() {
   const rows = [];
-  for (let number = 1; number <= 17; number += 1) {
+  for (let number = 1; number <= 20; number += 1) {
     const chapter = String(number).padStart(2, '0');
     const id = `${chapter}.01`;
     let status = 'не начато';
@@ -55,10 +67,10 @@ function hub() {
   }
   const section = new Map(HUB_HEADINGS.map((name) => [name, [`## ${name}`, '', 'Содержание.', '']]));
   section.set('Этапы', [
-    '## Этапы', '',
+    '## 11. Объём и план', '',
     '| Этап | Цель | Зависит от | Статус | Проверено способностей |',
     '|---|---|---|---|---|',
-    '| 0. База CDDA | Основа | — | идёт | 1 из 17 |',
+    '| 0. База CDDA | Основа | — | идёт | 1 из 20 |',
     ...[1, 2, 3, 4, 5].map((number) => `| ${number}. Этап | Цель | 0 | не начат | — |`),
     '', '### 1. Срез', '',
     ...[1, 2, 3, 4, 5, 6, 7].flatMap((number) => [
@@ -69,12 +81,14 @@ function hub() {
     ])
   ]);
   section.set('Прогресс: игрок может…', [
-    '## Прогресс: игрок может…', '',
+    '### Прогресс: игрок может…', '',
     '| id | Игрок может… | Глава | Этап/часть | Статус | Доказательство |',
     '|---|---|---|---|---|---|',
     ...rows, ''
   ]);
-  return [PREFIX, '', '# Игра', '', ...HUB_HEADINGS.flatMap((name) => section.get(name))].join('\n');
+  return [PREFIX, '', '# Игра', '', ...HUB_HEADINGS.flatMap((name) => name === '11. Объём и план'
+    ? [...section.get('Этапы'), ...section.get('Прогресс: игрок может…')]
+    : section.get(name))].join('\n');
 }
 
 function sources() {
@@ -82,7 +96,7 @@ function sources() {
     PREFIX, '', '# Источники', '', '## Источники', '',
     '| Путь | Вид | Статус по CONTRACT_INDEX | Главы | Судьба при CDDA | Основание |',
     '|---|---|---|---|---|---|',
-    `| \`${SOURCE}\` | governance-pc | GOVERNING | 01–17 | живёт как норма | §3 живёт как норма на пути CDDA. |`,
+    `| \`${SOURCE}\` | governance-pc | GOVERNING | 01–20 | живёт как норма | §3 живёт как норма на пути CDDA. |`,
     '', '## Решения владельца', '',
     '| D | Дата | Цитата или пересказ | Главы | URL GitHub, если есть |',
     '|---|---|---|---|---|',
@@ -114,7 +128,10 @@ async function fixture() {
   ].join('\n'));
   await writeFile(join(design, 'GDD.md'), hub());
   await writeFile(join(design, 'SOURCES.md'), sources());
-  for (let number = 1; number <= 17; number += 1) {
+  for (const name of ['vision.md', 'questionnaire.md', 'decision-log.md', 'open-questions.md', 'ideas.md', 'STATE.md']) {
+    await writeFile(join(design, name), `${PREFIX}\n\n# ${name}\n`);
+  }
+  for (let number = 1; number <= 20; number += 1) {
     const id = String(number).padStart(2, '0');
     await writeFile(join(systems, `${id}-example.md`), chapter(id));
   }
@@ -136,14 +153,31 @@ test('честная fixture проходит все правила', async () =
   assert.deepEqual(result.errors, []);
 });
 
+test('описания способности совпадают при разных относительных адресах одного файла', async () => {
+  const f = await fixture();
+  await withHub(f, (s) => s.replace(ability('01.01'), `${ability('01.01')} [основание](../governance/PRODUCT_CONSTITUTION.md)`));
+  await edit(chapterOf(f), (s) => s.replace(ability('01.01'), `${ability('01.01')} [основание](../../governance/PRODUCT_CONSTITUTION.md)`));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
+test('разные цели ссылки в описании способности остаются ошибкой', async () => {
+  const f = await fixture();
+  await writeFile(join(f.root, 'docs/governance/other.md'), '# Другой файл\n');
+  await withHub(f, (s) => s.replace(ability('01.01'), `${ability('01.01')} [основание](../governance/PRODUCT_CONSTITUTION.md)`));
+  await edit(chapterOf(f), (s) => s.replace(ability('01.01'), `${ability('01.01')} [основание](../../governance/other.md)`));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.ok(result.errors.includes('[GDD:P5] способность не совпадает с главой: 01.01'), result.errors.join('\n'));
+});
+
 const red = [
-  ['P1: отсутствующий tracked источник', 'P1', async (f) => withSources(f, (s) => s.replace(`| \`${SOURCE}\` | governance-pc | GOVERNING | 01–17 | живёт как норма | §3 живёт как норма на пути CDDA. |\n`, ''))],
+  ['P1: отсутствующий tracked источник', 'P1', async (f) => withSources(f, (s) => s.replace(`| \`${SOURCE}\` | governance-pc | GOVERNING | 01–20 | живёт как норма | §3 живёт как норма на пути CDDA. |\n`, ''))],
   ['P2: лишний отсутствующий путь', 'P2', async (f) => withSources(f, (s) => s.replace('|---|---|---|---|---|---|', '|---|---|---|---|---|---|\n| `docs/governance/missing.md` | guide | нет в индексе | 01 | история | Старый текст. |'))],
   ['P2: путь является каталогом', 'P2', async (f) => withSources(f, (s) => s.replace('|---|---|---|---|---|---|', '|---|---|---|---|---|---|\n| `docs/governance` | guide | нет в индексе | 01 | история | Каталог. |'))],
   ['P3: неверный заголовок', 'P3', async (f) => withSources(f, (s) => s.replace('| Вид |', '| Тип |'))],
   ['P3: шестая судьба', 'P3', async (f) => withSources(f, (s) => s.replace('| живёт как норма |', '| архив |'))],
   ['P3: смешанная судьба', 'P3', async (f) => withSources(f, (s) => s.replace('| живёт как норма | §3 живёт как норма', '| история | §3 живёт как норма'))],
-  ['P4: неверный id', 'P4', async (f) => withHub(f, (s) => s.replace('| 04.01 |', '| 18.01 |'))],
+  ['P4: неверный id', 'P4', async (f) => withHub(f, (s) => s.replace('| 04.01 |', '| 21.01 |'))],
   ['P4: повторный id', 'P4', async (f) => withHub(f, (s) => s.replace('| 04.01 |', '| 03.01 |'))],
   ['P5: текст главы иной', 'P5', async (f) => edit(chapterOf(f), (s) => s.replace('Выполнить действие главы 01.', 'Выполнить иное действие главы 01.'))],
   ['P5: id отсутствует в главе', 'P5', async (f) => edit(chapterOf(f), (s) => s.replace('- **01.01.** Выполнить действие главы 01.', ''))],
@@ -153,7 +187,7 @@ const red = [
   ['P7: доказательство #832', 'P7', async (f) => withHub(f, (s) => s.replace('| 02 | 0 | в работе | #833 |', '| 02 | 0 | в работе | #832 |'))],
   ['P7: нет ссылки у отложенного', 'P7', async (f) => withHub(f, (s) => s.replace('[решение](../governance/PRODUCT_CONSTITUTION.md)', ''))],
   ['P7: лишнее доказательство у не начатого', 'P7', async (f) => withHub(f, (s) => s.replace('| 04 | 0 | не начато |  |', '| 04 | 0 | не начато | #833 |'))],
-  ['P7: неверный K из N', 'P7', async (f) => withHub(f, (s) => s.replace('1 из 17', '0 из 17'))],
+  ['P7: неверный K из N', 'P7', async (f) => withHub(f, (s) => s.replace('1 из 20', '0 из 20'))],
   ['P7: неизвестный статус этапа', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | готово |'))],
   ['P7: преждевременное «сделано»', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | сделано |'))],
   ['P7: N=0 нельзя сделать', 'P7', async (f) => withHub(f, (s) => s.replace('| 2. Этап | Цель | 0 | не начат | — |', '| 2. Этап | Цель | 0 | сделано | — |'))],
@@ -161,7 +195,7 @@ const red = [
   ['P7: не начат при работе', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт | 1 из 17 |', '| 0. База CDDA | Основа | — | не начат | 0 из 17 |').replace('| 01 | 0 | проверено в игре | [протокол](../governance/PRODUCT_CONSTITUTION.md) |', '| 01 | 0 | не начато |  |'))],
   ['P8: лишний md в корне', 'P8', async (f) => writeFile(pathOf(f, 'EXTRA.md'), '# extra')],
   ['P8: лишний не-md в корне', 'P8', async (f) => writeFile(pathOf(f, 'extra.txt'), 'extra')],
-  ['P8: лишний md в systems', 'P8', async (f) => writeFile(join(f.systems, '18-extra.md'), '# extra')],
+  ['P8: лишний md в systems', 'P8', async (f) => writeFile(join(f.systems, '21-extra.md'), '# extra')],
   ['P8: лишний не-md в systems', 'P8', async (f) => writeFile(join(f.systems, 'extra.txt'), 'extra')],
   ['P8: вложенная папка в корне', 'P8', async (f) => mkdir(pathOf(f, 'nested'))],
   ['P8: вложенная папка в systems', 'P8', async (f) => mkdir(join(f.systems, 'nested'))],
@@ -171,10 +205,13 @@ const red = [
   ['P8: symlink каталога в systems', 'P8', async (f) => symlink(f.systems, join(f.systems, 'nested'), 'dir')],
   ['P8: имя в другом регистре', 'P8', async (f) => writeFile(pathOf(f, 'gdd.md'), hub())],
   ['P8: нет главы', 'P8', async (f) => unlink(chapterOf(f))],
-  ['P8: неверный H2', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Родное CDDA', '## CDDA'))],
+  ['P8: неверный H2', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека', '## Игрок'))],
+  ['P8: неверный порядок глав', 'P8', async (f) => withHub(f, (s) => s.replace('## 1. Обзор', '## 15. Обзор'))],
+  ['P8: нет части для человека', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека', '## Для читателя'))],
   ['P9: отсутствующий файл', 'P9', async (f) => withHub(f, (s) => s.replace('../governance/PRODUCT_CONSTITUTION.md', '../governance/missing.md'))],
   ['P9: якорь в относительной ссылке', 'P9', async (f) => withHub(f, (s) => s.replace('../governance/PRODUCT_CONSTITUTION.md', '../governance/PRODUCT_CONSTITUTION.md#section'))],
   ['P10: первая строка без статуса', 'P10', async (f) => withSources(f, (s) => s.replace(PREFIX, '# Нет статуса'))],
+  ['P10: страница системы без статуса', 'P10', async (f) => edit(chapterOf(f), (s) => s.replace(PREFIX, '# Нет статуса'))],
   ['P11: id критерия отсутствует', 'P11', async (f) => withHub(f, (s) => s.replace('| Выполнить действие | 01.01 |', '| Выполнить действие | 17.99 |'))],
   ['P11: неверный заголовок критериев', 'P11', async (f) => withHub(f, (s) => s.replace('| Критерий | id способностей |', '| Проверка | id способностей |'))],
   ['P11: отсутствует таблица части', 'P11', async (f) => withHub(f, (s) => s.replace('**Часть 1.** Проверка.', '**Секция 1.** Проверка.'))],
@@ -187,7 +224,7 @@ const red = [
   ['P13b: глава указателя не содержит решение', 'P13', async (f) => withSources(f, (s) => s.replace('| D1 | 2026-10-21 | Пересказ решения для fixture. | 01 |', '| D1 | 2026-10-21 | Пересказ решения для fixture. | 02 |'))],
   ['P12: источник главы не в реестре', 'P12', async (f) => {
     await writeFile(join(f.root, 'docs/README.md'), '# docs\n');
-    await edit(chapterOf(f), (s) => s.replace('## Источники\n\nСодержание Источники.', '## Источники\n\n- [README](../../../docs/README.md) — карта.'));
+    await edit(chapterOf(f), (s) => s.replace('### Источники\n\nСодержание Источники.', '### Источники\n\n- [README](../../../docs/README.md) — карта.'));
   }]
 ];
 

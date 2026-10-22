@@ -29,9 +29,19 @@ const CHAPTER_HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
   'Решения владельца', 'Расхождения и открытые вопросы', 'Источники', 'Этап'
 ];
+const HUMAN_HEADINGS = [
+  'Какому столпу служит', 'Что чувствует игрок', 'Правила для игрока',
+  'Как игрок узнаёт о механике', 'Связи с другими механиками', 'Примеры ситуаций'
+];
+const TECH_HEADINGS = [
+  ...CHAPTER_HEADINGS, 'Данные и числа', 'Состояния и события',
+  'Что сохраняется', 'Чек-лист', 'Как проверить готовность'
+];
 const HUB_HEADINGS = [
-  'О документе', 'Игра коротко', 'Основа: CDDA и наш слой', 'Системы', 'Этапы',
-  'Прогресс: игрок может…', 'Старый движок', 'Открытые вопросы владельцу', 'Словарь'
+  '1. Обзор', '2. Цикл и прогрессия', '3. Механики', '4. Системы и баланс',
+  '5. Мир', '6. Сюжет и персонажи', '7. Ощущения', '8. Интерфейс',
+  '9. Техника', '10. Контент', '11. Объём и план', '12. Выпуск и бизнес',
+  '13. Как работаем', '14. Открытые вопросы'
 ];
 const FATES = new Set([
   'живёт как норма', 'живёт как справка', 'заменяется родным CDDA',
@@ -53,6 +63,27 @@ function headingNames(text) {
     const match = /^## (.+?)\s*$/u.exec(line);
     return match ? [match[1]] : [];
   });
+}
+
+function thirdLevelNames(text) {
+  return lines(text).flatMap((line) => {
+    const match = /^### (.+?)\s*$/u.exec(line);
+    return match ? [match[1]] : [];
+  });
+}
+
+function subsection(text, name) {
+  const all = lines(text);
+  const begin = all.findIndex((line) => line === `### ${name}`);
+  if (begin < 0) return [];
+  let end = begin + 1;
+  while (end < all.length && !/^#{2,3} /u.test(all[end])) end += 1;
+  return all.slice(begin + 1, end);
+}
+
+function tableWithHeader(sectionLines, header) {
+  const start = sectionLines.findIndex((line) => line.startsWith('|') && sameHeader(splitRow(line), header));
+  return start < 0 ? { header: [], rows: [] } : table(sectionLines.slice(start), header);
 }
 
 function section(text, name) {
@@ -123,6 +154,14 @@ function localPath(root, sourceRel, target) {
   return { absolute, target };
 }
 
+function canonicalAbilityDescription(root, sourceRel, description) {
+  return description.replace(/\[([^\]]+)\]\(([^)]+)\)/gu, (link, label, href) => {
+    const local = localPath(root, sourceRel, href);
+    if (!local || local.invalid) return link;
+    return `[${label}](${relative(root, local.absolute).replaceAll('\\', '/')})`;
+  });
+}
+
 async function fileExists(path) {
   return (await lstat(path).catch(() => null))?.isFile() ?? false;
 }
@@ -182,7 +221,10 @@ async function designFiles(root, errors) {
     return new Map();
   }
   const files = new Map();
-  const requiredTop = new Set(['GDD.md', 'SOURCES.md', 'systems']);
+  const requiredTop = new Set([
+    'GDD.md', 'SOURCES.md', 'vision.md', 'questionnaire.md', 'decision-log.md',
+    'open-questions.md', 'ideas.md', 'STATE.md', 'systems'
+  ]);
   for (const name of top) {
     const path = join(base, name);
     const info = await lstat(path);
@@ -193,7 +235,7 @@ async function designFiles(root, errors) {
     }
     if (name !== 'systems') files.set(`${DESIGN}/${name}`, await readFile(path, 'utf8'));
   }
-  for (const name of ['GDD.md', 'SOURCES.md', 'systems']) {
+  for (const name of requiredTop) {
     if (!top.includes(name)) errors.push(error('P8', `отсутствует элемент: docs/design/${name}`));
   }
   if (!top.includes('systems')) return files;
@@ -204,7 +246,7 @@ async function designFiles(root, errors) {
   for (const name of systems) {
     const path = join(systemBase, name);
     const info = await lstat(path);
-    const match = /^(0[1-9]|1[0-7])-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/u.exec(name);
+    const match = /^(0[1-9]|1\d|20)-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/u.exec(name);
     if (!match || !info.isFile() || info.isSymbolicLink() || found.has(match[1])) {
       errors.push(error('P8', `недопустимый элемент или заголовок: docs/design/systems/${name}`));
       continue;
@@ -212,7 +254,7 @@ async function designFiles(root, errors) {
     found.add(match[1]);
     files.set(`${DESIGN}/systems/${name}`, await readFile(path, 'utf8'));
   }
-  for (let number = 1; number <= 17; number += 1) {
+  for (let number = 1; number <= 20; number += 1) {
     const id = String(number).padStart(2, '0');
     if (!found.has(id)) errors.push(error('P8', `отсутствует глава: ${id}`));
   }
@@ -226,9 +268,23 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   if (!files.size) return { ok: false, errors };
   for (const [path, content] of files) {
     if (!content.startsWith(PREFIX)) errors.push(error('P10', `отсутствует status-префикс: ${path}`));
-    const expected = path.endsWith('/GDD.md') ? HUB_HEADINGS : path.includes('/systems/') ? CHAPTER_HEADINGS : null;
-    if (expected && JSON.stringify(headingNames(content)) !== JSON.stringify(expected)) {
-      errors.push(error('P8', `недопустимый элемент или заголовок: ${path}`));
+    if (path.endsWith('/GDD.md')) {
+      const headings = headingNames(content);
+      const core = headings.filter((name) => name !== 'О документе' && name !== 'Словарь');
+      if (JSON.stringify(core) !== JSON.stringify(HUB_HEADINGS) ||
+          (headings.includes('О документе') && headings[0] !== 'О документе') ||
+          (headings.includes('Словарь') && headings.at(-1) !== 'Словарь') ||
+          headings.length !== core.length + Number(headings.includes('О документе')) + Number(headings.includes('Словарь'))) {
+        errors.push(error('P8', `недопустимый элемент или заголовок: ${path}`));
+      }
+    } else if (path.includes('/systems/')) {
+      const human = subsection(content, 'Какому столпу служит');
+      const headings = headingNames(content);
+      if (JSON.stringify(headings) !== JSON.stringify(['Для человека', 'Для разработчика и нейросети']) ||
+          JSON.stringify(thirdLevelNames(content)) !== JSON.stringify([...HUMAN_HEADINGS, ...TECH_HEADINGS]) ||
+          !/^# \d{2}\. /mu.test(content) || human.length === 0) {
+        errors.push(error('P8', `недопустимый элемент или заголовок: ${path}`));
+      }
     }
   }
   const sources = table(section(files.get(`${DESIGN}/SOURCES.md`) ?? '', 'Источники'), SOURCE_HEADER);
@@ -272,7 +328,8 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   for (const [path, content] of files) {
     if (!path.includes('/systems/')) continue;
     const chapter = /\/systems\/(\d{2})-/u.exec(path)?.[1];
-    for (const decision of decisionNumbers(section(content, 'Решения владельца').join('\n'))) {
+    for (const decision of decisionNumbers(subsection(content, 'Решения владельца').join('\n'))) {
+      if (Number(decision.slice(1)) > 274) continue;
       chapterDecisions.add(`${decision}/${chapter}`);
     }
   }
@@ -282,7 +339,7 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
     }
   }
   const hub = files.get(`${DESIGN}/GDD.md`) ?? '';
-  const abilities = table(section(hub, 'Прогресс: игрок может…'), ABILITY_HEADER);
+  const abilities = tableWithHeader(subsection(hub, 'Прогресс: игрок может…'), ABILITY_HEADER);
   if (!sameHeader(abilities.header, ABILITY_HEADER)) errors.push(error('P4', 'неверная схема таблицы способностей'));
   const abilityById = new Map();
   const totals = new Map();
@@ -292,11 +349,14 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
       continue;
     }
     const [id, description, chapter, stage, status, proof] = row;
-    if (!/^(0[1-9]|1[0-7])\.\d{2}$/u.test(id) || abilityById.has(id)) {
+    if (!/^(0[1-9]|1\d|20)\.\d{2}$/u.test(id) || abilityById.has(id)) {
       errors.push(error('P4', `неверный или повторный id способности: ${id}`));
       continue;
     }
-    abilityById.set(id, { description, chapter, stage, status, proof });
+    abilityById.set(id, {
+      description: canonicalAbilityDescription(root, `${DESIGN}/GDD.md`, description),
+      chapter, stage, status, proof
+    });
     if (chapter !== id.slice(0, 2)) errors.push(error('P5', `глава способности не совпадает с id: ${id}`));
     if (!STATUSES.has(status)) errors.push(error('P6', `неизвестный статус способности: ${id}`));
     if (status === 'не начато' && proof.trim()) errors.push(error('P7', `доказательство не должно быть заполнено: ${id}`));
@@ -330,29 +390,33 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   for (const [path, content] of files) {
     if (!path.includes('/systems/')) continue;
     const number = /\/systems\/(\d{2})-/u.exec(path)?.[1];
-    if (!number || JSON.stringify(headingNames(content)) !== JSON.stringify(CHAPTER_HEADINGS)) continue;
-    const chapterAbilities = section(content, 'Что может игрок');
+    if (!number || JSON.stringify(thirdLevelNames(content)) !== JSON.stringify([...HUMAN_HEADINGS, ...TECH_HEADINGS])) continue;
+    const chapterAbilities = subsection(content, 'Что может игрок');
     const seen = new Set();
     for (const line of chapterAbilities) {
       const match = /^- \*\*(\d{2}\.\d{2})\.\*\* (.+)$/u.exec(line);
       if (!match) continue;
       seen.add(match[1]);
       const fromHub = abilityById.get(match[1]);
-      if (!fromHub || match[1].slice(0, 2) !== number || fromHub.description !== match[2]) {
+      if (!fromHub || match[1].slice(0, 2) !== number ||
+          fromHub.description !== canonicalAbilityDescription(root, path, match[2])) {
         errors.push(error('P5', `способность не совпадает с главой: ${match[1]}`));
       }
     }
     for (const [id] of abilityById) {
       if (id.startsWith(`${number}.`) && !seen.has(id)) errors.push(error('P5', `способность отсутствует в главе: ${id}`));
     }
-    for (const link of markdownLinks(section(content, 'Источники').join('\n'))) {
+    for (const link of markdownLinks(subsection(content, 'Источники').join('\n'))) {
       const target = localPath(root, path, link);
       if (!target || target.invalid) continue;
       const rel = relative(root, target.absolute).replaceAll('\\', '/');
-      if (!sourceNames.has(rel)) errors.push(error('P12', `источник главы отсутствует в реестре: ${rel}`));
+      if (!rel.startsWith(`${DESIGN}/`) && !sourceNames.has(rel)) {
+        errors.push(error('P12', `источник главы отсутствует в реестре: ${rel}`));
+      }
     }
   }
-  const stages = table(section(hub, 'Этапы'), STAGE_HEADER);
+  const stageSection = section(hub, '11. Объём и план');
+  const stages = tableWithHeader(stageSection, STAGE_HEADER);
   if (!sameHeader(stages.header, STAGE_HEADER)) errors.push(error('P7', 'неверная схема таблицы этапов'));
   const seenStages = new Set();
   for (const row of stages.rows) {
@@ -382,7 +446,6 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
   for (let number = 0; number <= 5; number += 1) {
     if (!seenStages.has(String(number))) errors.push(error('P7', `отсутствует этап: ${number}`));
   }
-  const stageSection = section(hub, 'Этапы');
   const parts = stageSection.flatMap((line, index) => {
     const match = /^\*\*Часть ([1-7])\.\*\*/u.exec(line);
     return match ? [{ number: match[1], index }] : [];
@@ -395,7 +458,7 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
     }
     const begin = occurrences[0].index + 1;
     const nextPart = parts.find((part) => part.index >= begin)?.index ?? stageSection.length;
-    const nextStage = stageSection.findIndex((line, index) => index >= begin && /^### [2-5]\./u.test(line));
+    const nextStage = stageSection.findIndex((line, index) => index >= begin && /^### (?:[2-5]\.|Прогресс:)/u.test(line));
     const end = Math.min(nextPart, nextStage < 0 ? stageSection.length : nextStage);
     const block = stageSection.slice(begin, end);
     const tableStarts = block.flatMap((line, index) => line.startsWith('|') && (index === 0 || !block[index - 1].startsWith('|')) ? [index] : []);

@@ -2236,6 +2236,70 @@ TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items
     CHECK( exported_found );
 }
 
+TEST_CASE( "Novgorod NPC exports visible furniture and terrain features", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    map &here = get_map();
+    const character_id guy_id = make_npc( 60, 62 );
+    npc &guy = npc_by_id( guy_id );
+    clear_character( guy, true );
+    guy.setpos( here, tripoint_bub_ms( 60, 62, 0 ) );
+    const tripoint_bub_ms visible_oven( 61, 62, 0 );
+    const tripoint_bub_ms hidden_oven( 64, 62, 0 );
+    const tripoint_bub_ms wall( 63, 62, 0 );
+    const tripoint_bub_ms door( 61, 61, 0 );
+    REQUIRE( here.furn_set( visible_oven, furn_str_id( "f_clay_oven" ) ) );
+    REQUIRE( here.furn_set( hidden_oven, furn_str_id( "f_clay_oven" ) ) );
+    here.ter_set( wall, p3_ter_wall );
+    here.ter_set( door, p3_ter_door_c );
+    refresh_visibility();
+    REQUIRE( guy.sees( here, visible_oven ) );
+    REQUIRE( guy.sees( here, door ) );
+    REQUIRE_FALSE( guy.sees( here, hidden_oven ) );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    bool found_projection = false;
+    for( const JsonObject projection : observation.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        found_projection = true;
+        REQUIRE( projection.has_member( "visible_world_features" ) );
+        bool found_oven = false;
+        bool found_door = false;
+        bool found_hidden = false;
+        const tripoint_abs_ms oven_abs = here.get_abs( visible_oven );
+        const std::vector<int> oven_absolute { oven_abs.x(), oven_abs.y(), oven_abs.z() };
+        const std::vector<int> oven_position { visible_oven.x(), visible_oven.y(), visible_oven.z() };
+        const std::vector<int> hidden_position { hidden_oven.x(), hidden_oven.y(), hidden_oven.z() };
+        for( const JsonObject row : projection.get_array( "visible_world_features" ) ) {
+            row.allow_omitted_members();
+            const std::string kind = row.get_string( "kind" );
+            const std::string type = row.get_string( "type" );
+            const std::vector<int> position = row.get_int_array( "position" );
+            if( kind == "furniture" && type == "f_clay_oven" && position == oven_position ) {
+                found_oven = true;
+                CHECK( row.get_string( "label" ) == here.furnname( visible_oven ) );
+                CHECK( row.get_int_array( "absolute_position" ) == oven_absolute );
+            }
+            found_hidden |= kind == "furniture" && position == hidden_position;
+            if( kind == "terrain" && type == "t_door_c" ) {
+                found_door = true;
+                CHECK( row.get_string( "label" ) == here.tername( door ) );
+            }
+        }
+        CHECK( found_oven );
+        CHECK( found_door );
+        CHECK_FALSE( found_hidden );
+    }
+    REQUIRE( found_projection );
+}
+
 TEST_CASE( "Novgorod NPC sees only visible contents of furniture containers", "[novgorod_live]" )
 {
     reset_p3_fixture();

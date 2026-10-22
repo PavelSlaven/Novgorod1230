@@ -7,6 +7,7 @@
 #include <cstring>
 #include <functional>
 #include <optional>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -170,6 +171,45 @@ std::vector<frame_item> npc_visible_items( const npc &guy, map &here )
     return items;
 }
 
+struct frame_world_feature {
+    std::string kind;
+    std::string type;
+    std::string label;
+    tripoint_bub_ms position;
+    tripoint_abs_ms absolute_position;
+};
+
+std::vector<frame_world_feature> npc_visible_world_features( const npc &guy, map &here )
+{
+    std::vector<frame_world_feature> features;
+    std::set<std::string> represented_terrain;
+    for( const tripoint_bub_ms &pos : closest_points_first( guy.pos_bub(), MAX_VIEW_DISTANCE ) ) {
+        if( !here.inbounds( pos ) ) {
+            continue;
+        }
+        const bool has_furniture = here.has_furn( pos );
+        const std::string terrain_type = here.ter( pos ).id().str();
+        const bool needs_terrain = represented_terrain.find( terrain_type ) == represented_terrain.end();
+        if( !has_furniture && !needs_terrain ) {
+            continue;
+        }
+        if( !guy.sees( here, pos ) ) {
+            continue;
+        }
+        const tripoint_abs_ms absolute_position = here.get_abs( pos );
+        if( has_furniture ) {
+            features.push_back( { "furniture", here.furn( pos ).id().str(), here.furnname( pos ),
+                                  pos, absolute_position } );
+        }
+        if( needs_terrain ) {
+            features.push_back( { "terrain", terrain_type, here.tername( pos ),
+                                  pos, absolute_position } );
+            represented_terrain.insert( terrain_type );
+        }
+    }
+    return features;
+}
+
 void write_frame_item( JsonOut &out, const frame_item &entry )
 {
     out.start_object();
@@ -312,6 +352,20 @@ void write_npc_physical_projections( JsonOut &out, const avatar &observer, map &
         out.start_array();
         for( const frame_item &entry : npc_visible_items( guy, here ) ) {
             write_frame_item( out, entry );
+        }
+        out.end_array();
+        out.member( "visible_world_features" );
+        out.start_array();
+        for( const frame_world_feature &feature : npc_visible_world_features( guy, here ) ) {
+            out.start_object();
+            out.member( "kind", feature.kind );
+            out.member( "type", feature.type );
+            out.member( "label", feature.label );
+            out.member( "target_ref", p3_target_ref( feature.position ) );
+            out.member( "position", position_of( feature.position ) );
+            out.member( "absolute_position", std::vector<int> { feature.absolute_position.x(),
+                        feature.absolute_position.y(), feature.absolute_position.z() } );
+            out.end_object();
         }
         out.end_array();
         out.member( "visible_targets" );

@@ -24,7 +24,7 @@ import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   runP3SealedPackage, createP3NativeSpeechOwnerFixture,
   validateP3Readback, validateP3SealedCasePack,
   writeP3OperationRequest, runP3NativeNpcReply } from './p3-boundary.js';
-import { validateNpcConversationResponseRequest,
+import { validateConversationContributionPlan, validateNpcConversationResponseRequest,
   validateNpcConversationResponseSubject } from '@rus/npc-runtime';
 import { requireLiveObservation } from './p3-live-socket.js';
 import { loadP3NpcProfile } from './p3-npc-profile.js';
@@ -1239,6 +1239,44 @@ test('NPC reply request passes the strict conversation validators and takes the 
     assert.deepEqual(request.allowed_references.entity_refs,
       [ref('item', '33'), ref('item', '34')]);
   });
+});
+
+test('NPC world feature refs follow native identity across observer movement', async () => {
+  const oven = { kind: 'furniture', type: 'f_clay_oven', label: 'печь',
+    position: [62, 60, 0], absolute_position: [102, 202, 0], target_ref: '62,60,0' };
+  const requestFor = async (npcPosition, features) => {
+    const frame = replyFrame({ projections: [npcProjection('9', { template_id: '',
+      position: npcPosition, visible_world_features: features })] });
+    const harness = replyHarness({ frame, nativeReadback: npcSpeechReadback });
+    await harness.run();
+    assert.equal(harness.requests.length, 1);
+    return harness.requests[0];
+  };
+  const first = await requestFor([61, 60, 0], [oven]);
+  const moved = await requestFor([60, 61, 0], [oven]);
+  const other = { ...oven, position: [63, 60, 0],
+    absolute_position: [103, 202, 0], target_ref: '63,60,0' };
+  const together = await requestFor([61, 60, 0], [oven, other]);
+  const worldRefs = request => request.allowed_references.entity_refs
+    .filter(ref => ref.entity_kind === 'furniture');
+  assert.equal(worldRefs(first).length, 1, 'visible furniture must enter entity_refs');
+  assert.equal(worldRefs(first)[0].entity_id, '4b8f23908b4e');
+  assert.match(worldRefs(first)[0].entity_id, /^[0-9a-f]{12}$/u);
+  assert.equal(worldRefs(moved)[0].entity_id, worldRefs(first)[0].entity_id);
+  assert.equal(worldRefs(together).length, 2);
+  assert.equal(new Set(worldRefs(together).map(ref => ref.entity_id)).size, 2);
+  for (const request of [first, moved, together]) {
+    assert.equal(validateNpcConversationResponseRequest(request), true);
+    assert.equal(validateNpcConversationResponseSubject(request), true);
+  }
+  const seen = first.memory.current_observations.find(row => row.fact_text.includes('печь'));
+  assert.ok(seen, 'visible furniture needs a direct perception record');
+  const plan = speechPlan(first, 'Вижу печь.');
+  plan.speech.claims = [{ claim_id: 'visible-oven', content_summary: 'Вижу печь.',
+    form: 'fact', speaker_posture: 'believed_true',
+    source_knowledge_refs: [seen.observation_ref],
+    mentioned_entity_refs: [worldRefs(first)[0]] }];
+  assert.equal(validateConversationContributionPlan(plan, first), true);
 });
 
 test('committed dev-world master profile loads from the default directory into a valid reply request', async () => {

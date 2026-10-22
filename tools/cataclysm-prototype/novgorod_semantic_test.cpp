@@ -49,12 +49,14 @@
 #include "npc_class.h"
 #include "npctalk.h"
 #include "novgorod_semantic.h"
+#include "options_helpers.h"
 #include "output.h"
 #include "options_helpers.h"
 #include "path_info.h"
 #include "player_helpers.h"
 #include "player_activity.h"
 #include "translations.h"
+#include "weather.h"
 #include "type_id.h"
 #include "sounds.h"
 #include "weather.h"
@@ -663,6 +665,186 @@ bool contains( const std::vector<std::string> &values, const std::string &value 
     return std::find( values.begin(), values.end(), value ) != values.end();
 }
 } // namespace
+
+TEST_CASE( "Novgorod native conversation memory survives separate processes",
+           "[novgorod_semantic][novgorod_persistence]" )
+{
+    const char *mode_value = std::getenv( "NOVGOROD_P4_MODE" );
+    const std::string mode = mode_value == nullptr ? "" : mode_value;
+    if( mode.empty() ) {
+        return;
+    }
+    scoped_weather_override calm_weather( weather_type_id( "sunny" ) );
+    auto write_state = []( const npc &subject ) {
+        std::vector<std::string> journal;
+        for( const auto &message : Messages::recent_messages( 500 ) ) {
+            journal.push_back( message.second );
+        }
+        write_to_file( PATH_INFO::user_dir() + "novgorod-s847-state.json", [&]( std::ostream &stream ) {
+            JsonOut out( stream );
+            out.start_object();
+            out.member( "npc_id", id_text( subject ) );
+            out.member( "conversation_memory" );
+            out.start_array();
+            for( const memory_record &record : memory_of( subject ) ) {
+                out.start_object();
+                out.member( "kind", record.kind );
+                out.member( "speaker_ref", record.speaker_ref );
+                out.member( "listener_ref", record.listener_ref );
+                out.member( "text", record.text );
+                out.member( "turn", record.turn );
+                out.end_object();
+            }
+            out.end_array();
+            out.member( "player_messages" );
+            out.start_object();
+            out.member( "messages", journal );
+            out.end_object();
+            out.end_object();
+        } );
+    };
+    if( mode == "create" ) {
+        reset_p3_fixture();
+        for( npc &subject : g->all_npcs() ) {
+            subject.death_eocs.clear();
+        }
+        clear_npcs();
+        const std::vector<character_id> scene_npcs = {
+            spawn_npc( point_bub_ms( 60, 62 ), "novgorod_dev_master" ).getID(),
+            spawn_npc( point_bub_ms( 61, 62 ), p3_talker.str() ).getID(),
+            spawn_npc( point_bub_ms( 58, 61 ), p3_talker.str() ).getID(),
+            spawn_npc( point_bub_ms( 62, 61 ), p3_talker.str() ).getID()
+        };
+        for( const character_id &id : scene_npcs ) {
+            npc *subject = g->find_npc( id );
+            REQUIRE( subject != nullptr );
+            subject->death_eocs.clear();
+            subject->set_attitude( NPCATT_NULL );
+            subject->assign_activity( wait_activity_actor( 1_hours ) );
+        }
+        g->find_npc( scene_npcs[2] )->add_effect( p3_deaf, 1_hours, false, 3 );
+        g->find_npc( scene_npcs[3] )->add_effect( p3_deaf, 1_hours, false, 3 );
+        REQUIRE( g->save() );
+        write_p3_observation();
+        return;
+    }
+    if( mode == "read" ) {
+        const npc *reloaded = nullptr;
+        for( const npc &guy : g->all_npcs() ) {
+            const std::vector<memory_record> records = memory_of( guy );
+            if( records.size() != 4 ) {
+                continue;
+            }
+            const std::string target = npc_ref( guy );
+            if( records[0].kind == "heard" && records[0].speaker_ref == "avatar" &&
+                records[0].listener_ref == target && !records[0].text.empty() &&
+                records[1].kind == "said" && records[1].speaker_ref == target &&
+                records[1].listener_ref == "avatar" && !records[1].text.empty() &&
+                records[2].kind == "heard" && records[2].speaker_ref == "avatar" &&
+                records[2].listener_ref == target && !records[2].text.empty() &&
+                records[3].kind == "said" && records[3].speaker_ref == target &&
+                records[3].listener_ref == "avatar" && !records[3].text.empty() ) {
+                reloaded = &guy;
+                break;
+            }
+        }
+        REQUIRE( reloaded != nullptr );
+        write_state( *reloaded );
+        write_p3_observation();
+        return;
+    }
+    REQUIRE( mode == "apply" );
+    std::ifstream request_stream( p3_request_path() );
+    REQUIRE( request_stream.good() );
+    std::string request_json( ( std::istreambuf_iterator<char>( request_stream ) ),
+                              std::istreambuf_iterator<char>() );
+    const JsonObject request = parse_object( request_json );
+    REQUIRE( request.get_string( "primitive" ) == "speak" );
+    const JsonObject args = request.get_object( "args" );
+    args.allow_omitted_members();
+    const std::string utterance = args.get_string( "utterance", args.get_string( "content", "" ) );
+    REQUIRE_FALSE( utterance.empty() );
+    const bool avatar_speaks = request.get_string( "actor_id" ) == id_text( get_avatar() );
+    std::vector<std::pair<character_id, size_t>> memory_before;
+    for( const npc &guy : g->all_npcs() ) {
+        memory_before.emplace_back( guy.getID(), memory_of( guy ).size() );
+    }
+    const JsonObject references = request.get_object( "references" );
+    const JsonArray actors = references.get_array( "actors" );
+    REQUIRE( actors.size() == 1 );
+    const JsonObject target = actors.get_object( 0 );
+    target.allow_omitted_members();
+    const std::string target_ref = target.get_string( "ref" );
+    Character *speaker = avatar_speaks ? &get_avatar() : nullptr;
+    Character *listener = avatar_speaks ? nullptr : &get_avatar();
+    if( !avatar_speaks ) {
+        REQUIRE( target_ref == "avatar" );
+    }
+    for( npc &guy : g->all_npcs() ) {
+        if( avatar_speaks && npc_ref( guy ) == target_ref ) {
+            listener = &guy;
+        } else if( !avatar_speaks && id_text( guy ) == request.get_string( "actor_id" ) ) {
+            speaker = &guy;
+        }
+    }
+    REQUIRE( speaker != nullptr );
+    REQUIRE( listener != nullptr );
+    const weather_manager &weather = get_weather();
+    const int raw_volume = speaker->indoor_voice();
+    const int attenuation = weather.weather_id->sound_attn;
+    const float ability = listener->hearing_ability();
+    const int distance = rl_dist( speaker->pos_bub(), listener->pos_bub() );
+    const int heard_volume = static_cast<int>( ( raw_volume - attenuation ) * ability ) - distance;
+    write_to_file( PATH_INFO::user_dir() + "novgorod-s847-acoustics.json", [&]( std::ostream &stream ) {
+        JsonOut out( stream );
+        out.start_object();
+        out.member( "weather_id", weather.weather_id.str() );
+        out.member( "sound_attn", attenuation );
+        out.member( "indoor_voice", raw_volume );
+        out.member( "hearing_ability", ability );
+        out.member( "rl_dist", distance );
+        out.member( "heard_volume", heard_volume );
+        out.member( "speaker_ref", avatar_speaks ? "avatar" : npc_ref( *speaker ) );
+        out.member( "listener_ref", target_ref );
+        out.end_object();
+    } );
+    INFO( "acoustic precondition: weather=" << weather.weather_id.str() << " attenuation=" <<
+          attenuation << " volume=" << raw_volume << " ability=" << ability << " distance=" <<
+          distance << " heard_volume=" << heard_volume );
+    REQUIRE( heard_volume > 0 );
+    auto result = novgorod_semantic::apply_operation( request );
+    REQUIRE( result.applied );
+    process_all_sounds();
+    result = complete_operation();
+    REQUIRE( result.applied );
+    const JsonObject readback = parse_object( result.json );
+    CHECK( readback.get_string( "operation_id" ) == request.get_string( "operation_id" ) );
+    const JsonObject effect = readback.get_object( "native_effect" );
+    effect.allow_omitted_members();
+    CHECK( effect.get_string( "utterance" ) == utterance );
+    bool recorded = false;
+    for( const npc &guy : g->all_npcs() ) {
+        const auto before = std::find_if( memory_before.begin(), memory_before.end(),
+        [&]( const auto &entry ) {
+            return entry.first == guy.getID();
+        } );
+        REQUIRE( before != memory_before.end() );
+        const std::vector<memory_record> records = memory_of( guy );
+        if( records.size() == before->second + 1 && records.back().text == utterance &&
+            records.back().kind == ( avatar_speaks ? "heard" : "said" ) &&
+            records.back().speaker_ref == ( avatar_speaks ? "avatar" : npc_ref( guy ) ) &&
+            records.back().listener_ref == ( avatar_speaks ? npc_ref( guy ) : "avatar" ) ) {
+            recorded = true;
+        }
+    }
+    REQUIRE( recorded );
+    REQUIRE( g->save() );
+    write_state( *static_cast<npc *>( avatar_speaks ? listener : speaker ) );
+    write_to_file( p3_readback_path(), [&]( std::ostream &stream ) {
+        stream << result.json;
+    } );
+    write_p3_observation();
+}
 
 TEST_CASE( "Novgorod live observation excludes diagnostic and legacy intent state", "[novgorod_live]" )
 {

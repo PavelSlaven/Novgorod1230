@@ -83,7 +83,7 @@ Canonical player delivery переносится только в private native 
 3/4 — get_shout_volume. Правило indoor_voice вынесено из npc без копии;
 родной источник — upstream npc.cpp:2116–2155. Instant оплачивает родную цену
 chat (npctalk.cpp:1541) без дополнительной wait activity; brief сохраняет
-прежнюю activity. Sustained отклоняется до native execute с явным сообщением.
+прежнюю activity. Sustained отклоняется до native execute; код причины остаётся в журнале отладки координатора, новой строки игроку нет.
 Canonical emit_interaction и prompt owner не меняются. Native popup использует
 собственный предел 1024 display columns вместо прежнего width 70.
 Шёпот игрока (loudness 1) не слышит никто, даже сосед: родной `process_sound_markers`

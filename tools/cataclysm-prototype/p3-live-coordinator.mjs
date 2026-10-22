@@ -61,18 +61,19 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
     let ownsRequest = false;
     let adapter = null;
     let phrase = null;
-    let speaker = 'Собеседник';
     try {
       const message = await channel.receive();
       const enteredAt = Date.now();
       channel.bind(message.id);
       if (message.type !== 'intent' || typeof message.intent !== 'string'
           || !message.intent.trim()) throw new Error('P3_LIVE_INTENT_REQUIRED');
-      if (activeChannel) throw new Error('P3_LIVE_BUSY');
+      if (activeChannel) {
+        journal({ type: 'p3_phrase', id: message.id, t_enter: enteredAt,
+          t_native_reply: null, roles: [], outcome: 'failure', code: 'P3_LIVE_BUSY',
+          category: null, calls: 0 });
+        throw new Error('P3_LIVE_BUSY');
+      }
       const observation = requireLiveObservation(message.observation);
-      const listenerName = observation.actors.find(actor =>
-        actor.actor_ref === message.target_actor_ref)?.name;
-      if (typeof listenerName === 'string' && listenerName.trim()) speaker = listenerName;
       activeChannel = channel;
       ownsRequest = true;
       phrase = activePhrase = { type: 'p3_phrase', id: message.id, t_enter: enteredAt,
@@ -102,9 +103,6 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
         goal_result: npcReply?.native_readback?.status === 'refused' ? 'partially_achieved'
           : result.working_projection.native_goal_result ?? 'not_achieved',
         code,
-        message: applied ? 'Родное действие принято. Черновик, не сохранено.'
-          : readback ? 'Родное действие отклонено. Черновик, не сохранено.'
-            : 'Действие вне границ dev-пробы: можно идти, поднять или использовать предмет, открыть, ждать и говорить рядом (радиус 1).',
         stop_reason: result.stop_reason });
     } catch (error) {
       const applied = adapter?.appliedOperations > 0;
@@ -124,22 +122,7 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
       if (!socket.destroyed && socket.writable && error?.message !== 'P3_LIVE_CONNECTION_CLOSED') {
         channel.send({ type: 'result', status: 'refused', code, ...(category ? { category } : {}),
           applied_operations: unknown ? null : adapter?.appliedOperations ?? 0,
-          goal_result: unknown ? 'unknown' : applied ? 'partially_achieved' : 'not_achieved',
-          message: unknown ? 'Результат родного действия не подтверждён. Черновик, не сохранено.'
-            : code === 'P3_TURN_CALL_BUDGET_EXHAUSTED'
-              ? `Предел вызовов модели на ход (${config.turnCallBudget}) исчерпан, ход остановлен. Черновик, не сохранено.`
-            : applied && category
-              ? `${speaker}: ответа нет — ответ модели не прошёл проверку ${category === 'semantic' ? 'смысла' : 'формы'}. Черновик, не сохранено.`
-            : applied && /^TURN_NPC_/u.test(code)
-              ? `${speaker}: ответа нет — обработка ответа прервана. Черновик, не сохранено.`
-            : applied ? 'Действие уже начато; дальнейшая обработка не завершена. Черновик, не сохранено.'
-            : code === 'P3_LIVE_BUSY'
-              ? 'Предыдущее действие ещё обрабатывается. Повторите после его завершения.'
-              : code === 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED'
-                ? 'Долгая речь в dev-пробе не поддерживается. Черновик, не сохранено.'
-              : /^(?:P3_(?:TYPED_|NATIVE_MOVE_TARGET_NOT_ADJACENT|PICKUP_INTENT_UNSUPPORTED|ITEM_|CONTAINER_|ACTIVITY_|INTERACTION_)|TURN_STEP_PLAN_INVALID)/u.test(code)
-                ? 'Действие вне границ dev-пробы: можно идти, поднять или использовать предмет, открыть, ждать и говорить рядом (радиус 1).'
-                : 'Действие не выполнено: семантический координатор недоступен или отказал.' });
+          goal_result: unknown ? 'unknown' : applied ? 'partially_achieved' : 'not_achieved' });
       }
     } finally {
       if (ownsRequest) {

@@ -28,6 +28,7 @@
 #include "calendar.h"
 #include "cached_options.h"
 #include "character.h"
+#include "debug.h"
 #include "display.h"
 #include "effect.h"
 #include "field.h"
@@ -960,7 +961,7 @@ void reset_deadline( int timeout_ms )
 void wait_socket( short events )
 {
     std::optional<static_popup> wait_popup;
-    if( !test_mode ) wait_popup.emplace().on_top( true ).wait_message( "%s", "Qwen думает…" );
+    if( !test_mode ) wait_popup.emplace().on_top( true ).wait_message( "%s", "…" );
     for( ;; ) {
         if( steady_clock::now() >= deadline ) throw std::runtime_error( "NOVGOROD_COORDINATOR_TIMEOUT" );
         if( !test_mode ) {
@@ -1053,8 +1054,6 @@ void await_coordinator()
             }
             send_readback( result );
         } else if( type == "result" ) {
-            const std::string text = message.get_string( "message", "" );
-            if( !text.empty() ) add_msg( "%s", text );
             disconnect();
             return;
         } else {
@@ -1112,15 +1111,15 @@ void submit_live_intent( const std::string &intent, const Creature *target )
 void live_input()
 {
 #ifdef _WIN32
-    add_msg( "%s", "Живая dev-проба запускается в WSL." );
+    DebugLog( D_WARNING, D_MAIN ) << "Novgorod live input requires WSL";
 #else
-    const std::string intent = string_input_popup().title( "Свободное действие (dev-проба)" ).query_string();
+    const std::string intent = string_input_popup().title( "Свободное действие" ).query_string();
     if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
     try {
         submit_live_intent( intent, select_chat_target() );
     } catch( const std::exception &error ) {
         disconnect();
-        add_msg( "%s: %s", "Dev-проба: связь прервана", error.what() );
+        DebugLog( D_ERROR, D_MAIN ) << "Novgorod live input failed: " << error.what();
     }
 #endif
 }
@@ -1141,7 +1140,7 @@ void on_input_boundary()
         await_coordinator();
     } catch( const std::exception &error ) {
         disconnect();
-        add_msg( "%s: %s", "Действие уже исполнено; связь прервана", error.what() );
+        DebugLog( D_ERROR, D_MAIN ) << "Novgorod input boundary failed after native action: " << error.what();
     }
 #endif
 }

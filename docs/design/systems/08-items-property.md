@@ -33,7 +33,7 @@
 ## Для разработчика и нейросети
 ### Замысел
 
-Вещь имеет положение, владельца и держателя. Взять чужое не значит получить право; повторный поиск не создаёт копию ([PC §9.1](../../governance/PRODUCT_CONSTITUTION.md), [контракт:121–156](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt), [замысел владельца:27](../../plans/sled-na-nizhney-dvine-scenario-spec.md); D9, D10, D14 ниже).
+Вещь имеет положение, владельца и держателя. Взять чужое не значит получить право; повторный поиск не создаёт копию ([PC §9.1](../../governance/PRODUCT_CONSTITUTION.md), [контракт:121–156](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt), [замысел владельца:27](../../plans/sled-na-nizhney-dvine-scenario-spec.md); [D14](../decision-log.md) о владении и [D3](../decision-log.md) о повторном поиске).
 
 1. Огниво рядом → игрок подбирает → вещь при герое → используем pickup/wield ([карта:15–16](../../context/cdda-native-map/areas/10-player-actions.md), полное) → наш слой проверяет доступ.
 2. Сундук открыт повторно → вещи те же → CDDA перемещает содержимое, но не хранит «уже искали» ([карта:23,75](../../context/cdda-native-map/areas/05-items-crafting.md)) → наш слой сохраняет решение наличия.

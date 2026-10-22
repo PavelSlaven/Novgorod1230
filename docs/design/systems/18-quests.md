@@ -45,7 +45,7 @@
 
 ### Родное CDDA
 
-Есть `mission_type`, дедлайн, `goal_condition`, эффекты start/end/fail и `MGOAL_CONDITION`. Native опоры: `src/mission.h:172–200`, `src/missiondef.cpp:182–199`, `src/mission.cpp:189,423,467`. По карте покрытие частичное: миссии привязаны к игроку/квестодателю, произвольного графа обещаний нет. ([карта EOC, обязательства](../../context/cdda-native-map/areas/09-eoc-scripting.md); [карта NPC, миссии](../../context/cdda-native-map/areas/02-npc-life.md))
+Есть `mission_type`, дедлайн, `goal_condition`, эффекты start/end/fail и `MGOAL_CONDITION`. Native опоры: `MGOAL_CONDITION` — `src/mission.h:76`, `goal_condition` — `src/mission.h:226`; также `src/missiondef.cpp:182–199` и `src/mission.cpp:189,423,467`. По карте покрытие частичное: миссии привязаны к игроку/квестодателю, произвольного графа обещаний нет. ([карта EOC, обязательства](../../context/cdda-native-map/areas/09-eoc-scripting.md); [карта NPC, миссии](../../context/cdda-native-map/areas/02-npc-life.md))
 
 ### Наш слой и владелец
 

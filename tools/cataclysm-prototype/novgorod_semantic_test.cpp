@@ -2264,3 +2264,207 @@ TEST_CASE( "Novgorod leaves native input untouched without a pending live operat
         CHECK( result == "input_manager::get_input_event called in test mode" );
     }
 }
+
+
+#ifndef _WIN32
+namespace
+{
+struct saved_input_queue {
+    game &state;
+    novgorod_input_test_access::queue_snapshot previous;
+
+    explicit saved_input_queue( game &state ) : state( state ),
+        previous( novgorod_input_test_access::clear_queue( state ) ) {}
+
+    ~saved_input_queue() {
+        novgorod_input_test_access::restore_queue( state, previous );
+    }
+
+    void clear() {
+        novgorod_input_test_access::clear_queue( state );
+    }
+};
+
+struct pending_activity_peer {
+    std::string path = "in784-pending-" + std::to_string( getpid() ) + ".sock";
+    std::string old_socket;
+    std::string old_timeout;
+    bool had_socket = std::getenv( "NOVGOROD_P3_SOCKET" ) != nullptr;
+    bool had_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" ) != nullptr;
+    int listener = -1;
+    pid_t child = -1;
+
+    static bool read_line( int fd, std::string &line ) {
+        pollfd pending{ fd, POLLIN, 0 };
+        if( poll( &pending, 1, 30000 ) <= 0 ) return false;
+        line.clear();
+        for( size_t size = 0; size < 4 * 1024 * 1024; ++size ) {
+            char ch;
+            if( recv( fd, &ch, 1, 0 ) != 1 ) return false;
+            if( ch == '\n' ) return true;
+            line.push_back( ch );
+        }
+        return false;
+    }
+
+    static bool send_all( int fd, const std::string &message ) {
+        size_t sent = 0;
+        while( sent < message.size() ) {
+            const ssize_t n = send( fd, message.data() + sent, message.size() - sent, MSG_NOSIGNAL );
+            if( n <= 0 ) return false;
+            sent += static_cast<size_t>( n );
+        }
+        return true;
+    }
+
+    explicit pending_activity_peer( const std::string &request ) {
+        if( had_socket ) old_socket = std::getenv( "NOVGOROD_P3_SOCKET" );
+        if( had_timeout ) old_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
+        sockaddr_un address{};
+        address.sun_family = AF_UNIX;
+        std::strcpy( address.sun_path, path.c_str() );
+        unlink( path.c_str() );
+        listener = socket( AF_UNIX, SOCK_STREAM, 0 );
+        REQUIRE( listener >= 0 );
+        REQUIRE( bind( listener, reinterpret_cast<sockaddr *>( &address ), sizeof( address ) ) == 0 );
+        REQUIRE( listen( listener, 1 ) == 0 );
+        setenv( "NOVGOROD_P3_SOCKET", path.c_str(), 1 );
+        setenv( "NOVGOROD_P3_TIMEOUT_MS", "120000", 1 );
+        child = fork();
+        REQUIRE( child >= 0 );
+        if( child != 0 ) return;
+
+        pollfd pending{ listener, POLLIN, 0 };
+        if( poll( &pending, 1, 30000 ) <= 0 ) _exit( 2 );
+        const int peer = accept( listener, nullptr, nullptr );
+        if( peer < 0 ) _exit( 3 );
+        close( listener );
+        std::string line;
+        if( !read_line( peer, line ) ) _exit( 4 );
+        std::string id;
+        try {
+            const JsonObject frame = json_loader::from_string( line ).get_object();
+            frame.allow_omitted_members();
+            id = frame.get_string( "id" );
+            if( frame.get_string( "type" ) != "intent" || frame.get_string( "intent" ) != "literal intent" ||
+                id.empty() || !frame.has_member( "observation" ) ) _exit( 4 );
+        } catch( const std::exception & ) {
+            _exit( 4 );
+        }
+
+        const std::string operation = "{\"type\":\"operation\",\"id\":\"" + id +
+                                      "\",\"request\":" + request + "}\n";
+        if( !send_all( peer, operation ) ) _exit( 5 );
+        if( !read_line( peer, line ) ) _exit( 6 );
+        try {
+            const JsonObject frame = json_loader::from_string( line ).get_object();
+            frame.allow_omitted_members();
+            if( frame.get_string( "type" ) != "readback" || frame.get_string( "id" ) != id ) _exit( 7 );
+            const JsonObject readback = frame.get_object( "readback" );
+            readback.allow_omitted_members();
+            if( readback.get_string( "status" ) != "applied" ||
+                readback.get_string( "operation_id" ) != "focused-live" ) _exit( 7 );
+        } catch( const std::exception & ) {
+            _exit( 7 );
+        }
+        const std::string result = "{\"type\":\"result\",\"id\":\"" + id + "\"}\n";
+        if( !send_all( peer, result ) ) _exit( 8 );
+        shutdown( peer, SHUT_WR );
+        close( peer );
+        _exit( 0 );
+    }
+
+    ~pending_activity_peer() {
+        if( child > 0 ) {
+            kill( child, SIGKILL );
+            waitpid( child, nullptr, 0 );
+        }
+        if( listener >= 0 ) close( listener );
+        unlink( path.c_str() );
+        if( had_socket ) setenv( "NOVGOROD_P3_SOCKET", old_socket.c_str(), 1 );
+        else unsetenv( "NOVGOROD_P3_SOCKET" );
+        if( had_timeout ) setenv( "NOVGOROD_P3_TIMEOUT_MS", old_timeout.c_str(), 1 );
+        else unsetenv( "NOVGOROD_P3_TIMEOUT_MS" );
+    }
+
+    void completed() {
+        int status = 0;
+        REQUIRE( waitpid( child, &status, 0 ) == child );
+        child = -1;
+        REQUIRE( WIFEXITED( status ) );
+        CHECK( WEXITSTATUS( status ) == 0 );
+    }
+};
+}
+
+TEST_CASE( "Novgorod pending live activity alone bypasses native input", "[novgorod_input]" )
+{
+    SECTION( "wait and brief speech" ) {
+        const char *primitive = GENERATE( "wait", "speak" );
+        reset_p3_fixture();
+        avatar &you = get_avatar();
+        REQUIRE( you.activity.is_null() );
+        saved_input_queue queue( *g );
+        clear_novgorod_test_adjacent_selection();
+        const std::string actor = std::to_string( you.getID().get_value() );
+        const std::string request = live_request( primitive, actor,
+                                    std::string( primitive ) == "speak" ? "Exact spoken words" : "" );
+        pending_activity_peer peer( request );
+        REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+        REQUIRE( novgorod_semantic::has_pending_live_activity() );
+        REQUIRE_FALSE( you.activity.is_null() );
+        REQUIRE_FALSE( g->has_novgorod_actions() );
+
+        std::string action;
+        REQUIRE_NOTHROW( novgorod_input_test_access::read( *g, action ) );
+        CHECK( action == action_ident( ACTION_NULL ) );
+
+        for( int turn = 0; turn < 20 && !you.activity.is_null(); ++turn ) {
+            g->set_test_action_queue( { action_ident( ACTION_PAUSE ) } );
+            g->do_turn();
+        }
+        REQUIRE( you.activity.is_null() );
+        queue.clear();
+        std::string result;
+        try {
+            g->do_turn();
+        } catch( const std::exception &error ) {
+            result = error.what();
+        }
+        CAPTURE( primitive, result );
+        CHECK( result == "input_manager::get_input_event called in test mode" );
+        peer.completed();
+        CHECK_FALSE( novgorod_semantic::has_pending_live_activity() );
+        CHECK( you.activity.is_null() );
+    }
+
+    SECTION( "cleared avatar activity" ) {
+        reset_p3_fixture();
+        avatar &you = get_avatar();
+        REQUIRE( you.activity.is_null() );
+        saved_input_queue queue( *g );
+        clear_novgorod_test_adjacent_selection();
+        const std::string actor = std::to_string( you.getID().get_value() );
+        pending_activity_peer peer( live_request( "wait", actor ) );
+        REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+        REQUIRE( novgorod_semantic::has_pending_live_activity() );
+        REQUIRE_FALSE( you.activity.is_null() );
+        you.activity.set_to_null();
+        CHECK_FALSE( novgorod_semantic::has_pending_live_activity() );
+
+        std::string action;
+        std::string result;
+        try {
+            novgorod_input_test_access::read( *g, action );
+            result = "returned " + action;
+        } catch( const std::exception &error ) {
+            result = error.what();
+        }
+        CAPTURE( result );
+        CHECK( result == "input_manager::get_input_event called in test mode" );
+        peer.completed();
+        CHECK_FALSE( novgorod_semantic::has_pending_live_activity() );
+        CHECK( you.activity.is_null() );
+    }
+}
+#endif

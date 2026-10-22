@@ -107,6 +107,7 @@ test('resident socket handles readiness and repeated intents without a process a
     const result = await channel.receive();
     assert.equal(result.id, id);
     assert.equal(result.status, 'completed');
+    assert.equal(Object.hasOwn(result, 'message'), false);
     assert.equal(result.applied_operations, 1);
     socket.end();
   }
@@ -130,6 +131,51 @@ test('empty input and hidden snapshot are rejected before planning', async t => 
   assert.equal(scene.calls, 0);
 });
 
+test('invalid first observation records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  channel.bind('204');
+  channel.send({ type: 'intent', intent: 'Осмотрись',
+    observation: { ...observation, actors: [] } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_OBSERVATION_INVALID');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: '204', code: 'P3_LIVE_OBSERVATION_INVALID',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
+test('missing intent records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  channel.bind('205');
+  channel.send({ type: 'intent', intent: '', observation });
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_INTENT_REQUIRED');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: '205', code: 'P3_LIVE_INTENT_REQUIRED',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
+test('invalid first frame records its refusal in the coordinator journal', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  const { socket, channel } = await scene.client();
+  socket.write('not-json\n');
+  const result = await channel.receive();
+  assert.equal(result.status, 'refused');
+  assert.equal(result.code, 'P3_LIVE_MESSAGE_INVALID');
+  assert.equal(scene.calls, 0);
+  assert.deepEqual(scene.journal.map(({ id, code, category, outcome }) =>
+    ({ id, code, category, outcome })), [{ id: null, code: 'P3_LIVE_MESSAGE_INVALID',
+    category: null, outcome: 'failure' }]);
+  socket.end();
+});
+
 test('model failure and malformed output cannot send native operations', async t => {
   const scene = await fixture(t, (_request, calls) => {
     if (calls === 1) throw new Error('private URL and token must not leak');
@@ -145,7 +191,7 @@ test('model failure and malformed output cannot send native operations', async t
     assert.equal(result.status, 'refused');
     assert.equal(result.applied_operations, 0);
     assert.equal(JSON.stringify(result).includes('private URL'), false);
-    if (id === '5') assert.match(result.message, /границ/);
+    if (id === '5') assert.equal(Object.hasOwn(result, 'message'), false);
     socket.end();
   }
 });
@@ -168,6 +214,7 @@ test('native refusal preserves the reason and stale wire id cannot confirm succe
     assert.equal(result.status, 'refused');
     assert.equal(result.code, stale ? 'P3_LIVE_INTENT_IDENTITY_MISMATCH' : 'P3_NATIVE_STALE_REFERENCE');
     assert.equal(result.applied_operations, stale ? null : 0);
+    assert.equal(Object.hasOwn(result, 'message'), false);
     socket.end();
   }
 });
@@ -237,7 +284,7 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
           assert.equal(response.type, 'result');
           assert.equal(response.status, 'refused');
           assert.equal(response.code, 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
-          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается. Черновик, не сохранено.');
+          assert.equal(Object.hasOwn(response, 'message'), false);
           assert.equal(response.applied_operations, 0);
           assert.equal(response.goal_result, 'not_achieved');
         } else {
@@ -523,7 +570,7 @@ test('dev config is seven calls per turn and rejects the process budget key', as
   }
 });
 
-test('turn call limit refuses the extra call with its own text and resets on the next intent', async t => {
+test('turn call limit refuses the extra call without player text and resets on the next intent', async t => {
   const utterance = 'Слышишь меня?';
   const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
     position: [61, 60, 0] };
@@ -555,7 +602,7 @@ test('turn call limit refuses the extra call with its own text and resets on the
   assert.equal(refused.code, 'P3_TURN_CALL_BUDGET_EXHAUSTED');
   assert.equal(refused.applied_operations, 1);
   assert.equal(refused.goal_result, 'partially_achieved');
-  assert.equal(refused.message, 'Предел вызовов модели на ход (2) исчерпан, ход остановлен. Черновик, не сохранено.');
+  assert.equal(Object.hasOwn(refused, 'message'), false);
   assert.equal(scene.calls, 2);
   assert.deepEqual(scene.journal.map(({ id, outcome, code, category, calls }) =>
     ({ id, outcome, code, category, calls })), [{ id: '20', outcome: 'failure',
@@ -608,8 +655,7 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   assert.equal(result.goal_result, 'partially_achieved');
   assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
   assert.equal(result.category, 'format');
-  assert.equal(result.message,
-    'Жирко: ответа нет — ответ модели не прошёл проверку формы. Черновик, не сохранено.');
+  assert.equal(Object.hasOwn(result, 'message'), false);
   assert.equal(scene.calls, 3);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_responder_format_repair']);
@@ -620,7 +666,7 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   socket.end();
 });
 
-test('another NPC failure after the player spoke names the listener and is not a contract verdict', async t => {
+test('another NPC failure after the player spoke reports no new player text and is not a contract verdict', async t => {
   for (const [name, speaker] of [['Жирко', 'Жирко']]) {
     await t.test(speaker, async t => {
       const utterance = 'Ответь';
@@ -651,9 +697,7 @@ test('another NPC failure after the player spoke names the listener and is not a
       const result = await channel.receive();
       assert.equal(result.code, 'TURN_NPC_MODEL_FAILED');
       assert.equal(Object.hasOwn(result, 'category'), false);
-      assert.equal(result.message,
-        `${speaker}: ответа нет — обработка ответа прервана. Черновик, не сохранено.`);
-      assert.doesNotMatch(result.message, /Мастер|не ответил/u);
+      assert.equal(Object.hasOwn(result, 'message'), false);
       assert.deepEqual(scene.journal.map(({ outcome, code, category }) =>
         ({ outcome, code, category })), [{ outcome: 'failure', code: 'TURN_NPC_MODEL_FAILED',
         category: null }]);
@@ -752,8 +796,7 @@ test('registered NPC responder repairs grounding through the real role path', as
         assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
         assert.equal(result.category, 'semantic');
         assert.equal(result.goal_result, 'partially_achieved');
-        assert.equal(result.message,
-          'Жирко: ответа нет — ответ модели не прошёл проверку смысла. Черновик, не сохранено.');
+        assert.equal(Object.hasOwn(result, 'message'), false);
       }
       assert.deepEqual(roles, ['turn_step_planner', 'npc_conversation_responder',
         'npc_conversation_grounding_auditor', 'npc_conversation_responder_format_repair',
@@ -1075,7 +1118,7 @@ test('disconnect during planning cannot send an operation or kill the resident c
   abandoned.channel.send({ type: 'intent', intent: 'Ещё раз', observation });
   const busy = await abandoned.channel.receive();
   assert.equal(busy.code, 'P3_LIVE_BUSY');
-  assert.match(busy.message, /Предыдущее действие/);
+  const busyHasMessage = Object.hasOwn(busy, 'message');
   assert.equal(busy.applied_operations, 0);
   abandoned.socket.end();
   release();
@@ -1087,4 +1130,68 @@ test('disconnect during planning cannot send an operation or kill the resident c
   assert.equal((await second.channel.receive()).type, 'operation');
   assert.equal(scene.calls, 2);
   second.socket.destroy();
+  assert.equal(busyHasMessage, false);
+  assert.equal(scene.journal.some(record => record.id === '9' && record.code === 'P3_LIVE_BUSY'), true);
+});
+
+test('unknown native readback reports a code without player text', async t => {
+  const scene = await fixture(t, request => plan(request, { op: 'request_activity',
+    actor_ref: 'avatar', activity_kind: 'wait', target_refs: [], description: 'wait' }));
+  const { socket, channel } = await scene.client();
+  channel.bind('200');
+  channel.send({ type: 'intent', intent: 'Wait', observation });
+  assert.equal((await channel.receive()).type, 'role_phase');
+  assert.equal((await channel.receive()).type, 'operation');
+  channel.send({ type: 'observation', observation });
+  const result = await channel.receive();
+  assert.equal(result.code, 'P3_LIVE_READBACK_REQUIRED');
+  assert.equal(result.applied_operations, null);
+  assert.equal(result.goal_result, 'unknown');
+  assert.equal(Object.hasOwn(result, 'message'), false);
+  socket.end();
+});
+
+test('error after applied player speech preserves the action without player text', async t => {
+  const utterance = 'Speak to NPC';
+  const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'NPC', visible: true,
+    position: [61, 60, 0] };
+  const sceneObservation = withNpcs(observation, [npc]);
+  const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), () => ({}));
+  const { socket, channel } = await scene.client();
+  channel.bind('201');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:8' });
+  assert.equal((await channel.receive()).type, 'role_phase');
+  const speech = await channel.receive();
+  assert.equal(speech.type, 'operation');
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: speech.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['8'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: {} });
+  const result = await channel.receive();
+  assert.equal(result.code, 'P3_LIVE_OBSERVATION_INVALID');
+  assert.equal(result.applied_operations, 1);
+  assert.equal(result.goal_result, 'partially_achieved');
+  assert.equal(Object.hasOwn(result, 'message'), false);
+  socket.end();
+});
+
+test('planner failure reports a code without player text', async t => {
+  const scene = await fixture(t, () => { throw new Error('backend down'); });
+  const { socket, channel } = await scene.client();
+  channel.bind('202');
+  channel.send({ type: 'intent', intent: 'Unknown action', observation });
+  let result;
+  do { result = await channel.receive(); } while (result.type === 'role_phase');
+  assert.equal(result.code, 'P3_LIVE_REQUEST_FAILED');
+  assert.equal(result.applied_operations, 0);
+  assert.equal(Object.hasOwn(result, 'message'), false);
+  socket.end();
 });

@@ -132,9 +132,10 @@ class DevLauncherTest(unittest.TestCase):
     def coordinator_launch(self):
         task_home = self.root / "home"
         node = task_home / ".local/share/novgorod/node-v22.23.3-linux-x64/bin/node"
-        node.parent.mkdir(parents=True)
+        node.parent.mkdir(parents=True, exist_ok=True)
         node.write_text("""#!/usr/bin/env python3
 import os
+import json
 from pathlib import Path
 import socket
 import sys
@@ -143,6 +144,10 @@ if '-e' in sys.argv:
     sys.exit(0)
 path = Path(sys.argv[-1])
 path.with_suffix('.pid').write_text(str(os.getpid()))
+count = path.with_suffix('.sessions')
+session = int(count.read_text()) + 1 if count.exists() else 1
+count.write_text(str(session))
+print(json.dumps({"type": "p3_phrase", "id": session}), flush=True)
 server = socket.socket(socket.AF_UNIX)
 server.bind(str(path))
 server.listen()
@@ -152,7 +157,7 @@ while True:
 """)
         node.chmod(0o755)
         settings = self.root / "settings.json"
-        settings.write_text("{}")
+        settings.write_text('{"marker":"settings-sentinel-do-not-log"}')
         return subprocess.run(["bash", str(LAUNCHER), "--runtime-root", str(self.root)],
                               env=os.environ | {"HOME": str(task_home),
                                                 "RUS_LLM_SETTINGS_PATH": str(settings)},
@@ -167,6 +172,25 @@ while True:
         with self.assertRaises(ProcessLookupError):
             os.kill(pid, 0)
         self.assertFalse((self.root / "run/p3.sock").exists())
+
+    def test_coordinator_log_preserves_phrases_across_restarts(self):
+        first = self.coordinator_launch()
+        self.assertEqual(first.returncode, 0, first.stderr)
+        saved = self.root / "userdir/save/novgorod-dev/seed.txt"
+        saved_before = saved.read_bytes()
+        second = self.coordinator_launch()
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(saved.read_bytes(), saved_before)
+        contents = (self.root / "run/coordinator.log").read_text()
+        records = [json.loads(line) for line in contents.splitlines()]
+        self.assertEqual([record["id"] for record in records
+                          if record["type"] == "p3_phrase"], [1, 2])
+        sessions = [record for record in records if record["type"] == "p3_session"]
+        self.assertEqual(len(sessions), 2)
+        self.assertEqual([set(record) for record in sessions],
+                         [{"type", "id", "utc"}] * 2)
+        self.assertNotEqual(sessions[0]["id"], sessions[1]["id"])
+        self.assertNotIn("settings-sentinel-do-not-log", contents)
 
     def test_stale_socket_is_replaced(self):
         path = self.root / "run/p3.sock"

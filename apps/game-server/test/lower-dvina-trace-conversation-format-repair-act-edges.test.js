@@ -221,6 +221,34 @@ test('format repair cannot change intent while a reference error remains',
     assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:format`]);
   });
 
+test('format repair keeps repeated mixed-script errors ahead of act changes',
+  async () => {
+    const { calls, error } = await scriptedDecision([
+      (input) => { const value = plan(input);
+        value.speech.utterance_text = 'Я отвечу dлинно.'; return value; },
+      (input) => { const value = plan(input);
+        value.speech.utterance_text = 'Я отвечу dлинно.';
+        value.speech.dominant_act = 'question'; return value; }
+    ]);
+    assert.equal(error?.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+    assert.equal(error.details.category, 'format',
+      JSON.stringify(error.details.validation_errors));
+    assert.equal(error.details.contract_error,
+      'conversation_llm_contract_failure');
+    assert.deepEqual(error.details.repair_kinds_used, ['format']);
+    assert.deepEqual(error.details.validation_errors.map(
+      ({ code, category, path, quote }) => ({ code, category, path, quote })
+    ), [{
+      code: 'mixed_script_word',
+      category: 'format',
+      path: '$.speech.utterance_text',
+      quote: 'dлинно'
+    }]);
+    assert.equal(error.details.validation_errors.some(
+      ({ code }) => code === 'format_repair_changed_act'), false);
+    assert.deepEqual(roleKinds(calls), [RESPONDER, `${REPAIR}:format`]);
+  });
+
 test('semantic repair missing interpretation can receive format repair',
   async () => {
     const { calls, value } = await scriptedDecision([

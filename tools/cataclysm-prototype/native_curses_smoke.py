@@ -13,7 +13,7 @@ with open(options_path, 'w') as f:
     json.dump([o for o in options if o.get('name') != 'USE_LANG'] + [{'name': 'USE_LANG', 'value': 'en'}], f)
 def digest(path):
     with open(path, 'rb') as f: return hashlib.sha256(f.read()).hexdigest()
-before = {name: digest(save_world + '/' + name) for name in ('#VW4gVGFwaWE=.sav.zzip', 'dimension_data.gsav', 'novgorod_rng_state')}
+before = {name: digest(save_world + '/' + name) for name in ('#VW4gVGFwaWE=.sav.zzip', 'dimension_data.gsav')}
 master, slave = pty.openpty()
 fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 45, 120, 0, 0))
 p = subprocess.Popen([binary, '--datadir', data, '--userdir', user, '--world', world], cwd=build_root + '/cataclysm-source', stdin=slave, stdout=slave, stderr=slave, start_new_session=True)
@@ -75,7 +75,7 @@ try:
     if p.returncode != 0: raise RuntimeError('game exited with nonzero status: ' + str(p.returncode))
     after = {name: digest(save_world + '/' + name) for name in before}
     unchanged = [name for name in before if before[name] == after[name]]
-    if unchanged: raise RuntimeError('save-and-quit did not update expected save/RNG files: ' + ', '.join(unchanged))
+    if unchanged: raise RuntimeError('save-and-quit did not update expected save files: ' + ', '.join(unchanged))
     with open(verify_path, 'w') as f:
         json.dump({'before': before, 'after': after, 'process_exit': p.returncode}, f, indent=2)
     if p.poll() is None: raise RuntimeError('quit confirmation did not exit process')

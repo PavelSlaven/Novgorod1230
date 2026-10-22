@@ -1,4 +1,4 @@
-param(
+﻿param(
     [switch] $NativeOnly,
     [switch] $Reset,
     [switch] $Tiles,
@@ -21,8 +21,10 @@ try {
     if (-not $NativeOnly -and -not $env:RUS_LLM_SETTINGS_PATH) {
         Push-Location (Join-Path $PSScriptRoot "../..")
         try {
-            $env:RUS_LLM_SETTINGS_PATH = (& node --input-type=module -e 'const owner = await import("@rus/game-server"); process.stdout.write(owner.defaultLlmSettingsPath());')
+            $script = 'const owner = await import("@rus/game-server"); process.stdout.write(Buffer.from(owner.defaultLlmSettingsPath(), "utf8").toString("base64"));'
+            $encodedPath = $script | node --input-type=module -
             if ($LASTEXITCODE -ne 0) { throw "Не удалось определить путь настроек LLM." }
+            $env:RUS_LLM_SETTINGS_PATH = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($encodedPath))
         } finally {
             Pop-Location
         }

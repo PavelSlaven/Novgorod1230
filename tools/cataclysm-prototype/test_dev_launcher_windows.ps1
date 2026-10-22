@@ -1,9 +1,11 @@
+﻿param([switch] $UseCurrentConsoleEncoding)
 $ErrorActionPreference = "Stop"
 $launcher = Join-Path $PSScriptRoot "run-p3-dev.ps1"
 $previous = @{}
 foreach ($name in @("LOCALAPPDATA", "RUS_LLM_SETTINGS_PATH", "WSLENV")) {
     $previous[$name] = [Environment]::GetEnvironmentVariable($name, "Process")
 }
+$previousConsoleOutputEncoding = [Console]::OutputEncoding
 $launcherCalls = [System.Collections.Generic.List[object]]::new()
 function wsl.exe {
     $global:LASTEXITCODE = 0
@@ -18,6 +20,9 @@ function Assert-Equal($actual, $expected) {
     if ($actual -cne $expected) { throw "Launcher assertion failed: expected <$expected>, got <$actual>." }
 }
 try {
+    if (-not $UseCurrentConsoleEncoding) {
+        [Console]::OutputEncoding = [Text.Encoding]::GetEncoding(866)
+    }
     $env:LOCALAPPDATA = "C:\launcher test\настройки"
     $env:RUS_LLM_SETTINGS_PATH = $null
     $env:WSLENV = "EXISTING/u:RUS_LLM_SETTINGS_PATH/u:ANOTHER/p"
@@ -62,6 +67,7 @@ try {
     Assert-Equal ($launcherParameters -contains "Tiles") $true
     Write-Output "PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly, default --text, Tiles without --text with WSLg message, -Text removed."
 } finally {
+    [Console]::OutputEncoding = $previousConsoleOutputEncoding
     foreach ($name in $previous.Keys) {
         [Environment]::SetEnvironmentVariable($name, $previous[$name], "Process")
     }

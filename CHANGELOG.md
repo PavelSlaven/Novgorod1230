@@ -4,10 +4,11 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(design): итоговый GDD v0, утверждённое видение, анкета, журнал решений, открытые вопросы, идеи и снимок состояния дизайна (#865)
 - docs(design): единый дизайн-документ под CDDA — хаб `docs/design/GDD.md`, 17 глав по системам, реестр источников `SOURCES.md`, этапы и прогресс «Игрок может…» с доказательствами; проверка `docs/design` в `docs:check`; справка, не норма (D271) (#835)
-- docs(governance): навык `caveman` убран из репозитория — строка AGENTS.md, WR §18.1, карта в `docs/governance/README.md`, копии в `.agents/skills` и `.claude/skills`; обязателен только `ponytail`; лимит размера AGENTS.md в тесте docs-tools — 32 KiB, лимит строк снят (#788)
+- docs(governance): навык `caveman` убран из репозитория — строка AGENTS.md, WR §18.1, карта в `docs/governance/README.md`, копии в `.agents/skills` и каталоге навыков Claude Code; обязателен только `ponytail`; лимит размера AGENTS.md в тесте docs-tools — 32 KiB, лимит строк снят (#788)
 - ci(cataclysm): Windows-сборка `cataclysm-tiles.exe` в GitHub Actions родным рецептом `release.yml` CDDA того же SHA (vcpkg, msbuild, `windist.ps1`) с overlays прототипа и модом `dev-world`; тайлсет, `.mo` и шейдеры из официального Windows-архива того же SHA; порядок overlays — единый `native-overlays.txt`, накладывает `apply-overlays.sh` для Linux и Windows (#810)
-- feat(cataclysm): dev-запуск в графике (SDL3 3.4.10, UltimateCataclysm) с официальным русским переводом: `run-p3-dev.sh` по умолчанию, `run-p3-dev.ps1 -Tiles` (без ключа — текст); runtime root через родной `cmake --install` с атомарной подменой под `session.lock`, перевод и тайлсет из закреплённого архива CDDA, `keycode` для горячих клавиш при русской раскладке; проверено на servak в Xvfb с программным рендером (#795)
+- feat(cataclysm): dev-запуск в графике (SDL3 3.4.10, UltimateCataclysm) с официальным русским переводом: `run-p3-dev.sh` по умолчанию, `run-p3-dev.ps1 -Tiles` (без ключа — текст); runtime root через родной `cmake --install` с атомарной подменой под `session.lock`, перевод и тайлсет из закреплённого архива CDDA, `keycode` для горячих клавиш при русской раскладке; проверено на сервере проекта в Xvfb с программным рендером (#795)
 - docs(process): HOW_WE_WORK — модели Codex во всех задачах: руководитель, ревью планов, приёмка и независимое ревью работы Claude — `gpt-6-sol` ultra (`gpt-6-astra` не используется), помощники по сложности (по умолчанию `gpt-6-luna` high, не выше `gpt-6.1-sol`), окно 500K; Codex без `caveman` (WR §18.1), `$caveman full` убран из поручения blind-gameplay (#787)
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
@@ -31,7 +32,7 @@
 - data(game-base): occupation goals and fears for the seeded NPC character (D49), 265 goals / 158 fears, explicit gaps (#206)
 - data(game-base): checker владения архивными id — реестр таблиц, сведение словарей материалов, сверка маршрутов с решением получателя, период вариантов; хвосты одежды и оружия после PR-A (imp-crafts A1) (#204)
 - data(game-base): пересобраны устаревшие generated outputs, сняты исключения freshness (#201)
-- ci(tools): проба готовности PostgreSQL в тестах по TCP (`pg_isready -h 127.0.0.1`), повтор `docker pull` в merge-гейте, build-status понимает `.cjs`, тест свежести сгенерированных файлов game-base-v1 в `test:game-base` (#203)
+- ci(tools): проба готовности PostgreSQL в тестах по TCP (проверка `pg_isready` по TCP через loopback-интерфейс), повтор `docker pull` в merge-гейте, build-status понимает `.cjs`, тест свежести сгенерированных файлов game-base-v1 в `test:game-base` (#203)
 - data(game-base): архетип занятий performance_entertainment (гусляр, певец, сказитель), скоморох — точный список занятий; чёрная крыса — редкий завоз по аналогии, общее правило согласованности fauna-групп (D47) (#202)
 - data(game-base): один id региона region_novgorod_land, Ладога — subregion_scope=lower_volkhov_ladoga; проверка check-region-ids в npm test (#189)
 - data(game-base): импорт архива для оружия и одежды, один владелец на архивный id, усиленный check-archive-ownership (imp-crafts PR-A, D47 п.14) (#200)
@@ -49,7 +50,7 @@
 - docs(process): стенд — обязательная проверка гипотез вне игры на локальной модели до плана реализации (решение владельца D41): HOW_WE_WORK §11, WORKFLOW, CHANGE_REQUEST и форма CR (поле «Стенд») (#180)
 - docs(governance): PC §9.1 — критерий включения в мир и данные: существование, а не предполагаемая польза; наполнение по логике реальности без выдачи за источник (решения владельца D38, D40) (#177)
 - docs(sprint): CURRENT_SPRINT — архитектура ресурсов #171 для B3/B4, навыки #170, PR данных #172 → #173, R-1b в #158 (#174)
-- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка servak и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32 (#168)
+- docs(process): HOW_WE_WORK — исполнители и их модели, режимы задач, обмен сообщениями, площадка сервера проекта и правила исполнителей на ней; CURRENT_SPRINT — задачи M2c B1–B6 по решениям D28–D32 (#168)
 - data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated
 - docs(governance): решения владельца 2026-09-26 — PC §9.1 (наличие решается при первом прибытии; typed gap только для вещей по authority-записи; опознавательный текст вещей не от LLM), WR §21.1 (утверждает старшая модель на высоком reasoning; путь и commit; правка снимает утверждение); HOW_WE_WORK и CURRENT_SPRINT по ним; LW-029 уточнён (#149) LW-042 added
@@ -72,7 +73,7 @@
 - feat(docs): `knowledge:repin` пересчитывает существующие pins корпуса и generated-файлы (#125, PR #136) LW-005 closed
 - fix(world-catalog): `tar` получает относительный путь архива для Windows (#126, PR #136)
 - chore(infra): NocoDB закреплён, сломанный bootstrap удалён, esbuild остался у MapMaker (#128, PR #136) LW-022 closed
-- docs(governance): обязательные навыки `caveman` и `ponytail` (WR §18.1, роутер, копии в `.agents/skills` и `.claude/skills`); `CBM_RUNTIME_DIR` вне AppData для общего daemon CBM с MSIX-Codex (#131)
+- docs(governance): обязательные навыки `caveman` и `ponytail` (WR §18.1, роутер, копии в `.agents/skills` и каталоге навыков Claude Code); `CBM_RUNTIME_DIR` вне AppData для общего daemon CBM с MSIX-Codex (#131)
 - docs(governance): обязательная проверка, синхронизация и использование CBM в начале спринта (WR §19, роутер); подключение Claude Code и разбор зависшего daemon в CODEBASE_MEMORY_MCP (#130)
 - docs(work): ссылки на backlog-issues #105–#128 в LEGACY_WARNINGS, CURRENT_SPRINT после завершения трека Docs (#129)
 - docs(archive): конфликтующие инструкции агентов (`.cursorrules.txt`, `legacy/.cursor/rules/project.mdc`, `.github/README.md`, `.github/*.txt`) и журналы README перенесены в `docs/archive/`; README переписан как обзор для людей (#104) LW-021 closed

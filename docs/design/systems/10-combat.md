@@ -2,7 +2,36 @@
 
 # 10. Бой
 
-## Замысел
+## Для человека
+
+### Какому столпу служит
+
+Бой является опасным, но необязательным способом решить конфликт в причинном мире; насилие оставляет телесные и общественные последствия. (MEC-043, MEC-045, MEC-068)
+
+### Что чувствует игрок
+
+Короткая схватка может закончиться раной, кровотечением или смертью. Разговор, обмен и доказательства остаются реальными альтернативами. (MEC-043, MEC-045)
+
+### Правила для игрока
+
+Физические ходы в бою выбираются кнопками родных команд CDDA (Cataclysm: Dark Days Ahead — игра-основа); свободный текст в этот момент служит речи. CDDA считает попадание, урон и рану, а рассказ пересказывает промахи, блоки и передвижения. Смерть можно пережить только возвратом к сохранению. (MEC-043, MEC-045, MEC-046)
+
+### Как игрок узнаёт о механике
+
+Проза показывает ход схватки и называет положение боя в последней фразе; отдельная панель родного журнала доступна по желанию. Экран сообщает об опасности без раскрытия скрытого состояния противника. (EXP-069, MEC-050)
+
+### Связи с другими механиками
+
+Бой опирается на тело, оружие и движение CDDA; свидетель или след может запустить слух, право и репутационные последствия. (MEC-040, MEC-045, MEC-046, MEC-068)
+
+### Примеры ситуаций
+
+- Герой нажимает команду атаки, противник уклоняется → CDDA решает исход, а проза честно описывает промах и новое положение сторон. (MEC-046, EXP-069)
+- Герой говорит противнику, что сдаётся → речь передаётся неигровому персонажу; согласие прекратить бой остаётся его решением, а не автоматическим результатом фразы. (MEC-052, MEC-043)
+- После удара при свидетеле герой уходит → рана остаётся в теле, а свидетель может стать основанием для слуха и последствий. (MEC-045, MEC-068)
+
+## Для разработчика и нейросети
+### Замысел
 
 Бой — часть общей сцены и игрового времени, вызванная немедленной физической угрозой, а не ключевым словом. Игрок начинает атаку, защищается, отступает, зовёт на помощь, сдаётся или действует иначе допустимым способом. Исход зависит от участников, дистанции, оружия, защиты, тела и предыдущих последствий. LLM понимает намерение, но не назначает попадание и вред.
 
@@ -10,11 +39,11 @@
 2. Противник отступает или сдаётся → игрок прекращает атаку или позволяет ему уйти → видит изменение угрозы и последствия сцены → CDDA имеет native бегство и диалоговые средства, но не готовую семантику сдачи ([areas/04-combat-checks-states.md:36,82,86,107](../../context/cdda-native-map/areas/04-combat-checks-states.md)) → нужное поведение собирается на родных средствах и данных; второй resolver для сдачи не нужен.
 3. После боя герой перевязывает раненого → игрок тратит время на помощь → видит состояние тела после действия → CDDA применяет раны, эффекты и телесные состояния ([areas/04-combat-checks-states.md:22,67–74](../../context/cdda-native-map/areas/04-combat-checks-states.md)) → combat-health передаёт последствия body-state, turn связывает их в ходе.
 
-## Что может игрок
+### Что может игрок
 
 - **10.01.** Вступить в бой и увидеть исход удара, защиты и вреда, который сохраняется после продолжения игры.
 
-## Родное CDDA
+### Родное CDDA
 
 | Механизм | Покрытие карты | Ограничение |
 |---|---|---|
@@ -29,7 +58,7 @@
 
 Карта описывает upstream CDDA на пине 0d8843f; она не подтверждает игровой боевой путь Novgorod или UI-интеграцию ([areas/04-combat-checks-states.md:1–5](../../context/cdda-native-map/areas/04-combat-checks-states.md)).
 
-## Наш слой и владелец
+### Наш слой и владелец
 
 На целевом пути физические бой, урон, тело и RNG принадлежат CDDA; `@rus/combat-health`, `@rus/body-state` и `@rus/checks-rng` — действующие владельцы старого движка до P7 ([план:88–95,118–120](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md)).
 
@@ -41,7 +70,10 @@
 | Исторические стили, оружие и surrender | **Используем** родное оружие с историческими данными; **расширяем** частично покрытые стили и сдачу через JSON/EOC. | Мод novgorod должен содержать подходящие item, martial_art, technique и эффекты. Карта показывает эти родные аналоги; отдельный механизм не обоснован ([areas/04-combat-checks-states.md:17,80–88](../../context/cdda-native-map/areas/04-combat-checks-states.md)). |
 | Свободное боевое намерение и видимый roll | **Расширяем** handoff к атаке; CDDA рассчитывает RNG и исход, слой действия показывает committed результат без второго броска. | До P7 [@rus/checks-rng](../../../packages/checks-rng/MODULE.md) остаётся владельцем RNG старого движка. Карта отмечает EOC-вызов атаки только для avatar/NPC и отсутствие bridge к handle_action ([areas/04-combat-checks-states.md:13–20,47,57–60,109](../../context/cdda-native-map/areas/04-combat-checks-states.md)). |
 
-## Решения владельца
+### Решения владельца
+
+- **D275/16–19, 22.10.2026, пересказ.** Физический бой вызывается родными командами, текст служит речи; проза сохраняет ход схватки, базовые последствия включают свидетелей, слухи, обычай и закон, сдача и плен входят в игру. ([D275/16](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/17](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/18](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/19](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+- **D275/2 и D275/30, 22.10.2026, пересказ.** Родная проверка не дублируется d20; смерть оставляет загрузку сохранения. ([D275/2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/30](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 - **D65, 2026-10-01, пересказ записи:** бой занимает минуты, код разрешает удары, LLM понимает намерение и пишет последствия; импровизированное оружие оценивается по физике; NPC испытывают храбрость и страх ранения; после минимального боя нужны вира, суд, свидетели, месть и репутация. Старые d20 против защиты, дистанционные полосы и отсутствие сетки описывали прежний движок и требуют согласования с CDDA ([#224](https://github.com/PavelSlaven/Novgorod1230/issues/224)).
 - **D220, 2026-10-19, пересказ записи:** нужные щиты и коня брать из Medieval Mod Reborn, перков за убийства нет.
@@ -50,16 +82,19 @@
 
 combat_system.md зарегистрирован как ACTIVE DOMAIN NORM для persisted combat session/exchange, а npc_combat_and_trigger_contract.md — как ACTIVE для trigger/session и решений NPC ([CONTRACT_INDEX.md:89–93](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)). Эти области и профиль не означают cutover на CDDA.
 
-## Расхождения и открытые вопросы
+### Расхождения и открытые вопросы
 
-- **Active exchange и CDDA.** combat_system.md задаёт session, intent, technical steps и exchange; native map описывает собственные атаки и реакции ([combat_system.md:1–28](../../../data/knowledge-source/corpus/DOCUMENTS/combat_system.md), [areas/04-combat-checks-states.md:13–22](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Судьбу частей контракта решает отдельная миграция P7.
-- **Перенос боя.** Обсуждение предлагает физический бой и time/moves CDDA, но command bridge, handoff времени и историческая точность не доказаны ([обсуждение:8–20,154–158](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md), [карта:47,109](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Путь управления игрока открыт.
-- **d20 — вопрос владельцу.** Замысел 06.10 требует d20 для рискованных действий ([spec:17](../../plans/sled-na-nizhney-dvine-scenario-spec.md)), D65 описывал d20 против защиты старого движка; обсуждение допускает калиброванное изменение native случайности, но коэффициент, статистика и реализация не утверждены ([Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md:100–117](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md)). Требуется выбор между общим d20 и родными проверками; вопрос целиком в главе [09](09-character-body-d20.md).
-- **Социальные последствия — вопрос владельцу.** Аудит руководств [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243), [weapons_and_armor.txt:491–510,553–580](../../../data/knowledge-source/corpus/DOCUMENTS/weapons_and_armor.txt), сохраняет право ношения, узнавание оружия, риск трофея и реакции свидетелей; D65 требует виру, суд, месть и репутацию ([#224](https://github.com/PavelSlaven/Novgorod1230/issues/224)). Родные атаки и тактика этого пакета не доказывают ([карта боя:13–22,35–37](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Какую часть последствий включать в первое боевое кольцо? Текущие владельцы — [social-law](../../../packages/social-law/MODULE.md) для права и [items-property](../../../packages/items-property/MODULE.md) для собственности и примет.
-- **Сдача и исторический бой.** Карта показывает native компоненты, но не полную семантику сдачи; историческая точность требует проверки ([areas/04-combat-checks-states.md:82–88](../../context/cdda-native-map/areas/04-combat-checks-states.md), [Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md:32–36,121–137](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md)).
-- **Численные правила.** formulas.md не зарегистрирован как active contract; #243 отклоняет универсальную load-cost formula. Числа требуют конкретного профиля ([formulas.md:84–132](../../../data/knowledge-source/corpus/DOCUMENTS/formulas.md), [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243)).
+- **Active exchange и CDDA.** combat_system.md задаёт session, intent, technical steps и exchange; native map описывает собственные атаки и реакции ([combat_system.md:1–28](../../../data/knowledge-source/corpus/DOCUMENTS/combat_system.md), [areas/04-combat-checks-states.md:13–22](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Судьбу частей контракта решает отдельная миграция P7. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-01.
+- **Перенос боя.** Обсуждение предлагает физический бой и time/moves CDDA, но command bridge, handoff времени и историческая точность не доказаны ([обсуждение:8–20,154–158](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md), [карта:47,109](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Продуктовый выбор управления решён: физические действия — нативные команды CDDA, свободный текст — речь; открыта проверка подключения команд и времени. ([D275/16](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)) Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-02.
+- **d20 — прежний вопрос, принцип решён.** Замысел 06.10 требует d20 для рискованных действий ([spec:17](../../plans/sled-na-nizhney-dvine-scenario-spec.md)), D65 описывал d20 против защиты старого движка; обсуждение допускает калиброванное изменение native случайности, но коэффициент, статистика и реализация не утверждены ([Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md:100–117](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md)). Выбор сделан: готовая проверка CDDA обязательна, d20 допустим лишь при доказанном пробеле; открыта проверка конкретных случаев. Подробности — в главе [09](09-character-body-d20.md). ([D275/2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)) Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-03.
+- **Социальные последствия — базовый состав решён.** Аудит руководств [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243), [weapons_and_armor.txt:491–510,553–580](../../../data/knowledge-source/corpus/DOCUMENTS/weapons_and_armor.txt), сохраняет право ношения, узнавание оружия, риск трофея и реакции свидетелей; D65 требует виру, суд, месть и репутацию ([#224](https://github.com/PavelSlaven/Novgorod1230/issues/224)). Родные атаки и тактика этого пакета не доказывают ([карта боя:13–22,35–37](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Для первого боевого этапа выбраны свидетели, слухи, обычай и закон; развёрнутый суд отложен. Открыта проверка реализации этой цепочки. ([D275/18](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)) Текущие владельцы — [social-law](../../../packages/social-law/MODULE.md) для права и [items-property](../../../packages/items-property/MODULE.md) для собственности и примет. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-04.
+- **Сдача и исторический бой — выбор решён, реализация проверяется.** Карта показывает native компоненты, но не полную семантику сдачи; историческая точность требует проверки. Базовые сдача и плен приняты, а решение принять сдачу принадлежит NPC; открыто подключение и проверка родных компонентов ([D275/19](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)) ([areas/04-combat-checks-states.md:82–88](../../context/cdda-native-map/areas/04-combat-checks-states.md), [Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md:32–36,121–137](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md)). Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-05.
+- **Численные правила.** formulas.md не зарегистрирован как active contract; #243 отклоняет универсальную load-cost formula. Числа требуют конкретного профиля ([formulas.md:84–132](../../../data/knowledge-source/corpus/DOCUMENTS/formulas.md), [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243)). Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-10-06.
 
-## Источники
+### Источники
+
+- [Анкета](../questionnaire.md), [журнал решений](../decision-log.md) и [видение](../vision.md) — источники игрового замысла.
+- [Пакет D275](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md) — целевой справочный дизайн от 22.10.2026, не акт перехода действующих контрактов.
 
 - [weapons_and_armor.txt](../../../data/knowledge-source/corpus/DOCUMENTS/weapons_and_armor.txt) — социальная сторона оружия и трофеев, guide аудита #243.
 - [sled-na-nizhney-dvine-scenario-spec.md](../../plans/sled-na-nizhney-dvine-scenario-spec.md) — исходный замысел рискованной проверки.
@@ -71,6 +106,26 @@ combat_system.md зарегистрирован как ACTIVE DOMAIN NORM для
 - [Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md](../../plans/Novgorod1230_Cataclysm_Combat_Turns_and_Semantic_Actions_Discussion_2026-10-18.md) — native combat discussion и открытые проверки.
 - [04-combat-checks-states.md](../../context/cdda-native-map/areas/04-combat-checks-states.md) — native combat mechanisms and d20 coverage.
 
-## Этап
+### Этап
 
-Родные melee и защиты доступны в CDDA ([areas/04-combat-checks-states.md:13–22](../../context/cdda-native-map/areas/04-combat-checks-states.md)), но live combat path Novgorod не доказан. План среза исключает полный combat UX и unified d20 из P0–P6 ([Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md:357](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md)); 10.01 относится к возможному расширению после P6, кольца не утверждены.
+Родные melee и защиты доступны в CDDA ([areas/04-combat-checks-states.md:13–22](../../context/cdda-native-map/areas/04-combat-checks-states.md)), но live combat path Novgorod не доказан. План среза исключает полный combat UX и unified d20 из P0–P6 ([Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md:357](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md)); 10.01 в прежней таблице относится к возможному расширению после P6. Новый порядок включает бой в этап 3 GDD, этап 6 пакета D275; это принятый объём первого региона ([D276/3](../decision-log.md); [D275/16](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [глава 11 GDD](../GDD.md)).
+
+### Данные и числа
+
+Попадание, урон, число выдерживаемых ударов и телесные состояния считает CDDA; своих утверждённых чисел попадания и урона здесь нет. Порог группировки рассказа «6 событий или 5 секунд» — стартовый ориентир, уточним на прототипе; это нерешённый остаток MEC-046 — см. [открытые вопросы](../open-questions.md). Общий список собственных чисел — [глава 4 GDD](../GDD.md). (MEC-016, MEC-045, MEC-046)
+
+### Состояния и события
+
+Начало столкновения, выбранное физическое действие, реакция, рана, сдача и выход из конфликта фиксируются в порядке событий; проза следует подтверждённому исходу. (MEC-043, MEC-045, MEC-046, MEC-052)
+
+### Что сохраняется
+
+Родное тело и положение сторон сохраняют последствия физического боя; слух или правовой факт сохраняется лишь при действительном свидетеле, следе либо другом основании. (MEC-045, MEC-068)
+
+### Чек-лист
+
+Проверить загрузку после схватки, русский перевод команд и ран, звук только доступного герою события, подсказки кнопок, клавиатурное управление и доступность опасности без одного цвета. (MEC-043, MEC-046, EXP-040, EXP-044, EXP-048)
+
+### Как проверить готовность
+
+На живой сборке разыграть удар, промах, блок, ранение и попытку разговора; сверить родной исход с рассказом, журналом и сохранением. (MEC-043, MEC-045, MEC-046, EXP-069)

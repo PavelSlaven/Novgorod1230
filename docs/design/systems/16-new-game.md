@@ -2,14 +2,46 @@
 
 # 16. Старт и новая игра
 
-## Замысел
+## Для человека
+
+### Какому столпу служит
+
+«Я могу попробовать что угодно» и «Я верю в 1230 год»: игрок сам придумывает человека своей эпохи, а игра объясняет его присутствие в Вихтуе. ([VIS-028](../questionnaire.md); [WLD-043](../questionnaire.md); [D275/6](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+### Что чувствует игрок
+
+Это собственный герой с понятной предысторией, а не навязанной ролью. До начала партии игрок видит исторически допустимое толкование своего описания и может его исправить. ([WLD-043](../questionnaire.md); [WLD-046](../questionnaire.md); [D275/7](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D277/6](../decision-log.md))
+
+### Правила для игрока
+
+Личность, занятие, характер, цель и прошлое задаются свободным текстом и необязательными полями; при расхождении поле важнее текста. Имя проверяется на соответствие народу и эпохе. Сильные стороны ограничены начальным бюджетом: одной биографией нельзя стать мастером во всём. ([WLD-043](../questionnaire.md); [WLD-046](../questionnaire.md); [VIS-018](../questionnaire.md); [D275/8](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+Первое место и дата заданы: Вихтуй, 20 августа 1230 года, 07:00 по юлианскому календарю. Выбор региона и сезона придёт при расширении мира. Имущество соответствует положению, занятию и биографии; вещь при себе отличается от собственности в другом месте и права требования. ([WLD-035](../questionnaire.md); [D277/5](../decision-log.md); [D275/9](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+### Как игрок узнаёт о механике
+
+Предварительный просмотр показывает параметры до подтверждения. Вступление до первого хода объясняет, как и зачем герой оказался здесь и что ему нужно. На первом плане проза, ввод и краткие показатели; топоним показывается, если герой его знает. ([VIS-023](../questionnaire.md); [VIS-048](../questionnaire.md); [WLD-035](../questionnaire.md))
+
+### Связи с другими механиками
+
+Сразу после старта герой может выйти, встретить человека, говорить, взять или сделать вещь. «След на Нижней Двине» — ситуация мира для героя любого происхождения; её завершение не заканчивает игру. Повторная партия допускает другого героя и другие решения в том же историческом каркасе, с новыми вероятностными исходами и без переноса прогресса. ([VIS-023](../questionnaire.md); [MEC-058](../questionnaire.md); [D276/2](../decision-log.md); [VIS-083](../questionnaire.md); [VIS-084](../questionnaire.md); [MEC-065](../questionnaire.md))
+
+### Примеры ситуаций
+
+- Игрок описывает ремесленника с собственным прошлым → видит предложенные умения и черты → исправляет их до подтверждения в пределах начального бюджета. ([WLD-043](../questionnaire.md); [D275/7](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/8](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+- Игрок начинает героем иного происхождения → вступление объясняет его присутствие в Вихтуе → события «Следа» могут затронуть его без обязательной роли приказчика. ([WLD-043](../questionnaire.md); [D276/2](../decision-log.md); [D277/4](../decision-log.md))
+- После появления герой выходит и обращается к местному жителю → начинается обычная свободная жизнь, которая продолжается и после исхода отдельной истории. ([VIS-023](../questionnaire.md); [VIS-052](../questionnaire.md))
+
+## Для разработчика и нейросети
+
+### Замысел
 
 Герой задаётся свободной заявкой независимо от места; игра объясняет его присутствие (D108–D111). Заявка не создаёт фактов мира ([player_character_generation.txt:3–9,19–37](../../../data/knowledge-source/corpus/DOCUMENTS/player_character_generation.txt)). Сценарий задаёт исходные данные; общие правила и свободная игра сохраняются после сюжета ([PRODUCT_CONSTITUTION.md:203–209](../../governance/PRODUCT_CONSTITUTION.md)).
 
-1. Первый запуск → двор мастера → родные `scenario`, `start_location` и mapgen дают фиксированный старт (полное покрытие; поиск идёт по типу местности, не земной координате: [areas/06-movement-world-map.md:37–38](../../context/cdda-native-map/areas/06-movement-world-map.md)) → launcher создаёт fixture и постоянный профиль. Такой запуск наблюдался на servak, с Xvfb и клавишами через XTest ([JOURNAL.md:77–92](../../../tools/cataclysm-prototype/JOURNAL.md)); обычный вывод окна и ввод Windows не подтверждены ([JOURNAL.md:76,83](../../../tools/cataclysm-prototype/JOURNAL.md)). Двор вымышленный; повторный запуск продолжает сохранение ([PLAY.md:3–4,16–17](../../../tools/cataclysm-prototype/PLAY.md)).
+1. Первый запуск → двор мастера → родные `scenario`, `start_location` и mapgen дают фиксированный старт (полное покрытие; поиск идёт по типу местности, не земной координате: [areas/06-movement-world-map.md:37–38](../../context/cdda-native-map/areas/06-movement-world-map.md)) → launcher создаёт fixture и постоянный профиль. Такой запуск наблюдался на сервере проекта, с Xvfb и клавишами через XTest ([JOURNAL.md:77–92](../../../tools/cataclysm-prototype/JOURNAL.md)); обычный вывод окна и ввод Windows не подтверждены ([JOURNAL.md:76,83](../../../tools/cataclysm-prototype/JOURNAL.md)). Двор вымышленный; повторный запуск продолжает сохранение ([PLAY.md:3–4,16–17](../../../tools/cataclysm-prototype/PLAY.md)).
 2. Партия среза → Вихтуй и два жителя → CDDA размещает героя и геометрию фиксированного старта (полное покрытие с тем же ограничением: [areas/06-movement-world-map.md:37–38](../../context/cdda-native-map/areas/06-movement-world-map.md)) → мод `novgorod` даёт данные, общий игровой слой — разговор, распорядок, поиск и изготовление. Это цель части 5; перенос — в [главе 17](17-world-data-cdda.md).
 
-## Что может игрок
+### Что может игрок
 
 - **16.01.** Запустить прототип CDDA и оказаться во дворе мастера.
 - **16.02.** Начать новую игру в Вихтуе.
@@ -17,7 +49,7 @@
 
 - **16.04.** Создать персонажа свободным описанием и увидеть выбранный образ в начале партии.
 
-## Родное CDDA
+### Родное CDDA
 
 Карта описывает upstream `0d8843f`, до наших патчей ([areas/12-mods-data-loading.md:3](../../context/cdda-native-map/areas/12-mods-data-loading.md)).
 
@@ -29,7 +61,7 @@
 | Опции сезона и `scenario.start_of_game` ([areas/12-mods-data-loading.md:14–16](../../context/cdda-native-map/areas/12-mods-data-loading.md)). | Настройка календаря — частичное; исторические месяцы и день недели — нет. 1230 год не помещается в секундный отсчёт (арифметический вывод без запуска). |
 | `--userdir`, `--savedir`, `--world` и отдельный профиль ([areas/12-mods-data-loading.md:17](../../context/cdda-native-map/areas/12-mods-data-loading.md)). | Полное для CLI; Windows-поведение ключей не проверено; нужен отдельный userdir. |
 
-## Наш слой и владелец
+### Наш слой и владелец
 
 | Механизм | Отношение к CDDA и владелец |
 |---|---|
@@ -38,7 +70,9 @@
 | Свободная заявка героя | **Расширяем** родное создание ([areas/12-mods-data-loading.md:22](../../context/cdda-native-map/areas/12-mods-data-loading.md), полное для сценария/профессии): разбор заявки, причина присутствия и preview D110/D111 картой не доказаны. Прежнее разделение intent/проверки/фиксации — [new_game_start_pipeline.txt:5–39,59–81](../../../data/knowledge-source/corpus/DOCUMENTS/new_game_start_pipeline.txt); JS orchestration — `@rus/new-game` ([new-game.md:3,37–41](../../pipelines/new-game.md)). CDDA owner определяется CR. |
 | Историческая дата | **Расширяем** частичную настройку `start_of_game`; исторических месяцев и дня недели нет ([areas/12-mods-data-loading.md:14–16](../../context/cdda-native-map/areas/12-mods-data-loading.md)). Мод задаёт сезон/час; отсутствующее отображение требует патча CDDA. Календарь — [глава 03](03-time-calendar.md). |
 
-## Решения владельца
+### Решения владельца
+
+Позднейшие уточнения: свободный герой и просмотр утверждены D275/6–9; «След» стал ситуацией для любого происхождения по D276/2 и D277/4; регион и сезон фиксированы до расширения (D277/5); трактовка биографии допускается без новых фактов (D277/6). Прежние записи ниже сохраняют историю решений и не отменяют эти уточнения. ([журнал](../decision-log.md); [пакет D275](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 - **D11, 2026-09-26, пересказ.** Игрок задаёт имя, характер, цель и предысторию; код сверяет имя с пулом и предлагает варианты, LLM пишет связный пересказ ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)).
 - **D49, 2026-09-29.** «Сначала починить Вихтую»; Вихтуй выбран началом среза ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5889785976)).
@@ -57,7 +91,7 @@
 - **D220, 2026-10-19, пересказ.** Срез использует мод `novgorod`; анахронизмы исключаются из наличного мира, причинное изобретение игрока сохраняется.
 - **D264, 2026-10-21.** «дату старта сам выбери»: распорядитель выбрал 20.08.1230 по юлианскому календарю, 07:00 местного среднего солнечного времени; распорядок двора уточняет D266 в [главе 04](04-npc-life.md).
 
-## Расхождения и открытые вопросы
+### Расхождения и открытые вопросы
 
 - **Свободный герой и фиксированный срез — вопрос владельцу.** D108/D110/D111 требуют независимости героя от места, preview и объяснения присутствия; В #243 это CONFLICT, заявка/импульс/позиция — PARTIAL (`player_character_generation.txt:35,37,64,68–86,393–416,506–551`). Часть 5/D228 и [PLAY.md:3–4](../../../tools/cataclysm-prototype/PLAY.md) пока опираются на фиксированный двор. Какую свободу героя включить в срез? Родные [scenario/profession:22](../../context/cdda-native-map/areas/12-mods-data-loading.md) покрыты полностью, но свободная заявка ими не доказана. [D108](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6015580813).
 
@@ -65,7 +99,7 @@
 - **Готовность данных Вихтуя.** D228 требует двух жителей с полным набором действий, тогда как [PLAY.md:34–37](../../../tools/cataclysm-prototype/PLAY.md) описывает ограниченный dev-двор без полной памяти и распорядка. CR называет утверждённые карту, жителей, вещи и WK; JSON-типы не доказывают загрузку ([areas/12-mods-data-loading.md:12](../../context/cdda-native-map/areas/12-mods-data-loading.md)). См. [GDD.md](../GDD.md), раздел «Этапы».
 - **Дата и первый экран.** D264 даёт дату сцены; рамка требует согласованного времени ([new_game_start_pipeline.txt:11–15,53–54](../../../data/knowledge-source/corpus/DOCUMENTS/new_game_start_pipeline.txt)). Представление этой даты в ограниченном родном календаре надо согласовать до приёмки ([areas/12-mods-data-loading.md:14–16](../../context/cdda-native-map/areas/12-mods-data-loading.md)).
 
-## Источники
+### Источники
 
 - [PRODUCT_CONSTITUTION.md](../../governance/PRODUCT_CONSTITUTION.md) — свободный мир и сценарии.
 - [new_game_start_pipeline.txt](../../../data/knowledge-source/corpus/DOCUMENTS/new_game_start_pipeline.txt) и [player_character_generation.txt](../../../data/knowledge-source/corpus/DOCUMENTS/player_character_generation.txt) — заявка и первый экран.
@@ -74,6 +108,30 @@
 - [PLAY.md](../../../tools/cataclysm-prototype/PLAY.md), [JOURNAL.md](../../../tools/cataclysm-prototype/JOURNAL.md) — запуск и ограничения.
 - [План среза](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md) — итоговая партия P6.
 
-## Этап
+### Этап
 
-Этап 0: servak, Xvfb, XTest; Windows не проверен ([JOURNAL.md:76–92](../../../tools/cataclysm-prototype/JOURNAL.md)). Часть 5 переносит разговор, распорядок, «взять» и «сделать» на двух жителей Вихтуя; итог P6 — пятнадцать–двадцать минут игры ([план среза, раздел P6](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md)). Критерии и доказательства — в [GDD.md](../GDD.md).
+Этап 0: сервер проекта, Xvfb, XTest; Windows не проверен ([JOURNAL.md:76–92](../../../tools/cataclysm-prototype/JOURNAL.md)). Часть 5 переносит разговор, распорядок, «взять» и «сделать» на двух жителей Вихтуя; итог P6 — пятнадцать–двадцать минут игры ([план среза, раздел P6](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md)). Критерии и доказательства — в [GDD.md](../GDD.md).
+
+### Данные и числа
+
+Начальная дата — 20.08.1230, 07:00 по юлианскому календарю; бюджет возможностей берётся из CDDA, собственное значение не назначается. Сводка параметров — [глава 4 GDD](../GDD.md). ([WLD-035](../questionnaire.md); [D275/8](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+### Состояния и события
+
+Заявка и поля → историческая интерпретация → редактируемый просмотр → подтверждение → фиксация героя → вступление до первого хода. Факты сверх заявки не выдумываются; reload не генерирует героя заново. ([WLD-043](../questionnaire.md); [D275/7](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D277/6](../decision-log.md); [D111](../decision-log.md))
+
+### Что сохраняется
+
+Подтверждённый герой, параметры, имущество, цель, причина присутствия и стартовая позиция входят в мир партии. Переносимое имущество, собственность вдали и права требования различаются. Новая партия не наследует прогресс прежней. ([WLD-043](../questionnaire.md); [D275/9](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [MEC-065](../questionnaire.md); [D111](../decision-log.md))
+
+### Чек-лист
+
+- Сохранение: продолжение не меняет принятого героя и его стартовые факты. ([D111](../decision-log.md))
+- Перевод: русский интерфейс и русское вступление; язык исходных строк мода — см. [open-questions.md, EXP-045](../open-questions.md). ([EXP-044](../questionnaire.md); [EXP-045](../questionnaire.md))
+- Звук: не решено — см. [open-questions.md, SYS-16-01](../open-questions.md).
+- Подсказка и управление: просмотр и правка до подтверждения, объяснение присутствия до первого хода, справка по запросу. ([WLD-043](../questionnaire.md); [VIS-023](../questionnaire.md); [видение](../vision.md))
+- Доступность: родные средства CDDA и крупная проза, смысл не только цветом. ([EXP-040](../questionnaire.md))
+
+### Как проверить готовность
+
+Создать двух разных по биографии героев, исправить предложенную трактовку до подтверждения, проверить ограничение возможностей и историчность имущества. Убедиться, что место не навязало личность, вступление объяснило присутствие, а загрузка не пересоздала героя. Проверить свободную жизнь после исхода истории, без обязательного маршрута. ([D275/6](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/7](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/8](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/9](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D276/2](../decision-log.md); [VIS-023](../questionnaire.md); [D111](../decision-log.md))

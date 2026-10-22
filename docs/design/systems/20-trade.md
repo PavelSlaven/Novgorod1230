@@ -55,7 +55,7 @@
 
 ### Расхождения и открытые вопросы
 
-Не решено — см. [open-questions.md, WLD-053, SYS-20-01](../open-questions.md).
+Не решено — см. [open-questions.md, WLD-053](../open-questions.md).
 
 ### Источники
 
@@ -67,7 +67,7 @@
 
 ### Данные и числа
 
-Внутренняя единица — БУЕ, 1 мг серебра; игроку показываются местные деньги. Баланс цен берётся из CDDA; собственных коэффициентов наценки и успешности торга не утверждено. Сводная таблица — [глава 4 GDD](../GDD.md). ([MEC-025](../questionnaire.md); [D275/2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/20](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+Внутренняя единица — БУЕ, 1 мг серебра; игроку показываются местные деньги. Баланс цен берётся из CDDA; собственных коэффициентов наценки и успешности торга не утверждено. Сводная таблица — [таблица главы 4 GDD](../GDD.md). ([MEC-025](../questionnaire.md); [D275/2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/20](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 ### Состояния и события
 
@@ -81,10 +81,10 @@
 
 - Сохранение: до и после обмена нет дублей, повторного платежа или расхождения владения. ([D275 §6.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275 §7.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 - Перевод: русский интерфейс и литературный разговор. ([EXP-044](../questionnaire.md); [EXP-045](../questionnaire.md))
-- Звук: не решено — см. [open-questions.md, SYS-20-02](../open-questions.md).
+- Звук: проза называет только слышимое героем; отдельных сигналов опасности нет. ([EXP-017](../questionnaire.md)) Подписи звуков не решены — см. [open-questions.md, EXP-043](../open-questions.md).
 - Подсказка и управление: свободный торг, наблюдаемое согласие/отказ, реальные вещи в инвентаре. ([D275/20](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/36](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 - Доступность: родные средства CDDA, крупная проза, смысл не только цветом. ([EXP-040](../questionnaire.md))
 
 ### Как проверить готовность
 
-Проверить покупку, бартер, отказ NPC и попытку заплатить отсутствующими деньгами. Сопоставить согласованные условия с реальным инвентарём и владением после сделки, затем сохранить и загрузить. Текст не должен сообщать успешный платёж при отсутствии физического результата. ([MEC-025](../questionnaire.md); [D275/20](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275 §6.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275 §7.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+По сквозному сценарию T07 (D275 §10) проверить покупку, бартер, отказ NPC и попытку заплатить отсутствующими деньгами. Сопоставить согласованные условия с реальным инвентарём и владением после сделки, затем сохранить и загрузить. Текст не должен сообщать успешный платёж при отсутствии физического результата. ([MEC-025](../questionnaire.md); [D275/20](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275 §6.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275 §7.4](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))

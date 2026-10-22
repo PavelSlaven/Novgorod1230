@@ -25,6 +25,7 @@ const STAGE_HEADER = ['Этап', 'Цель', 'Зависит от', 'Стату
 const CRITERION_HEADER = ['Критерий', 'id способностей', 'Доказательство', 'Итог'];
 const CRITERION_RESULTS = new Set(['выполнен', 'не выполнен', 'не проверен']);
 const DECISION_HEADER = ['D', 'Дата', 'Цитата или пересказ', 'Главы', 'URL GitHub, если есть'];
+const FIRST_JOURNAL_DECISION = 275;
 const CHAPTER_HEADINGS = [
   'Замысел', 'Что может игрок', 'Родное CDDA', 'Наш слой и владелец',
   'Решения владельца', 'Расхождения и открытые вопросы', 'Источники', 'Этап'
@@ -117,7 +118,7 @@ function sameHeader(actual, expected) {
 
 function chapterNumbers(value) {
   const numbers = new Set();
-  for (const match of value.matchAll(/\b(0[1-9]|1[0-7])(?:[–-](0[1-9]|1[0-7]))?\b/gu)) {
+  for (const match of value.matchAll(/\b(0[1-9]|1\d|20)(?:[–-](0[1-9]|1\d|20))?\b/gu)) {
     const start = Number(match[1]);
     const end = Number(match[2] ?? match[1]);
     for (let number = start; number <= end; number += 1) {
@@ -278,11 +279,16 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
         errors.push(error('P8', `недопустимый элемент или заголовок: ${path}`));
       }
     } else if (path.includes('/systems/')) {
-      const human = subsection(content, 'Какому столпу служит');
+      const human = section(content, 'Для человека').join('\n');
+      const technical = section(content, 'Для разработчика и нейросети').join('\n');
+      const number = /\/systems\/(\d{2})-/u.exec(path)[1];
       const headings = headingNames(content);
       if (JSON.stringify(headings) !== JSON.stringify(['Для человека', 'Для разработчика и нейросети']) ||
           JSON.stringify(thirdLevelNames(content)) !== JSON.stringify([...HUMAN_HEADINGS, ...TECH_HEADINGS]) ||
-          !/^# \d{2}\. /mu.test(content) || human.length === 0) {
+          JSON.stringify(thirdLevelNames(human)) !== JSON.stringify(HUMAN_HEADINGS) ||
+          JSON.stringify(thirdLevelNames(technical)) !== JSON.stringify(TECH_HEADINGS) ||
+          !lines(content).some((line) => line.startsWith(`# ${number}. `)) ||
+          !subsection(human, 'Какому столпу служит').some((line) => line.trim())) {
         errors.push(error('P8', `недопустимый элемент или заголовок: ${path}`));
       }
     }
@@ -325,12 +331,25 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
     }
   }
   const chapterDecisions = new Set();
+  const journalDecisions = new Set([...(files.get(`${DESIGN}/decision-log.md`) ?? '')
+    .matchAll(/^(?:\| |#{1,6} )(D\d+(?:\/\d+)?)(?=[\s|])/gmu)].map((match) => match[1]));
+  const journalBases = new Set([...journalDecisions].map((decision) => decision.split('/')[0]));
   for (const [path, content] of files) {
     if (!path.includes('/systems/')) continue;
     const chapter = /\/systems\/(\d{2})-/u.exec(path)?.[1];
-    for (const decision of decisionNumbers(subsection(content, 'Решения владельца').join('\n'))) {
-      if (Number(decision.slice(1)) > 274) continue;
-      chapterDecisions.add(`${decision}/${chapter}`);
+    const decisions = subsection(content, 'Решения владельца').join('\n');
+    for (const decision of decisionNumbers(decisions)) {
+      if (Number(decision.slice(1)) >= FIRST_JOURNAL_DECISION) {
+        if (!journalBases.has(decision)) errors.push(error('P13', `решение главы отсутствует в журнале: ${decision}/${chapter}`));
+      } else {
+        chapterDecisions.add(`${decision}/${chapter}`);
+      }
+    }
+    for (const match of decisions.matchAll(/\b(D\d+\/\d+)\b/gu)) {
+      const decision = match[1];
+      if (Number(decision.slice(1).split('/')[0]) >= FIRST_JOURNAL_DECISION && !journalDecisions.has(decision)) {
+        errors.push(error('P13', `решение главы отсутствует в журнале: ${decision}/${chapter}`));
+      }
     }
   }
   for (const key of new Set([...indexedDecisions, ...chapterDecisions])) {
@@ -339,7 +358,7 @@ export async function checkDesignDocs(rootDir = '.', { trackedPaths } = {}) {
     }
   }
   const hub = files.get(`${DESIGN}/GDD.md`) ?? '';
-  const abilities = tableWithHeader(subsection(hub, 'Прогресс: игрок может…'), ABILITY_HEADER);
+  const abilities = tableWithHeader(subsection(section(hub, '11. Объём и план').join('\n'), 'Прогресс: игрок может…'), ABILITY_HEADER);
   if (!sameHeader(abilities.header, ABILITY_HEADER)) errors.push(error('P4', 'неверная схема таблицы способностей'));
   const abilityById = new Map();
   const totals = new Map();

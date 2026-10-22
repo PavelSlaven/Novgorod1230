@@ -153,6 +153,62 @@ test('честная fixture проходит все правила', async () =
   assert.deepEqual(result.errors, []);
 });
 
+test('P7: не начат при работе даёт только ошибку статуса этапа', async () => {
+  const f = await fixture();
+  await withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт | 1 из 20 |', '| 0. База CDDA | Основа | — | не начат | 0 из 20 |')
+    .replace('| 01 | 0 | проверено в игре | [протокол](../governance/PRODUCT_CONSTITUTION.md) |', '| 01 | 0 | не начато |  |'));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, ['[GDD:P7] статус этапа неверен: 0']);
+});
+
+test('хаб допускает О документе перед главами и Словарь после них', async () => {
+  const f = await fixture();
+  await withHub(f, (s) => `${s.replace('## 1. Обзор', '## О документе\n\nСодержание.\n\n## 1. Обзор')}\n## Словарь\n\nТермины.\n`);
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
+test('P13: D1 и его указатель допускают главы 18–20', async () => {
+  const f = await fixture();
+  await withSources(f, (s) => s.replace('Пересказ решения для fixture. | 01 |', 'Пересказ решения для fixture. | 01, 18–20 |'));
+  for (const number of ['18', '19', '20']) {
+    await edit(chapterOf(f, number), (s) => s.replace('Содержание Решения владельца.', 'Также D1.'));
+  }
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
+test('P13: D274 сохраняет двустороннюю проверку указателя', async () => {
+  const f = await fixture();
+  await withSources(f, (s) => s.replace('| D1 |', '| D274 |'));
+  await edit(chapterOf(f), (s) => s.replace('D1,', 'D274,'));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
+test('P13: решения с D275 и будущие проверяются по записям журнала', async () => {
+  const f = await fixture();
+  await edit(pathOf(f, 'decision-log.md'), (s) => `${s}\n| Решение | Текст |\n|---|---|\n| D275/1 | Решение. |\n\n## D276 — решения\n\n| D300 | Будущее решение. |\n`);
+  await edit(chapterOf(f, '18'), (s) => s.replace('Содержание Решения владельца.', 'D275/1, D276 и D300.'));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
+test('P13: ссылка на отсутствующий подпункт D275 отклоняется', async () => {
+  const f = await fixture();
+  await edit(pathOf(f, 'decision-log.md'), (s) => `${s}\n| D275/1 | Решение. |\n`);
+  await edit(chapterOf(f, '18'), (s) => s.replace('Содержание Решения владельца.', 'D275/2.'));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.ok(result.errors.includes('[GDD:P13] решение главы отсутствует в журнале: D275/2/18'), result.errors.join('\n'));
+});
+
+test('P12: внутренний источник главы не требует строки в реестре', async () => {
+  const f = await fixture();
+  await edit(chapterOf(f), (s) => s.replace('Содержание Источники.', '[видение](../vision.md)'));
+  const result = await checkDesignDocs(f.root, { trackedPaths: [SOURCE] });
+  assert.deepEqual(result.errors, []);
+});
+
 test('описания способности совпадают при разных относительных адресах одного файла', async () => {
   const f = await fixture();
   await withHub(f, (s) => s.replace(ability('01.01'), `${ability('01.01')} [основание](../governance/PRODUCT_CONSTITUTION.md)`));
@@ -192,7 +248,6 @@ const red = [
   ['P7: преждевременное «сделано»', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | сделано |'))],
   ['P7: N=0 нельзя сделать', 'P7', async (f) => withHub(f, (s) => s.replace('| 2. Этап | Цель | 0 | не начат | — |', '| 2. Этап | Цель | 0 | сделано | — |'))],
   ['P7: не начат при K>0', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт |', '| 0. База CDDA | Основа | — | не начат |'))],
-  ['P7: не начат при работе', 'P7', async (f) => withHub(f, (s) => s.replace('| 0. База CDDA | Основа | — | идёт | 1 из 17 |', '| 0. База CDDA | Основа | — | не начат | 0 из 17 |').replace('| 01 | 0 | проверено в игре | [протокол](../governance/PRODUCT_CONSTITUTION.md) |', '| 01 | 0 | не начато |  |'))],
   ['P8: лишний md в корне', 'P8', async (f) => writeFile(pathOf(f, 'EXTRA.md'), '# extra')],
   ['P8: лишний не-md в корне', 'P8', async (f) => writeFile(pathOf(f, 'extra.txt'), 'extra')],
   ['P8: лишний md в systems', 'P8', async (f) => writeFile(join(f.systems, '21-extra.md'), '# extra')],
@@ -206,8 +261,16 @@ const red = [
   ['P8: имя в другом регистре', 'P8', async (f) => writeFile(pathOf(f, 'gdd.md'), hub())],
   ['P8: нет главы', 'P8', async (f) => unlink(chapterOf(f))],
   ['P8: неверный H2', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека', '## Игрок'))],
-  ['P8: неверный порядок глав', 'P8', async (f) => withHub(f, (s) => s.replace('## 1. Обзор', '## 15. Обзор'))],
-  ['P8: нет части для человека', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека', '## Для читателя'))],
+  ['P8: неверный порядок глав', 'P8', async (f) => withHub(f, (s) => s.replace('## 1. Обзор', '## 2. Цикл и прогрессия').replace('## 2. Цикл и прогрессия\n\nСодержание.\n\n## 3.', '## 1. Обзор\n\nСодержание.\n\n## 3.'))],
+  ['P8: нет части для человека', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека\n', ''))],
+  ['P8: человеческие разделы под технической частью', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для человека\n', '## Для человека\n\n## Для разработчика и нейросети\n').replace('\n## Для разработчика и нейросети\n\n### Замысел', '\n### Замысел'))],
+  ['P8: технические разделы под человеческой частью', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('## Для разработчика и нейросети\n', '').replace('### Что может игрок', '## Для разработчика и нейросети\n\n### Что может игрок'))],
+  ['P8: пустой раздел о столпе', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('Содержание Какому столпу служит.', '   '))],
+  ['P8: номер H1 не совпадает с файлом', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('# 01. Глава', '# 07. Глава'))],
+  ['P8: О документе не первым', 'P8', async (f) => withHub(f, (s) => s.replace('## 2. Цикл и прогрессия', '## О документе\n\nСодержание.\n\n## 2. Цикл и прогрессия'))],
+  ['P8: Словарь не последним', 'P8', async (f) => withHub(f, (s) => s.replace('## 14. Открытые вопросы', '## Словарь\n\nСодержание.\n\n## 14. Открытые вопросы'))],
+  ['P8: отсутствующий H3', 'P8', async (f) => edit(chapterOf(f), (s) => s.replace('### Что чувствует игрок\n', ''))],
+  ['P8: лишний H3', 'P8', async (f) => edit(chapterOf(f), (s) => `${s}\n### Лишний раздел\n`)],
   ['P9: отсутствующий файл', 'P9', async (f) => withHub(f, (s) => s.replace('../governance/PRODUCT_CONSTITUTION.md', '../governance/missing.md'))],
   ['P9: якорь в относительной ссылке', 'P9', async (f) => withHub(f, (s) => s.replace('../governance/PRODUCT_CONSTITUTION.md', '../governance/PRODUCT_CONSTITUTION.md#section'))],
   ['P10: первая строка без статуса', 'P10', async (f) => withSources(f, (s) => s.replace(PREFIX, '# Нет статуса'))],
@@ -222,11 +285,27 @@ const red = [
   ['P14b: статус изменён в индексе', 'P14', async (f) => edit(join(f.root, INDEX), (s) => s.replace('- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — продуктовая конституция;\n', '').replace('## 4. Explicit active contracts', '## 4. Explicit active contracts\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) | `ACTIVE` | Продуктовая конституция. |'))],
   ['P13a: решение главы отсутствует в указателе', 'P13', async (f) => edit(chapterOf(f), (s) => s.replace('- **D1, 2026-10-21.**', '- **D2, 2026-10-21.**'))],
   ['P13b: глава указателя не содержит решение', 'P13', async (f) => withSources(f, (s) => s.replace('| D1 | 2026-10-21 | Пересказ решения для fixture. | 01 |', '| D1 | 2026-10-21 | Пересказ решения для fixture. | 02 |'))],
+  ['P13: диапазон глав 01–20 требует решение в каждой главе', 'P13', async (f) => withSources(f, (s) => s.replace('Пересказ решения для fixture. | 01 |', 'Пересказ решения для fixture. | 01–20 |'))],
+  ['P13: D274 требует прежнего указателя', 'P13', async (f) => edit(chapterOf(f), (s) => s.replace('Содержание Решения владельца.', 'Также D274.').replace('- **D1, 2026-10-21.**', '- **D274, 2026-10-21.**'))],
+  ['P13: D275 без записи журнала', 'P13', async (f) => edit(chapterOf(f, '18'), (s) => s.replace('Содержание Решения владельца.', 'Также D275.'))],
+  ['P13: будущее решение без записи журнала', 'P13', async (f) => edit(chapterOf(f), (s) => s.replace('Решение для fixture.', 'Решение для fixture. Также D300.'))],
+  ['P4: прогресс перенесён из главы 11 в главу 3', 'P4', async (f) => withHub(f, (s) => {
+    const start = s.indexOf('### Прогресс: игрок может…');
+    const end = s.indexOf('## 12. Выпуск и бизнес', start);
+    const progress = s.slice(start, end);
+    return s.slice(0, start).concat(s.slice(end)).replace('## 3. Механики\n', `## 3. Механики\n\n${progress}`);
+  })],
+  ['P9: отсутствующий внутренний источник главы', 'P9', async (f) => edit(chapterOf(f), (s) => s.replace('Содержание Источники.', '[источник](../missing.md)'))],
   ['P12: источник главы не в реестре', 'P12', async (f) => {
     await writeFile(join(f.root, 'docs/README.md'), '# docs\n');
     await edit(chapterOf(f), (s) => s.replace('### Источники\n\nСодержание Источники.', '### Источники\n\n- [README](../../../docs/README.md) — карта.'));
   }]
 ];
+
+for (const name of ['vision.md', 'questionnaire.md', 'decision-log.md', 'open-questions.md', 'ideas.md', 'STATE.md']) {
+  red.push([`P8: отсутствует ${name}`, 'P8', async (f) => unlink(pathOf(f, name))]);
+  red.push([`P10: нет префикса в ${name}`, 'P10', async (f) => edit(pathOf(f, name), (s) => s.replace(PREFIX, '# Нет статуса'))]);
+}
 
 for (const [name, rule, mutate] of red) {
   test(name, async (t) => {
@@ -287,8 +366,8 @@ test('ссылки PC, AI, WR, AR и GS ведут к существующим �
   }
   const base = join(root, 'docs/design');
   const files = [
-    ...['GDD.md', 'SOURCES.md'].map((name) => join(base, name)),
-    ...(await readdir(join(base, 'systems'))).map((name) => join(base, 'systems', name))
+    ...(await readdir(base)).filter((name) => name.endsWith('.md')).map((name) => join(base, name)),
+    ...(await readdir(join(base, 'systems'))).filter((name) => name.endsWith('.md')).map((name) => join(base, 'systems', name))
   ];
   for (const file of files) {
     const content = await readFile(file, 'utf8');

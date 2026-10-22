@@ -15,7 +15,7 @@
 
 ### Правила для игрока
 
-Занятия зависят от профессии, обязанностей, нужд, сезона и света. Профиль двора в срезе задаёт мастеру окно 05:00–20:00, сторожу — 20:00–05:00; это не одинаковые часы всех людей. Спутник сам принимает поручение и исполняет принятое, пока существенное обстоятельство не потребует нового решения. ([WLD-063](../questionnaire.md); [D275/1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/35](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+Занятия зависят от профессии, обязанностей, нужд, сезона и света. Профиль двора в срезе (первой проверочной части игры) задаёт мастеру окно 05:00–20:00, сторожу — 20:00–05:00; это не одинаковые часы всех людей. Спутник сам принимает поручение и исполняет принятое, пока существенное обстоятельство не потребует нового решения. ([WLD-063](../questionnaire.md); [D275/1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D275/35](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 Обычный человек может стать важным из-за связи, обязательства или действий героя. При этом сохраняются его личность и история; меньшая подробность дальнейшей жизни не стирает записи разговоров. ([WLD-070](../questionnaire.md); [D277/8](../decision-log.md))
 
@@ -80,7 +80,7 @@
 - **D61, 2026-10-01, пересказ.** Карельские имена — по календарному правилу; германские и готландские гости профиля — мужчины. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5931406104))
 - **D62, 2026-10-01, пересказ.** NPC общаются через LLM без скриптованных фраз; игрок может учиться у них ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5937121450)).
 - **D63, 2026-10-01, пересказ.** Скот — по головам, птица — стаей с числом; нужны наличие, хозяин, фазы дня, видимость, звуки и реакция собаки. Голод и смерть — позже ([#223](https://github.com/PavelSlaven/Novgorod1230/issues/223)).
-- **D69, 2026-10-01, пересказ.** Знание и память NPC — до животных, навыки и обучение — после боя; яркое событие помнится дольше.
+- **D69, 2026-10-01, пересказ.** Знание и память NPC — до животных, навыки и обучение — после боя; яркое событие помнится дольше. Недельное окно и разная длительность памяти заменены: после разговора остаётся краткая запись, сложного забывания нет ([D276/1](../decision-log.md); [D275/26](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)).
 - **D87, 2026-10-05, пересказ.** По умолчанию обычный день; особый задаёт календарь, ночную работу — назначение.
 - **D94, 2026-10-06, пересказ.** Манера зависит от темперамента, занятия, положения и отношений, проверяется по речи. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6010079905))
 - **D100, 2026-10-06, пересказ.** Речь живая, без архаики и канцелярита; положение задаёт словарь, отношения — тон. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6013130412))
@@ -110,13 +110,13 @@
 
 ### Расхождения и открытые вопросы
 
-Уточнение 22.10.2026: смена яруса сохраняет существующую личность; [D277/8](../decision-log.md) заменяет сжатие истории и узкое правило повышения D119. Темперамент и ценности сохраняются по [D277/7](../decision-log.md), а память описывается [D275/26](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)–27. Старые формулировки ниже оставлены для прослеживаемости. ([D277/7](../decision-log.md); [D277/8](../decision-log.md); [WLD-069](../questionnaire.md); [WLD-070](../questionnaire.md))
+Уточнение 22.10.2026: смена яруса сохраняет существующую личность; [D277/8](../decision-log.md) заменяет сжатие истории и узкое правило повышения D119. Темперамент и ценности сохраняются по [D277/7](../decision-log.md), а память описывается [D275/26](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)–27. Старые формулировки выше, в разделе «Решения владельца», оставлены для прослеживаемости. Недельное окно и разная длительность памяти из D69 заменены ([D276/1](../decision-log.md); [D275/26](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)). ([D277/7](../decision-log.md); [D277/8](../decision-log.md); [WLD-069](../questionnaire.md); [WLD-070](../questionnaire.md))
 
-- **Нормы и часть 2.** ACTIVE [temporal](../../../data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md) и [NPC](../../../data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md) используют proposals; [#780](https://github.com/PavelSlaven/Novgorod1230/issues/780) требует native EOC/посты. Перенос — [#822](https://github.com/PavelSlaven/Novgorod1230/issues/822), [PR #829](https://github.com/PavelSlaven/Novgorod1230/pull/829); до P7 действует ACTIVE.
-- **Свет и часы.** [D262/D266](../SOURCES.md): восход/закат против окна 05–20 и избы с 19:00; native свет зависит от места и времени ([areas/01-time.md:18–19](../../context/cdda-native-map/areas/01-time.md)). Общее правило или профиль среза? См. [главу 03](03-time-calendar.md).
-- **Нужды при посте.** Карта не обещает исход ([areas/02-npc-life.md:12](../../context/cdda-native-map/areas/02-npc-life.md)); [D260](../SOURCES.md) сохраняет голод без точного часа сна.
-- **Догон.** Вне пузыря нет полного тика и догона сна ([areas/02-npc-life.md:15,20](../../context/cdda-native-map/areas/02-npc-life.md)). [Часть 2](https://github.com/PavelSlaven/Novgorod1230/issues/780) проверяет двор, 04.05 — двух жителей Вихтуя.
-- **Ярусы NPC.** [Профиль:183–231](../../../data/knowledge-source/corpus/DOCUMENTS/npc_generation_profiles.txt) и [D119/D121](../SOURCES.md) требуют смены яруса с памятью; native индивидуальность **частична** ([areas/02-npc-life.md:18](../../context/cdda-native-map/areas/02-npc-life.md)). Перенос — P7.
+- **Нормы и часть 2.** ACTIVE [temporal](../../../data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md) и [NPC](../../../data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md) используют proposals; [#780](https://github.com/PavelSlaven/Novgorod1230/issues/780) требует native EOC/посты. Перенос — [#822](https://github.com/PavelSlaven/Novgorod1230/issues/822), [PR #829](https://github.com/PavelSlaven/Novgorod1230/pull/829); до P7 действует ACTIVE. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-04-01.
+- **Свет и часы.** [D262/D266](../SOURCES.md): восход/закат против окна 05–20 и избы с 19:00; native свет зависит от места и времени ([areas/01-time.md:18–19](../../context/cdda-native-map/areas/01-time.md)). Для мастера и сторожа среза часы утверждены; не заданы распорядки остальных жителей и других сезонов — см. [открытые вопросы](../open-questions.md), WLD-063, и [главу 03](03-time-calendar.md).
+- **Нужды при посте.** Карта не обещает исход ([areas/02-npc-life.md:12](../../context/cdda-native-map/areas/02-npc-life.md)); [D260](../SOURCES.md) сохраняет голод без точного часа сна. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-04-03.
+- **Догон.** Вне пузыря нет полного тика и догона сна ([areas/02-npc-life.md:15,20](../../context/cdda-native-map/areas/02-npc-life.md)). [Часть 2](https://github.com/PavelSlaven/Novgorod1230/issues/780) проверяет двор, 04.05 — двух жителей Вихтуя. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-04-04.
+- **Ярусы NPC.** [Профиль:183–231](../../../data/knowledge-source/corpus/DOCUMENTS/npc_generation_profiles.txt) и [D119/D121](../SOURCES.md) требуют смены яруса с памятью; native индивидуальность **частична** ([areas/02-npc-life.md:18](../../context/cdda-native-map/areas/02-npc-life.md)). Перенос — P7. Нерешённая реализация — см. [открытые вопросы](../open-questions.md), SYS-04-05.
 
 ### Источники
 
@@ -130,11 +130,11 @@
 
 ### Этап
 
-Часть 2: сутки, 3 сохранения с загрузкой, пожар (04.01–04.04, #834); часть 5 — жители Вихтуя (04.05). Приёмка — [хаб](../GDD.md).
+Часть 2: сутки, 3 сохранения с загрузкой, пожар (04.01–04.04, #834); часть 5 — жители Вихтуя (04.05). Приёмка — [глава 11 GDD](../GDD.md).
 
 ### Данные и числа
 
-Нет своих чисел тела и физического хода NPC: родное CDDA. Часы конкретных мастера и сторожа заданы профилем среза, остальные распорядки Вихтуя ещё не установлены. Темперамент и ценности остаются по [D277/7](../decision-log.md); конкретные шкалы жителей не утверждены. См. [главу 4 GDD](../GDD.md). ([MEC-016](../questionnaire.md); [WLD-063](../questionnaire.md); [WLD-069](../questionnaire.md); [D277/7](../decision-log.md))
+Нет своих чисел тела и физического хода NPC: родное CDDA. Окна профиля среза: мастер — 05:00–20:00, сторож — 20:00–05:00. Они входят в таблицу [главы 4 GDD](../GDD.md). Распорядки остальных жителей не решены — см. [открытые вопросы](../open-questions.md), WLD-063. Темперамент и ценности остаются по [D277/7](../decision-log.md); конкретные шкалы жителей не утверждены. См. [главу 4 GDD](../GDD.md). ([MEC-016](../questionnaire.md); [WLD-063](../questionnaire.md); [WLD-069](../questionnaire.md); [D277/7](../decision-log.md))
 
 ### Состояния и события
 
@@ -145,6 +145,8 @@
 Личность, отношения, профессия, принятое намерение и субъективная память продолжающего существовать человека сохраняются. Записи разговоров не сжимаются; физическое тело остаётся у CDDA. Смена подробности не создаёт копию NPC. ([WLD-050](../questionnaire.md); [WLD-070](../questionnaire.md); [D275 §2.1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md); [D277/8](../decision-log.md))
 
 ### Чек-лист
+
+- Проверить смену мастера и сторожа в утверждённых окнах двора; разговор и смена подробности NPC не стирают личность и память. (WLD-063, WLD-070; D277/8)
 
 - Сохранение: восстановить ту же точку физического мира вместе с относящейся к ней памятью и последствиями. ([D275/31](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 - Перевод: проверить русские тексты и официальный русский интерфейс CDDA; литературная проза пишется сразу по-русски. ([EXP-044](../questionnaire.md); [EXP-045](../questionnaire.md))

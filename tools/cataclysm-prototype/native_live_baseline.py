@@ -10,10 +10,71 @@ import sys
 
 
 EXCEPTION = "EXCEPTION:NOVGOROD_NATIVE_OPERATION_ALREADY_ACTIVE"
-CASE_SUMMARY = re.compile(r"^test cases:\s*(\d+)\s*\|\s*(\d+) passed\s*\|\s*(\d+) failed\s*$", re.M)
-ASSERTION_SUMMARY = re.compile(r"^assertions:\s*(\d+)\s*\|\s*(\d+) passed\s*\|\s*(\d+) failed\s*$", re.M)
+ALL_PASSED = re.compile(r"^All tests passed \((\d+) (assertion|assertions) in (\d+) (test case|test cases)\)$")
+TOTAL_ROW = re.compile(r"^(test cases|assertions):\s*(.+)$")
+COUNT_COLUMN = re.compile(r"^(\d+)\s+(passed|failed|failed as expected)$")
 FAILED_LINE = re.compile(r"^\s*[^\n]*:\d+: FAILED:\s*$")
 SEPARATOR = re.compile(r"^-{20,}$")
+
+
+def parse_total_row(payload):
+    parts = [part.strip() for part in payload.split("|")]
+    if parts[0] == "- none -":
+        total = 0
+    elif parts[0].isdigit():
+        total = int(parts[0])
+    else:
+        return None
+    if total > 0 and len(parts) == 1:
+        return None
+    counts = {"passed": 0, "failed": 0, "failed as expected": 0}
+    seen = set()
+    for part in parts[1:]:
+        match = COUNT_COLUMN.fullmatch(part)
+        if match is None or match[2] in seen:
+            return None
+        counts[match[2]] = int(match[1])
+        seen.add(match[2])
+    return total, counts, sum(counts.values()) == total
+
+
+def parse_totals(rows):
+    all_passed = []
+    cases = []
+    assertions = []
+    no_tests = False
+    for row in rows:
+        line = row.strip()
+        if line == "No tests ran":
+            no_tests = True
+        passed_match = ALL_PASSED.fullmatch(line)
+        if passed_match:
+            all_passed.append(passed_match)
+        row_match = TOTAL_ROW.fullmatch(line)
+        if row_match:
+            (cases if row_match[1] == "test cases" else assertions).append(row_match[2])
+    if no_tests:
+        return None
+    if len(all_passed) == 1 and not cases and not assertions:
+        passed_match = all_passed[0]
+        assertion_total = int(passed_match[1])
+        total = int(passed_match[3])
+        if passed_match[2] != ("assertion" if assertion_total == 1 else "assertions"):
+            return None
+        if passed_match[4] != ("test case" if total == 1 else "test cases"):
+            return None
+        return total, 0, assertion_total, 0, True
+    if all_passed or len(cases) != 1 or len(assertions) != 1:
+        return None
+    case_counts = parse_total_row(cases[0])
+    assertion_counts = parse_total_row(assertions[0])
+    if case_counts is None or assertion_counts is None:
+        return None
+    return (
+        case_counts[0], case_counts[1]["failed"],
+        assertion_counts[0], assertion_counts[1]["failed"],
+        case_counts[2] and assertion_counts[2],
+    )
 
 
 def classify(log_path, list_path, status, summary_path, baseline_path=None):
@@ -55,15 +116,13 @@ def classify(log_path, list_path, status, summary_path, baseline_path=None):
     if missing_list:
         problems.append("В списке тестов отсутствуют известные случаи: " + ", ".join(sorted(missing_list)))
 
-    cases = CASE_SUMMARY.findall(raw)
-    assertions = ASSERTION_SUMMARY.findall(raw)
-    if len(cases) != 1 or len(assertions) != 1:
+    totals = parse_totals(rows)
+    if totals is None:
         total = failed = assertion_failed = -1
         problems.append("Нет полной читаемой сводки Catch2")
     else:
-        total, passed, failed = map(int, cases[0])
-        assertion_total, assertion_passed, assertion_failed = map(int, assertions[0])
-        if passed + failed != total or assertion_passed + assertion_failed != assertion_total:
+        total, failed, assertion_total, assertion_failed, consistent = totals
+        if not consistent:
             problems.append("Числа в сводке Catch2 противоречат друг другу")
         if total < 27:
             problems.append(f"Исполнено {total} live случаев вместо ожидаемых минимум 27")

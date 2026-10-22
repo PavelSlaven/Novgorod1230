@@ -66,6 +66,13 @@ static const efftype_id p3_bleed( "bleed" );
 
 void reset_p3_fixture()
 {
+    try {
+        novgorod_semantic::finish_operation();
+    } catch( const std::logic_error &error ) {
+        if( std::string( error.what() ) != "NOVGOROD_NO_NATIVE_OPERATION" ) {
+            throw;
+        }
+    }
     clear_novgorod_test_adjacent_selection();
     static bool loop_started = false;
     if( !loop_started ) {
@@ -2188,4 +2195,33 @@ TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native soun
     } else {
         CHECK( heard == std::vector<std::string>{ near_text } );
     }
+}
+
+
+TEST_CASE( "Novgorod fixture finishes abandoned native operations", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const std::string avatar_id = std::to_string( get_avatar().getID().get_value() );
+    std::string request;
+    SECTION( "avatar speech" ) {
+        request = live_request( "speak", avatar_id, "fixture probe" );
+    }
+    SECTION( "NPC silence" ) {
+        const npc &speaker = *g->all_npcs().begin();
+        request = raw_request( "speak", id_text( speaker ),
+                               "{\"contribution_kind\":\"silence\",\"visible_behavior\":\"молчит\"}",
+                               "[\"avatar\"]" );
+    }
+    SECTION( "avatar wait" ) {
+        request = live_request( "wait", avatar_id );
+    }
+    const auto first = novgorod_semantic::apply_operation( parse_object( request ) );
+    REQUIRE( first.applied );
+
+    reset_p3_fixture();
+    const std::string next_avatar_id = std::to_string( get_avatar().getID().get_value() );
+    const auto second = novgorod_semantic::apply_operation( parse_object(
+                            live_request( "wait", next_avatar_id ) ) );
+    REQUIRE( second.applied );
+    CHECK( novgorod_semantic::finish_operation().applied );
 }

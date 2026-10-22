@@ -1124,12 +1124,22 @@ void live_input()
 #endif
 }
 
+bool has_pending_live_activity()
+{
+#ifndef _WIN32
+    return awaiting_native && evidence &&
+           ( evidence->primitive == "wait" || evidence->primitive == "speak" ) &&
+           !get_avatar().activity.is_null();
+#else
+    return false;
+#endif
+}
+
 void on_input_boundary()
 {
 #ifndef _WIN32
     if( !awaiting_native || g->has_novgorod_actions() ) return;
-    if( evidence && ( evidence->primitive == "wait" || evidence->primitive == "speak" ) &&
-        !get_avatar().activity.is_null() ) return;
+    if( has_pending_live_activity() ) return;
     awaiting_native = false;
     try {
         const operation_result result = finish_operation();

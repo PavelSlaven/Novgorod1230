@@ -208,7 +208,7 @@ diff --git a/src/handle_action.cpp b/src/handle_action.cpp
      here.update_visibility_cache( pos.z() );
 
 +    novgorod_semantic::on_input_boundary();
-+    if( !u.activity.is_null() && !has_novgorod_actions() ) {
++    if( novgorod_semantic::has_pending_live_activity() && !has_novgorod_actions() ) {
 +        action = action_ident( ACTION_NULL );
 +        return ctxt;
 +    }

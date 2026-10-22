@@ -1,0 +1,68 @@
+> status: REFERENCE / DOMAIN GUIDE. Глава описывает тело персонажа, общие проверки и границу между Novgorod и механиками CDDA. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
+
+# 09. Персонаж, тело, состояния, проверки d20
+
+## Замысел
+
+Персонаж — человек с ограничениями и телом, которое меняется от действий и времени. На пути CDDA владеет физическим состоянием и применяет телесные переходы; параметры старого движка отображаются на соответствующие родные поля и не образуют второго хранителя тела. До P7 действующим владельцем старого движка остаётся `@rus/body-state`. Замысел владельца от 06.10.2026 задаёт шесть характеристик, навыки, d20 для рискованных действий и здоровье, сытость, бодрость ([spec:13–21](../../plans/sled-na-nizhney-dvine-scenario-spec.md)); граница реализма — [PC §9:213–226](../../governance/PRODUCT_CONSTITUTION.md). Выбор между этим d20 и родными проверками CDDA остаётся вопросом владельцу ниже.
+
+1. Герой долго работает на холоде и устает → игрок продолжает работу, отдыхает или согревается → видит изменение выносливости и состояния, а затем подтверждённый эффект на следующую попытку → CDDA рассчитывает stamina, температуру, усталость и эффекты тела в общем игровом цикле ([areas/04-combat-checks-states.md:67–72](../../context/cdda-native-map/areas/04-combat-checks-states.md)); значения старых шкал переводятся в отображение родных полей без второго расчёта телесного состояния.
+2. Герой пытается выполнить неавтоматически успешное действие → игрок формулирует попытку, например удержаться на ногах → видит её фактический результат и последствие → CDDA использует подходящую собственную проверку там, где она существует; карта не находит общего видимого игроку d20 ([areas/04-combat-checks-states.md:57–60](../../context/cdda-native-map/areas/04-combat-checks-states.md)) → слой действия передаёт запрос и показывает committed исход CDDA без второго броска.
+3. После удара герой получает рану → игрок продолжает игру или оказывает помощь → видит подтверждённые изменения здоровья, боли и доступных действий, которые сохраняются → CDDA предоставляет здоровье частей тела, раны, эффекты и их применение ([areas/04-combat-checks-states.md:22,67–68](../../context/cdda-native-map/areas/04-combat-checks-states.md)); подходящие исторические данные описывают применяемый контент, не создавая отдельного состояния тела.
+
+## Что может игрок
+
+- **09.01.** Проверить действие персонажа броском d20 и увидеть результат вместе с последствием для тела или действия.
+
+## Родное CDDA
+
+| Механизм | Покрытие карты | Ограничение |
+|---|---|---|
+| Состояния боли, кровотечения, оглушения, болезней, голода, сна, температуры и настроения ведут к механическим эффектам ([areas/04-combat-checks-states.md:67–72](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Полное для перечисленных native состояний. | Карта не подтверждает подключение данных или их историческую полноту. |
+| Раны и HP частей тела применяются родными механиками; определений исторических wound/wound_fix в данных карты нет ([areas/04-combat-checks-states.md:22](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Частичное. | Нужны подходящие исторические данные. |
+| STR/DEX/INT/PER, оружие, навыки, состояние и обстоятельства уже входят в native боевые формулы ([areas/04-combat-checks-states.md:13–15](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Полное в пределах штатных боевых проверок. | Повторно добавлять бонус или проверку за тот же исход нельзя. |
+| Видимый самостоятельный d20 можно собрать из jmath_function, EOC и RNG; готовой общей игроку видимой проверки нет ([areas/04-combat-checks-states.md:59–60,80](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Частичное. | Нужны единственный владелец, сохранение результата и подтверждение отсутствия подходящего native roll; debug-вывод не виден игроку. |
+| Телесный догон NPC упрощён ([areas/04-combat-checks-states.md:74](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Частичное. | Строка не подтверждает полную offscreen симуляцию. |
+
+Карта описывает upstream CDDA 0d8843f, не подключение Новгорода ([areas/04-combat-checks-states.md:1–5](../../context/cdda-native-map/areas/04-combat-checks-states.md)).
+
+## Наш слой и владелец
+
+| Механизм | Отношение к CDDA | Владелец и граница |
+|---|---|---|
+| Изменения тела, состояния и body modifiers | **Используем** CDDA: тело и переходы принадлежат ей; старые показатели отображаются на соответствующие родные поля. | До P7 действующий владелец старого движка — [@rus/body-state](../../../packages/body-state/MODULE.md), отвечающий за старые health, satiety, energy, conditions, validation/modifiers и предложения телесных переходов. |
+| Боевые проверки и последствия для тела | **Используем** CDDA: ей принадлежат физические проверки и урон; второй исход не добавляется. | До P7 действующие владельцы старого движка — [@rus/combat-health](../../../packages/combat-health/MODULE.md) для combat request/result, harm и injury proposals и [@rus/checks-rng](../../../packages/checks-rng/MODULE.md) для старого RNG; они не являются владельцами физических результатов CDDA. [@rus/turn](../../../packages/turn/MODULE.md) остаётся владельцем семантической интерпретации и тонкого adapter handoff. |
+| Изменение тела от длительности | **Используем** CDDA для тела и игрового времени; старые шкалы сопоставляются с родными полями без второго расчёта. | До P7 `@rus/body-state` остаётся действующим владельцем старого движка. Это не утверждает 1:1 соответствия показателей Novgorod и native CDDA ([Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md:32–36](../../plans/Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md)). |
+| Дополнительный видимый d20 | **Расширяем** показ принятого native исхода; CDDA владеет RNG и физическим результатом, отдельный d20 поверх него не бросается ([areas/04-combat-checks-states.md:57–60](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | До P7 [@rus/checks-rng](../../../packages/checks-rng/MODULE.md) остаётся действующим владельцем проверок старого движка. Видимость и смысл рассказчиком уже рассчитанного исхода не меняют его владельца. |
+
+## Решения владельца
+
+- **2026-10-06, номер D не присвоен, дословно:** «Рискованные действия разрешаются броском d20»; шесть характеристик и навыки связаны с биографией, здоровье, сытость и бодрость влияют на действия ([spec:13–21](../../plans/sled-na-nizhney-dvine-scenario-spec.md), текст владельца без изменений).
+- **D135, 2026-10-07, дословно:** «Предупреждать на сильном пороге». Пересказ уточнения: мягкий порог сытости/бодрости 50 только упоминается, сильный 20 прерывает занятие и спрашивает игрока; перенос чисел требует профиля ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D260, 2026-10-21, пересказ:** в части 2 используется родной голод NPC, `No_NPC_Food` не включается; еда мастера и её источник входят в часть, родной ночной сон не гарантирован.
+
+## Расхождения и открытые вопросы
+
+- **Модель параметров.** character_parameters.txt задаёт шесть числовых характеристик и проектную формулу d20, тогда как native CDDA уже учитывает свои характеристики в боевых формулах; guide не является active domain contract ([character_parameters.txt:29–56](../../../data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt), [areas/04-combat-checks-states.md:13–15](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Нужны семантическое соответствие и решение о target-профиле.
+- **Отображение старых проверок.** Замысел 06.10 описывает d20 для рискованных действий ([spec:17](../../plans/sled-na-nizhney-dvine-scenario-spec.md)), а карта CDDA описывает родные проверки и не находит общего видимого игроку d20 ([карта:57–60](../../context/cdda-native-map/areas/04-combat-checks-states.md)). Остаётся определить, как старые параметры и результат отображаются в интерфейсе CDDA; на целевом пути CDDA единолично владеет RNG и физическим исходом, а `@rus/checks-rng` сохраняет роль только в старом движке до P7.
+- **Навык и нагрузка — вопрос переноса.** Аудит руководств [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243) отмечает выбор навыка по ситуации и влияние нагрузки на расход тела ([character_inventory_equipment.txt:217–233,311–315](../../../data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt)). Как переносить расход сытости и бодрости от нагрузки из guide без второго расчёта поверх CDDA? Это сохраняемый замысел guide, а не утверждение его формулы расхода; родные навыки и стоимость шага используются без второго бонуса ([карта проверок:53–56](../../context/cdda-native-map/areas/04-combat-checks-states.md), [карта движения:17](../../context/cdda-native-map/areas/06-movement-world-map.md)).
+- **Отображение телесных шкал.** Старые health/satiety/energy сопоставляются с полями CDDA hunger, kcal, stamina и pain; соответствие и отображение требуют таблицы и проверки переходов ([character_parameters.txt:94–110](../../../data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt), [Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md:32–36](../../plans/Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md)). Это вопрос представления и семантического соответствия, а не второго хранения или расчёта тела.
+- **NPC вне активной сцены.** Карта указывает ограничение catch-up и отдельную неполноту NPC stamina ([areas/04-combat-checks-states.md:74](../../context/cdda-native-map/areas/04-combat-checks-states.md)); fidelity и catch-up требуют прототипа.
+
+## Источники
+
+- [sled-na-nizhney-dvine-scenario-spec.md](../../plans/sled-na-nizhney-dvine-scenario-spec.md) — дословный замысел владельца 06.10.2026.
+- [PRODUCT_CONSTITUTION.md](../../governance/PRODUCT_CONSTITUTION.md) — §9: реализм и историческая рамка.
+- [character_inventory_equipment.txt](../../../data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt) — выбор навыка по ситуации и влияние нагрузки.
+- [turn_step_llm_contract.md](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md) — текущий владелец числовой проверки.
+- [06-movement-world-map.md](../../context/cdda-native-map/areas/06-movement-world-map.md) — родная стоимость шага.
+
+- [character_parameters.txt](../../../data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt) — проектные параметры тела и навыков, требующие сверки с active owners.
+- [formulas.md](../../../data/knowledge-source/corpus/DOCUMENTS/formulas.md) — формулы свободных и боевых проверок; численные правила не перенесены как текущая production-норма.
+- [combat_system.md](../../../data/knowledge-source/corpus/DOCUMENTS/combat_system.md) — active combat контракт в своей области; служит источником границы между проверкой и последствиями.
+- [Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md](../../plans/Novgorod1230_Cataclysm_Character_States_Attributes_and_Dice_Checks_Discussion_2026-10-18.md) — обсуждение повторного использования физиологии CDDA и открытых вопросов по d20.
+- [04-combat-checks-states.md](../../context/cdda-native-map/areas/04-combat-checks-states.md) — строка родной карты для состояний, боевых проверок и сборки d20.
+
+## Этап
+
+Нативные телесные состояния доступны в CDDA ([areas/04-combat-checks-states.md:67–72](../../context/cdda-native-map/areas/04-combat-checks-states.md)), но это не доказывает готовность Novgorod. D20 не входит в критерии частей 1–7; 09.01 — кандидат для позднего кольца, порядок которого не утверждён.

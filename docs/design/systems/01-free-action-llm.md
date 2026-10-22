@@ -1,0 +1,78 @@
+> status: REFERENCE / DOMAIN GUIDE. Описывает свободное действие игрока и границу между смысловой работой LLM и точной механикой кода. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
+
+# 01. Свободное действие и роль LLM
+
+## Замысел
+
+Игрок описывает намерение обычными словами. Игра учитывает место, тело, доступные вещи и committed state, затем показывает причинный результат. Отсутствие готовой команды не запрещает попытку: невозможное действие получает правдоподобный отказ или частичный исход ([PRODUCT_CONSTITUTION.md:28–57](../../governance/PRODUCT_CONSTITUTION.md)).
+
+1. Игрок стоит во дворе и хочет подождать → через F12 просит «Подожди на месте» → видит выполненное действие в журнале → CDDA предоставляет `ACTION_WAIT` и `wait_activity_actor` (**полное** покрытие, [areas/10-player-actions.md:13](../../context/cdda-native-map/areas/10-player-actions.md)) → наш мост переводит смысл в native действие; живой протокол подтверждает именно ожидание ([TASK03-DELIVERY-RESULT.md:25–31](../../../tools/cataclysm-prototype/TASK03-DELIVERY-RESULT.md)).
+2. Игрок просит реалистичное действие, которого нет в заранее заданных командах → система сохраняет смысл и выбирает причинный исход → игрок видит результат с учётом предметов и состояния мира → CDDA исполняет точные действия персонажа, но не имеет готового semantic ввода Новгорода (**нет** покрытия для input seam, [areas/10-player-actions.md:11,14](../../context/cdda-native-map/areas/10-player-actions.md)) → `@rus/turn` передаёт план профильному owner-у, который рассчитывает механику и последствия ([turn_step_llm_contract.md:42–61](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)).
+
+LLM нужна для неперечислимого смысла, а код отвечает за точную механику и authoritative state. Примеры и тесты проверяют класс поведения, но не становятся списком разрешённых фраз ([PRODUCT_CONSTITUTION.md:59–92,96–171](../../governance/PRODUCT_CONSTITUTION.md)).
+
+В переданном без изменений замысле владельца от 2026-10-06 свободный текст включает попытку того, чего игра прямо не предлагает ([scenario-spec.md:15](../../plans/sled-na-nizhney-dvine-scenario-spec.md)).
+
+## Что может игрок
+
+- **01.01.** Произнести через F12 свободную просьбу подождать и увидеть в журнале, что действие выполнено.
+- **01.03.** Предложить свободное действие, не названное в меню, и увидеть причинный ответ мира на него.
+
+## Родное CDDA
+
+Оценки карты относятся к upstream `0d8843f1c500052c3e026e3da6f8edaf5e00b626`, без патчей Новгорода.
+
+| Нужда | Родной механизм и покрытие | Ограничение, указанное картой |
+|---|---|---|
+| Доставить semantic request в `handle_action` | Ввод берётся из platform `input_manager`; шов-инъекции не найден. **Нет.** ([areas/10-player-actions.md:11](../../context/cdda-native-map/areas/10-player-actions.md)) | Нет готового API web bridge/RPC или инъекции действия. |
+| Исполнить ожидание | `ACTION_WAIT` и `wait_activity_actor`. **Полное.** ([areas/10-player-actions.md:13](../../context/cdda-native-map/areas/10-player-actions.md)) | Механика ожидания родная; она не толкует свободный текст. |
+| Исполнить движение и долгую активность | `avatar_action::move`, `game::walk_move`, `player_activity` и `activity_actor`. **Полное.** ([areas/10-player-actions.md:14,20](../../context/cdda-native-map/areas/10-player-actions.md)) | Новый класс C++-актора требует сериализации; карта не заявляет semantic интерпретацию. |
+
+## Наш слой и владелец
+
+| Механизм | Отношение к CDDA | Владелец и граница |
+|---|---|---|
+| Свободное намерение | **Новое** на границе с native CDDA: semantic request/input seam не найден ([areas/10-player-actions.md:11](../../context/cdda-native-map/areas/10-player-actions.md)). | `@rus/turn` владеет одной semantic boundary, exact fast path и внутренним циклом, но не domain mechanics ([turn/MODULE.md:13–17,29–31](../../../packages/turn/MODULE.md)); `@rus/llm-runtime` — transport/config ([llm-runtime/MODULE.md:3–13](../../../packages/llm-runtime/MODULE.md)). |
+| Открытая семантика и точные последствия | **Расширяем** native action mechanics semantic планом и делегированием. | `@rus/turn` вызывает handlers; профильные owners рассчитывают исход, модель не пишет state ([turn_step_llm_contract.md:79–99](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). |
+| Ordinary-конкретизация | **Расширяем** `item_group`: материализация и лимиты места покрыты **частично** ([areas/05-items-crafting.md:18,26](../../context/cdda-native-map/areas/05-items-crafting.md)). | До P7 `@rus/materialization` выбирает из approved candidates и не вызывает LLM; `@rus/turn` ведёт смысловой план, `@rus/world-knowledge` даёт factual slice ([materialization/MODULE.md:5–24](../../../packages/materialization/MODULE.md), [world-knowledge/MODULE.md:5–39](../../../packages/world-knowledge/MODULE.md)). |
+
+Новый шов нужен только потому, что native CDDA не имеет управляемого semantic input. Карта предлагает обернуть источник `input_manager` либо вызвать `avatar_action`/`Character` между ходами ([areas/10-player-actions.md:11](../../context/cdda-native-map/areas/10-player-actions.md)); выбор должен быть проверен в CR. Ожидание уже покрывает native `ACTION_WAIT`, собственный дубликат ему не нужен.
+
+## Решения владельца
+
+- **2026-10-06, без D, замысел владельца.** Свободное действие включает то, чего нет в меню; система определяет возможность, время, условия и последствия ([scenario-spec.md:15](../../plans/sled-na-nizhney-dvine-scenario-spec.md)).
+- **D3, 2026-09-26, пересказ.** Наличие места бросает и сохраняет код при первом прибытии; содержимое контейнера — при первом открытии ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)).
+- **D8, 2026-09-26, пересказ.** LLM сопоставляет запрос о человеке с ролью; создание по броску и лимиту выполняет код ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)).
+- **D9, 2026-09-26, пересказ.** У находки подвид выбирает код; для изготовленной или названной игроком вещи категорию выбирает LLM с проверкой кода. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154))
+- **D10, 2026-09-26, пересказ.** Запрет определяется authority-записью, а не ценностью, редкостью или классом вещи. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154))
+- **D16, 2026-09-26, пересказ.** WK подключается интерпретатору реплик игрока и рассказчику. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014))
+- **D38, 2026-09-28, пересказ.** Пробелы источников заполняются реалистичной игровой реконструкцией, не выдаваемой за исторический факт ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5873359387)).
+- **D40, 2026-09-28, пересказ.** Критерий включения в мир — существование, а не заранее предполагаемая польза; свободное применение нельзя перечислить. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5873540762))
+- **D59, 2026-10-01, пересказ.** Анахронизмы исключаются из исходного мира; изобретение игрока разрешается причинностью, материалами, инструментом и навыком. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5926596803))
+- **D66, 2026-10-01, пересказ.** Сценарий содержит сюжет и людей, общие механики принадлежат общим владельцам; после сюжета продолжается свободная игра.
+- **D158, 2026-10-08, пересказ.** Факты мира — из данных, повествование свободно; D78 заменено. Запись в памяти владельца.
+- **D164, 2026-10-08, пересказ.** WK даёт живое знание для любого нуждающегося в нём действия модели: ремесла, права, хозяйства и других областей. ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787))
+- **D210, 2026-10-13, пересказ.** Смысловой repair делает та же модель один раз; неудача даёт типизированную ошибку без кодовой заглушки; ветка — часть того же запаса, без словаря фраз.
+- **D211, 2026-10-14, пересказ.** Шаги среза исполняются общими механизмами и данными сценария; scenario id и точные фразы игрока не управляют механикой.
+- **Запись решений владельца в #133 от 2026-09-25** ([комментарий 5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425)). Код задаёт категории и характеристики экземпляров; LLM конкретизирует обычный экземпляр с опорой на World Knowledge. Для главы это означает открытое семантическое пространство внутри границ, заданных кодом. Это запись решений, не прямая цитата владельца.
+- **D214, 2026-10-14, слова владельца дословно:** «Важно, чтобы это не превратили в скрипт, где палка и посох заранее прописаны и лежат на локации. Персонаж может подобрать что угодно (с учетом реалистичности, например камень или пучок травы) и сделать что угодно (также с учётом реалистичности, копьё или подстилку из травы).» Источник — запись владельца от этой даты; решения перенесены в этот документ.
+
+## Расхождения и открытые вопросы
+
+- **PC §6 и ввод в CDDA — технический шов для CR.** [Конституция:124](../../governance/PRODUCT_CONSTITUTION.md) сохраняет `@rus/turn` и `turn_step_request_v1 → turn_step_plan_v1`; [план среза §4:89,94](../../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md) оставляет ту же границу с тонким adapter. [Карта:11](../../context/cdda-native-map/areas/10-player-actions.md) не находит готового native semantic input. CR выбирает и проверяет шов без второго owner; PC §6 действует и на пути CDDA.
+- **Граница записи.** Конституция запрещает LLM менять authoritative state и отдавать ей точные mechanics ([PRODUCT_CONSTITUTION.md:113–126](../../governance/PRODUCT_CONSTITUTION.md)); контракт описывает code-owned execution и atomic commit ([turn_step_llm_contract.md:79–99](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). В этих документах конфликтов нет; при реализации каждого доменного запроса нужно подтвердить, что конкретная связка handler и профильного owner действительно соблюдает границу.
+- **Слова о проверке в живой игре.** Протокол подтверждает F12 и ожидание в указанной сборке ([TASK03-DELIVERY-RESULT.md:25–31](../../../tools/cataclysm-prototype/TASK03-DELIVERY-RESULT.md)), тогда как карта не находит готового semantic ввода в CDDA ([areas/10-player-actions.md:11](../../context/cdda-native-map/areas/10-player-actions.md)). Способность 01.01 подтверждена только для этого пути; проверка всего открытого пространства просьб остаётся отдельной.
+- **Native ожидание и свободный ввод.** CDDA полностью покрывает механику ожидания, но не свободный semantic ввод ([areas/10-player-actions.md:11,13](../../context/cdda-native-map/areas/10-player-actions.md)). Эти оценки относятся к разным нуждам; точка их соединения должна быть проверена в native bridge.
+
+## Источники
+
+- [scenario-spec.md](../../plans/sled-na-nizhney-dvine-scenario-spec.md) — замысел владельца от 2026-10-06.
+- [PRODUCT_CONSTITUTION.md](../../governance/PRODUCT_CONSTITUTION.md) — свободное действие, LLM, код, причинный и исторический предел.
+- [turn_step_llm_contract.md](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md) — активная граница свободной заявки, пайплайн и ответственность профильных владельцев.
+- [areas/10-player-actions.md](../../context/cdda-native-map/areas/10-player-actions.md) — проверенные native механизмы ввода, ожидания, действий и активности.
+- [areas/05-items-crafting.md](../../context/cdda-native-map/areas/05-items-crafting.md) — пределы native предметного выбора и materialization.
+- [Novgorod1230_Cataclysm_Mechanics_Reuse_Strategy_2026-10-18.md](../../plans/Novgorod1230_Cataclysm_Mechanics_Reuse_Strategy_2026-10-18.md) — порядок повторного использования CDDA и основания для расширения.
+
+## Этап
+
+01.01 — единое доказанное свободное ожидание основы; в главе 03 оно повторно не считается. 01.03 относится к свободному действию этапа 3: протокол основы ограничен шестью примитивами в радиусе одной клетки ([TASK03-DELIVERY-RESULT.md:25–31](../../../tools/cataclysm-prototype/TASK03-DELIVERY-RESULT.md)) и не доказывает эту способность целиком. Части среза, статусы и порядок проверки находятся в [хабе](../GDD.md), раздел «Этапы».

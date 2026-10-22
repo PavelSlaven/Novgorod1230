@@ -1,0 +1,73 @@
+> status: REFERENCE / DOMAIN GUIDE. Глава описывает факты мира и знания персонажей. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
+
+# 12. Знания мира (WK) и граница знания
+
+## Замысел
+
+Персонажи знают часть фактов, ошибаются и узнают новое. WK даёт проверенные сведения, сохраняя различие между неизвестным и установленным; память модели не заменяет факт. Извлечение не меняет мир ([world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+
+1. Игрок спрашивает кузнеца о предмете, которого в 1230 году человек не мог знать → получает ответ в пределах знания мастера либо человеческое признание незнания → видит реплику, а не сухой статус базы → CDDA хранит простые переменные, но не происхождение знания (нет покрытия для полной модели; [карта, §1, строка 27](../../context/cdda-native-map/areas/03-conversation.md)) → WK подаёт проверенные факты, доступ NPC их ограничивает, conversation owner формирует речь.
+2. Игрок читает рассказ о произошедшей сцене → рассказчик описывает только то, что герой увидел, услышал или узнал → проза не раскрывает скрытого участника и не подставляет современное объяснение → CDDA может фильтровать отдельные сообщения по видимости, но не строит целый безопасный рассказ (частичное покрытие; [карта, §1, строка 10](../../context/cdda-native-map/areas/07-narration-log.md)) → projection owner подготавливает подтверждённый player-safe контекст, narrator пишет только из него.
+3. Игрок просит сложное действие, для которого не хватает факта → получает честно обозначенный пробел → он не превращается в якобы установленное правило → CDDA хранит простые переменные, но не provenance и применимость (не покрывает полную модель знания; [карта, §1, строка 27](../../context/cdda-native-map/areas/03-conversation.md)) → WK возвращает evidence или статус пробела; решение остаётся у domain owner.
+
+## Что может игрок
+
+- **12.01.** Спросить мастера о неизвестном человеку 1230 года и услышать честное незнание без казённого «не установлено».
+- **12.02.** Читать рассказ о сцене, в котором нет скрытого от героя знания.
+
+## Родное CDDA
+
+Карта описывает upstream-пин, не интеграцию Новгорода ([native-map INDEX.md:9–11](../../context/cdda-native-map/INDEX.md)).
+
+| Родной механизм | Покрытие карты и предел |
+|---|---|
+| `u_val`, `npc_val`, `global_val`, `context_val`, `var_val`, фоновые traits NPC и EOC позволяют хранить некоторые постоянные или приобретённые знания ([areas/03-conversation.md:27](../../context/cdda-native-map/areas/03-conversation.md)). | **Нет** для полноценной модели знания NPC: переменные не хранят происхождение сведений, а `u_val` исчезает со смертью аватара. |
+| Известные игроку overmap-места и открытие маршрута: `only_known_by_player`, `reveal_map`, `reveal_route` ([areas/06-movement-world-map.md:20](../../context/cdda-native-map/areas/06-movement-world-map.md)). | **Частичное**: `for_npc()` снимает проверку знания; это не модель знаний NPC. |
+| Локальное зрение, `visibility_cache`, `map_memory` и `memorized_tile` отделяют видимое от запомненного ([areas/11-ui-display.md:10–11](../../context/cdda-native-map/areas/11-ui-display.md)). | **Полное** для видимости клетки аватаром; **частичное** для памяти карты: запись зависит от отрисовки. |
+| `add_msg_if_player_sees` фильтрует отдельные сообщения ([areas/07-narration-log.md:10](../../context/cdda-native-map/areas/07-narration-log.md)). | **Частичное** для логов: `add_msg` раскрывает сообщение независимо от знаний игрока; общей метки приватности нет. |
+
+## Наш слой и владелец
+
+- **Используем** переменные как хранилище; происхождение и доступ к знаниям NPC остаются у knowledge owner. `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+- **Используем** родную видимость клеток; **расширяем** память и фильтрацию отдельных сообщений сквозной player-safe проекцией: `@rus/visibility-knowledge-memory` владеет player-safe контекстом и памятью знаний ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)); `@rus/narration` пишет прозу из подтверждённых фактов ([MODULE.md](../../../packages/narration/MODULE.md)). Native карта не подтверждает сквозную проверку всего контекста рассказа.
+- **Используем** существующий игровой шаг Новгорода до P7 для вызова владельцев в установленном порядке: `@rus/turn` организует шаг, а факты и состояния готовят доменные owners ([turn_step_llm_contract.md:10–59](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). WK не определяет успех просьбы игрока.
+- Conversation owner пишет реплику, NPC decision owner принимает решение; оба получают только разрешённое знание персонажа.
+
+## Решения владельца
+
+- **2026-09-25, номер D не присвоен, пересказ записи:** WK даёт модели сведения об устройстве мира, медицине, ремесле и праве, игровая база содержит то, что исполняет код; это разные хранилища.
+- **D15, 2026-09-26, пересказ:** речь ограничена знаниями человека 1230 года; прежнее открытие всей WK решениям NPC заменено D167, доступ меняется новой утверждённой ревизией pack ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014)).
+- **D16, 2026-09-26, пересказ:** WK подключается рассказчику и интерпретатору реплик игрока ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846022014)).
+- **D18, 2026-09-26, пересказ:** не наступившие по дате партии события не попадают ни в один вход модели, даже как неприменимые сведения ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846025182)).
+- **D19, 2026-09-26, пересказ:** голод начинается 14.09.1230, до этой даты его нет в игре и срезе WK ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846311836)).
+- **D20, 2026-09-26, пересказ:** рассказчик получает только видимое и известное герою, современные научные объяснения не выводятся в прозу ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5846311836)).
+- **D22, 2026-09-26, пересказ:** голод длится до конца 1231 года; поздние события внутри него имеют отдельные даты или фазы раскрытия ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5848564249)).
+- **2026-09-26, номер D не присвоен, пересказ записи:** на поздней стадии знания и слухи различаются по социальной группе; текущая разметка доступа должна сохранять возможность такого развития, не делать всё общедоступным.
+- **D59, 2026-10-01, пересказ:** WK подаёт правильную технологию и процесс любого сложного действия, включая изобретение игрока; недостаточность данных и механики проверяется по игровым ситуациям ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5926596803)).
+- **D60, 2026-10-01, пересказ:** ограничение эпохой охватывает речь, знания и поведение NPC; будущие события и сведения из памяти модели не становятся знанием персонажа ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5928266458)).
+- **D93, 2026-10-06, пересказ:** принята русская player-safe проекция B для WK planner с меньшим числом пустых планов; точность оставлена отдельным улучшением, провал её прежнего порога не скрывается ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6003221448)).
+- **D164, 2026-10-08, дословно:** WK нужна «не только в разговорах и знаниях NPC, но и при любом другом запросе» ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D165, 2026-10-08, пересказ:** код ограничивает доступ отдельно для каждого NPC; рыбак без знания ковки честно признаёт незнание ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D167, 2026-10-08, дословно:** «Ограничивать доступом и решения NPC, а не только речь - да. Исключения биографии - позже.» Заменяет эту часть D15 ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+- **D169, 2026-10-08, пересказ:** оставшиеся после наполнения пробелы допускают независимо проверенную игровую реконструкцию; она не выдаётся модели за установленный факт ([запись решения](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6116723787)).
+
+## Расхождения и открытые вопросы
+
+Открытого вопроса владельцу по этим источникам нет. Граница active контракта и pilot pack указана в разделе «Этап».
+
+## Источники
+
+- [CONTRACT_INDEX.md](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) — статусы WK.
+- [WK contract](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md) — знание и пробел.
+- [NPC decision contract](../../../data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md) — решения NPC.
+- [Turn contract](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md) — игровой шаг.
+- [Индекс native карты](../../context/cdda-native-map/INDEX.md) — upstream-пин.
+- [Разговор](../../context/cdda-native-map/areas/03-conversation.md) — хранилище NPC.
+- [Перемещение](../../context/cdda-native-map/areas/06-movement-world-map.md) — знание маршрута.
+- [Журнал](../../context/cdda-native-map/areas/07-narration-log.md) — видимость сообщений.
+- [Экран](../../context/cdda-native-map/areas/11-ui-display.md) — зрение и память карты.
+- [Spatial standard](../../../data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md) — факт и знание.
+
+## Этап
+
+12.01 относится к части 1 и [PR #793](https://github.com/PavelSlaven/Novgorod1230/pull/793), но живая приёмка отсутствует ([хаб:68–80](../GDD.md)). 12.02 требует проверки безопасной прозы в части 6 ([хаб:129–135](../GDD.md)): `add_msg` не фильтрует знание героя ([карта:10](../../context/cdda-native-map/areas/07-narration-log.md)). ACTIVE контракт требует Giga/vector, но pilot pack остаётся `reviewed/not_active` ([индекс:99,165–167](../../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)); доступ NPC устанавливают профиль и код. Статусы способностей — в хабе.

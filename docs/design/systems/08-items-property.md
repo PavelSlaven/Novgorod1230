@@ -1,0 +1,88 @@
+> status: REFERENCE / DOMAIN GUIDE. Глава объясняет вещи и собственность на CDDA. Норм не создаёт: при конфликте действуют AGENTS.md, CONTRACT_INDEX и профильные контракты. Состояние на 2026-10-21: main 181548e8; работа в неслитых ветках — по доске распорядителя на эту дату.
+
+# 08. Вещи и собственность
+
+## Замысел
+
+Вещь имеет положение, владельца и держателя. Взять чужое не значит получить право; повторный поиск не создаёт копию ([PC §9.1](../../governance/PRODUCT_CONSTITUTION.md), [контракт:121–156](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt), [замысел владельца:27](../../plans/sled-na-nizhney-dvine-scenario-spec.md); D9, D10, D14 ниже).
+
+1. Огниво рядом → игрок подбирает → вещь при герое → используем pickup/wield ([карта:15–16](../../context/cdda-native-map/areas/10-player-actions.md), полное) → наш слой проверяет доступ.
+2. Сундук открыт повторно → вещи те же → CDDA перемещает содержимое, но не хранит «уже искали» ([карта:23,75](../../context/cdda-native-map/areas/05-items-crafting.md)) → наш слой сохраняет решение наличия.
+3. Герой взял чужое → держатель изменился, право осталось → native owner частично задан фракцией ([карта:20](../../context/cdda-native-map/areas/05-items-crafting.md)) → наш слой хранит бытовое владение.
+
+## Что может игрок
+
+- **08.01.** Подобрать лежащее рядом огниво клавишей `g` и увидеть его в руках.
+- **08.02.** Попробовать применить огниво без трута и с трутом и увидеть разные причинные результаты.
+- **08.03.** Взять чужую найденную вещь и после перезапуска увидеть, что она остаётся чужой.
+
+## Родное CDDA
+
+Карта проверяет upstream `0d8843f` ([карта:3](../../context/cdda-native-map/areas/05-items-crafting.md)).
+
+| Механизм | Покрытие | Предел |
+|---|---|---|
+| `itype`, `item_group` ([карта:18](../../context/cdda-native-map/areas/05-items-crafting.md)). | Частичное. | Динамического `itype` из свободного описания нет. |
+| Свойства экземпляра через `Item_modifier` ([карта:19](../../context/cdda-native-map/areas/05-items-crafting.md)). | Полное. | Владелец задаётся отдельно; это не новый тип предмета. |
+| `item::owner`, `old_owner`, метки `item_vars` ([карта:20–21](../../context/cdda-native-map/areas/05-items-crafting.md)). | Частичное. | Owner — `faction_id`; текст метки не даёт юридической силы. |
+| `item_uid`, `item_location` ([карта:22](../../context/cdda-native-map/areas/05-items-crafting.md)). | Частичное. | Копия получает новый UID; `item_location` не является стабильным ключом. |
+| `visitable`, `item_location`, `consume_items`, EOC ([карта:23](../../context/cdda-native-map/areas/05-items-crafting.md)). | Полное. | Свободный смысл запроса сопоставляет наш слой. |
+| Pickup, drop и wield ([карта:15–16](../../context/cdda-native-map/areas/10-player-actions.md)). | Полное. | У pickup нет отдельного события; интерактивная экипировка может открывать меню. |
+| `item_group` и mapgen для наличия ([карта:26](../../context/cdda-native-map/areas/05-items-crafting.md)). | Частичное. | Нет лимита категории на место и отметки «уже искали». |
+
+## Наш слой и владелец
+
+**Используем** подбор, перенос, расход и Item_modifier. **Расширяем** наличие и бытовое владение: `item_group.cpp:894`, `item.h:3748–3750` не дают лимита категории и owner вне фракции (карта:20,26). До P7 [`@rus/items-property`](../../../packages/items-property/MODULE.md) ведёт отношения и identity; CDDA исполняет физику. Admission различается ([контракт:3–10](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt)).
+
+[`@rus/turn`](../../../packages/turn/MODULE.md) связывает запрос, [`@rus/space-map`](../../../packages/space-map/MODULE.md) — scope; [`@rus/visibility-knowledge-memory`](../../../packages/visibility-knowledge-memory/MODULE.md) — знание, [`@rus/social-law`](../../../packages/social-law/MODULE.md) — право и последствия. Перенос owners — P7.
+
+## Решения владельца
+
+- **2026-09-25, номер D не присвоен, пересказ записи решений.** Категории задаёт код; наличие сохраняется без переброса, навык влияет на поиск. Тайник требует причины; оружие, деньги и документы разрешены. Момент/подвид уточнены D3/D9. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425).
+- **D3, 2026-09-26, пересказ.** Броски наличия сохраняются при первом прибытии; поиск не создаёт скрытого. Контейнер определяется при первом открытии. Заменяет «первый осмотр» 25.09. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154).
+- **D6, 2026-09-26, пересказ.** Сезонный бросок один на период, дополняет до лимита без удаления старого. Природный источник пополняет ресурсный owner. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154).
+- **D9, 2026-09-26, пересказ.** Подвид находки выбирает код по весам, LLM описывает его; категорию названной/изготовленной вещи предлагает LLM, проверяет код. Опознавательный текст — из пулов/сущностей, текст подделки пишет игрок. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154).
+- **D10, 2026-09-26, пересказ.** Редкость, ценность и класс не дают typed gap без authored authority. Метки ведёт items-property, подлинность и законность — social-law. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5844152943).
+- **D14, 2026-09-26, пересказ.** Вещь может иметь узнающего владельца. Код задаёт owner, приметы и узнавание, knowledge хранит знание, NPC выбирает реакцию, social-law — последствия. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5844152943).
+- **D33, 2026-09-28, пересказ.** Ресурсы: условно неисчерпаемые ограничены трудом/переноской; сезонные — наличием, навыком, d20 и инструментом; рукотворные запасы конечны. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5870365310).
+- **D34, 2026-09-28, пересказ.** Порционные бюджеты v17 для тростника, валежника, плавника и древесины отменены: это условно неисчерпаемые ресурсы. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5870365310).
+- **D36, 2026-09-28, пересказ.** Принята общая модель ресурсов #171 с правилами наличия, добычи и владения. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5871030413).
+- **D37, 2026-09-28, пересказ.** Права на ловища и бобровые гоны задаются `tenure_defaults`; тяга скота — свойство действия. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5873071119).
+- **D38, 2026-09-28, пересказ.** Обыденное допускается по логической необходимости с записанным выводом; это не источник. Глубина уточнена D40, широта максимальна. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5873359387).
+- **D40, 2026-09-28, пересказ.** Включается существующее независимо от пользы; действие разрешается по свойствам, не перечню применений. Широта отделена от глубины. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5873540762).
+- **D43, 2026-09-28, пересказ.** Пять уровней состояния — для всех вещей; деньги — предметы, примеси — отдельное поле, подделка — роль состава. P0 value — цена. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5875263635).
+- **D44, 2026-09-28, пересказ.** Деньги — вещи каталога; внутренний счёт в БУЕ, код показывает игроку суммы в местных деньгах. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5875934779).
+- **D47, 2026-09-29, пересказ.** Подтверждено разделение placement и ownership; предметное положение не назначает владельца. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5884226430).
+- **D59, 2026-10-01, дословно:** «если игрок изобретёт порох — игра не должна его останавливать». Мир эпохи остаётся историчным; физически невозможное даёт реалистичный неуспех.
+- **D71, 2026-10-02, пересказ.** Числа ресурсов — игровая калибровка, а не исторический факт; служебная пометка остаётся внутренней.
+- **D92, 2026-10-06, пересказ.** Безымянная вещь — пробел данных: игрок видит утверждённое имя либо общее имя категории.
+- **D99, 2026-10-06, пересказ.** Одна вещь — один из 20 разделов; тара входит, ингредиенты — в еду. Материал и состояние — свойства; имена литературные. «Прочее» не предлагается модели. Заменяет детали D95/D96.
+- **D103, 2026-10-06, пересказ.** Без имени и вида показываются «писчая вещь», «контейнер», «упряжь».
+- **D122, 2026-10-06, пересказ.** Двор может владеть вещью; держатель и распорядитель записаны отдельно, родство не даёт доступа. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6018220559).
+- **D125, 2026-10-06, пересказ.** Где источники молчат, правила наследования утверждаются как помеченная игровая реконструкция, включая военные и городские дворы. [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-6020145069).
+- **D129, 2026-10-06, пересказ.** Утверждены 13 765 вещей в 20 разделах; собственные имена деталей — отдельная партия.
+- **D137, 2026-10-07, пересказ.** Материалы подключаются через CR #178 P0; наличие данных не доказывает подключение.
+- **D143, 2026-10-07, пересказ.** Базовые цены — из источника или помеченной реконструкции; ситуационные коэффициенты применяет код.
+- **D146, 2026-10-07, пересказ.** Справочник категорий даёт базовую цену и ситуационные коэффициенты; правила проверяются на кандидатах цен.
+- **D149, 2026-10-07, пересказ.** Масса, размеры и труд для цены реконструируются с основанием; числа — игровая калибровка.
+- **D211, 2026-10-14, дословно:** «сценарий — это просто вводные данные… но никак не механики». Срез использует общие механизмы, без сценарных идентификаторов и точных фраз в коде.
+- **D220, 2026-10-19, пересказ.** Неисторичные вещи убираются из world stock мода novgorod; изобретение игроком не блокируется, рецепты не прячутся.
+
+## Расхождения и открытые вопросы
+
+- **Identity.** [PR #768](https://github.com/PavelSlaven/Novgorod1230/pull/768) сохраняет UID при reload ([recovery:29–33](../../implementation/cataclysm-p4-recovery-results.md)); pickup создаёт копию с новым UID ([P0–P2:109–113](../../implementation/cataclysm-p0-p2-experiment.md)). Открыта связь с логической вещью.
+- **Чужое содержимое — вопрос владельцу.** [ACTIVE-контракт:10](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt) запрещает direct action создавать чужие вещи/container contents; D3 требует содержимое при первом открытии, часть 3 — чужого owner и сохранение (08.03; [хаб](../GDD.md)). Требуется иной путь либо пересмотр критерия/контракта; действует ACTIVE.
+- **Владение.** Native owner — фракция ([карта:20,77](../../context/cdda-native-map/areas/05-items-crafting.md)); [контракт:121–156](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt) отделяет owner от holder. Текст метки не передаёт право.
+- **Нагрузка.** [Контракт:12–20](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt) различает массу и packing; [inventory:105–160,235–273](../../../data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt) требует сверки с native телом. Расход сил и сытости от нагрузки — аудит [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243), [inventory:311–315](../../../data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt) и глава 09.
+- **Вещь NPC.** Аудит [#243](https://github.com/PavelSlaven/Novgorod1230/issues/243), [npc_inventory_item_marks:161–167](../../../data/knowledge-source/corpus/DOCUMENTS/npc_inventory_item_marks.txt): вещь NPC не добыча по умолчанию. По приметам [там же:43–47](../../../data/knowledge-source/corpus/DOCUMENTS/npc_inventory_item_marks.txt) узнавание решает код (D14).
+
+## Источники
+
+- [items_and_property.txt](../../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt), [character_inventory_equipment.txt](../../../data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt), [npc_inventory_item_marks.txt](../../../data/knowledge-source/corpus/DOCUMENTS/npc_inventory_item_marks.txt) — предметы, доступ и узнавание.
+- [05-items-crafting.md](../../context/cdda-native-map/areas/05-items-crafting.md), [10-player-actions.md](../../context/cdda-native-map/areas/10-player-actions.md) — native reuse.
+- [recovery-results](../../implementation/cataclysm-p4-recovery-results.md), [P0–P2](../../implementation/cataclysm-p0-p2-experiment.md) — UID.
+- [PC](../../governance/PRODUCT_CONSTITUTION.md), [замысел владельца](../../plans/sled-na-nizhney-dvine-scenario-spec.md) — материальность и свобода.
+
+## Этап
+
+Часть 3 проверяет владение, часть 4 — изделие, часть 5 — повторение в Вихтуе. Держатель не становится владельцем. Критерии — в [хабе](../GDD.md).

@@ -2286,7 +2286,7 @@ struct saved_input_queue {
 };
 
 struct pending_activity_peer {
-    std::string path = "in784-pending-" + std::to_string( getpid() ) + ".sock";
+    std::string path = "/tmp/novgorod-pending-" + std::to_string( getpid() ) + ".sock";
     std::string old_socket;
     std::string old_timeout;
     bool had_socket = std::getenv( "NOVGOROD_P3_SOCKET" ) != nullptr;

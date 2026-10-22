@@ -154,6 +154,49 @@ void reset_p3_fixture()
     }
 }
 
+void require_p3_wall_hides_npc( avatar &you, npc &subject )
+{
+    map &here = get_map();
+    const auto refresh = [&]() {
+        here.invalidate_map_cache( you.posz() );
+        here.build_map_cache( you.posz() );
+        here.update_visibility_cache( you.posz() );
+    };
+    refresh();
+    const Creature &creature = static_cast<const Creature &>( subject );
+    REQUIRE( you.sees( here, creature ) );
+    REQUIRE( you.sees( here, subject.pos_bub() ) );
+    const float light_before = here.ambient_light_at( subject.pos_bub() );
+    const time_point turn_before = calendar::turn;
+    const auto candidates_before = chat_available_creatures();
+    REQUIRE( std::find( candidates_before.begin(), candidates_before.end(), &subject ) !=
+             candidates_before.end() );
+
+    for( int x = 58; x <= 62; ++x ) {
+        here.ter_set( tripoint_bub_ms( x, 59, 0 ), p3_ter_wall );
+    }
+    refresh();
+    REQUIRE( calendar::turn == turn_before );
+    REQUIRE( here.ambient_light_at( subject.pos_bub() ) == light_before );
+    REQUIRE_FALSE( you.sees( here, creature ) );
+    REQUIRE_FALSE( you.sees( here, subject.pos_bub() ) );
+    const auto candidates_after = chat_available_creatures();
+    REQUIRE( std::find( candidates_after.begin(), candidates_after.end(), &subject ) ==
+             candidates_after.end() );
+    for( Creature *candidate : candidates_before ) {
+        if( candidate != &subject ) {
+            REQUIRE( std::find( candidates_after.begin(), candidates_after.end(), candidate ) !=
+                     candidates_after.end() );
+        }
+    }
+    for( Creature *candidate : candidates_after ) {
+        if( candidate != &subject ) {
+            REQUIRE( std::find( candidates_before.begin(), candidates_before.end(), candidate ) !=
+                     candidates_before.end() );
+        }
+    }
+}
+
 std::string p3_request_path()
 {
     return PATH_INFO::user_dir() + "novgorod-p3-operation.json";
@@ -1367,6 +1410,7 @@ TEST_CASE( "Novgorod semantic NPC speech shares native CHAT candidates", "[novgo
     SECTION( "behind wall" ) {
         expected_eligible = false;
         subject.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( 0, -2, 0 ) );
+        require_p3_wall_hides_npc( you, subject );
     }
     get_map().invalidate_map_cache( you.posz() );
     get_map().build_map_cache( you.posz() );
@@ -1590,6 +1634,7 @@ TEST_CASE( "Novgorod NPC silence is visible behaviour without sound", "[novgorod
     }
     SECTION( "NPC the player cannot see" ) {
         speaker.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( 0, -2, 0 ) );
+        require_p3_wall_hides_npc( you, speaker );
         refresh_visibility();
         const std::string log_before = message_log();
         sounds::reset_sounds();
@@ -1658,6 +1703,9 @@ TEST_CASE( "Novgorod speech refusals leave the native world unchanged", "[novgor
         const std::vector<character_id> ids = fixture_ids();
         const character_id hidden_id = make_npc( 60, 58 );
         refresh_visibility();
+        if( c.name == "hidden NPC addressee" ) {
+            require_p3_wall_hides_npc( you, npc_by_id( hidden_id ) );
+        }
         npc &speaker = npc_by_id( ids[0] );
         if( c.mute ) {
             item mask( itype_id( "hat_knit" ) );

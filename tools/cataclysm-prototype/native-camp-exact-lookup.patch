@@ -86,3 +86,15 @@
 +    "phases": [ [] ]
    }
  ]
+diff --git a/src/overmap_special_mutable.cpp b/src/overmap_special_mutable.cpp
+--- a/src/overmap_special_mutable.cpp
++++ b/src/overmap_special_mutable.cpp
+@@ -809,7 +809,7 @@
+         if( ter.camp_owner.has_value() ) {
+             tripoint_abs_omt camp_loc =  {project_combine( om.pos(), pos.xy() ), pos.z()};
+             get_map().add_camp( camp_loc, "faction_camp", false );
+-            std::optional<basecamp *> bcp = overmap_buffer.find_camp( camp_loc.xy() );
++            std::optional<basecamp *> bcp = overmap_buffer.get_om_global( camp_loc.xy() ).om->find_camp( camp_loc.xy() );
+             if( !bcp ) {
+                 debugmsg( "Camp placement during special generation failed at %s", camp_loc.to_string() );
+             } else {

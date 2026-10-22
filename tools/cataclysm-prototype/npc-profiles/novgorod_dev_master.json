@@ -105,14 +105,38 @@
       {
         "fact_ref": {
           "entity_kind": "known_fact",
-          "entity_id": "claim:ordinary-life-carpenter-works-wood-with-tools"
+          "entity_id": "claim:population-woodwork-axe"
         },
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "Я плотник. Бревно и доску тешу топором, пазы и гнёзда выбираю долотом, прежде всё размечаю. От работы — щепа да стружка.",
+        "summary": "Топор мне знаком: у нас им по дереву работают.",
         "state": "known",
-        "confidence": "medium"
+        "confidence": "high"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "claim:population-woodwork-adze"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Тесло мне знакомо: у нас им по дереву работают.",
+        "state": "known",
+        "confidence": "high"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "claim:population-woodwork-chisel"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Долото я знаю: у нас оно идёт в работу по дереву.",
+        "state": "known",
+        "confidence": "high"
       },
       {
         "fact_ref": {

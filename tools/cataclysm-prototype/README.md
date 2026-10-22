@@ -394,3 +394,18 @@ materialization не готовы; T06–T12 не запускаются эти�
 `PLAY.md` — краткая граница для агента, запускающего native UI или smoke.
 `run-p1-curses.ps1` и `native-smoke.ps1` используют только зафиксированный
 локальный native build; если его нет, сначала выполните сборку по командам выше.
+
+## Родные C++ тесты в CI
+
+Из чистого клона Novgorod: `bash tools/cataclysm-prototype/run-native-tests-ci.sh`.
+Команда скачивает закреплённый CDDA, накладывает overlays, копирует dev-world и
+родные тесты, собирает GCC 13 Release и запускает самостоятельные теги.
+В GitHub Actions это workflow `Native CDDA tests`, job
+`GCC 13 Release native tests`; артефакт `native-cdda-<SHA>` содержит полный
+лог, коды выхода и список известных падений `[novgorod_live]`.
+Утверждённый базовый список этих падений лежит в
+[`native-live-known-failures.json`](native-live-known-failures.json); менять его
+можно только через ревью после проверки причины изменения.
+Протокольные `[novgorod_semantic]` и `[novgorod_persistence]` в этот job не
+входят: их последовательные прогоны требуют мира и сохранения, а повторная
+загрузка сейчас завершается ошибкой, отслеживаемой в #847.

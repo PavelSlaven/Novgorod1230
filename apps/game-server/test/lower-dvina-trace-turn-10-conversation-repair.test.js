@@ -67,50 +67,6 @@ test('Turn 10 repairs a player plan missing required listeners', async () => {
   ]));
 });
 
-test('Turn 10 rejects acceptance that omits its participation binding', async () => {
-  const { state, contracts } = turn10State({ completedRest: false });
-  let eremeyCalls = 0;
-  const runtimeFixture = fixture({
-    scenarioBundle: bundle,
-    materializationBundle: bundle,
-    committedState: state,
-    temporalAdvanceOwner: createTemporalAdvanceOwner({
-      effect_registrations: [
-        ...npcTemporalEffectRegistrations(),
-        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
-        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
-      ]
-    }),
-    turnStepModel: (request) => turn10StepPlan(request, contracts),
-    playerConversationModel: (request) => playerPlan(request, contracts),
-    npcSemanticModel(request) {
-      const plan = npcPlan(request, contracts);
-      if (request.npc_ref.entity_id !== contracts.actors.eremey.instance_id) {
-        return plan;
-      }
-      eremeyCalls += 1;
-      return {
-        ...plan,
-        speech: { ...plan.speech, dominant_act: 'accept' },
-        supporting_operations: []
-      };
-    },
-    npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
-  });
-
-  await assert.rejects(runtimeFixture.runtime.submitTurn({
-    partyId: runtimeFixture.partyId,
-    input: { request_id: 'turn10-repair-acceptance',
-      idempotency_key: 'turn10-repair-acceptance', raw_text: COMPOUND_TURN_10 }
-  }), { code: 'TURN_NPC_PLAN_NOT_APPLICABLE' });
-
-  assert.equal(eremeyCalls, 1);
-  assert.equal((runtimeFixture.state.route_participant_commitments ?? []).some(
-    ({ npc_ref: npc, role }) => npc.entity_id
-      === contracts.actors.eremey.instance_id && role === 'guide'
-  ), false);
-});
-
 test('Turn 10 admits refusal without a participation binding', async () => {
   const { state, contracts } = turn10State({ completedRest: false });
   const runtimeFixture = fixture({

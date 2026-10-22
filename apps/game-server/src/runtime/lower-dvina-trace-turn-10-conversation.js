@@ -169,10 +169,6 @@ function classifyParticipationPlan(plan, allowed) {
   if (plan.contribution_kind !== 'speech') fail();
   const operation = plan.supporting_operations?.[0] ?? null;
   if (operation == null) {
-    if (['accept', 'promise'].includes(plan.speech.dominant_act)
-        || plan.speech.interaction_tags.includes('agreement')) {
-      fail('TRACE_TURN10_PARTICIPATION_BINDING_REQUIRED');
-    }
     return { kind: 'speech', statementRef: null };
   }
   const matched = allowed.find((expected) =>

@@ -33,6 +33,10 @@ test('auditor treats future commitments as speech and audits factual assertions'
       /An already completed or current action assertion needs exact request evidence and audit/u);
     assert.match(own,
       /A selected operation is checked against its contract by the action owner/u);
+    assert.match(own,
+      /A route-specific offer to guide asserts route knowledge\./u);
+    assert.match(own,
+      /Route guidance, including such an offer, needs the matching exact supplied disclose_known_route operation and refs\./u);
     assert.doesNotMatch(system,
       /Reject an offer or promise of a future physical or code-owned action without its exact permitted supporting operation/u);
   });

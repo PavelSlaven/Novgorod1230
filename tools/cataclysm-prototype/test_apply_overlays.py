@@ -70,7 +70,8 @@ class ApplyOverlaysTest(unittest.TestCase):
         names = (HERE / "native-overlays.txt").read_text().split()
         self.assertEqual(names, ["native-input", "native-persistence", "native-item-identity", "native-rng-state",
                                  "native-preload", "native-semantic-input", "native-control-tests",
-                                 "native-live-input", "native-autosave-options"])
+                                 "native-live-input", "native-autosave-options",
+                                 "native-camp-exact-lookup"])
         self.assertEqual(sorted(names), sorted(path.stem for path in HERE.glob("native-*.patch")))
 
 

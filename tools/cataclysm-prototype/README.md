@@ -298,8 +298,8 @@ P4 — отдельный исследовательский gate CR [#758](http
 
 `NATIVE` — новый чистый checkout закреплённого SHA (раздел «Checkout и сборка»,
 `$CDDA`); на него `apply-overlays.sh` накладывает в порядке `native-overlays.txt`
-все девять overlays, включая `native-live-input` и `native-autosave-options`,
-которых не было в прежнем цикле P4. `NOVGOROD` указывает на текущий checkout
+все overlays списка, включая `native-live-input`, `native-autosave-options` и
+`native-camp-exact-lookup`, которых не было в прежнем цикле P4. `NOVGOROD` указывает на текущий checkout
 этого репозитория в WSL. Все test sources копируются из той же ревизии:
 
 ```sh

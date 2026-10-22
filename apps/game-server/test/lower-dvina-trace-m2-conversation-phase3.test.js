@@ -537,28 +537,38 @@ test('Eremey may answer with ordinary speech and an intent paraphrase becomes na
   );
 });
 
-test('an unsupported NPC promise is rejected without semantic rewrite',
+test('an NPC promise without an operation remains ordinary speech',
   async () => {
     const state = phase3State();
     const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
     withAccessibleBlueWool(state, contracts);
     let npcCalls = 0;
-    await assert.rejects(runPhase3({
+    let npcPlan;
+    const exchange = await runPhase3({
       state,
       contracts,
       rawText: 'Показываю улику и жду ответа.',
       inputDigest: digest('e'),
-      responseKind: 'route_disclosure',
+      responseKind: 'speech',
       checkResult: checkResult(contracts.check.check_id, 'success'),
       playerPlanOptions: { evidence: true },
       transformNpcPlan(plan, { call_index: call }) {
         npcCalls = call;
+        plan.speech.utterance_text = 'Позже я помогу тебе.';
         plan.speech.dominant_act = 'promise';
+        plan.speech.topic_refs = [];
+        plan.speech.claims = [];
         plan.supporting_operations = [];
+        npcPlan = structuredClone(plan);
         return plan;
       }
-    }), { code: 'TURN_NPC_PLAN_NOT_APPLICABLE' });
+    });
 
+    assert.equal(exchange.result.response_kind, 'speech');
+    assert.equal(exchange.result.statements.at(-1).utterance_text,
+      'Позже я помогу тебе.');
+    assert.equal(exchange.result.route_disclosure, null);
+    assert.deepEqual(npcPlan.supporting_operations, []);
     assert.equal(npcCalls, 1);
   });
 

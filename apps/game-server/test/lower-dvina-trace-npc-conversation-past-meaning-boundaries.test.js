@@ -171,7 +171,8 @@ test('C27 and C28 past sources and protections remain available', async () => {
       'knowledge.known_facts', 'memory.recent_events',
       'memory.relevant_long_term_events', 'source_knowledge_refs',
       'believed_true', 'knowledge.beliefs',
-      'grounds the belief, not objective truth', 'contradicts or hides',
+      'grounds the belief, not objective truth',
+      'contradicted by the visible false assertion',
       'same past assertion', 'denial'
     ]) {
       if (!rule.includes(fragment)) issues.push(`${role}: missing ${fragment}`);
@@ -216,7 +217,7 @@ test('each new sentence appears only in its intended role', async () => {
     { roles: ['auditor'],
       sentence: 'Mandatory failure: a current-observation citation supports only its exact fact_text when the claim has the same meaning, not necessarily the same words; reject a merely possible condition, unseen object, explanation, required next action, or broader conclusion.' },
     { roles: ['auditor'],
-      sentence: 'Mandatory failure: reject a first-person assertion that the NPC saw, did, or experienced something earlier, or that it did not, unless a knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events is cited in source_knowledge_refs and supports the same past assertion at its stated time rather than only a habit, a believed_true claim cites in source_knowledge_refs the exact knowledge.beliefs entry stating the same belief about that past and itself describing that past rather than an intention or general stance, or a knowingly_false claim cites in source_knowledge_refs the exact known fact it contradicts or hides.' }
+      sentence: 'Mandatory failure: reject a first-person assertion that the NPC saw, did, or experienced something earlier, or that it did not, unless a knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events is cited in source_knowledge_refs and supports the same past assertion at its stated time rather than only a habit, a believed_true claim cites in source_knowledge_refs the exact knowledge.beliefs entry stating the same belief about that past and itself describing that past rather than an intention or general stance, or a knowingly_false claim cites in source_knowledge_refs the exact known fact contradicted by its visible false assertion.' }
   ];
   const issues = [];
   for (const { roles, sentence } of expected) {

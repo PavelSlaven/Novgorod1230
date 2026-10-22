@@ -836,7 +836,7 @@ test('registered NPC responder repairs grounding through the real role path', as
         { entity_kind: 'npc_identity', entity_id: '8' }, perceptionRef]);
       assert.deepEqual(responderInputs[0].knowledge, { known_facts: [{
         fact_ref: { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' }, state: 'known',
-        summary: 'Я мужчина.' }], beliefs: [] });
+        summary: 'Я мужчина.' }], beliefs: [], hypotheses: [] });
       assert.deepEqual(responderInputs[1].request, responderInputs[0]);
       assert.deepEqual(responderInputs[1].original_output.speech, responderOutputs[0].speech);
       assert.equal(responderInputs[1].validation_errors[0].category, 'semantic_grounding');

@@ -113,7 +113,8 @@ function cancelledOperationRule(text) {
 function cancelledLieRule(text) {
   const lie = /\b(?:knowingly_false|deliberate lies?|lying|false postures?)\b/iu;
   const conceal = /\b(?:hide|hides|hidden|hiding|conceal(?:s|ed|ing)?|withhold(?:s|ing)?|withheld)\b/iu;
-  return sentences(text).some(s => lie.test(s) && conceal.test(s)
+  return sentences(text).map(s => s.replace(/<[^<>]*>/gu, ''))
+    .some(s => lie.test(s) && conceal.test(s)
     && !/\b(?:not|never|cannot)\b.{0,35}\b(?:hide|conceal|withhold)/iu.test(s));
 }
 

@@ -31,7 +31,6 @@ export function classifyEremeyPlan(plan, {
       'Eremey returned an unavailable handoff contribution.'
     );
   }
-  requireActionableNpcSpeech(plan);
   const operation = plan.supporting_operations[0] ?? null;
   if (operation?.op !== ROUTE_OPERATION) {
     if (operation !== null) {
@@ -107,7 +106,6 @@ export function classifyRatshaPlan(plan, {
       'Ratsha response is outside the accepted conversation boundary.'
     );
   }
-  requireActionableNpcSpeech(plan);
   const operation = plan.supporting_operations[0] ?? null;
   const checkRequired = plan.resolution === 'check_required'
     && plan.check !== null;
@@ -161,7 +159,6 @@ export function classifyOrdinaryConversationPlan(plan) {
   }
   if (plan.contribution_kind === 'speech'
       && plan.supporting_operations.length === 0) {
-    requireActionableNpcSpeech(plan);
     return { kind: 'speech', statementRef: null };
   }
   fail(
@@ -259,13 +256,5 @@ function requireDomainOwned(plan) {
   if (plan?.activity?.duration_class !== 'domain_owned') {
     fail('TRACE_M2_CONVERSATION_DURATION_CLASS_INVALID',
       'Lower Dvina revision 14 conversation duration is domain-owned.');
-  }
-}
-
-function requireActionableNpcSpeech(plan) {
-  if (plan.supporting_operations.length === 0
-      && ['offer', 'promise'].includes(plan.speech?.dominant_act)) {
-    fail('TRACE_M2_NPC_OPERATION_REQUIRED',
-      'An offer or promise requires an exact supported operation.');
   }
 }

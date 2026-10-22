@@ -29,6 +29,8 @@ function promisingNpcModel(supportingOperations) {
       return { output: npcSpeechPlan(request, {
         utteranceText: promiseText,
         dominantAct: 'promise',
+        interactionTags: request.social_context?.npc_behavior?.required_interaction_tag
+          ? [request.social_context.npc_behavior.required_interaction_tag] : [],
         supportingOperations
       }) };
     } }
@@ -56,7 +58,7 @@ test('Phase 3 commits an NPC promise as ordinary speech without a route operatio
       }`);
     });
 
-    assert.equal(exchange.result.response_kind, 'speech');
+    assert.equal(exchange.result.response_kind, 'withhold');
     assert.equal(exchange.result.route_disclosure, null);
     assert.deepEqual(exchange.result.decision_plan.supporting_operations, []);
     assert.deepEqual(exchange.result.supporting_operation_perceptions, []);

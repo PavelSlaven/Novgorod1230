@@ -9,7 +9,7 @@ import { CLAIM_KINDS_RULE, FACTUAL_ASSERTION_RULE } from
 const targets = JSON.parse(await readFile(new URL(
   './fixtures/npc-conversation-target-prompts.json', import.meta.url), 'utf8'));
 
-test('auditor checks future action against an operation, not an earlier promise',
+test('auditor treats future commitments as speech and audits factual assertions',
   async () => {
     let system;
     await auditFreshNpcSpeech({
@@ -24,6 +24,15 @@ test('auditor checks future action against an operation, not an earlier promise'
     const own = system.replace(FACTUAL_ASSERTION_RULE, '')
       .replace(CLAIM_KINDS_RULE, '');
     assert.match(own,
-      /\bfuture physical or code-owned action\b[\s\S]{0,100}\bsupporting operation\b/iu);
-    assert.match(own, /\b(?:earlier|prior|remembered)\b[\s\S]{0,100}\bpromise\b/iu);
+      /A spoken offer, acceptance of a request for future action, promise, or statement of future intention is a statement event/u);
+    assert.match(own,
+      /The absence of a supporting operation is not a reason to reject that speech/u);
+    assert.match(own,
+      /Factual premises within such speech need claims and the ordinary audit/u);
+    assert.match(own,
+      /An already completed or current action assertion needs exact request evidence and audit/u);
+    assert.match(own,
+      /A selected operation is checked against its contract by the action owner/u);
+    assert.doesNotMatch(system,
+      /Reject an offer or promise of a future physical or code-owned action without its exact permitted supporting operation/u);
   });

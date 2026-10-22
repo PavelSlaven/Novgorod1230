@@ -124,7 +124,7 @@ export function npcConversationInstructions(repair, request = null) {
   const intentRule = semanticRepairOpensIntent(repair) ? 'Rewrite intent at $.interpretation.intent only as needed to remove rejected content; keep the same decision boundary.' : 'Keep intent unchanged at $.interpretation.intent.';
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each rejected assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, and every supported assertion. ' + intentRule + ' Change or remove each rejected assertion at its listed path, including its words in utterance_text, or add to its claim an exact ref from allowed_references.knowledge_refs absent from the original claims and supporting what the visible speech says; the auditor will check its meaning again. Turn the assertion into the speaker\'s doubt or not knowing only when no matching known fact, belief, memory event, observation, or perceived message is in the request; keep the speaker\'s character and manner. If the fact is in knowledge.known_facts, cite its exact ref, omit it from the visible speech, conceal it without a false assertion using withheld with the known fact ref, or use knowingly_false with that ref for a deliberate lie, including a false denial of knowing. Changing only content_summary, form, or speaker_posture while the rejected utterance_text and old refs remain is not a repair. Add no new fact, act, or operation. A current_observation permits only a claim with the same meaning as its fact_text, cited by its exact source ref.'
+      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each rejected assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, and every supported assertion. ' + intentRule + ' Change or remove each rejected assertion at its listed path, including its words in utterance_text, or add to its claim an exact ref from allowed_references.knowledge_refs absent from the original claims and supporting what the visible speech says; the auditor will check its meaning again. Turn the assertion into the speaker\'s doubt or not knowing only when no matching known fact, belief, memory event, observation, or perceived message is in the request; keep the speaker\'s character and manner. If the fact is in knowledge.known_facts, cite its exact ref, omit it from the visible speech, or truthfully refuse or evade with withheld and the exact concealed known fact ref. Use knowingly_false only if utterance_text makes a visible false factual assertion, including a false denial of knowing, with the exact known fact ref it contradicts. Changing only content_summary, form, or speaker_posture while the rejected utterance_text and old refs remain is not a repair. Add no new fact, act, or operation. A current_observation permits only a claim with the same meaning as its fact_text, cited by its exact source ref.'
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: original_output is your own previous answer exactly as returned; original_output_text is present instead when it was not valid JSON. validation_errors lists every form error with its path. Fix only those paths: structure, refs, and enum values. When dominant_act is listed, choose the allowed value that names the act the utterance already performs; otherwise keep dominant_act. When a word that mixes Latin and Cyrillic letters is listed, rewrite only the spelling of that word in Cyrillic letters. Keep everything else in utterance_text, the addressees, and the meaning unchanged.'
     ] : []),
@@ -141,7 +141,7 @@ export function npcConversationInstructions(repair, request = null) {
     'Knowledge admission rules describe permitted categories, not known facts.',
     'Every factual assertion in utterance_text, reason, or interpretation needs matching exact request evidence from knowledge, memory, npc_identity, the perceived message, player-safe observation, or permitted operation player_safe_context.',
     'Say that the speaker does not know or is uncertain only when no matching known fact, belief, memory event, observation, or perceived message is in the request.',
-    'A known fact may be omitted or concealed by a supported withheld claim; a false denial of knowing requires knowingly_false with the exact known fact ref.',
+    'A known fact may be omitted or concealed by a supported withheld claim. A false denial of knowing requires knowingly_false with the exact known fact ref.',
     'Never hide an unsupported assertion by leaving speech.claims empty.',
     'A received or public-history message proves only that its speaker said those words, not that the described fact is true.',
     'Never change another speaker\'s I or we claim into the NPC\'s own first-person',
@@ -165,7 +165,7 @@ export function npcConversationInstructions(repair, request = null) {
     'or broader conclusion.',
     'npc.current_activity is only the exact activity at requested_at.',
     'It never proves where the NPC was, what the NPC did, or what the NPC saw at',
-    'an earlier time. Past first-person activity or observation, including a denial, needs an exact knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events, cited in speech.claims.source_knowledge_refs and supporting the same past assertion. A known fact about a habit, craft, or usual practice supports only that usual practice, not an activity now or an event at a particular past time. A believed_true claim may instead cite the exact knowledge.beliefs entry stating the same belief about that past; it grounds the belief, not objective truth. The cited belief itself must describe the asserted past; an intention, belief about the future, or general stance does not support it. A knowingly_false claim instead cites the exact known fact it contradicts or hides. Without such a ref, omit the past claim and invent no explanation. If no known fact, belief, memory event, observation, or perceived message in the request answers the asked past, say in the speaker\'s own words that they do not remember or know it; never turn that absence into a negative assertion about the speaker\'s past.',
+    'an earlier time. Past first-person activity or observation, including a denial, needs an exact knowledge.known_facts entry or event from memory.recent_events or memory.relevant_long_term_events, cited in speech.claims.source_knowledge_refs and supporting the same past assertion. A known fact about a habit, craft, or usual practice supports only that usual practice, not an activity now or an event at a particular past time. A believed_true claim may instead cite the exact knowledge.beliefs entry stating the same belief about that past; it grounds the belief, not objective truth. The cited belief itself must describe the asserted past; an intention, belief about the future, or general stance does not support it. A knowingly_false claim instead cites the exact known fact contradicted by the visible false assertion. Without such a ref, omit the past claim and invent no explanation. If no known fact, belief, memory event, observation, or perceived message in the request answers the asked past, say in the speaker\'s own words that they do not remember or know it; never turn that absence into a negative assertion about the speaker\'s past.',
     'npc.identity.name_or_label is the only authority for the speaker own name;',
     'npc.identity and npc.social_role are the speaker own name, age, origin, and craft,',
     'and a claim about them cites {"entity_kind":"npc_identity","entity_id":"<copy npc_ref.entity_id>"}.',
@@ -209,24 +209,16 @@ export function npcConversationInstructions(repair, request = null) {
     'A decision_scope.required_supporting_operation must be copied exactly once',
     'for speech: supporting_operations must be [required_supporting_operation]',
     'with that complete object copied exactly; do not add another operation.',
-    'An offer or promise of a future or code-owned action must select its exact',
-    'permitted supporting operation. Without one, use non-promissory ordinary speech.',
-    'When no exact supporting operation permits it, speech.dominant_act must not be',
-    'offer or promise, and utterance_text must not offer or promise that action.',
-    'Apply that rule to the meaning of the utterance even if its dominant_act would',
-    'otherwise be answer or inform; never evade it by relabeling agreement.',
+    'A spoken offer, acceptance of a future request, promise, or future intention is a speech statement. That statement does not perform an action or commit mechanics. Factual premises within that speech need claims; statements that an action already happened or is happening now need exact evidence. Select an exact permitted supporting operation only for an action performed now under that operation contract.',
     'commit_surrender means the NPC explicitly yields, stops resisting, or relinquishes',
     'custody. Agreement to limited cooperation while keeping control or supervision',
     'is not surrender and must not use the surrender tag or operation. When an action',
-    'handoff is unavailable, do not promise or claim a future physical action; answer,',
-    'refuse, or discuss conditions without pretending that mechanics were committed.',
+    'handoff is unavailable, the NPC may still state a future intention. That speech must not claim that the action already happened or is happening now. To perform a current action, choose its permitted operation or handoff.',
     'When state_bargain is permitted and the NPC refuses because compliance risks',
     'consequences for the NPC, the NPC may use that operation to state a concrete',
     'condition for yielding. The condition must follow from supplied subjective',
     'context and must not invent an absent superior, order, route, or hidden fact.',
-    'When speech gives route guidance, directions, a route claim, or an offer to guide,',
-    'select the exact disclose_known_route operation and include route_disclosure plus',
-    'the matching route topic and claim refs. Otherwise do not imply that route speech.',
+    'A route-specific offer to guide asserts route knowledge. When speech gives route guidance, directions, a route claim, or such an offer, select the exact disclose_known_route operation to ground that route content and include route_disclosure plus the matching route topic and claim refs. Otherwise do not imply route knowledge.',
     'A disclose_known_route operation supports only the route and facts explicitly in',
     'its player_safe_context. It never supports endpoint contents, supplies, shelter,',
     'warmth, people, or other amenities unless that exact fact is supplied there.',
@@ -236,10 +228,7 @@ export function npcConversationInstructions(repair, request = null) {
     'For emit_interaction, copy its exact permitted kind and actor, target,',
     'entity, and instrument refs from request; do not invent or substitute refs.',
     ...(Array.isArray(participationBindings) ? [
-      'For commit_route_participation, accepting, promising, or agreeing means',
-      'choose exactly one allowed binding and copy it in supporting_operations',
-      'as {"op":"commit_route_participation", ...binding}. Refusal, silence,',
-      'or leaving may use no supporting operation. The NPC chooses the binding.',
+      'For commit_route_participation, joining the route now uses exactly one allowed binding and copies it in supporting_operations as {"op":"commit_route_participation", ...binding}. A spoken acceptance, agreement, or promise about future participation is a statement until the NPC chooses to join now. Refusal, silence, or leaving may use no supporting operation. The NPC chooses the binding.',
       `Allowed bindings: ${JSON.stringify(participationBindings)}`
     ] : []),
     'Without required fields, ordinary speech remains automatic with check null and no',
@@ -257,7 +246,7 @@ export function npcConversationInstructions(repair, request = null) {
       JSON.stringify(stripNpcEnvelope(requiredCandidate))
     ]),
     ...(candidates.length === 0 ? [] : [
-      'These are request-derived structural examples for matching semantic choices, not an exhaustive choice set. Ordinary speech may use any allowed dominant_act except offer, accept, or promise when no exact supporting operation permits the offered, accepted, or promised action. Surrender is optional; for surrender speech, use exactly {"op":"commit_surrender"}, the surrender tag, and any interchangeable permitted dominant_act: accept, promise, or confess. Keep explicitly permitted silence and leave_conversation mappings available.',
+      'These are request-derived structural examples for matching semantic choices, not an exhaustive choice set. Ordinary speech may use any allowed dominant_act. Surrender is optional; to surrender now, use exactly {"op":"commit_surrender"}, the surrender tag, and any interchangeable permitted dominant_act: accept, promise, or confess. Keep explicitly permitted silence and leave_conversation mappings available.',
       JSON.stringify(candidates.map(stripNpcEnvelope))
     ]),
     ...(Array.isArray(request?.available_resources)

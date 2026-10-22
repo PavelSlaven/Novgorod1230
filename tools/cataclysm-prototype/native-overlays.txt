@@ -7,3 +7,4 @@ native-semantic-input
 native-control-tests
 native-live-input
 native-autosave-options
+native-camp-exact-lookup

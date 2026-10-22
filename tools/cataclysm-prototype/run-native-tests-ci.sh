@@ -98,9 +98,12 @@ list_status=0
   cd "$native"
   ./tests/cata_test --rng-seed 17 --mods=novgorod_dev_world \
     --user-dir="$work_root/user-live-list" --list-test-names-only '[novgorod_live]'
-) > "$log_dir/live-tests.txt" 2>&1 || list_status=$?
-if [[ $list_status != 0 && $list_status != 1 ]]; then
-  exit "$list_status"
+) > "$log_dir/live-tests.txt" 2> "$log_dir/live-list-stderr.log" || list_status=$?
+printf '%s\n' "$list_status" > "$log_dir/live-list.exit"
+list_count=$(awk 'NF { count++ } END { print count+0 }' "$log_dir/live-tests.txt")
+if (( list_status != list_count )); then
+  printf 'Catch2 перечислил %s live случаев, код выхода %s\n' "$list_count" "$list_status" >&2
+  exit 1
 fi
 
 live_status=0

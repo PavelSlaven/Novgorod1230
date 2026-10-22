@@ -3,7 +3,7 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "structural_document_nodes_only",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "d68e6f719fb868d5c3d57403ba7c5590e7052a3d0e650b4f71918b19676b31ec",
+  "corpus_manifest_sha256": "66628ece4f0f0503a2c23861a827ee1c09a44ab5a6459ffe23ea3a5b3e3d524b",
   "registered_document_count": 44,
   "source_document_count": 17,
   "structural_only_document_count": 17,

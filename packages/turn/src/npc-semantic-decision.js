@@ -304,7 +304,14 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             ? { original_output: safeModelOutput(rawOutput) }
             : { original_output_text: rawText }),
           validation_errors: verdict.errors,
-          ...(actAnchor === null ? {} : { act_anchor: safeModelOutput(actAnchor) })
+          ...(actAnchor === null ? {} : { act_anchor: safeModelOutput(actAnchor) }),
+          ...(repair?.kind === 'semantic' && kind === 'format'
+            && actAnchor !== null ? {
+              act_anchor_semantic_repair: {
+                kind: 'semantic',
+                validation_errors: repair.validation_errors
+              }
+            } : {})
         });
         continue;
       }

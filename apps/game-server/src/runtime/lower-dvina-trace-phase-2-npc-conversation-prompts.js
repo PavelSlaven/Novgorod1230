@@ -3,6 +3,8 @@ import { CLAIM_KINDS_RULE, CONVERSATION_PLAN_MAPPINGS, FACTUAL_ASSERTION_RULE,
 import { requiredNpcConversationCandidate, routeDisclosureCandidate,
   routeDisclosureCandidateIsValid } from
   './lower-dvina-trace-npc-required-conversation-candidate.js';
+import { semanticRepairOpensIntent } from
+  './lower-dvina-trace-conversation-repair-act-paths.js';
 
 export { requiredNpcConversationCandidate };
 export function npcConversationCandidates(request) {
@@ -119,9 +121,10 @@ export function npcConversationInstructions(repair, request = null) {
   const semanticRepair = repair?.validation_errors?.some(
     ({ category }) => category === 'semantic_grounding'
   ) === true;
+  const intentRule = semanticRepairOpensIntent(repair) ? 'Rewrite intent at $.interpretation.intent only as needed to remove rejected content; keep the same decision boundary.' : 'Keep intent unchanged at $.interpretation.intent.';
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each rejected assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, intent, and every supported assertion. Change or remove each rejected assertion at its listed path, including its words in utterance_text, or add to its claim an exact ref from allowed_references.knowledge_refs absent from the original claims and supporting what the visible speech says; the auditor will check its meaning again. Turn the assertion into the speaker\'s doubt or not knowing only when no matching known fact, belief, memory event, observation, or perceived message is in the request; keep the speaker\'s character and manner. If the fact is in knowledge.known_facts, cite its exact ref, omit it from the visible speech, conceal it without a false assertion using withheld with the known fact ref, or use knowingly_false with that ref for a deliberate lie, including a false denial of knowing. Changing only content_summary, form, or speaker_posture while the rejected utterance_text and old refs remain is not a repair. Add no new fact, act, or operation. A current_observation permits only a claim with the same meaning as its fact_text, cited by its exact source ref.'
+      'MANDATORY SEMANTIC REPAIR: original_output is your own previous answer to this request exactly as you returned it. validation_errors lists each rejected assertion with its path and quote. Keep the same contribution_kind, addressees, dominant_act, and every supported assertion. ' + intentRule + ' Change or remove each rejected assertion at its listed path, including its words in utterance_text, or add to its claim an exact ref from allowed_references.knowledge_refs absent from the original claims and supporting what the visible speech says; the auditor will check its meaning again. Turn the assertion into the speaker\'s doubt or not knowing only when no matching known fact, belief, memory event, observation, or perceived message is in the request; keep the speaker\'s character and manner. If the fact is in knowledge.known_facts, cite its exact ref, omit it from the visible speech, conceal it without a false assertion using withheld with the known fact ref, or use knowingly_false with that ref for a deliberate lie, including a false denial of knowing. Changing only content_summary, form, or speaker_posture while the rejected utterance_text and old refs remain is not a repair. Add no new fact, act, or operation. A current_observation permits only a claim with the same meaning as its fact_text, cited by its exact source ref.'
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: original_output is your own previous answer exactly as returned; original_output_text is present instead when it was not valid JSON. validation_errors lists every form error with its path. Fix only those paths: structure, refs, and enum values. When dominant_act is listed, choose the allowed value that names the act the utterance already performs; otherwise keep dominant_act. When a word that mixes Latin and Cyrillic letters is listed, rewrite only the spelling of that word in Cyrillic letters. Keep everything else in utterance_text, the addressees, and the meaning unchanged.'
     ] : []),
@@ -265,7 +268,7 @@ export function npcConversationInstructions(repair, request = null) {
       `Final route constraint: the only permitted route content is that a way leads to ${JSON.stringify(routeContext.destination_label)}. Do not add warmth, shelter, supplies, people, sightings, directions, distance, or conditions at the destination.`
     ] : []),
     semanticRepair
-      ? 'Use only exact request evidence and attach matching claim source refs for every retained factual assertion. Keep the same decision boundary, dominant_act, and intent, and do not add an operation.'
+      ? 'Use only exact request evidence and attach matching claim source refs for every retained factual assertion. Keep the same decision boundary and dominant_act, and do not add an operation.'
       : repair ? '' : 'Ordinary valid speech is allowed without a scenario outcome operation.'
   ].join(' ');
 }

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { projectNpcConversationSubject } from '@rus/npc-runtime';
 import { projectConversationMemory, validateConversationMemoryRecord }
   from '@rus/visibility-knowledge-memory';
@@ -10,6 +11,7 @@ const PLACEMENT_TEXT = Object.freeze({ ground: 'лежит поблизости'
 const WIRE_SERVICE_KEYS = new Set(['request_id', 'boundary_id', 'conversation_id',
   'exchange_id', 'state_version', 'requested_at', 'signal_refs', 'template_ref']);
 const CYRILLIC = /\p{Script=Cyrillic}/u;
+const LATIN = /\p{Script=Latin}/u;
 
 export function p3Error(code) {
   const error = new Error(code);
@@ -138,6 +140,53 @@ function withResourceLabels(resources, labels) {
     ? { ...resource, label: labels.get(resource.resource_ref) } : resource);
 }
 
+function worldFeatureIdentity(feature) {
+  const position = feature.absolute_position;
+  if (!['furniture', 'terrain'].includes(feature.kind)
+      || typeof feature.type !== 'string' || feature.type.trim() !== feature.type
+      || feature.type.length === 0 || !Array.isArray(position) || position.length !== 3
+      || !position.every(Number.isSafeInteger)) {
+    throw p3Error('P3_NPC_WORLD_FEATURE_INVALID');
+  }
+  return JSON.stringify(['p3-world-feature-v1', feature.kind, feature.type, ...position]);
+}
+
+function worldFeatureEntityId(feature) {
+  return createHash('sha256').update(worldFeatureIdentity(feature), 'utf8')
+    .digest('hex').slice(0, 12);
+}
+
+function visibleWorldFeatures(projection, turn, npcId) {
+  const raw = projection.visible_world_features ?? [];
+  if (!Array.isArray(raw)) throw p3Error('P3_NPC_WORLD_FEATURE_INVALID');
+  const identitiesById = new Map();
+  const emitted = new Set();
+  const features = [];
+  for (const feature of raw) {
+    if (feature === null || typeof feature !== 'object' || Array.isArray(feature)) {
+      throw p3Error('P3_NPC_WORLD_FEATURE_INVALID');
+    }
+    if (!['furniture', 'terrain'].includes(feature.kind)) continue;
+    const identity = worldFeatureIdentity(feature);
+    const entityId = worldFeatureEntityId(feature);
+    const previous = identitiesById.get(entityId);
+    if (previous !== undefined && previous !== identity) {
+      throw p3Error('P3_NPC_WORLD_FEATURE_REF_COLLISION');
+    }
+    identitiesById.set(entityId, identity);
+    const label = feature.label;
+    if (typeof label !== 'string' || label.trim() !== label
+        || !CYRILLIC.test(label) || LATIN.test(label) || emitted.has(entityId)) continue;
+    emitted.add(entityId);
+    const perceptionId = createHash('sha256').update(JSON.stringify([
+      'p3-world-perception-v1', turn, npcId, feature.kind, entityId
+    ]), 'utf8').digest('hex').slice(0, 12);
+    features.push({ label, ref: { entity_kind: feature.kind, entity_id: entityId },
+      perception_ref: { entity_kind: 'perception_result', entity_id: perceptionId } });
+  }
+  return features;
+}
+
 export function buildP3NpcConversationSubject({ projection, profile, frame, player,
   npcRef, playerRef, perceptionRef, utterance, currentTurns }) {
   const npcId = npcRef.entity_id;
@@ -158,6 +207,7 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
     time_of: p3GameTimeOfTurn });
 
   const items = projection.visible_items;
+  const worldFeatures = visibleWorldFeatures(projection, frame.turn, npcId);
   const activityRef = projection.activity_id && projection.activity_id !== NATIVE_NO_ACTIVITY
     ? projection.activity_id : null;
   const seen = (item) => perceptionRefOfItem(frame.turn, npcId, item.item_uid);
@@ -188,6 +238,9 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
       ...items.map(item => ({ observation_ref: seen(item), source_type: 'direct_perception',
         observed_at: at,
         fact_text: `Вижу вещь «${item.label}»: ${PLACEMENT_TEXT[item.placement]}.` })),
+      ...worldFeatures.map(feature => ({
+        observation_ref: feature.perception_ref, source_type: 'direct_perception',
+        observed_at: at, fact_text: 'Вижу «' + feature.label + '» поблизости.' })),
       ...(projection.visible_actors ?? []).filter(actor => actor.appearance)
         .map(actor => observation(`p3-seen-actor-${frame.turn}-${npcId}-${actor.actor_id}`,
           appearanceText(actor, actor.actor_id === player.actor_id ? relation
@@ -217,10 +270,13 @@ export function buildP3NpcConversationSubject({ projection, profile, frame, play
     knowledge_snapshot: { ...profile?.knowledge_snapshot, known_facts: knownFacts },
     memory_snapshot: { recent_events: memory.recent_events }
   });
-  const entityRefs = [...new Map(items.map(item => [item.item_uid,
-    { entity_kind: 'item', entity_id: item.item_uid }])).values()]
-    .sort((left, right) => `${left.entity_kind}\0${left.entity_id}`
-      < `${right.entity_kind}\0${right.entity_id}` ? -1 : 1);
+  const refKey = ref => ref.entity_kind + String.fromCharCode(0) + ref.entity_id;
+  const entityRefs = [...new Map([
+    ...items.map(item => ({ entity_kind: 'item', entity_id: item.item_uid })),
+    ...worldFeatures.map(feature => feature.ref)
+  ].map(ref => [refKey(ref), ref])).values()]
+    .sort((left, right) => refKey(left) < refKey(right) ? -1
+      : refKey(left) > refKey(right) ? 1 : 0);
   const labels = new Map(items.filter(item => typeof item.label === 'string'
     && CYRILLIC.test(item.label)).map(item => [item.item_ref, item.label]));
   return { npc: { ...subject.npc,

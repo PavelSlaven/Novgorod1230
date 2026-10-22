@@ -12,6 +12,8 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { coversActPath, semanticRepairOpensIntent } from
+  './lower-dvina-trace-conversation-repair-act-paths.js';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -89,18 +91,32 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       && !repairHasFormatErrors) {
       const hasAnchor = Object.hasOwn(repair, 'act_anchor');
       const original = hasAnchor ? repair.act_anchor : repair.original_output;
-      if (original !== null && typeof original === 'object' && !Array.isArray(original)
-        && [Object.prototype, null].includes(Object.getPrototypeOf(original))) {
+      if (isPlainOutput(original)) {
         const errors = Array.isArray(repair.validation_errors) ? repair.validation_errors : [];
+        const intentPath = '$.interpretation.intent';
+        const anchorOpensIntent = hasAnchor
+          && semanticRepairOpensIntent(repair.act_anchor_semantic_repair);
         const changedAct = changedActPaths(response.output, original)
-          .filter((path) => hasAnchor || semanticRepair || !errors.some(
-            ({ path: errorPath }) => coversActPath(errorPath, path)));
+          .filter((path) => semanticRepair
+            ? path !== intentPath || !semanticRepairOpensIntent(repair)
+            : hasAnchor
+              ? path !== intentPath || !anchorOpensIntent
+              : !errors.some(({ path: errorPath }) =>
+                coversActPath(errorPath, path)));
+        if (!semanticRepair && anchorOpensIntent
+          && isPlainOutput(repair.original_output)
+          && changedActPaths(response.output, repair.original_output)
+            .includes(intentPath)
+          && !errors.some(({ category, path }) => category === 'format'
+            && coversActPath(path, intentPath))) {
+          changedAct.push(intentPath);
+        }
         if (changedAct.length > 0) {
           throw conversationContractFailure(true, changedAct.map((path) => ({
             code: semanticRepair ? 'semantic_repair_changed_act' : 'format_repair_changed_act',
             category: 'semantic_grounding', path,
             message: semanticRepair
-              ? 'A semantic repair must keep the contribution kind, speech act, addressees and intent.'
+              ? 'A semantic repair must keep contribution kind, speech act and addressees; intent may change only when a speech-grounding auditor error covers it.'
               : 'A format repair changed an act field outside its validation errors.'
           })));
         }
@@ -211,19 +227,15 @@ function sameKnowledgeRef(left, right) {
     && left?.entity_id === right?.entity_id;
 }
 
+function isPlainOutput(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && [Object.prototype, null].includes(Object.getPrototypeOf(value));
+}
+
 function changedActPaths(output, original) {
   return ACT_PATHS.filter((path) => !isDeepStrictEqual(
     valueAt(output, path), valueAt(original, path)))
     .map((path) => `$.${path.join('.')}`);
-}
-
-function coversActPath(errorPath, actPath) {
-  if (typeof errorPath !== 'string' || errorPath === '$') return false;
-  return errorPath === actPath
-    || errorPath.startsWith(`${actPath}.`)
-    || errorPath.startsWith(`${actPath}[`)
-    || actPath.startsWith(`${errorPath}.`)
-    || actPath.startsWith(`${errorPath}[`);
 }
 
 function valueAt(value, path) {

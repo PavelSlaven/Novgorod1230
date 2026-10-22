@@ -132,6 +132,14 @@ diff --git a/src/game.h b/src/game.h
          void set_test_item_use( int64_t uid, std::string method );
          void set_test_pickup_uid( int64_t uid );
 
+@@ -1045,6 +1049,7 @@
+         void pickup( const tripoint_bub_ms &p );
+         void chat( const std::optional<tripoint_bub_ms> &p = std::nullopt ); // Talk to a nearby NPC  'C'
+     private:
++        friend struct novgorod_input_test_access;
+         int64_t test_item_use_uid = 0;
+         int64_t test_pickup_uid = 0;
+         std::string test_item_use_method;
 diff --git a/src/handle_action.cpp b/src/handle_action.cpp
 --- a/src/handle_action.cpp
 +++ b/src/handle_action.cpp
@@ -200,7 +208,7 @@ diff --git a/src/handle_action.cpp b/src/handle_action.cpp
      here.update_visibility_cache( pos.z() );
 
 +    novgorod_semantic::on_input_boundary();
-+    if( !u.activity.is_null() && !has_novgorod_actions() ) {
++    if( novgorod_semantic::has_pending_live_activity() && !has_novgorod_actions() ) {
 +        action = action_ident( ACTION_NULL );
 +        return ctxt;
 +    }

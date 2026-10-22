@@ -1,0 +1,100 @@
+--- a/tests/overmap_test.cpp
++++ b/tests/overmap_test.cpp
+@@ -9,12 +9,14 @@
+ #include <optional>
+ #include <regex>
+ #include <set>
++#include <sstream>
+ #include <string>
+ #include <unordered_map>
+ #include <unordered_set>
+ #include <utility>
+ #include <vector>
+ 
++#include "basecamp.h"
+ #include "calendar.h"
+ #include "cata_catch.h"
+ #include "city.h"
+@@ -375,6 +377,44 @@
+     }
+ }
+ 
++TEST_CASE( "mutable_camp_special_keeps_adjacent_camp_on_reload", "[novgorod_camp][overmap]" )
++{
++    overmap_buffer.clear();
++    const point_abs_om origin{ 0, 0 };
++    overmap_special_batch empty_specials( origin );
++    overmap_buffer.create_custom_overmap( origin, empty_specials );
++    overmap *om = overmap_buffer.get_existing( origin );
++    REQUIRE( om != nullptr );
++
++    const tripoint_om_omt new_local{ 80, 80, 0 };
++    om->ter_set( new_local, oter_id( "field" ) );
++    const tripoint_abs_omt old_pos{ project_combine( origin, point_om_omt{ 79, 79 } ), 0 };
++    const tripoint_abs_omt new_pos{ project_combine( origin, new_local.xy() ), 0 };
++    om->add_camp( old_pos.xy(), basecamp( "Previous camp", old_pos ) );
++
++    const overmap_special &special = *overmap_special_id( "test_adjacent_camp" );
++    const std::vector<tripoint_om_omt> placed = om->place_special(
++                special, new_local, om_direction::type::north, city{}, false, true );
++    REQUIRE_FALSE( placed.empty() );
++    REQUIRE( om->find_camp( old_pos.xy() ).has_value() );
++    REQUIRE( om->find_camp( new_pos.xy() ).has_value() );
++
++    std::stringstream saved;
++    om->serialize( saved );
++    std::unique_ptr<overmap> loaded = std::make_unique<overmap>( origin );
++    loaded->unserialize( saved );
++
++    CHECK_FALSE( debug_has_error_been_observed() );
++    std::optional<basecamp *> old_camp = loaded->find_camp( old_pos.xy() );
++    std::optional<basecamp *> new_camp = loaded->find_camp( new_pos.xy() );
++    REQUIRE( old_camp.has_value() );
++    REQUIRE( new_camp.has_value() );
++    CHECK( ( *old_camp )->camp_name() == "Previous camp" );
++    CHECK( ( *old_camp )->camp_omt_pos() == old_pos );
++    CHECK( ( *new_camp )->camp_name() == "New camp" );
++    CHECK( ( *new_camp )->camp_omt_pos() == new_pos );
++}
++
+ static bool tally_items( std::unordered_map<itype_id, float> &global_item_count,
+                          std::unordered_map<itype_id, int> &item_count, tinymap &tm )
+ {
+--- a/data/mods/TEST_DATA/overmap_specials.json
++++ b/data/mods/TEST_DATA/overmap_specials.json
+@@ -413,5 +413,23 @@
+     "required_str": -1,
+     "flags": [ "TRANSPARENT", "FLAMMABLE_ASH" ],
+     "examine_action": "flower_cactus"
++  },
++  {
++    "type": "overmap_special",
++    "id": "test_adjacent_camp",
++    "subtype": "mutable",
++    "locations": [ "land" ],
++    "city_distance": [ 0, -1 ],
++    "occurrences": [ 0, 1 ],
++    "overmaps": {
++      "camp": {
++        "overmap": "field",
++        "camp": "free_merchants",
++        "camp_name": "New camp"
++      }
++    },
++    "root": "camp",
++    "joins": [],
++    "phases": [ [] ]
+   }
+ ]
+diff --git a/src/overmap_special_mutable.cpp b/src/overmap_special_mutable.cpp
+--- a/src/overmap_special_mutable.cpp
++++ b/src/overmap_special_mutable.cpp
+@@ -809,7 +809,7 @@
+         if( ter.camp_owner.has_value() ) {
+             tripoint_abs_omt camp_loc =  {project_combine( om.pos(), pos.xy() ), pos.z()};
+             get_map().add_camp( camp_loc, "faction_camp", false );
+-            std::optional<basecamp *> bcp = overmap_buffer.find_camp( camp_loc.xy() );
++            std::optional<basecamp *> bcp = overmap_buffer.get_om_global( camp_loc.xy() ).om->find_camp( camp_loc.xy() );
+             if( !bcp ) {
+                 debugmsg( "Camp placement during special generation failed at %s", camp_loc.to_string() );
+             } else {

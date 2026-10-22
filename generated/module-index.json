@@ -26,6 +26,7 @@
       ],
       "name": "@rus/game-server",
       "owns": [
+        "Адаптер разговора Lower Dvina владеет промптами разговора NPC, сборкой LLM-запроса, grounding-аудитом и кодовыми проверками исправленного ответа. Формальные контракты и NPC-safe проекция принадлежат `@rus/npc-runtime`; цикл semantic repair и его предел — `@rus/turn`",
         "Planner examples остаются flat semantic objects; mapping labels находятся",
         "Production WK query planner может вернуть canonical empty six-field plan,",
         "Narration adapter даёт auditor request-local sources",

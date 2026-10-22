@@ -47,7 +47,7 @@ draw, не исправляет и не сохраняет state.
 
 ## Ошибки, зависимости и effects
 
-Invalid package/fact is reported in result errors (including hidden-leak paths); this module does not silently grant knowledge or infer missing fields. Depends only on `@rus/kernel`; has no I/O, DB, LLM, persistence or UI side effects.
+Invalid package/fact is reported in result errors (including hidden-leak paths); this module does not silently grant knowledge or infer missing fields. Depends on `@rus/actors`, `@rus/contracts` and `@rus/kernel`; has no I/O, DB, LLM, persistence or UI side effects.
 
 ## Target / activation и тесты
 

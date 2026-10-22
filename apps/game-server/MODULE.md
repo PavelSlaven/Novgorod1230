@@ -29,6 +29,8 @@ and adds no second transaction owner.
 
 ## Владеет
 
+- Адаптер разговора Lower Dvina владеет промптами разговора NPC, сборкой LLM-запроса, grounding-аудитом и кодовыми проверками исправленного ответа. Формальные контракты и NPC-safe проекция принадлежат `@rus/npc-runtime`; цикл semantic repair и его предел — `@rus/turn`.
+
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit
@@ -203,7 +205,7 @@ Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 

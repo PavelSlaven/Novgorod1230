@@ -1458,7 +1458,7 @@ struct live_peer {
     pid_t child = -1;
 
     explicit live_peer( bool timeout, const std::string &expected_target = "",
-                        const std::string &result_message = "" ) {
+                        const std::string &result_message = "", int connections = 2 ) {
         if( had_socket ) old_socket = std::getenv( "NOVGOROD_P3_SOCKET" );
         if( had_timeout ) old_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
         sockaddr_un address {};
@@ -1475,7 +1475,7 @@ struct live_peer {
         REQUIRE( child >= 0 );
         if( child != 0 ) return;
         std::string previous_id = "foreign";
-        for( int attempt = 0; attempt < ( timeout ? 1 : 2 ); ++attempt ) {
+        for( int attempt = 0; attempt < ( timeout ? 1 : connections ); ++attempt ) {
             pollfd pending { listener, POLLIN, 0 };
             if( poll( &pending, 1, 5000 ) <= 0 ) _exit( 2 );
             const int peer = accept( listener, nullptr, nullptr );
@@ -1530,6 +1530,7 @@ struct live_peer {
         REQUIRE( waitpid( child, &status, 0 ) == child );
         child = -1;
         REQUIRE( WIFEXITED( status ) );
+        INFO( "live peer: exit 4 means nonliteral intent; exit 8 means target_actor_ref mismatch" );
         CHECK( WEXITSTATUS( status ) == 0 );
     }
 };
@@ -1561,6 +1562,23 @@ TEST_CASE( "Novgorod refused coordinator result stays out of native messages", "
     peer.completed();
     CHECK( message_log().find( marker ) == std::string::npos );
     CHECK( take_snapshot().world_signature == before.world_signature );
+}
+
+TEST_CASE( "Novgorod free live input does not select the sole visible NPC", "[novgorod_live][live_input]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    npc &subject = spawn_npc( point_bub_ms( 60, 62 ), p3_talker.str() );
+    subject.death_eocs.clear();
+    get_map().update_visibility_cache( get_avatar().posz() );
+    const auto candidates = chat_available_creatures();
+    REQUIRE( candidates.size() == 1 );
+    REQUIRE( candidates.front() == &subject );
+    live_peer peer( false, "", "", 1 );
+    setenv( "NOVGOROD_P3_TIMEOUT_MS", "2000", 1 );
+    novgorod_semantic::set_live_input_for_test( "literal intent" );
+    REQUIRE_NOTHROW( novgorod_semantic::live_input() );
+    peer.completed();
 }
 
 TEST_CASE( "Novgorod native CHAT selection reaches real intent frame", "[novgorod_live]" )
@@ -2889,4 +2907,69 @@ TEST_CASE( "Novgorod fixture finishes abandoned native operations", "[novgorod_l
                             live_request( "wait", next_avatar_id ) ) );
     REQUIRE( second.applied );
     CHECK( novgorod_semantic::finish_operation().applied );
+}
+
+TEST_CASE( "Novgorod live observation labels match native item action and terrain names", "[novgorod_live][plnr]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    map &here = get_map();
+    const item *firestarter = nullptr;
+    for( const item *candidate : you.items_with( []( const item & ) { return true; } ) ) {
+        if( candidate->typeId() == itype_id( "crude_firestarter" ) ) {
+            firestarter = candidate;
+            break;
+        }
+    }
+    REQUIRE( firestarter != nullptr );
+    const auto method = firestarter->type->use_methods.find( "firestarter" );
+    REQUIRE( method != firestarter->type->use_methods.end() );
+    const tripoint_bub_ms target = you.pos_bub() + tripoint_rel_ms( -1, 0, 0 );
+    const item &ground_firestarter = here.add_item( target, item( itype_id( "crude_firestarter" ) ) );
+    const std::string ground_uid = std::to_string( ground_firestarter.uid().get_value() );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    observation.allow_omitted_members();
+
+    bool item_found = false;
+    for( const JsonObject row : observation.get_array( "items" ) ) {
+        row.allow_omitted_members();
+        if( row.get_string( "item_uid" ) != std::to_string( firestarter->uid().get_value() ) ) {
+            continue;
+        }
+        item_found = true;
+        REQUIRE( row.has_member( "use_method_label" ) );
+        CHECK( row.get_string( "use_method_label" ) == method->second.get_name() );
+        CHECK( row.get_string( "use_method_label" ) != method->first );
+    }
+    CHECK( item_found );
+
+    bool ground_item_found = false;
+    for( const JsonObject row : observation.get_array( "items" ) ) {
+        row.allow_omitted_members();
+        if( row.get_string( "item_uid" ) != ground_uid ) {
+            continue;
+        }
+        ground_item_found = true;
+        REQUIRE( row.has_member( "use_method_label" ) );
+        CHECK( row.get_string( "use_method_label" ) == method->second.get_name() );
+        CHECK( row.get_string( "use_method_label" ) != method->first );
+    }
+    CHECK( ground_item_found );
+
+    bool target_found = false;
+    for( const JsonObject row : observation.get_array( "targets" ) ) {
+        row.allow_omitted_members();
+        if( row.get_string( "target_ref" ) != target_ref( target ) ) {
+            continue;
+        }
+        target_found = true;
+        REQUIRE( row.has_member( "terrain_label" ) );
+        CHECK( row.get_string( "terrain_label" ) == here.tername( target ) );
+        CHECK( row.get_string( "terrain_label" ) != here.ter( target ).id().str() );
+    }
+    CHECK( target_found );
 }

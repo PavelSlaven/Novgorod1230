@@ -185,7 +185,7 @@ index 88a7843..40f40d1 100644
  input_context game::get_player_input( std::string &action )
  {
      map &here = get_map();
-@@ -2695,7 +2713,36 @@ bool game::do_regular_action( action_id &act, avatar &player_character,
+@@ -2695,7 +2713,38 @@ bool game::do_regular_action( action_id &act, avatar &player_character,
          case ACTION_USE:
              // Shell-users are presumed to be able to mess with their inventories, etc
              // while in the shell.  Eating, gear-changing, and item use are OK.
@@ -215,7 +215,9 @@ index 88a7843..40f40d1 100644
 +                    selected_location->type->use_methods.end() ) {
 +                    throw std::runtime_error( "NOVGOROD_TEST_ITEM_USE_METHOD_UNKNOWN" );
 +                }
-+                require_novgorod_test_adjacent_selection();
++                if( test_mode ) {
++                    require_novgorod_test_adjacent_selection();
++                }
 +                avatar_action::use_item( player_character, selected_location, test_item_use_method );
 +            } else {
 +                avatar_action::use_item( player_character );

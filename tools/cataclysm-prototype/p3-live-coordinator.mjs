@@ -24,6 +24,28 @@ export async function loadP3DevConfig() {
     new URL('./p3-dev-config.json', import.meta.url), 'utf8')));
 }
 
+function confirmedInterlocutorFor(observation, context) {
+  if (!context || observation.turn < context.turn || observation.turn > context.turn + 7) return null;
+  const actors = observation.actors.filter(row => row.actor_ref === context.ref
+    && row.actor_id === context.ref.slice(4) && row.visible === true);
+  if (actors.length !== 1) return null;
+  const projections = observation.npc_projections?.filter(row => row.actor_id === actors[0].actor_id);
+  if (projections?.length !== 1 || projections[0].native_turn !== observation.turn) return null;
+  const heard = projections[0].conversation_memory.filter(record => record.kind === 'heard'
+    && record.speaker_ref === 'avatar' && record.listener_ref === context.ref
+    && record.turn >= context.turn && record.turn <= context.turn + 1);
+  if (heard.length !== 1) return null;
+  const otherAddressed = observation.npc_projections.some(projection =>
+    projection.actor_id !== actors[0].actor_id
+    && observation.actors.some(actor => actor.actor_id === projection.actor_id
+      && actor.visible === true)
+    && projection.conversation_memory.some(record => record.kind === 'heard'
+      && record.speaker_ref === 'avatar'
+      && record.listener_ref === `npc:${projection.actor_id}`
+      && record.turn >= context.turn));
+  return otherAddressed ? null : context.ref;
+}
+
 export async function startP3LiveCoordinator({ socketPath, env = process.env,
   settingsOwner = null, runtimeFactory = createP3RoleRuntime, execute,
   config = null, journal = record => process.stdout.write(`${JSON.stringify(record)}\n`) } = {}) {
@@ -32,6 +54,7 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
   settingsOwner ??= await loadP3QwenSettingsOwner({ env });
   let activeChannel = null;
   let activePhrase = null;
+  let confirmedInterlocutor = null;
   const attempts = new Map();
   const sockets = new Set();
   const budget = createP3AttemptBudget({ budget: config.turnCallBudget, scope: 'turn',
@@ -72,6 +95,8 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           || !message.intent.trim()) throw new Error('P3_LIVE_INTENT_REQUIRED');
       if (activeChannel) throw new Error('P3_LIVE_BUSY');
       const observation = requireLiveObservation(message.observation);
+      const confirmedInterlocutorRef = confirmedInterlocutorFor(observation, confirmedInterlocutor);
+      if (confirmedInterlocutorRef === null) confirmedInterlocutor = null;
       activeChannel = channel;
       ownsRequest = true;
       phrase = activePhrase = { type: 'p3_phrase', id: message.id, t_enter: enteredAt,
@@ -81,13 +106,26 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
       const result = await runP3TurnStep({ intent: message.intent, observation,
         nativeAdapter: adapter, turnStepModel: runtime.turnStepModel,
         operationId: `live-${message.id}`, nativeSpeechOnly: true,
-        targetActorRef: message.target_actor_ref });
+        targetActorRef: message.target_actor_ref, confirmedInterlocutorRef });
       const playerReadback = result.working_projection.native_readback;
+      const selectedSpeechRef = result.working_projection.native_speech_target_ref;
+      if (playerReadback?.status === 'applied') {
+        const selectedActor = observation.actors.find(actor =>
+          actor.actor_ref === selectedSpeechRef && actor.actor_id === selectedSpeechRef?.slice(4)
+          && actor.visible === true);
+        const heard = playerReadback.native_effect?.actualHeardListenerIds;
+        const turn = playerReadback.before?.turn;
+        confirmedInterlocutor = typeof playerReadback.native_effect?.utterance === 'string'
+          && selectedActor && Array.isArray(heard) && heard.includes(selectedActor.actor_id)
+          && Number.isSafeInteger(turn) ? { ref: selectedSpeechRef, turn } : null;
+      } else {
+        confirmedInterlocutor = null;
+      }
       const npcReply = playerReadback?.status === 'applied'
           && playerReadback.native_effect?.utterance !== undefined
         ? await runP3NativeNpcReply({ nativeAdapter: adapter, observation,
           playerReadback, semanticModel: runtime.npcConversationModel,
-          targetActorRef: message.target_actor_ref,
+          targetActorRef: selectedSpeechRef,
           maxRepairAttempts: config.npcMaxRepairAttempts }) : null;
       if (npcReply?.native_readback?.status === 'applied') phrase.t_native_reply = Date.now();
       if (npcReply?.proposal?.script_respellings) phrase.script_respellings = npcReply.proposal.script_respellings;

@@ -232,7 +232,7 @@ test('free player intent crosses turn-step repair and typed registry before nati
     actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
       { actor_ref: 'npc:8', actor_id: '8', position: [61, 60, 0], visible: true }],
     items: [{ item_ref: 'item:8', item_uid: '8', type: 'rock', holder: '7',
-      use_methods: ['activate'] }],
+      use_methods: ['activate'], use_method_label: 'Применить' }],
     targets: [{ target_ref: '60,59,0', position: [60, 59, 0] },
       { target_ref: '61,60,0', position: [61, 60, 0], openable: true }] };
   const adapter = { writeOperationRequest: async request => { seen.push(request); },
@@ -264,9 +264,8 @@ test('free player intent crosses turn-step repair and typed registry before nati
     /P3_ITEM_USE_METHOD_AMBIGUOUS/);
   const oneMethod = { ...current, items: [{ ...current.items[0], use_methods: ['activate'] }] };
   assert.equal(mapP3TurnOperationToNative(useOperation, oneMethod).args.method, 'activate');
-  const targeted = mapP3TurnOperationToNative({ ...useOperation, target_refs: ['60,59,0'] }, oneMethod);
-  assert.deepEqual(targeted.args.target_direction, [0, -1]);
-  assert.equal(targeted.references.targets, '60,59,0');
+  assert.throws(() => mapP3TurnOperationToNative({ ...useOperation,
+    target_refs: ['60,59,0'] }, oneMethod), /P3_ITEM_TARGET_REFS_INVALID/);
   const operationsByKind = Object.fromEntries(buildP3TurnOperations(current).map(op => [op.op, op]));
   assert.equal(operationsByKind.request_item_use.use_kind, 'operate');
   assert.equal(buildP3TurnOperations(current).some(({ op }) => op === 'emit_interaction'), false);
@@ -351,7 +350,7 @@ test('current native readback projects goal and effect separately while legacy r
       items: scenario.kind === 'pickup' ? [{ item_ref: 'item:18', item_uid: 'uid:18',
         type: 'rock', position: [60, 61, 0] }] : scenario.kind === 'item'
         ? [{ item_ref: 'item:9', item_uid: 'uid:9', type: scenario.itemType,
-          holder: '7', use_methods: ['activate'] }] : [], targets: [] };
+          holder: '7', use_methods: ['activate'], use_method_label: 'Применить' }] : [], targets: [] };
     const readback = { schema: 'p3_native_operation_readback_v1', status: scenario.status ?? 'applied',
       ...(scenario.goal ? { goal_result: scenario.goal } : {}),
       native_effect: { effect_status: scenario.effect,
@@ -406,7 +405,8 @@ test('generic turn loop dispatches open, wait, and exact speech through native e
   const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
     actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
       { actor_ref: 'npc:8', actor_id: '8', position: [61, 60, 0], visible: true }],
-    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7', use_methods: ['activate'] }],
+    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7',
+      use_methods: ['activate'], use_method_label: 'Применить' }],
     targets: [{ target_ref: '61,60,0', position: [61, 60, 0], openable: true }] };
   const calls = [];
   const nativeAdapter = {
@@ -449,18 +449,17 @@ test('generic turn loop dispatches open, wait, and exact speech through native e
   }
 });
 
-test('production operation choice hydrates one observed item target into the native envelope', async () => {
+test('production operation choice passes one item use to native selection', async () => {
   const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
     actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] }],
     items: [{ item_ref: 'item:firestarter', item_uid: 'uid:firestarter', type: 'firestarter',
-      holder: '7', use_methods: ['activate'] }],
+      holder: '7', use_methods: ['activate'], use_method_label: 'Применить' }],
     targets: [{ target_ref: 'target:left', position: [59, 60, 0] },
       { target_ref: 'target:right', position: [61, 60, 0] },
       { target_ref: 'target:far', position: [64, 60, 0] }] };
   const itemChoices = buildP3TurnOperations(current)
     .filter(({ op, item_ref }) => op === 'request_item_use' && item_ref === 'item:firestarter');
-  assert.deepEqual(itemChoices.map(({ target_refs }) => target_refs),
-    [[], ['target:left'], ['target:right']]);
+  assert.deepEqual(itemChoices.map(({ target_refs }) => target_refs), [[]]);
   let providerCalls = 0;
   let nativeCalls = 0;
   let captured;
@@ -470,7 +469,7 @@ test('production operation choice hydrates one observed item target into the nat
     const request = JSON.parse(call.messages[1].content);
     const selected = turnStepOperationChoices(request).find(({ operation }) =>
       operation.op === 'request_item_use' && operation.item_ref === 'item:firestarter'
-        && operation.target_refs[0] === 'target:right');
+        && operation.target_refs.length === 0);
     assert.ok(selected);
     return { output: { interpretation: { player_goal: request.remaining_intent,
       grounded_attempt: request.remaining_intent, adaptation: 'literal' },
@@ -478,11 +477,11 @@ test('production operation choice hydrates one observed item target into the nat
       activity: { owner: 'domain', duration_class: null, effort: null },
       direct_result_kind: null, operation_family: 'request_item_use',
       operation_choice: selected.choice_id, operations: [], check: null,
-      continuation: null, clarification: null, reason_code: 'targeted_item_use',
-      reason: 'Use the held firestarter on the observed adjacent target.' } };
+      continuation: null, clarification: null, reason_code: 'native_item_use',
+      reason: 'Use the held firestarter.' } };
   } } });
-  const result = await runP3TurnStep({ intent: 'Используй кресало на правой цели',
-    observation: current, operationId: 'production-targetful-item-use', nativeAdapter: {
+  const result = await runP3TurnStep({ intent: 'Разожги огонь справа',
+    observation: current, operationId: 'production-native-item-use', nativeAdapter: {
       writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
       async execute(envelope) { nativeCalls++; captured = envelope;
         return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
@@ -493,8 +492,9 @@ test('production operation choice hydrates one observed item target into the nat
   assert.equal(providerCalls, 1);
   assert.equal(nativeCalls, 1);
   assert.equal(captured.primitive, 'use_item');
-  assert.deepEqual(captured.args, { method: 'activate', target_direction: [1, 0] });
-  assert.equal(captured.references.targets.ref, 'target:right');
+  assert.deepEqual(captured.args, { method: 'activate' });
+  assert.deepEqual(captured.references.items, { ref: 'item:firestarter', id: 'uid:firestarter' });
+  assert.equal(Object.hasOwn(captured.references, 'targets'), false);
   assert.equal(result.working_projection.native_goal_result, 'achieved');
 });
 
@@ -1528,7 +1528,7 @@ test('live observation validation types the NPC fields of the frame', () => {
   }
 });
 
-test('planner request names the selected interlocutor and offers speech only with a target', async () => {
+test('planner request names the selected interlocutor and offers speech without a preselected target', async () => {
   const current = replyFrame({ turn: 3 });
   const capture = async (frame, targetActorRef) => {
     const seen = [];
@@ -1549,18 +1549,57 @@ test('planner request names the selected interlocutor and offers speech only wit
   assert.equal(targeted.available_domain_operations.at(-1).op, 'emit_interaction');
   const plain = await capture(current, null);
   assert.equal('active_interlocutor' in plain.player_safe_state, false);
-  assert.equal(plain.available_domain_operations.some(({ op }) => op === 'emit_interaction'), false);
+  assert.deepEqual(plain.available_domain_operations.filter(({ op }) => op === 'emit_interaction'),
+    [{ op: 'emit_interaction', actor_ref: 'avatar', target_actor_refs: ['npc:9'],
+      interaction_kind: 'speech', content: 'Скажи привет', instrument_refs: [] }]);
   assert.equal(buildP3TurnOperations(current, 'npc:9', 'Привет')
     .some(({ op }) => op === 'emit_interaction'), true);
 });
 
-test('planner sees the native items first, in frame order, with their use methods and no native type',
+test('untargeted speech candidates follow visible NPC actor order', async () => {
+  const current = replyFrame({ turn: 3, projections: [
+    npcProjection('9', { name: 'Жирко' }),
+    npcProjection('8', { name: 'Ратибор' }),
+    npcProjection('10', { name: 'Мирон' })] });
+  current.actors[1].visible = false;
+  current.actors[2].position = [60, 61, 0];
+  let request;
+  await assert.rejects(runP3TurnStep({ intent: 'Разожги огонь слева.', observation: current,
+    nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}) },
+    operationId: 'fanout-order', nativeSpeechOnly: true, targetActorRef: null,
+    turnStepModel: async seen => { request = seen; throw new Error('stop'); } }), /stop/);
+  assert.equal('active_interlocutor' in request.player_safe_state, false);
+  assert.deepEqual(request.available_domain_operations.filter(({ op }) => op === 'emit_interaction')
+    .map(({ target_actor_refs, content }) => [target_actor_refs, content]), [
+    [['npc:8'], 'Разожги огонь слева.'], [['npc:10'], 'Разожги огонь слева.']]);
+});
+
+test('named, inflected, and unnamed greetings expose exact recipient choices', async () => {
+  const current = replyFrame({ turn: 3, projections: [
+    npcProjection('9', { name: 'Жирко' }), npcProjection('8', { name: 'Ратибор' })] });
+  for (const intent of ['Жирко, покажи двор.', 'Скажи Жирко правду.',
+    'Попроси Жирка помочь.', 'Здравствуй!']) {
+    let request;
+    await assert.rejects(runP3TurnStep({ intent, observation: current,
+      nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}) },
+      operationId: 'greeting-choices', nativeSpeechOnly: true, targetActorRef: null,
+      turnStepModel: async seen => { request = seen; throw new Error('stop'); } }), /stop/);
+    assert.equal('active_interlocutor' in request.player_safe_state, false);
+    assert.deepEqual(request.available_domain_operations.filter(({ op }) => op === 'emit_interaction')
+      .map(({ target_actor_refs, content }) => [target_actor_refs, content]),
+    [[['npc:9'], intent], [['npc:8'], intent]]);
+  }
+});
+
+test('planner sees native items in frame order with safe labels and carrier refs',
   async () => {
     const current = { ...replyFrame({ turn: 3 }), items: [
       { item_ref: 'item:21', item_uid: '21', type: 'flint_steel', label: 'кресало',
-        placement: 'held', holder: '7', use_methods: ['firestarter'] },
+        placement: 'held', holder: '7', use_methods: ['firestarter'],
+        use_method_label: 'Быстро развести огонь' },
       { item_ref: 'item:22', item_uid: '22', type: 'leather_belt', label: 'кожаный пояс',
-        placement: 'held', holder: '7', use_methods: ['holster'] },
+        placement: 'held', holder: '7', use_methods: ['holster'],
+        use_method_label: 'Использовать кобуру' },
       { item_ref: 'item:23', item_uid: '23', type: 'ax', label: 'плотницкий топор',
         placement: 'held', holder: '7', use_methods: ['activate', 'chop'] }] };
     const seen = [];
@@ -1569,14 +1608,58 @@ test('planner sees the native items first, in frame order, with their use method
         readOperationReadback: async () => { throw new Error('unused'); } },
       operationId: 'planner-items', nativeSpeechOnly: true, targetActorRef: null,
       turnStepModel: async request => { seen.push(request); throw new Error('stop'); } }));
-    assert.deepEqual(seen[0].player_safe_state.visible_entities.slice(0, 3), [
-      { item_ref: 'item:21', item_uid: '21', label: 'кресало', placement: 'held', holder: '7',
-        use_methods: ['firestarter'], entity_ref: '21' },
-      { item_ref: 'item:22', item_uid: '22', label: 'кожаный пояс', placement: 'held', holder: '7',
-        use_methods: ['holster'], entity_ref: '22' },
-      { item_ref: 'item:23', item_uid: '23', label: 'плотницкий топор', placement: 'held', holder: '7',
-        use_methods: ['activate', 'chop'], entity_ref: '23' }]);
+    const state = seen[0].player_safe_state;
+    assert.equal(state.actor_id, 'avatar');
+    assert.deepEqual(state.items, [
+      { item_id: 'item:21', name: 'кресало', placement: { holder_character_id: 'avatar' },
+        use_method_label: 'Быстро развести огонь' },
+      { item_id: 'item:22', name: 'кожаный пояс', placement: { holder_character_id: 'avatar' },
+        use_method_label: 'Использовать кобуру' },
+      { item_id: 'item:23', name: 'плотницкий топор',
+        placement: { holder_character_id: 'avatar' } }]);
+    assert.equal(state.visible_entities.some(({ item_ref }) =>
+      ['item:21', 'item:22', 'item:23'].includes(item_ref)), false);
   });
+
+test('P3 carried items satisfy the unchanged planner inventory rule', async () => {
+  const current = { ...replyFrame({ turn: 3 }), items: [
+    { item_ref: 'item:21', item_uid: '21', type: 'flint_steel', label: 'кресало',
+      holder: '7', use_methods: ['firestarter'], use_method_label: 'Быстро развести огонь' },
+    { item_ref: 'item:23', item_uid: '23', type: 'flint_steel', label: 'кресало',
+      position: [61, 60, 0], use_methods: ['firestarter'],
+      use_method_label: 'Быстро развести огонь' }
+  ], targets: [{ target_ref: 'tile:east', position: [61, 60, 0],
+    terrain: 't_floor', terrain_label: 'пол' }] };
+  let call;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(next) {
+    call = next;
+    throw new Error('captured');
+  } } });
+  await assert.rejects(runP3TurnStep({ intent: 'Разожги огонь', observation: current,
+    nativeAdapter: { writeOperationRequest: async () => {},
+      readOperationReadback: async () => ({}) }, operationId: 'planner-inventory-rule',
+    turnStepModel: model }), /captured/);
+  const request = JSON.parse(call.messages.find(({ role }) => role === 'user').content);
+  const state = request.player_safe_state;
+  assert.ok(Array.isArray(state.items), 'P3 player_safe_state.items is missing');
+  assert.equal(state.actor_id, request.actor.actor_ref);
+  const carriedRefs = new Set(current.items.filter(({ holder }) => holder === '7')
+    .map(({ item_ref }) => item_ref));
+  const offered = request.available_domain_operations.filter(({ op, item_ref }) =>
+    op === 'request_item_use' && carriedRefs.has(item_ref));
+  assert.equal(offered.length, carriedRefs.size);
+  const accessible = new Set(state.items.filter(({ placement }) =>
+    placement?.holder_character_id === state.actor_id).map(({ item_id }) => item_id));
+  for (const operation of offered) {
+    assert.ok(accessible.has(operation.item_ref),
+      'lower-dvina-trace-a1-player-safe.js:33-48 requires holder_character_id to match actor_id');
+  }
+  assert.equal(state.visible_entities.some(({ item_ref }) => carriedRefs.has(item_ref)), false);
+  assert.ok(state.visible_entities.some(({ item_ref }) => item_ref === 'item:23'));
+  assert.equal(state.items.some(({ item_id }) => item_id === 'item:23'), false);
+  const system = call.messages.find(({ role }) => role === 'system').content;
+  assert.match(system, /An item in player_safe_state\.items held, worn, or equipped by the current actor is an already accessible actionable exact item ref/u);
+});
 
 function chosenOperationOutput(request, selected) {
   return { interpretation: { player_goal: request.remaining_intent,
@@ -1627,7 +1710,8 @@ test('every offered P3 domain operation passes production plan validation when c
   const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
     actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
       { actor_ref: 'npc:8', actor_id: '8', position: [61, 61, 0], visible: true, name: 'Жирко' }],
-    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7', use_methods: ['activate'] }],
+    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7',
+      use_methods: ['activate'], use_method_label: 'Применить' }],
     targets: [{ target_ref: 'tile:east', position: [61, 60, 0], openable: true }] };
   let request;
   await assert.rejects(runP3TurnStep({ intent: 'Сделай что-нибудь', observation: current,

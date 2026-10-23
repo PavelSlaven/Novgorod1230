@@ -11,7 +11,7 @@ import { loadP3DevConfig, startP3LiveCoordinator } from './p3-live-coordinator.m
 import { createP3RoleRuntime } from './p3-boundary.js';
 import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
 import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
-import { npcProjection, speechPlan } from './p3-test-frames.js';
+import { heardRecord, npcProjection, saidRecord, speechPlan } from './p3-test-frames.js';
 
 const withNpcs = (base, npcs) => ({ ...base, actors: [...base.actors, ...npcs],
   npc_projections: npcs.map(({ actor_id: actorId, position, name }) =>
@@ -427,6 +427,136 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_grounding_auditor']);
   socket.end();
+});
+
+test('a model-selected recipient without a wire target reaches native speak and NPC responder', async t => {
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const other = { actor_ref: 'npc:8', actor_id: '8', name: 'Ратибор', visible: true,
+    position: [60, 61, 0] };
+  const frame = withNpcs(observation, [other, npc]);
+  const utterance = 'Привет, Жирко!';
+  const scene = await fixture(t, request => {
+    assert.equal('active_interlocutor' in request.player_safe_state, false);
+    const choices = request.available_domain_operations.filter(({ op }) => op === 'emit_interaction');
+    assert.deepEqual(choices.map(({ target_actor_refs }) => target_actor_refs),
+      [['npc:8'], ['npc:9']]);
+    return plan(request, choices[1]);
+  }, request => speechPlan(request, 'Здравствуй.'));
+  const { socket, channel } = await scene.client();
+  channel.bind('301');
+  channel.send({ type: 'intent', intent: utterance, observation: frame });
+  assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+  const player = await channel.receive();
+  assert.equal(player.type, 'operation');
+  assert.equal(player.request.primitive, 'speak');
+  assert.deepEqual(player.request.args, { utterance });
+  assert.deepEqual(player.request.references, { actors: [{ ref: 'npc:9', id: '9' }] });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: player.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: frame });
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_responder');
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_grounding_auditor');
+  const reply = await channel.receive();
+  assert.equal(reply.type, 'operation');
+  assert.equal(reply.request.actor_id, '9');
+  assert.deepEqual(reply.request.args, { utterance: 'Здравствуй.' });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: reply.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+      utterance: 'Здравствуй.', actualHeardListenerIds: ['7'] },
+    before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).status, 'completed');
+  assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
+    'npc_conversation_grounding_auditor']);
+  socket.end();
+});
+
+test('an unnamed follow-up uses a confirmed interlocutor only when native memory retains the exchange', async t => {
+  const npc = { actor_ref: 'npc:9', actor_id: '9', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
+  const initial = withNpcs(observation, [npc]);
+  const utterances = ['Здравствуй, Жирко.', 'А чей это двор?'];
+  const directSpeech = request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: request.remaining_intent, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } });
+  const scene = await fixture(t, request => {
+    if (request.remaining_intent === utterances[1]) {
+      assert.deepEqual(request.player_safe_state.active_interlocutor?.entity_ref,
+        { entity_kind: 'npc', entity_id: 'npc:9' });
+      const choice = request.available_domain_operations.find(({ op, target_actor_refs }) =>
+        op === 'emit_interaction' && target_actor_refs[0] === 'npc:9');
+      assert.ok(choice);
+      return plan(request, choice);
+    }
+    if (request.remaining_intent === 'Который час?') {
+      assert.equal('active_interlocutor' in request.player_safe_state, false);
+    }
+    return directSpeech(request);
+  }, request => speechPlan(request, 'Это мой двор.'));
+  const remembered = { ...initial, turn: 16, revision: 16,
+    npc_projections: [npcProjection('9', { name: 'Жирко', native_turn: 16,
+      conversation_memory: [heardRecord(utterances[0], 11), saidRecord('Это мой двор.', 13)] })] };
+  for (const [index, utterance] of utterances.entries()) {
+    const startTurn = index === 0 ? 10 : 16;
+    const { socket, channel } = await scene.client();
+    channel.bind(String(302 + index));
+    channel.send({ type: 'intent', intent: utterance,
+      observation: index === 0 ? initial : remembered,
+      ...(index === 0 ? { target_actor_ref: 'npc:9' } : {}) });
+    assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+    const player = await channel.receive();
+    assert.equal(player.type, 'operation');
+    assert.equal(player.request.primitive, 'speak');
+    assert.deepEqual(player.request.references, { actors: [{ ref: 'npc:9', id: '9' }] },
+      `exchange ${index}`);
+    channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+      operation_id: player.request.operation_id, status: 'applied', goal_result: 'achieved',
+      native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+        actualHeardListenerIds: ['9'] }, before: { turn: startTurn },
+      after: { turn: startTurn + 3 } } });
+    assert.equal((await channel.receive()).type, 'observe');
+    channel.send({ type: 'observation', observation: index === 0 ? initial : remembered });
+    assert.equal((await channel.receive()).role_id, 'npc_conversation_responder');
+    assert.equal((await channel.receive()).role_id, 'npc_conversation_grounding_auditor');
+    const reply = await channel.receive();
+    assert.equal(reply.type, 'operation');
+    assert.equal(reply.request.actor_id, '9');
+    channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+      operation_id: reply.request.operation_id, status: 'applied', goal_result: 'achieved',
+      native_effect: { effect_status: 'confirmed', speakerId: '9', contribution_kind: 'speech',
+        utterance: 'Это мой двор.', actualHeardListenerIds: ['7'] },
+      before: { turn: startTurn + 3 }, after: { turn: startTurn + 6 } } });
+    assert.equal((await channel.receive()).status, 'completed');
+    socket.end();
+  }
+  const noHistory = { ...initial, turn: 23, revision: 23,
+    npc_projections: [npcProjection('9', { name: 'Жирко', native_turn: 23 })] };
+  const control = await scene.client();
+  control.channel.bind('304');
+  control.channel.send({ type: 'intent', intent: 'Который час?', observation: noHistory });
+  assert.equal((await control.channel.receive()).role_id, 'turn_step_planner');
+  const unaddressed = await control.channel.receive();
+  assert.equal(unaddressed.type, 'operation');
+  assert.equal(unaddressed.request.primitive, 'speak');
+  assert.deepEqual(unaddressed.request.references, {});
+  control.channel.send({ type: 'readback', readback: {
+    schema: 'p3_native_operation_readback_v1', operation_id: unaddressed.request.operation_id,
+    status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7',
+      utterance: 'Который час?', actualHeardListenerIds: ['9'] },
+    before: { turn: 23 }, after: { turn: 26 } } });
+  assert.equal((await control.channel.receive()).status, 'completed');
+  control.socket.end();
+  assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
+    'npc_conversation_grounding_auditor', 'turn_step_planner', 'npc_conversation_responder',
+    'npc_conversation_grounding_auditor', 'turn_step_planner']);
 });
 
 test('Latin lookalikes in the NPC reply are respelled before native speech and journaled with the phrase', async t => {

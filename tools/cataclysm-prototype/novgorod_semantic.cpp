@@ -66,6 +66,8 @@ namespace novgorod_semantic
 {
 namespace
 {
+std::optional<std::string> live_input_for_test;
+
 std::vector<int> position_of( const tripoint_bub_ms &p )
 {
     return { p.x(), p.y(), p.z() };
@@ -435,6 +437,9 @@ void write_observation( JsonOut &out )
             out.write( method.first );
         }
         out.end_array();
+        if( it->type->use_methods.size() == 1 ) {
+            out.member( "use_method_label", it->type->use_methods.begin()->second.get_name() );
+        }
         out.member( "holder", std::to_string( you.getID().get_value() ) );
         out.end_object();
     }
@@ -454,6 +459,9 @@ void write_observation( JsonOut &out )
                 out.write( method.first );
             }
             out.end_array();
+            if( it.type->use_methods.size() == 1 ) {
+                out.member( "use_method_label", it.type->use_methods.begin()->second.get_name() );
+            }
             out.member( "position", position_of( p ) );
             out.end_object();
         }
@@ -469,6 +477,7 @@ void write_observation( JsonOut &out )
         out.member( "target_ref", p3_target_ref( p ) );
         out.member( "position", position_of( p ) );
         out.member( "terrain", here.ter( p ).id().str() );
+        out.member( "terrain_label", here.tername( p ) );
         out.member( "openable", here.open_door( you, p, !here.is_outside( p ), true ) );
         out.end_object();
     }
@@ -1162,15 +1171,23 @@ void submit_live_intent( const std::string &intent, const Creature *target )
     submit_live_intent( intent, subject ? "npc:" + std::to_string( subject->getID().get_value() ) : "" );
 }
 
+void set_live_input_for_test( const std::string &intent )
+{
+    if( !test_mode ) throw std::logic_error( "NOVGOROD_TEST_INPUT_REQUIRES_TEST_MODE" );
+    live_input_for_test = intent;
+}
+
 void live_input()
 {
 #ifdef _WIN32
     DebugLog( D_WARNING, D_MAIN ) << "Novgorod live input requires WSL";
 #else
-    const std::string intent = string_input_popup().title( "Свободное действие" ).query_string();
+    const std::string intent = test_mode && live_input_for_test ?
+                               *std::exchange( live_input_for_test, std::nullopt ) :
+                               string_input_popup().title( "Свободное действие" ).query_string();
     if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
     try {
-        submit_live_intent( intent, select_chat_target() );
+        submit_live_intent( intent );
     } catch( const std::exception &error ) {
         disconnect();
         DebugLog( D_ERROR, D_MAIN ) << "Novgorod live input failed: " << error.what();

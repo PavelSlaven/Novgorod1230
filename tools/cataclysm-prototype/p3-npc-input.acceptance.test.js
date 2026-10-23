@@ -290,8 +290,14 @@ test('K3: responder and planner use perceived Russian item names without native 
       item_uid: item.uid, type: item.type, label: item.label, use_methods: [],
       ...(item.branch === 'held' ? { holder: '7' } : { position: [61, 60, 0] }) }] };
     const plannerInput = JSON.parse(await plannerUser(plannerFrame));
+    const state = valuesUnder(plannerInput, 'player_safe_state')[0] ?? {};
+    const carried = Array.isArray(state.items) ? state.items : [];
     const entities = valuesUnder(plannerInput, 'visible_entities').flat();
-    const visible = entities.find(entity => entity.item_uid === item.uid);
+    const listed = entities.find(({ item_ref }) => item_ref === nativeItem.item_ref);
+    const visible = item.branch === 'held'
+      ? carried.find(({ item_id, placement }) => item_id === nativeItem.item_ref
+        && placement?.holder_character_id === state.actor_id)
+      : listed;
     if (!visible) failures.push(`${item.label} (${item.branch}): planner item is not visible`);
     else {
       if (Object.hasOwn(visible, 'type') || JSON.stringify(visible).includes(item.type)) {
@@ -299,6 +305,14 @@ test('K3: responder and planner use perceived Russian item names without native 
       }
       if (!JSON.stringify(visible).includes(item.label)) {
         failures.push(`${item.label} (${item.branch}): planner lost Russian name`);
+      }
+    }
+    if (item.branch === 'held' && listed) {
+      failures.push(`${item.label} (held): planner repeats carried item in visible_entities`);
+    }
+    for (const entry of [...entities, ...carried]) {
+      if (Object.hasOwn(entry, 'item_uid')) {
+        failures.push(`${item.label} (${item.branch}): planner exposes item_uid`);
       }
     }
   }

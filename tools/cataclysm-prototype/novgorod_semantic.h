@@ -26,6 +26,7 @@ void observe_heard_speech( const Character &listener, const tripoint_bub_ms &sou
                            const std::string &description );
 void submit_live_intent( const std::string &intent, const std::string &target_actor_ref = "" );
 void submit_live_intent( const std::string &intent, const Creature *target );
+void set_live_input_for_test( const std::string &intent );
 void live_input();
 bool has_pending_live_activity();
 void on_input_boundary();

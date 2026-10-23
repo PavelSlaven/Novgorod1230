@@ -6,7 +6,7 @@ import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
-async function capturePrompt(input = request()) {
+async function capturePrompt(input = request(), repairContext = null) {
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run(call) {
@@ -14,7 +14,7 @@ async function capturePrompt(input = request()) {
       return { output: output() };
     }
   } });
-  await model(input);
+  await model(input, repairContext);
   return prompt;
 }
 
@@ -176,3 +176,21 @@ test('stable planner keeps the material prerequisite query nominal and full acti
   assert.match(prompt, /For this material prerequisite query must not equal or copy request.remaining_intent/u);
   assert.match(prompt, /continuation.remaining_intent must equal request.remaining_intent exactly/u);
 });
+
+for (const [roleId, repairContext] of [
+  ['turn_step_planner', null],
+  ['turn_step_planner_repair', {
+    schema: 'turn_step_repair_context_v1', attempt: 2,
+    structural_errors: []
+  }]
+]) {
+  test(`${roleId} system prompt grounds bare imperatives in the player actor`,
+    async () => {
+      const prompt = await capturePrompt(request(), repairContext);
+      assert.ok(prompt.includes(
+        "The player's free-action text states the current player actor's intended action."));
+      assert.match(prompt, /A bare imperative without an explicit addressee directs that actor/u);
+      assert.match(prompt, /even during an active conversation/u);
+      assert.match(prompt, /Never convert an unaddressed physical imperative into emit_interaction or player_utterance/u);
+    });
+}

@@ -581,21 +581,22 @@ export function buildP3TurnOperations(observation, targetActorRef = null, speech
   return [
     ...adjacentTargets.map(target => ({ op: 'request_movement', actor_ref: 'avatar',
       target_ref: target.target_ref, movement_kind: 'local' })),
-    ...observation.items.filter(({ holder, use_methods }) => holder === String(actor.actor_id)
-      && Array.isArray(use_methods) && use_methods.length === 1
-      && typeof use_methods[0] === 'string' && use_methods[0])
-      .flatMap(item => [{ op: 'request_item_use', actor_ref: 'avatar',
-        item_ref: item.item_ref, use_kind: 'operate', target_refs: [] },
-      ...adjacentTargets.map(target => ({ op: 'request_item_use', actor_ref: 'avatar',
-        item_ref: item.item_ref, use_kind: 'operate', target_refs: [target.target_ref] }))]),
+    ...observation.items.filter(({ holder, use_methods, use_method_label }) =>
+      holder === String(actor.actor_id) && Array.isArray(use_methods)
+      && use_methods.length === 1 && typeof use_methods[0] === 'string'
+      && use_methods[0] && typeof use_method_label === 'string'
+      && use_method_label.trim() && use_method_label.trim() !== use_methods[0])
+      .map(item => ({ op: 'request_item_use', actor_ref: 'avatar',
+        item_ref: item.item_ref, use_kind: 'operate', target_refs: [] })),
     ...adjacentTargets.filter(target => target.openable === true)
       .map(target => ({ op: 'request_container_access', actor_ref: 'avatar',
         container_ref: target.target_ref, access_kind: 'open' })),
     { op: 'request_activity', actor_ref: 'avatar', activity_kind: 'wait',
-      target_refs: [], description: 'Wait for the next period' },
-    ...(targetActorRef && speechText ? [{ op: 'emit_interaction', actor_ref: 'avatar',
-      target_actor_refs: [targetActorRef], interaction_kind: 'speech', content: speechText,
-      instrument_refs: [] }] : [])
+      target_refs: [], description: 'Подождать немного' },
+    ...(speechText ? (Array.isArray(targetActorRef) ? targetActorRef
+      : targetActorRef ? [targetActorRef] : []).map(ref => ({
+      op: 'emit_interaction', actor_ref: 'avatar', target_actor_refs: [ref],
+      interaction_kind: 'speech', content: speechText, instrument_refs: [] })) : [])
   ];
 }
 
@@ -643,22 +644,15 @@ export function mapP3TurnOperationToNative(operation, observation, { nativeSpeec
         || typeof item.use_methods[0] !== 'string' || !item.use_methods[0]) {
       throw new Error('P3_ITEM_USE_METHOD_AMBIGUOUS');
     }
-    const args = { method: item.use_methods[0] };
-    const references = { items: item.item_ref };
-    if (!Array.isArray(operation.target_refs) || operation.target_refs.length > 1) {
+    if (typeof item.use_method_label !== 'string' || !item.use_method_label.trim()
+        || item.use_method_label.trim() === item.use_methods[0]) {
+      throw new Error('P3_ITEM_USE_LABEL_UNAVAILABLE');
+    }
+    if (!Array.isArray(operation.target_refs) || operation.target_refs.length !== 0) {
       throw new Error('P3_ITEM_TARGET_REFS_INVALID');
     }
-    if (operation.target_refs.length === 1) {
-      const targetRef = operation.target_refs[0];
-      const target = observation.targets.find(({ target_ref: ref }) => ref === targetRef);
-      if (!target) throw new Error('P3_TYPED_TARGET_UNRESOLVED');
-      const direction = [target.position[0] - actor.position[0], target.position[1] - actor.position[1]];
-      if (Math.max(Math.abs(direction[0]), Math.abs(direction[1])) !== 1
-          || target.position[2] !== actor.position[2]) throw new Error('P3_NATIVE_MOVE_TARGET_NOT_ADJACENT');
-      args.target_direction = direction;
-      references.targets = targetRef;
-    }
-    return { actorRef: 'avatar', primitive: 'use_item', args, references };
+    return { actorRef: 'avatar', primitive: 'use_item',
+      args: { method: item.use_methods[0] }, references: { items: item.item_ref } };
   }
   if (operation.op === 'request_container_access') {
     if (operation.access_kind !== 'open') throw new Error('P3_CONTAINER_ACCESS_UNSUPPORTED');
@@ -693,7 +687,7 @@ export function mapP3TurnOperationToNative(operation, observation, { nativeSpeec
 
 export async function runP3TurnStep({ intent, observation, nativeAdapter,
   turnStepModel, operationId = randomUUID(), conversationOwnerForSpeech = null,
-  nativeSpeechOnly = false, targetActorRef = null } = {}) {
+  nativeSpeechOnly = false, targetActorRef = null, confirmedInterlocutorRef = null } = {}) {
   if (typeof intent !== 'string' || !intent.trim()) throw new TypeError('intent required');
   if (typeof turnStepModel !== 'function') throw new TypeError('turnStepModel required');
   requireP3NativeSeam(nativeAdapter);
@@ -702,13 +696,20 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       actor.actor_ref === targetActorRef && actor.actor_id === targetActorRef.slice(4)
       && actor.visible === true)
     ? targetActorRef : null;
-  const speechText = selectedNpc ? requiredVerbatimUtteranceText({ raw_text: intent }) : null;
+  const confirmedNpc = typeof confirmedInterlocutorRef === 'string'
+    && /^npc:\d+$/u.test(confirmedInterlocutorRef) && observation.actors.some(actor =>
+      actor.actor_ref === confirmedInterlocutorRef
+      && actor.actor_id === confirmedInterlocutorRef.slice(4) && actor.visible === true)
+    ? confirmedInterlocutorRef : null;
+  const activeNpc = selectedNpc ?? confirmedNpc;
+  const speechText = requiredVerbatimUtteranceText({ raw_text: intent });
+  const speechTargets = observation.actors.filter(({ actor_ref, visible }) =>
+    actor_ref !== 'avatar' && visible === true && /^npc:\d+$/u.test(actor_ref))
+    .map(({ actor_ref }) => actor_ref);
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
   const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
-        const selectedOperation = nativeSpeechOnly && operation?.op === 'emit_interaction'
-          ? { ...operation, target_actor_refs: selectedNpc ? [selectedNpc] : [] } : operation;
-        const mapped = mapP3TurnOperationToNative(selectedOperation, current, { nativeSpeechOnly });
+        const mapped = mapP3TurnOperationToNative(operation, current, { nativeSpeechOnly });
         if (delivery) mapped.args.delivery = structuredClone(delivery);
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
@@ -746,6 +747,8 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
         const nativeResult = projectP3NativeReadback(readback, mapped.primitive);
         const nativeGoalResult = nativeResult.goal_result;
         return { working_projection: { ...projection, native_readback: structuredClone(readback),
+          ...(mapped.primitive === 'speak'
+            ? { native_speech_target_ref: mapped.references.actors?.[0] ?? null } : {}),
           ...(conversationOutcome ? { conversation_outcome: structuredClone(conversationOutcome) } : {}),
           native_goal_result: nativeGoalResult },
           summary: `Native ${mapped.primitive}: ${readback.status}`,
@@ -789,15 +792,49 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
     executionRegistry, turnStepModel,
     projectPlayerSafeState: async ({ working_projection: projection }) => {
       const current = projection.native_observation;
-      return { player_safe_state: { actor_ref: 'avatar', current_position:
-        current.actors.find(({ actor_ref: ref }) => ref === 'avatar').position,
-        visible_entities: [...current.items.map(({ type: _nativeType, ...item }) => ({ ...item,
-          ...(typeof item.item_uid === 'string' ? { entity_ref: item.item_uid } : {}) })), ...current.targets,
-          ...current.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)],
-        ...(selectedNpc ? { active_interlocutor: { entity_ref: { entity_kind: 'npc',
-          entity_id: selectedNpc }, display_label: current.actors.find(({ actor_ref }) =>
-          actor_ref === selectedNpc).name.trim() } } : {}) },
-      available_domain_operations: buildP3TurnOperations(current, selectedNpc, speechText) };
+      const avatar = current.actors.find(({ actor_ref: ref }) => ref === 'avatar');
+      const carried = current.items.filter(item => item.holder === String(avatar.actor_id));
+      const visibleItems = current.items.filter(item => item.holder !== String(avatar.actor_id));
+      return { player_safe_state: { actor_ref: 'avatar', actor_id: 'avatar',
+        current_position: avatar.position,
+        items: carried.map(item => {
+          const method = Array.isArray(item.use_methods) && item.use_methods.length === 1
+            ? item.use_methods[0] : null;
+          const methodLabel = typeof item.use_method_label === 'string'
+            ? item.use_method_label.trim() : '';
+          const nativeLabel = typeof item.label === 'string' ? item.label.trim() : '';
+          return { item_id: item.item_ref,
+            name: nativeLabel && nativeLabel !== item.type ? nativeLabel : 'предмет',
+            placement: { holder_character_id: 'avatar' },
+            ...(typeof method === 'string' && method && methodLabel && methodLabel !== method
+              ? { use_method_label: methodLabel } : {}) };
+        }),
+        visible_entities: [
+          ...visibleItems.map(item => {
+            const nativeLabel = typeof item.label === 'string' ? item.label.trim() : '';
+            return { item_ref: item.item_ref,
+              label: nativeLabel && nativeLabel !== item.type ? nativeLabel : 'предмет',
+              ...(item.position != null ? { position: item.position } : {}),
+              ...(item.position != null && typeof item.item_uid === 'string'
+                ? { entity_ref: item.item_uid } : {}) };
+          }),
+          ...current.targets.map(target => {
+            const terrainLabel = typeof target.terrain_label === 'string'
+              ? target.terrain_label.trim() : '';
+            return { target_ref: target.target_ref, position: target.position,
+              ...(terrainLabel && terrainLabel !== target.terrain
+                ? { terrain_label: terrainLabel } : {}),
+              ...(target.openable === true ? { openable: true } : {}) };
+          }),
+          ...current.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar'
+            && visible === true).map(({ actor_ref, name, position }) =>
+            ({ actor_ref, ...(typeof name === 'string' && name.trim()
+              ? { name: name.trim() } : {}),
+            ...(position != null ? { position } : {}) }))],
+        ...(activeNpc ? { active_interlocutor: { entity_ref: { entity_kind: 'npc',
+          entity_id: activeNpc }, display_label: current.actors.find(({ actor_ref }) =>
+          actor_ref === activeNpc).name.trim() } } : {}) },
+      available_domain_operations: buildP3TurnOperations(current, speechTargets, speechText) };
     },
     revalidateCommittedState: async () => ({ state_version: 0 })
   });

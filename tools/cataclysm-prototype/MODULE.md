@@ -74,10 +74,13 @@ Test-only `native-control-tests` проверяет сохранение каж�
 диагностические snapshots вне живого observation.
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или
 production cutover. Live AF_UNIX adapter переиспользует прежний JS role runtime;
-owner промптов/LLM остаётся в packages и apps/game-server. Общий родной CHAT
-фильтр и creature_select_menu выбирают адресата; private target_actor_ref
-заполняет существующий emit_interaction.target_actor_refs. Ответ допускается
-только выбранному услышавшему NPC после повторной проверки identity/visibility.
+owner промптов/LLM остаётся в packages и apps/game-server. Свободное действие
+передаёт дословный intent без предварительного адресата; явный CHAT сохраняет
+родной chat_available_creatures/creature_select_menu. Граница предлагает
+emit_interaction каждому видимому NPC; active_interlocutor берётся только из
+подтверждённого разговора. Планировщик выбирает речь и адресата, а native
+исполняет выбранный ref. Ответ допускается только выбранному услышавшему NPC
+после повторной проверки identity/visibility.
 Canonical player delivery переносится только в private native args: loudness 1
 использует родной minimum_voice_volume, 2 — общий Character::indoor_voice,
 3/4 — get_shout_volume. Правило indoor_voice вынесено из npc без копии;

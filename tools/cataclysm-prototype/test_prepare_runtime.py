@@ -120,6 +120,12 @@ class PrepareRuntimeTest(unittest.TestCase):
                          (MOD / "fauna-policy.json").read_bytes())
         self.assertEqual((runtime / "data/mods/novgorod_dev_world/fauna-zombify-option.json").read_bytes(),
                          (MOD / "fauna-zombify-option.json").read_bytes())
+        installed_mod = runtime / "data/mods/novgorod_dev_world"
+        self.assertEqual(
+            {path.relative_to(installed_mod): path.read_bytes()
+             for path in installed_mod.rglob("*") if path.is_file()},
+            {path.relative_to(MOD): path.read_bytes()
+             for path in MOD.rglob("*") if path.is_file()})
         for name in ("cataclysm", "cataclysm-tiles"):
             self.assertEqual((runtime / name).read_text(), "#!/bin/sh\n")
             self.assertTrue((runtime / name).stat().st_mode & 0o100)
@@ -127,7 +133,10 @@ class PrepareRuntimeTest(unittest.TestCase):
         self.assertEqual(self.options(), {"AUTOSAVE": "true", "AUTOSAVE_TURNS": "3600",
                                           "AUTOSAVE_MINUTES": "5", "USE_LANG": "ru",
                                           "USE_TILES": "true", "TILES": "UltimateCataclysm",
-                                          "SDL_KEYBOARD_MODE": "keycode"})
+                                          "SDL_KEYBOARD_MODE": "keycode",
+                                          "USE_METRIC_WEIGHTS": "kg", "VOLUME_UNITS": "l",
+                                          "USE_METRIC_SPEEDS": "km/h", "DISTANCE_UNITS": "metric",
+                                          "USE_CELSIUS": "celsius", "24_HOUR": "24h"})
 
     def test_rerun_is_idempotent_and_never_touches_userdir(self):
         digest = self.write_archive()

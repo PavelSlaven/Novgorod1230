@@ -37,5 +37,239 @@
     "id": "lightning",
     "copy-from": "lightning",
     "name": "Гроза с молниями"
+  },
+  {
+    "type": "effect_type",
+    "id": "bleed",
+    "name": [
+      "кровь сочится",
+      "кровь сочится",
+      "кровь сочится",
+      "кровь сочится",
+      "кровь сочится",
+      "кровь течёт",
+      "кровь течёт",
+      "кровь течёт",
+      "кровь течёт",
+      "кровь течёт",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь льётся ручьём",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет",
+      "кровь хлещет"
+    ],
+    "desc": [
+      "'Tis but a scratch.",
+      "'Tis but a scratch.",
+      "'Tis but a scratch.",
+      "'Tis but a scratch.",
+      "'Tis but a scratch.",
+      "You are slowly losing blood.",
+      "You are slowly losing blood.",
+      "You are slowly losing blood.",
+      "You are slowly losing blood.",
+      "You are slowly losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "You are rapidly losing blood.",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!",
+      "Blood is gushing from you like a fountain!"
+    ],
+    "main_parts_only": true,
+    "apply_message": "You're bleeding!",
+    "remove_message": "The bleeding stops!",
+    "rating": "bad",
+    "immune_flags": [
+      "BLEED_IMMUNE"
+    ],
+    "max_intensity": 40,
+    "int_dur_factor": 60,
+    "max_duration": 2400,
+    "scaling_mods": {
+      "str_mod": [
+        -0.1
+      ],
+      "per_mod": [
+        -0.1
+      ]
+    },
+    "show_in_info": true
+  },
+  {
+    "type": "widget",
+    "id": "bodypart_torso_status_text",
+    "copy-from": "bodypart_torso_status_text",
+    "default_clause": {
+      "text": "ТЕЛО"
+    },
+    "clauses": [
+      {
+        "id": "bleedingAndBitten3",
+        "text": "ТЕЛО",
+        "color": "magenta_red",
+        "condition": {
+          "and": [
+            {
+              "u_has_effect": "bite"
+            },
+            {
+              "u_has_effect": "bleed",
+              "intensity": 21
+            }
+          ]
+        }
+      },
+      {
+        "id": "bleedingAndBitten12",
+        "text": "ТЕЛО",
+        "color": "magenta",
+        "condition": {
+          "and": [
+            {
+              "u_has_effect": "bite"
+            },
+            {
+              "u_has_effect": "bleed",
+              "intensity": 1
+            },
+            {
+              "math": [
+                "u_effect_intensity('bleed', 'bodypart': _widget) < 21"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "bleeding3",
+        "text": "ТЕЛО",
+        "color": "red_red",
+        "condition": {
+          "u_has_effect": "bleed",
+          "intensity": 21
+        }
+      },
+      {
+        "id": "bleeding2",
+        "text": "ТЕЛО",
+        "color": "red",
+        "condition": {
+          "and": [
+            {
+              "u_has_effect": "bleed",
+              "intensity": 11
+            },
+            {
+              "math": [
+                "u_effect_intensity('bleed', 'bodypart': _widget) < 21"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "bleeding1",
+        "text": "ТЕЛО",
+        "color": "light_red",
+        "condition": {
+          "and": [
+            {
+              "u_has_effect": "bleed",
+              "intensity": 1
+            },
+            {
+              "math": [
+                "u_effect_intensity('bleed', 'bodypart': _widget) < 11"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "infected",
+        "text": "ТЕЛО",
+        "color": "green",
+        "condition": {
+          "u_has_effect": "infected"
+        }
+      },
+      {
+        "id": "bitten",
+        "text": "ТЕЛО",
+        "color": "blue",
+        "condition": {
+          "u_has_effect": "bite"
+        }
+      }
+    ]
+  },
+  {
+    "type": "widget",
+    "id": "status_hpg_layout_rarm",
+    "copy-from": "status_hpg_layout_rarm",
+    "padding": 1
+  },
+  {
+    "type": "widget",
+    "id": "status_hpg_layout_rleg",
+    "copy-from": "status_hpg_layout_rleg",
+    "padding": 1
+  },
+  {
+    "type": "item_action",
+    "id": "holster",
+    "name": {
+      "str": "Заткнуть или подвесить"
+    }
   }
 ]

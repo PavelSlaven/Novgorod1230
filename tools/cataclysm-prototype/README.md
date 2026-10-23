@@ -130,7 +130,10 @@ python3 -I tools/cataclysm-prototype/prepare_p3_runtime.py \
 `-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON`: иначе установка срезает путь к
 SDL3 из префикса. В
 `fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true`,
-`TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. В родном режиме
+`TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. Там же задаются
+родные единицы и формат: `USE_METRIC_WEIGHTS=kg`, `VOLUME_UNITS=l`,
+`USE_METRIC_SPEEDS=km/h`, `DISTANCE_UNITS=metric`, `USE_CELSIUS=celsius`
+и `24_HOUR=24h`. В родном режиме
 `keychar` при русской раскладке буквенные горячие клавиши приходят кириллицей
 и не срабатывают (`g` → «неизвестная клавиша»); в `keycode` они работают при
 любой раскладке, а окно F12 само включает текстовый ввод и принимает кириллицу.
@@ -305,7 +308,7 @@ P4 — отдельный исследовательский gate CR [#758](http
 ```sh
 NATIVE="$CDDA"
 bash "$NOVGOROD/tools/cataclysm-prototype/apply-overlays.sh" --source "$NATIVE" || exit 1
-for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test; do
+for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test novgorod_epoch_names_test; do
   cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
   cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
 done

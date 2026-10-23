@@ -22,7 +22,9 @@ TILESET = "gfx/UltimateCataclysm"
 # keycode: under a Russian layout keychar delivers Cyrillic letters that miss every hotkey binding,
 # while text prompts such as F12 switch to text input themselves and still receive Cyrillic.
 OPTIONS = {"USE_LANG": "ru", "USE_TILES": "true", "TILES": "UltimateCataclysm",
-           "SDL_KEYBOARD_MODE": "keycode"}
+           "SDL_KEYBOARD_MODE": "keycode", "USE_METRIC_WEIGHTS": "kg",
+           "VOLUME_UNITS": "l", "USE_METRIC_SPEEDS": "km/h",
+           "DISTANCE_UNITS": "metric", "USE_CELSIUS": "celsius", "24_HOUR": "24h"}
 MOD = Path(__file__).with_name("dev-world")
 
 

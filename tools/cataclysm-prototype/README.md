@@ -309,6 +309,10 @@ for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_te
   cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
   cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
 done
+mkdir -p "$NATIVE/data/mods/novgorod_dev_world" || exit 1
+cp -a "$NOVGOROD/tools/cataclysm-prototype/dev-world/." "$NATIVE/data/mods/novgorod_dev_world/" || exit 1
+cp "$NOVGOROD/data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv" "$NATIVE/data/mods/novgorod_dev_world/mtype_taxon_crosswalk.csv" || exit 1
+cmp "$NOVGOROD/data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv" "$NATIVE/data/mods/novgorod_dev_world/mtype_taxon_crosswalk.csv" || exit 1
 cmake -S "$NATIVE" \
   -B "$NATIVE/build-clang-release" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
@@ -316,6 +320,18 @@ cmake -S "$NATIVE" \
   -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF \
   -DUSE_PREFIX_DATA_DIR=OFF
 cmake --build "$NATIVE/build-clang-release" --parallel 8
+```
+
+CSV рядом с модом нужен только native-тесту для проверки каждой строки crosswalk по native JSON.
+
+Проверки фауны запускаются из native checkout с отдельными новыми userdirs:
+
+```sh
+cd "$NATIVE" || exit 1
+"$NATIVE/build-clang-release/tests/cata_test" --rng-seed 17 \
+  --user-dir=/tmp/cdda-novgorod-fauna-native '[novgorod_fauna_native]'
+"$NATIVE/build-clang-release/tests/cata_test" --rng-seed 17 \
+  --user-dir=/tmp/cdda-novgorod-fauna-mod --mods=novgorod_dev_world '[novgorod_fauna]'
 ```
 
 `native-control-tests.patch` применяется только после `native-semantic-input`:

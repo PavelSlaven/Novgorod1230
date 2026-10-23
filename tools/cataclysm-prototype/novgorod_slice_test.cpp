@@ -470,3 +470,250 @@ TEST_CASE( "Novgorod native tick and action budgets", "[novgorod_slice][metrics]
               << action_ms[49] << ",\"p95_ms\":" << action_p95 << "}\n";
     CHECK( action_p95 <= 250.0 );
 }
+
+#include <filesystem>
+#include <fstream>
+#include <cctype>
+#include <iterator>
+#include <set>
+
+#include "flexbuffer_json.h"
+#include "json_loader.h"
+#include "mongroup.h"
+#include "mtype.h"
+#include "options.h"
+#include "path_info.h"
+
+TEST_CASE( "Novgorod natural fauna decisions cover native groups", "[novgorod_fauna_native]" )
+{
+    std::set<std::string> natural;
+    const auto &groups = MonsterGroupManager::Get_all_Groups();
+    for( const auto &[group_id, group] : groups ) {
+        if( !group.is_animal ) {
+            continue;
+        }
+        for( const mtype_id &type : MonsterGroupManager::GetMonstersFromGroup( group_id, true ) ) {
+            if( type.is_valid() && type != mtype_id::NULL_ID() ) {
+                natural.insert( type.str() );
+            }
+        }
+        std::set<mongroup_id> seen;
+        std::function<void( const mongroup_id & )> defaults = [&]( const mongroup_id &id ) {
+            if( !seen.insert( id ).second ) {
+                return;
+            }
+            const MonsterGroup &current = MonsterGroupManager::GetMonsterGroup( id );
+            if( current.defaultMonster.is_valid() && current.defaultMonster != mtype_id::NULL_ID() ) {
+                natural.insert( current.defaultMonster.str() );
+            }
+            for( const MonsterGroupEntry &entry : current.monsters ) {
+                if( entry.is_group() ) {
+                    defaults( entry.group );
+                }
+            }
+        };
+        defaults( group_id );
+    }
+    REQUIRE_FALSE( natural.empty() );
+    INFO( "native natural mtype count: " << natural.size() );
+
+    const std::filesystem::path policy_path =
+        PATH_INFO::moddir().get_unrelative_path() / "novgorod_dev_world" / "fauna-policy.json";
+    std::ifstream input( policy_path );
+    if( !input.good() ) {
+        for( const std::string &id : natural ) {
+            std::cout << "NATIVE_FAUNA_ID=" << id << "\n";
+        }
+    }
+    INFO( "fauna-policy.json must classify every native natural mtype" );
+    REQUIRE( input.good() );
+    const std::string content( std::istreambuf_iterator<char>( input ), {} );
+    const JsonArray definitions = json_loader::from_string( content ).get_array();
+    std::set<std::string> allow;
+    std::set<std::string> deny;
+    int blacklist_objects = 0;
+    int whitelist_objects = 0;
+    for( const JsonObject definition : definitions ) {
+        definition.allow_omitted_members();
+        const std::string type = definition.get_string( "type" );
+        if( type != "MONSTER_BLACKLIST" && type != "MONSTER_WHITELIST" ) {
+            continue;
+        }
+        std::set<std::string> &selected = type == "MONSTER_BLACKLIST" ? deny : allow;
+        blacklist_objects += type == "MONSTER_BLACKLIST";
+        whitelist_objects += type == "MONSTER_WHITELIST";
+        const JsonArray monsters = definition.get_array( "monsters" );
+        for( size_t i = 0; i < monsters.size(); ++i ) {
+            const std::string id = monsters.get_string( i );
+            CHECK( selected.insert( id ).second );
+            CHECK( mtype_id( id ).is_valid() );
+        }
+    }
+    CHECK( blacklist_objects == 1 );
+    CHECK( whitelist_objects == 1 );
+    for( const std::string &id : natural ) {
+        INFO( id );
+        CHECK( allow.count( id ) + deny.count( id ) == 1 );
+    }
+    for( const std::string &id : allow ) {
+        INFO( id );
+        CHECK( natural.count( id ) == 1 );
+    }
+    for( const std::string &id : deny ) {
+        INFO( id );
+        CHECK( natural.count( id ) == 1 );
+    }
+}
+
+TEST_CASE( "Novgorod fauna policy filters natural groups", "[novgorod_fauna]" )
+{
+    std::set<std::string> natural;
+    const auto &groups = MonsterGroupManager::Get_all_Groups();
+    for( const auto &[group_id, group] : groups ) {
+        if( !group.is_animal ) {
+            continue;
+        }
+        for( const mtype_id &type : MonsterGroupManager::GetMonstersFromGroup( group_id, true ) ) {
+            if( type.is_valid() && type != mtype_id::NULL_ID() ) {
+                natural.insert( type.str() );
+            }
+        }
+        std::set<mongroup_id> seen;
+        std::function<void( const mongroup_id & )> defaults = [&]( const mongroup_id &id ) {
+            if( !seen.insert( id ).second ) {
+                return;
+            }
+            const MonsterGroup &current = MonsterGroupManager::GetMonsterGroup( id );
+            if( current.defaultMonster.is_valid() && current.defaultMonster != mtype_id::NULL_ID() ) {
+                natural.insert( current.defaultMonster.str() );
+            }
+            for( const MonsterGroupEntry &entry : current.monsters ) {
+                if( entry.is_group() ) {
+                    defaults( entry.group );
+                }
+            }
+        };
+        defaults( group_id );
+    }
+
+    CHECK( natural.count( "mon_turtle_painted" ) == 0 );
+    CHECK( natural.count( "mon_turtle_snapping_common" ) == 0 );
+
+    const std::filesystem::path policy_path =
+        PATH_INFO::moddir().get_unrelative_path() / "novgorod_dev_world" / "fauna-policy.json";
+    std::ifstream input( policy_path );
+    INFO( "fauna-policy.json must be present in the loaded mod" );
+    REQUIRE( input.good() );
+    const std::string content( std::istreambuf_iterator<char>( input ), {} );
+    const JsonArray definitions = json_loader::from_string( content ).get_array();
+    std::set<std::string> allow;
+    std::set<std::string> deny;
+    for( const JsonObject definition : definitions ) {
+        definition.allow_omitted_members();
+        const std::string type = definition.get_string( "type" );
+        if( type != "MONSTER_BLACKLIST" && type != "MONSTER_WHITELIST" ) {
+            continue;
+        }
+        std::set<std::string> &selected = type == "MONSTER_BLACKLIST" ? deny : allow;
+        const JsonArray monsters = definition.get_array( "monsters" );
+        for( size_t i = 0; i < monsters.size(); ++i ) {
+            selected.insert( monsters.get_string( i ) );
+        }
+    }
+    for( const std::string &id : deny ) {
+        INFO( id );
+        REQUIRE( mtype_id( id ).is_valid() );
+        CHECK( MonsterGroupManager::monster_is_blacklisted( mtype_id( id ) ) );
+        CHECK( natural.count( id ) == 0 );
+    }
+    size_t corpse_paths = 0;
+    for( const std::string &id : allow ) {
+        INFO( id );
+        const mtype_id type( id );
+        REQUIRE( type.is_valid() );
+        CHECK_FALSE( MonsterGroupManager::monster_is_blacklisted( type ) );
+        CHECK( natural.count( id ) == 1 );
+        if( !type->zombify_into.is_empty() ) {
+            ++corpse_paths;
+            const item corpse = item::make_corpse( type );
+            REQUIRE_FALSE( corpse.has_var( "zombie_form" ) );
+            CHECK_FALSE( corpse.can_revive() );
+        }
+    }
+    CHECK( corpse_paths > 0 );
+    CHECK_FALSE( get_option<bool>( "ZOMBIFY_INTO_ENABLED" ) );
+}
+
+
+TEST_CASE( "Novgorod fauna native references identify monster objects", "[novgorod_fauna_native]" )
+{
+    const std::filesystem::path csv_path =
+        PATH_INFO::moddir().get_unrelative_path() / "novgorod_dev_world" / "mtype_taxon_crosswalk.csv";
+    std::ifstream crosswalk( csv_path );
+    INFO( csv_path.string() );
+    REQUIRE( crosswalk.good() );
+
+    std::string header;
+    REQUIRE( static_cast<bool>( std::getline( crosswalk, header ) ) );
+    REQUIRE( header.rfind(
+                 "mtype_id,decision,catalog_taxon_id,catalog_status,native_species,native_json_ref,", 0 ) == 0 );
+
+    size_t checked = 0;
+    std::string row;
+    while( std::getline( crosswalk, row ) ) {
+        REQUIRE_FALSE( row.empty() );
+        std::vector<std::string> fields;
+        size_t begin = 0;
+        for( int column = 0; column < 6; ++column ) {
+            const size_t comma = row.find( ',', begin );
+            REQUIRE( comma != std::string::npos );
+            fields.push_back( row.substr( begin, comma - begin ) );
+            begin = comma + 1;
+        }
+        const std::string &id = fields[0];
+        const std::string &reference = fields[5];
+        INFO( "mtype_id=" << id << " native_json_ref=" << reference );
+        REQUIRE( id.rfind( "mon_", 0 ) == 0 );
+        const size_t colon = reference.rfind( ':' );
+        REQUIRE( colon != std::string::npos );
+        const std::string relative = reference.substr( 0, colon );
+        REQUIRE( relative.rfind( "data/", 0 ) == 0 );
+        const size_t number = std::stoul( reference.substr( colon + 1 ) );
+        REQUIRE( number > 0 );
+        const std::filesystem::path native_file =
+            PATH_INFO::datadir_path().get_unrelative_path() / relative.substr( 5 );
+        std::ifstream input( native_file );
+        REQUIRE( input.good() );
+        const std::string content( std::istreambuf_iterator<char>( input ), {} );
+        std::istringstream lines( content );
+        std::string id_line;
+        size_t current = 0;
+        while( current < number && std::getline( lines, id_line ) ) {
+            ++current;
+        }
+        REQUIRE( current == number );
+        std::string compact;
+        for( const char character : id_line ) {
+            if( !std::isspace( static_cast<unsigned char>( character ) ) ) {
+                compact.push_back( character );
+            }
+        }
+        const char quote = '"';
+        const std::string expected = std::string( 1, quote ) + "id" + quote + ":" + quote + id + quote;
+        CHECK( compact.find( expected ) != std::string::npos );
+
+        bool found = false;
+        const JsonArray definitions = json_loader::from_string( content ).get_array();
+        for( const JsonObject definition : definitions ) {
+            definition.allow_omitted_members();
+            if( definition.has_string( "type" ) && definition.get_string( "type" ) == "MONSTER" &&
+                definition.has_string( "id" ) && definition.get_string( "id" ) == id ) {
+                found = true;
+                break;
+            }
+        }
+        CHECK( found );
+        ++checked;
+    }
+    CHECK( checked > 0 );
+}

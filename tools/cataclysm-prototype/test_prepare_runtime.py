@@ -116,6 +116,10 @@ class PrepareRuntimeTest(unittest.TestCase):
         self.assertTrue((runtime / "data/json/items.json").is_file())
         self.assertEqual((runtime / "data/mods/novgorod_dev_world/modinfo.json").read_bytes(),
                          (MOD / "modinfo.json").read_bytes())
+        self.assertEqual((runtime / "data/mods/novgorod_dev_world/fauna-policy.json").read_bytes(),
+                         (MOD / "fauna-policy.json").read_bytes())
+        self.assertEqual((runtime / "data/mods/novgorod_dev_world/fauna-zombify-option.json").read_bytes(),
+                         (MOD / "fauna-zombify-option.json").read_bytes())
         for name in ("cataclysm", "cataclysm-tiles"):
             self.assertEqual((runtime / name).read_text(), "#!/bin/sh\n")
             self.assertTrue((runtime / name).stat().st_mode & 0o100)

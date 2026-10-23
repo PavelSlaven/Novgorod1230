@@ -84,35 +84,28 @@ function perceptionRefOfItem(turn, npcId, uid) {
   return { entity_kind: 'perception_result', entity_id: `p3-seen-${turn}-${npcId}-${uid}` };
 }
 
-function wireValue(value, key, named, insideReferences) {
+function wireValue(value) {
   if (value === null || value === undefined) return undefined;
   if (typeof value !== 'object') return value;
-  let projected;
   if (Array.isArray(value)) {
-    projected = value.map(entry => wireValue(entry, '', named, insideReferences))
-      .filter(entry => entry !== undefined);
-  } else {
-    // The request carries the same resources twice (top level and npc); the model gets them once.
-    const once = (name, entry) => {
-      if (name !== 'npc' || !Object.hasOwn(value, 'available_resources')
-          || entry === null || typeof entry !== 'object') return entry;
-      const { available_resources: _duplicate, ...rest } = entry;
-      return rest;
-    };
-    projected = Object.fromEntries(Object.entries(value).flatMap(([name, entry]) => {
-      if (WIRE_SERVICE_KEYS.has(name)) return [];
-      const child = wireValue(once(name, entry), name, named,
-        insideReferences || name === 'allowed_references');
-      return child === undefined ? [] : [[name, child]];
-    }));
+    return value.map(entry => wireValue(entry)).filter(entry => entry !== undefined);
   }
-  const empty = Array.isArray(projected) ? projected.length === 0
-    : Object.keys(projected).length === 0;
-  return empty && !insideReferences && !named.has(key) ? undefined : projected;
+  // The request carries the same resources twice (top level and npc); the model gets them once.
+  const once = (name, entry) => {
+    if (name !== 'npc' || !Object.hasOwn(value, 'available_resources')
+        || entry === null || typeof entry !== 'object') return entry;
+    const { available_resources: _duplicate, ...rest } = entry;
+    return rest;
+  };
+  return Object.fromEntries(Object.entries(value).flatMap(([name, entry]) => {
+    if (WIRE_SERVICE_KEYS.has(name)) return [];
+    const child = wireValue(once(name, entry));
+    return child === undefined ? [] : [[name, child]];
+  }));
 }
 
-export function projectP3NpcWire(value, system) {
-  return wireValue(value, '', new Set(system.match(/[A-Za-z0-9_]+/gu)), false) ?? {};
+export function projectP3NpcWire(value, _system) {
+  return wireValue(value) ?? {};
 }
 
 function appearanceText(actor, who) {

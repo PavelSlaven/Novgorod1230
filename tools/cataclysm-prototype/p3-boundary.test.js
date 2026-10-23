@@ -1880,6 +1880,40 @@ function wireValuesOf(value, key) {
     [...(name === key ? [entry] : []), ...wireValuesOf(entry, key)]);
 }
 
+test('P3 NPC wire preserves empty fields independently of system wording', () => {
+  const resource = { resource_ref: { entity_kind: 'item', entity_id: 'item:31' },
+    label: 'огниво' };
+  const input = {
+    request_id: 'request', boundary_id: 'boundary', conversation_id: 'conversation',
+    exchange_id: 'exchange', state_version: 7, requested_at: 'now',
+    signal_refs: ['signal'], template_ref: 'template',
+    npc: { identity: { canonical_name: 'Гордей' }, metadata: {},
+      empty_tags: [], request_id: 'nested', available_resources: [resource] },
+    knowledge: { known_facts: [], beliefs: {}, hypotheses: [
+      { hypothesis_ref: { entity_kind: 'hypothesis', entity_id: 'h1' }, summary: 'может быть' }] },
+    memory: { records: [], context: {} }, allowed_references: [],
+    available_resources: [resource], optional: null, absent: undefined,
+    content: { utterance_text: 'Слышу тебя', refs: [
+      { entity_kind: 'known_fact', entity_id: 'fact:1' }], request_id: 'nested' },
+    mixed: [null, undefined, 'kept', {}, []]
+  };
+  const expected = {
+    npc: { identity: { canonical_name: 'Гордей' }, metadata: {}, empty_tags: [] },
+    knowledge: { known_facts: [], beliefs: {}, hypotheses: [
+      { hypothesis_ref: { entity_kind: 'hypothesis', entity_id: 'h1' }, summary: 'может быть' }] },
+    memory: { records: [], context: {} }, allowed_references: [],
+    available_resources: [resource],
+    content: { utterance_text: 'Слышу тебя', refs: [
+      { entity_kind: 'known_fact', entity_id: 'fact:1' } ] },
+    mixed: ['kept', {}, []]
+  };
+  const russian = projectP3NpcWire(input, 'Сохрани пустые поля знаний и памяти.');
+  const english = projectP3NpcWire(input,
+    'Preserve all empty knowledge and memory fields in the request.');
+  assert.deepEqual(russian, expected);
+  assert.deepEqual(english, russian);
+});
+
 test('P3 NPC wire keeps the base system messages byte for byte', async () => {
   const golden = {
     npc_conversation_responder: '1abf183f91f776f203748af1724b68da5d9f8a3e238665bb5f14da46a85c5a1b',

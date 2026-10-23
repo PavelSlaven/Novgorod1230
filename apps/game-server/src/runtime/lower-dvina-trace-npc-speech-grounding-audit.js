@@ -79,7 +79,7 @@ export async function auditFreshNpcSpeech({
     }],
     overrides: { temperature: 0, maxTokens: 256 }
   });
-  if (!valid(response?.output)) throw serverError(
+  if (!valid(response?.output, plan)) throw serverError(
     'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID',
     'NPC speech grounding auditor returned an invalid result.', { status: 503 }
   );
@@ -100,7 +100,7 @@ function unsupported(concerns) {
   })) };
 }
 
-function valid(value) {
+function valid(value, plan) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
     && Object.keys(value).length === 2
     && typeof value.pass === 'boolean' && Array.isArray(value.concerns)
@@ -110,5 +110,55 @@ function valid(value) {
       && Object.keys(concern).length === 3
       && ['kind', 'path', 'quote'].every((key) => Object.hasOwn(concern, key)
         && typeof concern[key] === 'string'
-        && concern[key].trim().length > 0));
+        && concern[key].trim().length > 0)
+      && concernQuoteMatchesPlan(concern, plan));
+}
+
+function concernQuoteMatchesPlan(concern, plan) {
+  const segments = planPathSegments(concern.path);
+  if (segments === null
+    || !['speech', 'interpretation', 'reason', 'supporting_operations']
+      .includes(segments[0])) return false;
+  let target = plan;
+  for (const segment of segments) {
+    if (target === null || typeof target !== 'object'
+      || !Object.hasOwn(target, segment)) return false;
+    target = target[segment];
+  }
+  return containsExactQuote(target, concern.quote);
+}
+
+function planPathSegments(path) {
+  if (typeof path !== 'string' || !path.startsWith('$')) return null;
+  const segments = [];
+  let remaining = path.slice(1);
+  while (remaining.length > 0) {
+    const field = /^\.([A-Za-z_][A-Za-z0-9_]*)/u.exec(remaining);
+    if (field !== null) {
+      segments.push(field[1]);
+      remaining = remaining.slice(field[0].length);
+      continue;
+    }
+    const member = /^\[(?:'([A-Za-z_][A-Za-z0-9_]*)'|"([A-Za-z_][A-Za-z0-9_]*)")\]/u
+      .exec(remaining);
+    if (member !== null) {
+      segments.push(member[1] ?? member[2]);
+      remaining = remaining.slice(member[0].length);
+      continue;
+    }
+    const index = /^\[(0|[1-9]\d*)\]/u.exec(remaining);
+    if (index !== null) {
+      segments.push(index[1]);
+      remaining = remaining.slice(index[0].length);
+      continue;
+    }
+    return null;
+  }
+  return segments.length > 0 ? segments : null;
+}
+
+function containsExactQuote(target, quote) {
+  if (typeof target === 'string') return target.includes(quote);
+  if (target === null || typeof target !== 'object') return false;
+  return Object.values(target).some((value) => containsExactQuote(value, quote));
 }

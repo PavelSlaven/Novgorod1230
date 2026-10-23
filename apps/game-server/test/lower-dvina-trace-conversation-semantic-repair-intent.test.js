@@ -45,7 +45,7 @@ const CASE_02_ERROR = {
   code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
   category: 'semantic_grounding', retryable: true,
   concern_kinds: ['unsupported_future_action'],
-  path: '$.speech.claims[0]', quote: 'Печь топить буду',
+  path: '$.speech.utterance_text', quote: 'Печь топить буду',
   message: 'Rewrite the complete response without unsupported factual assertions.'
 };
 
@@ -264,8 +264,11 @@ test('a second changed act field remains protected', async (t) => {
       change(scenario.repaired);
       const outcome = await decide({ ...scenario,
         concerns: [scenario.claimConcern, scenario.intentConcern,
-          { kind: 'unsupported_future_action', path,
-            quote: 'Печь топить буду' }], succeeds: false });
+          { kind: 'unsupported_future_action',
+            path: path === '$.speech.dominant_act'
+              ? '$.speech.dominant_act' : '$.speech.utterance_text',
+            quote: path === '$.speech.dominant_act'
+              ? 'command' : 'Печь топить буду' }], succeeds: false });
       assertRejected(outcome, path === '$.contribution_kind'
         ? ['$.contribution_kind', '$.speech.dominant_act'] : [path]);
     });
@@ -280,35 +283,53 @@ test('auditor concerns on the other act fields do not require changing them',
         const scenario = case02();
         await assertPlanned({ ...scenario,
           concerns: [scenario.claimConcern, scenario.intentConcern,
-            { kind: 'unsupported_future_action', path,
-              quote: 'Печь топить буду' }] });
+            { kind: 'unsupported_future_action',
+              path: path === '$.speech.dominant_act'
+                ? '$.speech.dominant_act' : '$.speech.utterance_text',
+              quote: path === '$.speech.dominant_act'
+                ? 'command' : 'Печь топить буду' }] });
       });
     }
   });
 
-test('the root and a matching text prefix do not cover intent', async (t) => {
-  for (const path of ['$', '$.interpretation.intent_note']) {
+test('valid sibling paths do not authorize an intent change', async (t) => {
+  for (const { path, quote } of [
+    { path: '$.interpretation.grounded_contribution',
+      quote: 'NPC подтверждает намерение' },
+    { path: '$.reason', quote: 'Жирко нетороплив' }
+  ]) {
     await t.test(path, async () => {
       const scenario = case02();
       const outcome = await decide({ ...scenario,
         concerns: [scenario.claimConcern,
-          { ...scenario.intentConcern, path }], succeeds: false });
+          { kind: 'unsupported_future_action', path, quote }], succeeds: false });
       assertRejected(outcome, ['$.interpretation.intent']);
     });
   }
 });
 
-test('noncanonical intent path spellings do not cover intent', async (t) => {
-  for (const path of ["$['interpretation']['intent']",
-    'interpretation.intent']) {
-    await t.test(path, async () => {
-      const scenario = case02();
-      const outcome = await decide({ ...scenario,
-        concerns: [scenario.claimConcern,
-          { ...scenario.intentConcern, path }], succeeds: false });
-      assertRejected(outcome, ['$.interpretation.intent']);
-    });
-  }
+test('bracket JSONPath to intent is valid but does not authorize canonical intent repair',
+async () => {
+  const scenario = case02();
+  const outcome = await decide({ ...scenario,
+    concerns: [scenario.claimConcern,
+      { ...scenario.intentConcern, path: "$['interpretation']['intent']" }],
+    succeeds: false });
+  assertRejected(outcome, ['$.interpretation.intent']);
+});
+
+test('a path without a plan root is rejected before semantic repair', async () => {
+  const scenario = case02();
+  const { calls, model } = provider(scenario.original, scenario.repaired,
+    [scenario.claimConcern,
+      { ...scenario.intentConcern, path: 'interpretation.intent' }], false);
+  const outcome = await requestNpcSemanticDecision({
+    boundary: scenario.fixture.boundary, request: scenario.fixture.input,
+    semanticModel: model, validateFreshPlan: model.validateFreshPlan,
+    revalidateStateVersion: async () => scenario.fixture.input.state_version
+  }).then(value => value, error => error);
+  assert.equal(outcome.code, 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID');
+  assert.deepEqual(calls.map(({ role_id }) => role_id), [RESPONDER, AUDITOR]);
 });
 
 test('a changed intent may remain unchanged despite permission', async () => {
@@ -333,14 +354,21 @@ test('a speech-only concern cannot change another NPC intent', async () => {
   assertRejected(outcome, ['$.interpretation.intent']);
 });
 
-test('descendant intent paths cover the whole intent field', async (t) => {
+test('paths below the scalar intent field fail before semantic repair', async (t) => {
   for (const path of ['$.interpretation.intent.detail',
     '$.interpretation.intent[0]']) {
     await t.test(path, async () => {
       const scenario = case02();
-      await assertPlanned({ ...scenario,
-        concerns: [scenario.claimConcern,
-          { ...scenario.intentConcern, path }] });
+      const { calls, model } = provider(scenario.original, scenario.repaired,
+        [scenario.claimConcern,
+          { ...scenario.intentConcern, path }], false);
+      const outcome = await requestNpcSemanticDecision({
+        boundary: scenario.fixture.boundary, request: scenario.fixture.input,
+        semanticModel: model, validateFreshPlan: model.validateFreshPlan,
+        revalidateStateVersion: async () => scenario.fixture.input.state_version
+      }).then(value => value, error => error);
+      assert.equal(outcome.code, 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID');
+      assert.deepEqual(calls.map(({ role_id }) => role_id), [RESPONDER, AUDITOR]);
     });
   }
 });

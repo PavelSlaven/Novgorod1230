@@ -253,7 +253,7 @@ test('the grounding auditor passes path and quote to the repair errors',
   async () => {
     const request = presentationRequest({});
     const concern = { kind: 'unsupported_past_observation',
-      path: '$.speech.utterance_text', quote: 'тридцать лет тут живу' };
+      path: '$.speech.utterance_text', quote: 'Тридцать лет тут живу' };
     const model = npcModel({ async run() {
       return { output: { pass: false, concerns: [concern] } };
     } });

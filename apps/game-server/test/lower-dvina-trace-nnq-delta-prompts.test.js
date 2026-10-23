@@ -412,10 +412,10 @@ test('D5 guards: concerns retain path and exact quote; code paths use speech roo
   const modelResult = await auditFreshNpcSpeech({
     roleRunner: { async run() { return { output: {
       pass: false, concerns: [{ kind: 'bad_path',
-        path: '$.plan.claims[0]', quote: 'Проверочный текст' }]
+        path: '$.speech.utterance_text', quote: 'Проверочный текст' }]
     } }; } },
     request: { request_id: 'delta:path-passthrough' },
-    plan: { contribution_kind: 'speech', speech: { claims: [] } }
+    plan: { contribution_kind: 'speech', speech: { utterance_text: 'Проверочный текст', claims: [] } }
   });
-  assert.equal(modelResult.errors[0].path, '$.plan.claims[0]');
+  assert.equal(modelResult.errors[0].path, '$.speech.utterance_text');
 });

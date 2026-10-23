@@ -14,6 +14,9 @@ on:
       - tools/cataclysm-prototype/native_live_baseline.py
       - tools/cataclysm-prototype/native-live-known-failures.json
       - tools/cataclysm-prototype/test_native_live_baseline.py
+      - tools/cataclysm-prototype/test_fauna_catalog_mod_sync.py
+      - data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv
+      - data/world-catalogs/novgorod/game-base-v1/fauna-*/**
   push:
     branches: [main]
     paths:
@@ -28,6 +31,9 @@ on:
       - tools/cataclysm-prototype/native_live_baseline.py
       - tools/cataclysm-prototype/native-live-known-failures.json
       - tools/cataclysm-prototype/test_native_live_baseline.py
+      - tools/cataclysm-prototype/test_fauna_catalog_mod_sync.py
+      - data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv
+      - data/world-catalogs/novgorod/game-base-v1/fauna-*/**
   workflow_dispatch:
 
 permissions:

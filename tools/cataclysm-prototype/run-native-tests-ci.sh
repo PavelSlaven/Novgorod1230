@@ -28,6 +28,8 @@ test "$(gcc-13 -dumpversion | cut -d. -f1)" = 13
   printf 'build_jobs=%s\n' "$jobs"
 } > "$log_dir/identity.txt"
 
+python3 "$repo_root/tools/cataclysm-prototype/test_fauna_catalog_mod_sync.py" > "$log_dir/fauna-sync.log" 2>&1
+
 git clone --depth=1 --no-checkout https://github.com/CleverRaven/Cataclysm-DDA.git "$native" > "$log_dir/checkout.log" 2>&1
 git -C "$native" fetch --depth=1 origin "$upstream_sha" >> "$log_dir/checkout.log" 2>&1
 git -C "$native" checkout --detach "$upstream_sha" >> "$log_dir/checkout.log" 2>&1
@@ -42,6 +44,8 @@ for stem in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test
 done
 mkdir -p "$native/data/mods/novgorod_dev_world"
 cp -R "$repo_root/tools/cataclysm-prototype/dev-world/." "$native/data/mods/novgorod_dev_world/"
+cp "$repo_root/data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv" "$native/data/mods/novgorod_dev_world/"
+cmp "$repo_root/data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv" "$native/data/mods/novgorod_dev_world/mtype_taxon_crosswalk.csv"
 printf 'Скопированы восемь родных C++ файлов и dev-world\n' > "$log_dir/staging.log"
 
 if [[ ${CI783_USE_CCACHE:-0} == 1 ]]; then
@@ -86,6 +90,8 @@ run_tag() {
 }
 
 run_tag slice '[novgorod_slice]'
+run_tag fauna_native '[novgorod_fauna_native]'
+run_tag fauna '[novgorod_fauna]'
 run_tag item_uid '[novgorod_item_uid]'
 run_tag rng_state '[novgorod_rng_state]'
 run_tag epoch_names '[novgorod_epoch_names]'

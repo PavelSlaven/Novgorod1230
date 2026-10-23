@@ -5,6 +5,8 @@ import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-t
 import { TURN_STEP_COMPOUND_EXAMPLE } from '../src/runtime/lower-dvina-trace-phase-2-turn-step-prompts.js';
 import { turnStepPlanMappings } from '../src/runtime/lower-dvina-trace-turn-step-plan-mappings.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
+import { parsePlayerSpeechLoudness } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 test('planner mapping labels live outside flat JSON examples and retain availability filtering', async () => {
   const input = request();
@@ -19,6 +21,7 @@ test('planner mapping labels live outside flat JSON examples and retain availabi
   assert.deepEqual(examples, expected);
   for (const [name, semantic] of examples) assert.equal(Object.hasOwn(semantic, name), false);
   assert.match(prompt, /never output keys/u);
+  assert.doesNotMatch(prompt, /loudness/iu);
   assert.match(prompt, /goal_result and continuation from the whole request/u);
   assert.doesNotMatch(prompt, /Copy only the operation DTO/u);
   assert.ok(prompt.includes(TURN_STEP_COMPOUND_EXAMPLE));
@@ -63,7 +66,7 @@ test('flat compound speech example and unseen conceptual equivalent validate wit
     const semantic = { ...structuredClone(example), interpretation: {
       player_goal: intent, grounded_attempt: words, adaptation: 'literal' },
     utterance: { speaker_ref: input.actor.actor_ref, utterance_text: words,
-      input_mode: 'intent_paraphrase', delivery: { loudness: 2, duration_class: 'instant' } },
+      input_mode: 'intent_paraphrase', delivery: { duration_class: 'instant' } },
     continuation: { remaining_intent: suffix, depends_on_refs: [] } };
     let calls = 0;
     const plan = await createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
@@ -75,7 +78,9 @@ test('flat compound speech example and unseen conceptual equivalent validate wit
     assert.equal(calls, 1);
     assert.equal(plan.goal_result, 'pending');
     assert.deepEqual(plan.activity, { owner: 'semantic', duration_class: 'moment', effort: 'none' });
-    assert.deepEqual(plan.utterance, semantic.utterance);
+    assert.deepEqual(plan.utterance, { ...semantic.utterance,
+      delivery: { ...semantic.utterance.delivery,
+        loudness: parsePlayerSpeechLoudness(input.remaining_intent) } });
     assert.equal(plan.continuation.remaining_intent, suffix);
     assert.ok(intent.endsWith(suffix));
   }

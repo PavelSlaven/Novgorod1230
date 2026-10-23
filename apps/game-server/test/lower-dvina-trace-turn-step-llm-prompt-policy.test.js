@@ -184,13 +184,14 @@ for (const [roleId, repairContext] of [
     structural_errors: []
   }]
 ]) {
-  test(`${roleId} system prompt grounds bare imperatives in the player actor`,
+  test(`${roleId} system prompt leaves imperative meaning to context`,
     async () => {
       const prompt = await capturePrompt(request(), repairContext);
-      assert.ok(prompt.includes(
-        "The player's free-action text states the current player actor's intended action."));
-      assert.match(prompt, /A bare imperative without an explicit addressee directs that actor/u);
-      assert.match(prompt, /even during an active conversation/u);
-      assert.match(prompt, /Never convert an unaddressed physical imperative into emit_interaction or player_utterance/u);
+      assert.doesNotMatch(prompt,
+        /A bare imperative without an explicit addressee directs that actor/u);
+      assert.match(prompt,
+        /player_utterance requires an actual intent to vocalize/u);
+      assert.match(prompt,
+        /A genuine look, listen, search, movement, manipulation, or other action stated before speech executes first/u);
     });
 }

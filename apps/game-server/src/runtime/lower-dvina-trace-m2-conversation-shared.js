@@ -97,6 +97,27 @@ export function requiredVerbatimUtteranceText(playerInput) {
   return spoken || rawText;
 }
 
+export function parsePlayerSpeechLoudness(intent) {
+  if (typeof intent !== 'string') throw new TypeError('intent must be a string');
+  const closers = { '«': '»', '“': '”', '„': '“”', '"': '"' };
+  const quotes = [];
+  let directions = '';
+  for (const char of intent) {
+    if (quotes.length && quotes.at(-1).includes(char)) {
+      quotes.pop();
+    } else if (Object.hasOwn(closers, char)) {
+      if (!quotes.length) directions += ' ';
+      quotes.push(closers[char]);
+    } else if (!quotes.length) directions += char;
+  }
+  const cues = directions.matchAll(
+    /(?<![\p{L}\p{M}\p{N}_])(?:(не)\s+)?(шепчу|шепотом|шёпотом|кричу|криком)(?![\p{L}\p{M}\p{N}_])/giu);
+  for (const [, negated, cue] of cues) {
+    if (!negated) return /^ш/iu.test(cue) ? 1 : 4;
+  }
+  return 2;
+}
+
 export function sameTimeBatchKey(partyId, clock) {
   return `conversation-batch:${canonicalDigest({
     schema: 'rus.lower_dvina_trace_conversation_batch_identity.v1',

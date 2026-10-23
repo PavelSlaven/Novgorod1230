@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { isDeepStrictEqual } from 'node:util';
 import { createLlmSettingsOwner } from '@rus/game-server';
+import { validateNpcConversationResponseSubject } from '@rus/npc-runtime';
 import { createP3RoleRuntime, runP3NativeNpcReply, runP3TurnStep } from './p3-boundary.js';
+import { projectP3NpcWire } from './p3-npc-subject.js';
 import { heardRecord, npcProjection, playerSpeechReadback, replyFrame,
   saidRecord, visibleItem } from './p3-test-frames.js';
 
@@ -78,62 +81,91 @@ const forbiddenWireKeys = new Set(['request_id', 'boundary_id', 'conversation_id
   'exchange_id', 'state_version', 'requested_at', 'signal_refs', 'template_ref']);
 
 function wireIssues(call, name, items) {
-  const system = call.messages.find(message => message.role === 'system').content;
-  const input = JSON.parse(call.messages.find(message => message.role === 'user').content);
+  const messages = call.messages;
+  const input = JSON.parse(messages.find(message => message.role === 'user').content);
   const request = input.request ?? input;
   const failures = [];
-  const walk = (value, path = '$', key = '', insideReferences = false) => {
-    if (value === null) { failures.push(`${name} ${path}: null`); return; }
-    if (typeof value !== 'object') return;
-    if (Object.keys(value).length === 0 && !insideReferences && !system.includes(key)) {
-      failures.push(`${name} ${path}: empty`);
-    }
-    for (const [childKey, entry] of Object.entries(value)) {
-      if (forbiddenWireKeys.has(childKey)) {
-        failures.push(`${name} ${path}.${childKey}: service key`);
-      }
-      walk(entry, `${path}.${childKey}`, childKey,
-        insideReferences || childKey === 'allowed_references');
+  const walk = (value, path = '$') => {
+    if (value === null || typeof value !== 'object') return;
+    for (const [key, child] of Object.entries(value)) {
+      if (forbiddenWireKeys.has(key)) failures.push(name + ' ' + path + '.' + key + ': service key');
+      walk(child, path + '.' + key);
     }
   };
   walk(input);
   const resources = valuesUnder(input, 'available_resources');
   if (!Object.hasOwn(request, 'available_resources') || resources.length !== 1) {
-    failures.push(`${name}: expected one top-level available_resources, found ${resources.length}`);
+    failures.push(name + ': expected one top-level available_resources, found ' + resources.length);
   }
-  const references = valuesUnder(input, 'allowed_references');
-  const [allowed] = references;
-  if (references.length !== 1 || !allowed) failures.push(`${name}: citation references were lost`);
-  else {
-    const hasRef = (group, kind, id) => allowed[group]?.some(ref =>
+  if (Object.hasOwn(request.npc ?? {}, 'available_resources')) {
+    failures.push(name + ': nested resources duplicated on private wire');
+  }
+  const references = request.allowed_references;
+  if (!references
+      || !Array.isArray(references.actor_refs)
+      || !Array.isArray(references.entity_refs)
+      || !Array.isArray(references.knowledge_refs)
+      || !Array.isArray(references.combat_target_refs)) {
+    failures.push(name + ': allowed references are incomplete');
+  } else {
+    const hasRef = (group, kind, id) => references[group]?.some(ref =>
       ref.entity_kind === kind && ref.entity_id === id);
     if (!hasRef('actor_refs', 'npc', '9')
         || !hasRef('actor_refs', 'player_character', '7')) {
-      failures.push(`${name}: actor citation references were lost`);
+      failures.push(name + ': actor citation references were lost');
     }
     for (const visible of items) {
       if (!hasRef('entity_refs', 'item', visible.item_uid)) {
-        failures.push(`${name}: item citation ref ${visible.item_uid} was lost`);
+        failures.push(name + ': item citation ref ' + visible.item_uid + ' was lost');
       }
     }
     const knownFacts = valuesUnder(request, 'known_facts').flat();
     if (knownFacts.length === 0 || knownFacts.some(fact =>
       !hasRef('knowledge_refs', fact.fact_ref?.entity_kind, fact.fact_ref?.entity_id))) {
-      failures.push(`${name}: knowledge citation references were lost`);
+      failures.push(name + ': knowledge citation references were lost');
     }
-    const hasEmptyArray = value => Array.isArray(value)
-      ? value.length === 0 || value.some(hasEmptyArray)
-      : value !== null && typeof value === 'object'
-        && Object.values(value).some(hasEmptyArray);
-    if (!hasEmptyArray(allowed)) {
-      failures.push(`${name}: empty allowed_references array did not reach user`);
+  }
+
+  const upstream = structuredClone(request);
+  if (!upstream.npc || !Array.isArray(upstream.available_resources)) {
+    failures.push(name + ': canonical resource source is missing');
+    return failures;
+  }
+  upstream.npc.available_resources = structuredClone(upstream.available_resources);
+  if (!assertResourceAlias(upstream, name, failures)) return failures;
+  try {
+    if (!validateNpcConversationResponseSubject(upstream)) {
+      failures.push(name + ': canonical NPC subject failed validation');
     }
+  } catch (error) {
+    failures.push(name + ': canonical NPC subject validator threw ' + error.message);
+  }
+  const original = structuredClone(upstream);
+  const firstProjection = projectP3NpcWire(upstream,
+    'Keep optional null and empty subjective fields.');
+  if (!isDeepStrictEqual(upstream, original)) failures.push(name + ': projection mutated its input');
+  const secondProjection = projectP3NpcWire(upstream,
+    'Preserve optional null and empty subjective fields.');
+  if (!isDeepStrictEqual(upstream, original)) failures.push(name + ': wording projection mutated its input');
+  if (!isDeepStrictEqual(firstProjection, secondProjection)) {
+    failures.push(name + ': system wording changed the request projection');
+  }
+  if (!isDeepStrictEqual(firstProjection, request)) {
+    failures.push(name + ': captured wire differs from canonical private projection');
   }
   return failures;
 }
 
-const wireFailureSummary = failures => ['service key', 'null', 'empty',
-  'available_resources', 'citation references'].map(kind =>
+function assertResourceAlias(request, name, failures) {
+  if (!isDeepStrictEqual(request.npc.available_resources, request.available_resources)) {
+    failures.push(name + ': canonical nested resource alias differs from top-level copy');
+    return false;
+  }
+  return true;
+}
+
+const wireFailureSummary = failures => ['service key', 'canonical', 'resources',
+  'available_resources', 'citation references', 'projection'].map(kind =>
   failures.find(failure => failure.includes(kind))).filter(Boolean).join('; ');
 
 const semanticSpeech = () => {
@@ -179,7 +211,7 @@ test('K1: first contact is unscored while positive and negative trust stay disti
   assert.equal(failures.length, 0, `K1 model input: ${failures.join('; ')}`);
 });
 
-test('K2: responder user message has no service fields, empty values or duplicate resources', async () => {
+test('K2: responder model input is canonical and private wire is service-stripped', async () => {
   const cases = [
     { name: 'one owned item', items: [visibleItem(31)] },
     { name: 'two different items', items: [visibleItem(32),

@@ -342,20 +342,68 @@ test('semantic repair quote guard requires a new source on the cited claim', asy
   }
 });
 
-test('semantic repair quote guard rejects a missing claim path before repair',
-  async () => {
-    const fixture = request();
-    const original = plan(fixture.input, 'Лодка у берега.');
-    const { calls, model } = provider([
-      { role: RESPONDER, result: json(original) },
-      { role: AUDITOR, result: json({ pass: false, concerns: [{
-        kind: 'unsupported_assertion', path: '$.speech.claims[2]',
-        quote: 'Лодка у берега'
-      }] }) }
-    ]);
-    const outcome = await decide(fixture, model).then(value => value, error => error);
-    assert.equal(outcome.code, 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID');
-    assert.deepEqual(calls.map(({ role_id }) => role_id), [RESPONDER, AUDITOR]);
+test('semantic repair uses the recovered exact quote location', async () => {
+  const fixture = request();
+  const quote = '\u041b\u043e\u0434\u043a\u0430 \u0443 \u0431\u0435\u0440\u0435\u0433\u0430';
+  const original = plan(fixture.input, quote + '.');
+  const repaired = plan(fixture.input, '\u041d\u0435 \u0437\u043d\u0430\u044e.');
+  const { calls, model } = provider([
+    { role: RESPONDER, result: json(original) },
+    { role: AUDITOR, result: json({ pass: false, concerns: [{
+      kind: 'unsupported_assertion', path: '$.speech.claims[2]', quote
+    }] }) },
+    { role: REPAIR, result: json(repaired) },
+    { role: AUDITOR, result: auditPass }
+  ]);
+  const result = await decide(fixture, model);
+  assert.equal(result.status, 'planned');
+  assert.deepEqual(calls.map(({ role_id }) => role_id),
+    [RESPONDER, AUDITOR, REPAIR, AUDITOR]);
+  assert.deepEqual(calls[2].user.validation_errors.map(
+    ({ code, path, quote: errorQuote }) => ({ code, path, quote: errorQuote })), [{
+    code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+    path: '$.speech.utterance_text', quote
+  }]);
+  const actAnchors = value => ({
+    contribution_kind: value.contribution_kind,
+    primary_addressee_ref: value.primary_addressee_ref,
+    intended_addressee_refs: value.intended_addressee_refs,
+    dominant_act: value.speech?.dominant_act,
+    intent: value.interpretation?.intent
+  });
+  assert.deepEqual(actAnchors(repaired), actAnchors(original));
+  assert.deepEqual(actAnchors(result.plan), actAnchors(original));
+  assert.equal(result.plan.speech.utterance_text, '\u041d\u0435 \u0437\u043d\u0430\u044e.');
+});
+
+test('quote recovery fails closed for absent and ambiguous locations before repair',
+  async (t) => {
+    for (const scenario of [
+      { name: 'absent quote', utterance: '\u041d\u0435 \u0437\u043d\u0430\u044e.',
+        quote: '\u0412\u0447\u0435\u0440\u0430 \u0432\u0438\u0434\u0435\u043b \u043b\u043e\u0434\u043a\u0443', claims: [] },
+      { name: 'ambiguous quote', utterance: '\u041b\u043e\u0434\u043a\u0430 \u0443 \u0431\u0435\u0440\u0435\u0433\u0430.',
+        quote: '\u041b\u043e\u0434\u043a\u0430 \u0443 \u0431\u0435\u0440\u0435\u0433\u0430',
+        claims: [{ ...claim('\u041b\u043e\u0434\u043a\u0430 \u0443 \u0431\u0435\u0440\u0435\u0433\u0430', []),
+          speaker_posture: 'uncertain' }] }
+    ]) {
+      await t.test(scenario.name, async () => {
+        const fixture = request();
+        const original = plan(fixture.input, scenario.utterance);
+        original.speech.claims = scenario.claims;
+        const { calls, model } = provider([
+          { role: RESPONDER, result: json(original) },
+          { role: AUDITOR, result: json({ pass: false, concerns: [{
+            kind: 'unsupported_assertion', path: '$.speech.claims[2]',
+            quote: scenario.quote
+          }] }) }
+        ]);
+        const error = await rejection(decide(fixture, model));
+        assert.equal(error.code, 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID');
+        assert.equal(error.status, 503);
+        assert.deepEqual(calls.map(({ role_id }) => role_id),
+          [RESPONDER, AUDITOR]);
+      });
+    }
   });
 
 test('semantic repair quote guard checks every rejected quote', async (t) => {

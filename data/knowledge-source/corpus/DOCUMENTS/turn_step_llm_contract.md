@@ -448,29 +448,42 @@ owner через тот же direct `semantic/moment/none` шаг с пусты�
 заданные слова без обрамляющего действия, `intent_paraphrase` семантически
 конкретизирует свободное речевое намерение без заданной цитаты. Последний режим
 не разрешает переписывать явно заданные слова или добавлять незаявленные
-утверждения. `delivery` содержит ровно qualitative `loudness` (`1..4`: шёпот,
-обычный голос, повышенный голос, крик) и `duration_class` (`instant`, `brief`,
-`sustained`). Это LLM-owned семантика способа произнесения, а не audience:
-отсутствующее или malformed delivery отклоняется fail-closed и не заменяется
-тихим default. После применения и P16 commit exact resolved text/speaker
-сохраняются в существующем `approved_plan` semantic trace, а player-safe
-projection явно показывает произнесённые слова. В остальных plans `utterance`
-отсутствует. При отдельном последующем действии допустимы `pending` и
-continuation только с неисполненным остатком; одна речь завершается `achieved`.
-В изолированной границе P3/CDDA громкость уже выбранной речи определяет
-обычный парсер исходного ввода игрока: обычный голос по умолчанию, явные
-«шепчу»/«шепотом»/«шёпотом» — шёпот, «кричу»/«криком» — крик.
-Цитируемые слова самой реплики не задают способ произнесения; непосредственное
-«не» отрицает следующее указание. При нескольких указаниях действует первое
-неотрицательное. Парсер не выбирает действие, адресата или текст речи.
-P3 native adapter игнорирует `utterance.delivery.loudness` модели и передаёт
-результат парсера в существующие native args. Для совместимости общая форма
-плана и её структурная проверка сохраняются; отсутствующее или malformed
-direct delivery по-прежнему может быть отклонено до исполнения. Его
-`duration_class` сохраняется; typed speech без такой metadata использует
-прежнюю brief-длительность. CDDA единолично определяет числовую громкость,
-слышимость с учётом окружения и затраченное время. Эта локальная оговорка
-не меняет общий production planner или других исполнителей.
+утверждения. Полная публичная схема turn_step_plan_v1 по-прежнему требует в
+utterance.delivery ровно qualitative loudness (1..4: шёпот, обычный голос,
+повышенный голос, крик) и duration_class (instant, brief, sustained). Для
+direct player_utterance модель выбирает обязательный duration_class, а общий
+game-server speech parser определяет loudness по текущему
+request.remaining_intent; assembler добавляет результат в полный plan до
+штатной строгой проверки. Prompt и semantic examples не просят выбирать
+громкость; модельное значение loudness не является источником результата.
+Semantic candidate может не содержать loudness, но собранный полный plan
+обязан иметь корректное delivery; malformed delivery structure и прочие
+schema errors сохраняют fail-closed validation.
+
+После применения и P16 commit exact resolved text/speaker сохраняются в
+существующем approved_plan semantic trace, а player-safe projection явно
+показывает произнесённые слова. В остальных plans utterance отсутствует. При
+отдельном последующем действии допустимы pending и continuation только с
+неисполненным остатком; одна речь завершается achieved.
+
+В существующем P3 domain_request маршруте для
+public emit_interaction with interaction_kind: speech and resolution: domain_request native projection определяет
+loudness тем же общим parser по текущему request.remaining_intent и передаёт
+число в существующие native args. Domain request assembler не обязан
+возвращать semantic.utterance. Оба потребителя используют один parser и одинаковые действующие cue rules:
+обычный голос по умолчанию (2); явные незакавыченные «шепчу», «шепотом»,
+«шёпотом» дают 1, «кричу», «криком» дают 4; регистр не влияет, слова внутри
+поддержанной цитаты не задают громкость, непосредственное «не» отрицает cue,
+действует первое неотрицательное указание. Parser не выбирает наличие речи,
+её текст, действие или адресата.
+
+Direct full-plan speech сохраняет обязательный модельный duration_class.
+В существующем P3 domain speech профиле речь без delivery сохраняет действующий brief default;
+существующий P3 native mapping сохраняет длительность direct delivery,
+когда она присутствует. CDDA единолично определяет числовую акустику
+исполнения, слышимость с учётом окружения и затраченное время. Эта правка не
+меняет публичные request/plan/native envelopes, их schemas/validators, текст
+речи, правила NPC или native acoustic/environment behavior.
 
 Перед применением тот же semantic grounding auditor сверяет оба input modes
 с намерением текущего actor; чужая цитата, перефразирование заданных слов и

@@ -181,7 +181,7 @@ test('active interlocutor owns permission response for unsupported aid',
     assert.match(prompt,
       /attempted physical intervention has no supplied physical owner[\s\S]*matching request interaction is the owned boundary[\s\S]*never confirms the physical intervention/u);
     assert.match(prompt,
-      /proposal to perform that intervention followed by a direct address[\s\S]*one interaction boundary[\s\S]*Never reason that the addressed request is not a separate action/u);
+      /proposal to perform that intervention followed by a direct address, imperative, or request for help[\s\S]*one interaction boundary[\s\S]*Never reason that the addressed request is not a separate action/u);
   assert.match(prompt,
     /role description grounded by the current visible projection or committed conversation history overrides a different active_interlocutor/u);
   assert.match(prompt,

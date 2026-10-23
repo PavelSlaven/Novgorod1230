@@ -1686,7 +1686,9 @@ test('production speech choice speaks the player words with parsed loudness', as
     ['Здравствуй, Жирко. Чей это двор?', 'Здравствуй, Жирко. Чей это двор?', 2],
     ['Шепчу: «Приходи до рассвета!»', 'Приходи до рассвета!', 1],
     ['Кричу: «Берегись!»', 'Берегись!', 4],
-    ['Произношу: «Кричу!»', 'Кричу!', 2]
+    ['Произношу: «Кричу!»', 'Кричу!', 2],
+    ['Не кричу: «Слушай!»', 'Слушай!', 2],
+    ['Не шепчу, а кричу: «Берегись!»', 'Берегись!', 4]
   ]) {
     let providerCalls = 0;
     let captured;
@@ -1880,7 +1882,8 @@ function wireValuesOf(value, key) {
     [...(name === key ? [entry] : []), ...wireValuesOf(entry, key)]);
 }
 
-test('P3 NPC wire preserves empty fields independently of system wording', () => {
+// Synthetic transport fixture only; production-path tests validate canonical subject shape.
+test('P3 NPC wire transport preserves null and empty JSON values independently of system wording', () => {
   const resource = { resource_ref: { entity_kind: 'item', entity_id: 'item:31' },
     label: 'огниво' };
   const input = {
@@ -1897,21 +1900,23 @@ test('P3 NPC wire preserves empty fields independently of system wording', () =>
       { entity_kind: 'known_fact', entity_id: 'fact:1' }], request_id: 'nested' },
     mixed: [null, undefined, 'kept', {}, []]
   };
+  const original = structuredClone(input);
   const expected = {
     npc: { identity: { canonical_name: 'Гордей' }, metadata: {}, empty_tags: [] },
     knowledge: { known_facts: [], beliefs: {}, hypotheses: [
       { hypothesis_ref: { entity_kind: 'hypothesis', entity_id: 'h1' }, summary: 'может быть' }] },
     memory: { records: [], context: {} }, allowed_references: [],
-    available_resources: [resource],
+    available_resources: [resource], optional: null,
     content: { utterance_text: 'Слышу тебя', refs: [
       { entity_kind: 'known_fact', entity_id: 'fact:1' } ] },
-    mixed: ['kept', {}, []]
+    mixed: [null, 'kept', {}, []]
   };
   const russian = projectP3NpcWire(input, 'Сохрани пустые поля знаний и памяти.');
   const english = projectP3NpcWire(input,
     'Preserve all empty knowledge and memory fields in the request.');
   assert.deepEqual(russian, expected);
   assert.deepEqual(english, russian);
+  assert.deepEqual(input, original);
 });
 
 test('P3 NPC wire keeps the base system messages byte for byte', async () => {

@@ -435,6 +435,12 @@ visible package после P16 commit.
 сохраняется verbatim; unquoted speech intent конкретизируется единственным
 turn-step planner. Это не audience/knowledge owner и не ответ NPC. Broadcast
 perception вне conversation остаётся отдельным непройденным owner path.
+На direct full-plan speech game-server assembler добавляет code-owned
+loudness по текущему remaining_intent до полной строгой валидации; модельный
+duration_class остаётся обязательным. Для P3 public emit_interaction с
+interaction_kind: speech и resolution: domain_request применяется тот же parser
+с теми же cue rules. Только существующий P3 domain speech profile без delivery
+сохраняет brief default. @rus/turn не парсит текст и не владеет loudness.
 Existing repair owner допускает только effort→none trial полного direct speech
 с semantic/moment activity без requested duration, effects, dependencies и carriers.
 Исходный effort принадлежит действующему enum; полная validation trial устраняет

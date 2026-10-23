@@ -10,6 +10,8 @@ import { TURN_STEP_PLAN_MAPPINGS } from
 import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
+import { parsePlayerSpeechLoudness } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 function speechOutput(input, words, later = null) {
   return { ...output(), ...JSON.parse(TURN_STEP_PLAN_MAPPINGS).player_utterance,
@@ -364,6 +366,7 @@ test('one speech repair reuses the immutable request for existing WK grounding',
   async () => {
     const input = request({ remaining_intent: 'I call, "Hello!"' });
     const corrected = speechOutput(input, 'Hello!');
+    corrected.utterance.delivery.loudness = 4;
     const groundedRequests = new WeakMap();
     let retrievals = 0;
     const modelCalls = [];
@@ -391,8 +394,12 @@ test('one speech repair reuses the immutable request for existing WK grounding',
     assert.deepEqual(modelCalls.map(({ role_id }) => role_id),
       ['turn_step_planner', 'turn_step_planner_repair']);
     const initial = JSON.parse(modelCalls[0].messages[1].content);
-    const repaired = JSON.parse(modelCalls[1].messages[1].content).request;
+    const repairPayload = JSON.parse(modelCalls[1].messages[1].content);
+    const repaired = repairPayload.request;
     assert.deepEqual(repaired, initial);
+    assert.deepEqual(repairPayload.original_output.utterance.delivery,
+      { duration_class: 'instant' });
+    assert.equal(corrected.utterance.delivery.loudness, 4);
     assert.equal(Object.hasOwn(input, 'world_knowledge'), false);
   });
 
@@ -425,7 +432,9 @@ test('speech mapping and repair retain exact speech plus independent later actio
         assert.deepEqual(plan.operations, []);
         assert.deepEqual(plan.activity,
           { owner: 'semantic', duration_class: 'moment', effort: 'none' });
-        assert.deepEqual(plan.utterance, corrected.utterance);
+        assert.deepEqual(plan.utterance, { ...corrected.utterance,
+          delivery: { ...corrected.utterance.delivery,
+            loudness: parsePlayerSpeechLoudness(input.remaining_intent) } });
         assert.deepEqual(plan.continuation, corrected.continuation);
         assert.equal(plan.goal_result, 'pending');
         assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
@@ -437,3 +446,42 @@ test('speech mapping and repair retain exact speech plus independent later actio
       });
     }
   });
+
+test('direct speech assembly owns loudness from current remaining intent', async () => {
+  const input = request({
+    root_player_action: 'Говорю: «Привет!», затем кричу: «Берегись!»',
+    remaining_intent: 'Говорю: «Привет!»'
+  });
+  const rawOutput = speechOutput(input, 'Привет!');
+  delete rawOutput.utterance.delivery.loudness;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run() { return { output: rawOutput }; } }
+  });
+  const plan = await model(input);
+
+  assert.equal(Object.hasOwn(rawOutput.utterance.delivery, 'loudness'), false);
+  assert.deepEqual(plan.utterance.delivery,
+    { duration_class: 'instant', loudness: 2 });
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+
+  const contradictingOutput = speechOutput(input, 'Привет!');
+  contradictingOutput.utterance.delivery.loudness = 4;
+  const contradictingPlan = await createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run() { return { output: contradictingOutput }; } }
+  })(input);
+  assert.equal(contradictingOutput.utterance.delivery.loudness, 4);
+  assert.equal(contradictingPlan.utterance.delivery.loudness, 2);
+
+  for (const delivery of [
+    { loudness: 4 },
+    { loudness: 4, duration_class: 'instant', extra: true }
+  ]) {
+    const malformed = { ...rawOutput,
+      utterance: { ...rawOutput.utterance, delivery } };
+    const malformedPlan = await createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run() { return { output: malformed }; } }
+    })(input);
+    assert.equal(malformedPlan.utterance.delivery.loudness, 2);
+    assert.equal(validateTurnStepPlan(malformedPlan, { request: input }).ok, false);
+  }
+});

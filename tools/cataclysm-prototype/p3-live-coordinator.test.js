@@ -967,14 +967,16 @@ test('registered NPC responder repairs grounding through the real role path', as
         observation_ref: perceptionRef,
         fact_text: `Слышу реплику, обращённую ко мне. Говорящий: незнакомый человек. Слова: «${utterance}».`,
         observed_at: { whole_minutes: '0', subminute_numerator: '11', subminute_denominator: '60' },
-        source_type: 'direct_perception' }], recent_events: [], relevant_long_term_events: [] });
+        source_type: 'direct_perception' }], recent_events: [], relevant_long_term_events: [],
+      previous_decisions: [], received_messages: [] });
       assert.deepEqual(responderInputs[0].perceived_message.perception_result_ref, perceptionRef);
       assert.deepEqual(responderInputs[0].allowed_references.knowledge_refs, [
         { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' },
         { entity_kind: 'npc_identity', entity_id: '8' }, perceptionRef]);
       assert.deepEqual(responderInputs[0].knowledge, { known_facts: [{
-        fact_ref: { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' }, state: 'known',
-        summary: 'Я мужчина.' }], beliefs: [], hypotheses: [] });
+        fact_ref: { entity_kind: 'known_fact', entity_id: 'p3-own-gender-8' },
+        source_event_ref: null, resource_ref: null, process_ref: null,
+        state: 'known', summary: 'Я мужчина.' }], beliefs: [], hypotheses: [] });
       assert.deepEqual(responderInputs[1].request, responderInputs[0]);
       assert.deepEqual(responderInputs[1].original_output.speech, responderOutputs[0].speech);
       assert.equal(responderInputs[1].validation_errors[0].category, 'semantic_grounding');

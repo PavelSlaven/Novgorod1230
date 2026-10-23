@@ -22,8 +22,7 @@ import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn, projectP3NpcW
   from './p3-npc-subject.js';
 import { applyPlayerPlan, projectPlayerStatementAudience } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-statements.js';
-import { parseP3SpeechLoudness } from './p3-speech-loudness.js';
-import { requiredVerbatimUtteranceText } from
+import { parsePlayerSpeechLoudness, requiredVerbatimUtteranceText } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 export const P3_ATTEMPT_BUDGET = 72;
@@ -704,16 +703,16 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
     ? confirmedInterlocutorRef : null;
   const activeNpc = selectedNpc ?? confirmedNpc;
   const speechText = requiredVerbatimUtteranceText({ raw_text: intent });
-  const speechLoudness = parseP3SpeechLoudness(intent);
   const speechTargets = observation.actors.filter(({ actor_ref, visible }) =>
     actor_ref !== 'avatar' && visible === true && /^npc:\d+$/u.test(actor_ref))
     .map(({ actor_ref }) => actor_ref);
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
-  const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
+  const applyNativeOperation = async ({ operation, request, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
         const mapped = mapP3TurnOperationToNative(operation, current, { nativeSpeechOnly });
         if (mapped.primitive === 'speak') mapped.args.delivery = {
-          loudness: speechLoudness, duration_class: delivery?.duration_class ?? 'brief'
+          loudness: parsePlayerSpeechLoudness(request.remaining_intent),
+          duration_class: delivery?.duration_class ?? 'brief'
         };
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
@@ -787,7 +786,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
             .map(({ actor_ref }) => actor_ref),
         interaction_kind: 'speech', content: plan.utterance.utterance_text,
         instrument_refs: [] };
-      return applyNativeOperation({ operation, working_projection: projection, delivery });
+      return applyNativeOperation({ operation, request, working_projection: projection, delivery });
     }
   });
   return runTurnStepLoop({ requestId: operationId, rootTurnId: operationId,

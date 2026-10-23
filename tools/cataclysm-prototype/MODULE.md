@@ -59,6 +59,15 @@ Dev launcher читает только собственный постоянны
 новую физику или LLM fallback. Native test readback
 предназначен исследователю, не является разрешённой player-safe проекцией.
 
+projectP3NpcWire формирует private model-facing view полного NPC request для P3.
+Он удаляет только code-owned service keys и вложенную копию
+npc.available_resources; остальные domain fields, refs и их порядок сохраняются,
+включая контрактные null, пустые массивы и объекты. undefined по-прежнему не
+сериализуется, а проекция не зависит от system wording. Полную canonical форму
+NPC subject, проверку request и равенство двух upstream copies ресурсов
+по-прежнему задаёт общий owner @rus/npc-runtime; private view не меняет
+public request schema.
+
 ## Проверка
 
 Исполняемый путь — upstream `cata_test`; task01 smoke использует P3
@@ -81,13 +90,19 @@ emit_interaction каждому видимому NPC; active_interlocutor бер
 подтверждённого разговора. Планировщик выбирает речь и адресата, а native
 исполняет выбранный ref. Ответ допускается только выбранному услышавшему NPC
 после повторной проверки identity/visibility.
-Громкость уже выбранной речи задаёт обычный parser исходного ввода:
-по умолчанию 2; отдельные «шепчу», «шепотом», «шёпотом» дают 1,
-«кричу», «криком» — 4. Регистр не влияет; поддержанные цитаты исключаются,
-непосредственное «не» отрицает cue, первое неотрицательное указание действует.
-Parser не выбирает действие, адресата или utterance. Loudness модели не
-управляет native args: общая direct envelope проверяется ради совместимости,
-её duration_class сохраняется; typed speech сохраняет прежний brief.
+Общий game-server speech helper единолично разбирает громкость из текущего
+request.remaining_intent для direct assembler и P3 projection public
+emit_interaction с interaction_kind: speech при resolution: domain_request:
+по умолчанию 2; отдельные «шепчу», «шепотом»,
+«шёпотом» дают 1, «кричу», «криком» — 4. Регистр не влияет; поддержанные
+цитаты исключаются, непосредственное «не» отрицает cue, первое
+неотрицательное указание действует. P3 не содержит второй реализации parser
+и не использует loudness модели. Этот P3 потребитель использует тот же helper
+и те же cue rules, что direct assembler, для текущего request.remaining_intent и передаёт результат в private native args;
+assembled domain_request DTO не обязан содержать semantic.utterance.
+Direct full-plan player_utterance получает loudness от общего assembler до
+strict validation, а его duration_class остаётся обязательным выбором модели.
+Только существующий P3 domain speech profile без delivery сохраняет прежний brief default.
 Полученная player delivery переносится только в private native args: loudness 1
 использует родной minimum_voice_volume, 2 — общий Character::indoor_voice,
 3/4 — get_shout_volume. Правило indoor_voice вынесено из npc без копии;

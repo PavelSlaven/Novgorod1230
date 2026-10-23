@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseP3SpeechLoudness } from './p3-speech-loudness.js';
+import { parsePlayerSpeechLoudness } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 test('speech loudness uses the first unquoted, non-negated cue', () => {
   const cases = [
@@ -21,7 +22,7 @@ test('speech loudness uses the first unquoted, non-negated cue', () => {
     ['Кричу не.', 4]
   ];
   for (const [intent, expected] of cases) {
-    assert.equal(parseP3SpeechLoudness(intent), expected, intent);
+    assert.equal(parsePlayerSpeechLoudness(intent), expected, intent);
   }
 });
 
@@ -40,13 +41,13 @@ test('speech loudness cues are case-insensitive, word-bounded and complete', () 
     ['Не очень кричу.', 4]
   ];
   for (const [intent, expected] of cases) {
-    assert.equal(parseP3SpeechLoudness(intent), expected, intent);
+    assert.equal(parsePlayerSpeechLoudness(intent), expected, intent);
   }
 });
 
 test('speech loudness defaults to normal when no positive cue remains', () => {
   for (const intent of ['', 'Говорю с рыбаком.', '«Кричу!»', '“Шепчу!”',
     '„Криком“', '"Шепотом"', 'не шепчу и не кричу']) {
-    assert.equal(parseP3SpeechLoudness(intent), 2, intent);
+    assert.equal(parsePlayerSpeechLoudness(intent), 2, intent);
   }
 });

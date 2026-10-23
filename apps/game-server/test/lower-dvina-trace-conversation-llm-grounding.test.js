@@ -176,7 +176,7 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
   assert.equal(fixture.calls.length, 0);
 });
 
-test('speech auditor rejects a quote absent from the concern target', async () => {
+test('speech auditor recovers a unique quote location and rejects its claim', async () => {
   const input = request();
   const output = plan(input);
   output.speech.utterance_text = 'Работа сама себя не сделает.';
@@ -188,10 +188,17 @@ test('speech auditor rejects a quote absent from the concern target', async () =
     kind: 'unsupported_assertion', path: '$.speech.claims[0]',
     quote: 'Работа сама себя не сделает'
   }] }));
-  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
-  await assert.rejects(model.validateFreshPlan(output, input),
-    error => error.code === 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID'
-      && error.status === 503);
+  const before = structuredClone(output);
+  const result = await createLowerDvinaTraceNpcSemanticModel(
+    fixture).validateFreshPlan(output, input);
+  assert.equal(result.pass, false);
+  assert.deepEqual(result.errors.map(({ code, path, quote }) =>
+    ({ code, path, quote })), [{
+    code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+    path: '$.speech.utterance_text',
+    quote: output.speech.utterance_text.slice(0, -1)
+  }]);
+  assert.deepEqual(output, before);
   assert.equal(fixture.calls.length, 1);
 });
 

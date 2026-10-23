@@ -7,6 +7,8 @@ import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
 import { bindActionProductionCarrierRefs, canonicalizeDiscoveryShape,
   canonicalOrdinaryDiscovery } from
   './lower-dvina-trace-turn-step-plan-discovery.js';
+import { parsePlayerSpeechLoudness } from
+  './lower-dvina-trace-m2-conversation-shared.js';
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
@@ -61,6 +63,13 @@ export function assembleTurnStepPlan(choice, request,
   const completeAssessment = assessedObservation
     && (continuation == null
       || continuation.remaining_intent === request.remaining_intent);
+  const utterance = structuredClone(semantic.utterance);
+  if (utterance?.constructor === Object
+      && (utterance.delivery === undefined
+        || utterance.delivery?.constructor === Object)) {
+    utterance.delivery = { ...(utterance.delivery ?? {}),
+      loudness: parsePlayerSpeechLoudness(request.remaining_intent) };
+  }
   return {
     ...preserved,
     schema: 'turn_step_plan_v1',
@@ -88,7 +97,7 @@ export function assembleTurnStepPlan(choice, request,
     direct_result_kind: domainRequest ? null : semantic.direct_result_kind ?? null,
     ...(domainRequest || assessment == null ? {} : { assessment }),
     ...(domainRequest || semantic.utterance == null ? {} : {
-      utterance: structuredClone(semantic.utterance)
+      utterance
     }),
     reason_code: semantic.reason_code,
     reason: semantic.reason,

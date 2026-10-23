@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "f167120b21597e2febe64f74dfc8889c3fab9e8125ce183d8154abb38f2b81d5",
-      "bytes": 28099,
+      "sha256": "bca96d5537a40039ea1786179121e50c123e2d135355322d78b998e04b7591a0",
+      "bytes": 28583,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -416,8 +416,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "2d4e60da3e26b990d3dae132a18d0b66abbab631400bfb8a208ddde219e9874a",
-      "bytes": 120659,
+      "sha256": "19bbfec5087a18b931b7d401b11b96cedb0eed514fb9aa4d9cde21b8301753b8",
+      "bytes": 121516,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

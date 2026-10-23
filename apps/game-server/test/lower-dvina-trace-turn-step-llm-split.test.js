@@ -52,7 +52,7 @@ test('production planner does not invent speech delivery when omitted',
       } }; }
     } });
     const plan = await model(input);
-    assert.equal(plan.utterance.delivery, undefined);
+    assert.deepEqual(plan.utterance.delivery, { loudness: 2 });
     assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
   });
 

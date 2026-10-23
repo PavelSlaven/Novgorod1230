@@ -85,7 +85,7 @@ function perceptionRefOfItem(turn, npcId, uid) {
 }
 
 function wireValue(value) {
-  if (value === null || value === undefined) return undefined;
+  if (value === undefined || value === null) return value;
   if (typeof value !== 'object') return value;
   if (Array.isArray(value)) {
     return value.map(entry => wireValue(entry)).filter(entry => entry !== undefined);

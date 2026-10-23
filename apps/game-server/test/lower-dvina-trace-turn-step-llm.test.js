@@ -22,7 +22,7 @@ test('optional null utterance is absent while actual speech still requires its t
     assert.equal(validateTurnStepPlan(speech, { request: input }).ok, false);
   }
   const invalid = assembleTurnStepPlan({ ...output(), utterance: {} }, input);
-  assert.deepEqual(invalid.utterance, {});
+  assert.deepEqual(invalid.utterance, { delivery: { loudness: 2 } });
   assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
 });
 
@@ -84,7 +84,8 @@ test('planner assembly preserves resolved ownerless speech for quoted and unquot
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
       goal_result: 'achieved', operations: [], operation_choice: null,
       direct_result_kind: 'player_utterance', utterance }, input);
-    assert.deepEqual(plan.utterance, utterance);
+    assert.deepEqual(plan.utterance, { ...utterance, delivery: {
+      loudness: mode === 'verbatim' ? 4 : 2, duration_class: 'instant' } });
     assert.deepEqual(validateTurnStepPlan(plan, { request: input }).errors, []);
   }
 });

@@ -22,6 +22,7 @@ import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn, projectP3NpcW
   from './p3-npc-subject.js';
 import { applyPlayerPlan, projectPlayerStatementAudience } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-statements.js';
+import { parseP3SpeechLoudness } from './p3-speech-loudness.js';
 import { requiredVerbatimUtteranceText } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
@@ -703,6 +704,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
     ? confirmedInterlocutorRef : null;
   const activeNpc = selectedNpc ?? confirmedNpc;
   const speechText = requiredVerbatimUtteranceText({ raw_text: intent });
+  const speechLoudness = parseP3SpeechLoudness(intent);
   const speechTargets = observation.actors.filter(({ actor_ref, visible }) =>
     actor_ref !== 'avatar' && visible === true && /^npc:\d+$/u.test(actor_ref))
     .map(({ actor_ref }) => actor_ref);
@@ -710,7 +712,9 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
   const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
         const mapped = mapP3TurnOperationToNative(operation, current, { nativeSpeechOnly });
-        if (delivery) mapped.args.delivery = structuredClone(delivery);
+        if (mapped.primitive === 'speak') mapped.args.delivery = {
+          loudness: speechLoudness, duration_class: delivery?.duration_class ?? 'brief'
+        };
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
           registeredPrimitives: ['move', 'use_item', 'open', 'wait', 'speak', 'pickup'] });

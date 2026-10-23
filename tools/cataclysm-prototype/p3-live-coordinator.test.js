@@ -234,37 +234,43 @@ test('socket adapter refresh uses actor-safe observation and admits only one ope
   assert.deepEqual(sent.map(message => message.type), ['observe', 'operation']);
 });
 
-test('live literal speech needs no JS listener or conversation owner', async t => {
+test('live literal speech uses parsed loudness without a JS listener or conversation owner', async t => {
   const utterance = '<name>, слышишь?';
-  const scene = await fixture(t, request => ({ ...plan(request, {}),
-    resolution: 'direct', goal_result: 'achieved', operations: [],
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
-      utterance_text: utterance, input_mode: 'verbatim',
-      delivery: { loudness: 2, duration_class: 'brief' } } }));
-  const { socket, channel } = await scene.client();
-  channel.bind('7');
-  channel.send({ type: 'intent', intent: `Скажи дословно: ${utterance}`, observation });
-  await channel.receive();
-  const operation = await channel.receive();
-  assert.equal(operation.type, 'operation');
-  assert.equal(operation.request.primitive, 'speak');
-  assert.deepEqual(operation.request.args, { utterance,
-    delivery: { loudness: 2, duration_class: 'brief' } });
-  assert.deepEqual(operation.request.references, {});
-  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
-    operation_id: operation.request.operation_id, status: 'applied', goal_result: 'in_progress',
-    native_effect: { effect_status: 'progressing', speakerId: '7', utterance,
-      actualHeardListenerIds: ['native-listener-outside-visible-list'] },
-    before: { turn: 10 }, after: { turn: 10 } } });
-  const result = await channel.receive();
-  assert.equal(result.status, 'completed');
-  assert.equal(result.goal_result, 'partially_achieved');
-  assert.equal(scene.calls, 1);
-  socket.end();
+  for (const [label, intent, loudness] of [
+    ['neutral', 'Скажи дословно: ' + utterance, 2],
+    ['whisper', 'Шепчу дословно: «' + utterance + '»', 1],
+    ['shout', 'Кричу дословно: «' + utterance + '»', 4]
+  ]) await t.test(label, async t => {
+    const scene = await fixture(t, request => ({ ...plan(request, {}),
+      resolution: 'direct', goal_result: 'achieved', operations: [],
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+        utterance_text: utterance, input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } } }));
+    const { socket, channel } = await scene.client();
+    channel.bind(String(7 + ['neutral', 'whisper', 'shout'].indexOf(label)));
+    channel.send({ type: 'intent', intent, observation });
+    await channel.receive();
+    const operation = await channel.receive();
+    assert.equal(operation.type, 'operation');
+    assert.equal(operation.request.primitive, 'speak');
+    assert.deepEqual(operation.request.args, { utterance,
+      delivery: { loudness, duration_class: 'brief' } });
+    assert.deepEqual(operation.request.references, {});
+    channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+      operation_id: operation.request.operation_id, status: 'applied', goal_result: 'in_progress',
+      native_effect: { effect_status: 'progressing', speakerId: '7', utterance,
+        actualHeardListenerIds: ['native-listener-outside-visible-list'] },
+      before: { turn: 10 }, after: { turn: 10 } } });
+    const result = await channel.receive();
+    assert.equal(result.status, 'completed');
+    assert.equal(result.goal_result, 'partially_achieved');
+    assert.equal(scene.calls, 1);
+    socket.end();
+  });
 });
 
-test('live speech delivery matrix preserves eight modes and refuses sustained before native', async t => {
+test('live speech ignores model loudness, preserves duration and refuses sustained before native', async t => {
   for (const loudness of [1, 2, 3, 4]) {
     for (const duration_class of ['instant', 'brief', 'sustained']) {
       await t.test(`${loudness}/${duration_class}`, async t => {
@@ -289,7 +295,8 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
           assert.equal(response.goal_result, 'not_achieved');
         } else {
           assert.equal(response.type, 'operation');
-          assert.deepEqual(response.request.args, { utterance, delivery });
+          assert.deepEqual(response.request.args, { utterance,
+            delivery: { loudness: 2, duration_class } });
           channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
             operation_id: response.request.operation_id, status: 'applied', goal_result: 'achieved',
             native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
@@ -450,7 +457,8 @@ test('a model-selected recipient without a wire target reaches native speak and 
   const player = await channel.receive();
   assert.equal(player.type, 'operation');
   assert.equal(player.request.primitive, 'speak');
-  assert.deepEqual(player.request.args, { utterance });
+  assert.deepEqual(player.request.args, { utterance,
+    delivery: { loudness: 2, duration_class: 'brief' } });
   assert.deepEqual(player.request.references, { actors: [{ ref: 'npc:9', id: '9' }] });
   channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
     operation_id: player.request.operation_id, status: 'applied', goal_result: 'achieved',

@@ -357,10 +357,15 @@ test('current native readback projects goal and effect separately while legacy r
         ...(scenario.kind === 'speech' ? { speakerId: '7', utterance: 'Привет',
           actualHeardListenerIds: [] } : {}) }, before: {}, after: {},
       ...(scenario.status === 'refused' ? { refusal: { code: 'blocked' } } : {}) };
-    const result = runP3TurnStep({ intent: scenario.name, observation: current,
+    const speechIntent = 'Шепчу: «Привет»';
+    let speechEnvelope;
+    const result = runP3TurnStep({ intent: scenario.kind === 'speech' ? speechIntent : scenario.name, observation: current,
       operationId: `current-readback-${index}`, nativeAdapter: {
         writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
-        execute: async envelope => ({ ...readback, operation_id: envelope.operation_id })
+        execute: async envelope => {
+          if (scenario.kind === 'speech') speechEnvelope = structuredClone(envelope);
+          return { ...readback, operation_id: envelope.operation_id };
+        }
       }, turnStepModel: async request => {
         const operation = scenario.kind === 'pickup'
           ? { op: 'move_entity', entity_ref: 'uid:18',
@@ -387,6 +392,10 @@ test('current native readback projects goal and effect separately while legacy r
     }
     const projected = await result;
     assert.equal(projected.working_projection.native_goal_result, scenario.expected, scenario.name);
+    if (scenario.kind === 'speech') {
+      assert.deepEqual(speechEnvelope.args.delivery,
+        { loudness: 1, duration_class: 'brief' });
+    }
     assert.equal(projected.working_projection.native_readback.native_effect.effect_status,
       scenario.effect, scenario.name);
   }
@@ -500,7 +509,7 @@ test('production operation choice passes one item use to native selection', asyn
 
 test('production player_utterance reaches native speech and conversation owner exactly once', async () => {
   const text = 'Приходи до рассвета!';
-  const intent = `Скажи дословно: «${text}»`;
+  const intent = `Шепчу дословно: «${text}»`;
   const current = { schema: 'p3_native_observation_v1', turn: 120, revision: 120,
     actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
       { actor_ref: 'npc:8', actor_id: '8', position: [61, 60, 0], visible: true },
@@ -566,7 +575,7 @@ test('production player_utterance reaches native speech and conversation owner e
     ['8']);
   assert.equal(result.working_projection.conversation_outcome.native_speech.elapsed_seconds, 3);
 
-  assert.deepEqual(captured.args.delivery, { loudness: 2, duration_class: 'brief' });
+  assert.deepEqual(captured.args.delivery, { loudness: 1, duration_class: 'brief' });
   for (const loudness of [1, 2, 3, 4]) {
     for (const duration_class of ['instant', 'brief']) {
       const delivery = { loudness, duration_class };
@@ -579,7 +588,7 @@ test('production player_utterance reaches native speech and conversation owner e
             replay: new Map() };
         }
       });
-      assert.deepEqual(captured.args.delivery, delivery);
+      assert.deepEqual(captured.args.delivery, { loudness: 1, duration_class });
       assert.equal(captured.args.utterance, text);
     }
     await assert.rejects(runP3TurnStep({ intent, observation: current,
@@ -1672,19 +1681,23 @@ function chosenOperationOutput(request, selected) {
     reason: 'Choose the offered operation.' };
 }
 
-test('production speech choice speaks the player words to the selected interlocutor', async () => {
-  for (const [intent, words] of [
-    ['Здравствуй, Жирко. Чей это двор?', 'Здравствуй, Жирко. Чей это двор?'],
-    ['Скажи ему: «Приходи до рассвета!»', 'Приходи до рассвета!']
+test('production speech choice speaks the player words with parsed loudness', async () => {
+  for (const [intent, words, loudness] of [
+    ['Здравствуй, Жирко. Чей это двор?', 'Здравствуй, Жирко. Чей это двор?', 2],
+    ['Шепчу: «Приходи до рассвета!»', 'Приходи до рассвета!', 1],
+    ['Кричу: «Берегись!»', 'Берегись!', 4],
+    ['Произношу: «Кричу!»', 'Кричу!', 2]
   ]) {
     let providerCalls = 0;
     let captured;
+    let selectedOperation;
     const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
       providerCalls++;
       const request = JSON.parse(call.messages[1].content);
       const selected = turnStepOperationChoices(request)
         .find(({ operation }) => operation.op === 'emit_interaction');
       assert.ok(selected);
+      selectedOperation = structuredClone(selected.operation);
       return { output: chosenOperationOutput(request, selected) };
     } } });
     const result = await runP3TurnStep({ intent, observation: replyFrame({ turn: 3 }),
@@ -1699,8 +1712,12 @@ test('production speech choice speaks the player words to the selected interlocu
         } },
       turnStepModel: model });
     assert.equal(providerCalls, 1);
+    assert.deepEqual(selectedOperation, { op: 'emit_interaction', actor_ref: 'avatar',
+      target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: words,
+      instrument_refs: [] });
     assert.equal(captured.primitive, 'speak');
     assert.equal(captured.args.utterance, words);
+    assert.deepEqual(captured.args.delivery, { loudness, duration_class: 'brief' });
     assert.deepEqual(captured.references.actors.map(({ ref }) => ref), ['npc:9']);
     assert.equal(result.working_projection.native_readback.status, 'applied');
   }

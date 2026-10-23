@@ -81,7 +81,14 @@ emit_interaction каждому видимому NPC; active_interlocutor бер
 подтверждённого разговора. Планировщик выбирает речь и адресата, а native
 исполняет выбранный ref. Ответ допускается только выбранному услышавшему NPC
 после повторной проверки identity/visibility.
-Canonical player delivery переносится только в private native args: loudness 1
+Громкость уже выбранной речи задаёт обычный parser исходного ввода:
+по умолчанию 2; отдельные «шепчу», «шепотом», «шёпотом» дают 1,
+«кричу», «криком» — 4. Регистр не влияет; поддержанные цитаты исключаются,
+непосредственное «не» отрицает cue, первое неотрицательное указание действует.
+Parser не выбирает действие, адресата или utterance. Loudness модели не
+управляет native args: общая direct envelope проверяется ради совместимости,
+её duration_class сохраняется; typed speech сохраняет прежний brief.
+Полученная player delivery переносится только в private native args: loudness 1
 использует родной minimum_voice_volume, 2 — общий Character::indoor_voice,
 3/4 — get_shout_volume. Правило indoor_voice вынесено из npc без копии;
 родной источник — upstream npc.cpp:2116–2155. Instant оплачивает родную цену

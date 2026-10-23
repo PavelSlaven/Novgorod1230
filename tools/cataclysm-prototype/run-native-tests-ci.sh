@@ -77,12 +77,14 @@ run_tag() {
   local spec=$2
   local user_dir=$work_root/user-$label
   local status=0
+  local -a mod_args=(--mods=novgorod_dev_world)
+  if [[ ${3:-mod} == native ]]; then mod_args=(); fi
   mkdir "$user_dir"
   (
     cd "$native"
     /usr/bin/time -f 'wall_seconds=%e' -o "$log_dir/$label.time" \
       ./tests/cata_test \
-      --rng-seed 17 --mods=novgorod_dev_world --user-dir="$user_dir" \
+      --rng-seed 17 "${mod_args[@]}" --user-dir="$user_dir" \
       --reporter console "$spec"
   ) > "$log_dir/$label.log" 2>&1 || status=$?
   printf '%s\n' "$status" > "$log_dir/$label.exit"
@@ -90,7 +92,7 @@ run_tag() {
 }
 
 run_tag slice '[novgorod_slice]'
-run_tag fauna_native '[novgorod_fauna_native]'
+run_tag fauna_native '[novgorod_fauna_native]' native
 run_tag fauna '[novgorod_fauna]'
 run_tag item_uid '[novgorod_item_uid]'
 run_tag rng_state '[novgorod_rng_state]'

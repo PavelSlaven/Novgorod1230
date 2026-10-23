@@ -360,9 +360,9 @@ test('NPC participation request states acceptance binding choice', async () => {
   await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
 
   assert.match(fixture.calls[0].messages[0].content,
-    /accepting, promising, or agreeing means choose exactly one allowed binding/u);
+    /joining the route now uses exactly one allowed binding/u);
   assert.match(fixture.calls[0].messages[0].content,
-    /never evade it by relabeling agreement/u);
+    /spoken acceptance, agreement, or promise about future participation is a statement until the NPC chooses to join now/u);
   assert.match(fixture.calls[0].messages[0].content,
     /The NPC chooses the binding/u);
 });
@@ -400,8 +400,13 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
       assert.equal(prompt.includes(JSON.stringify(semantic)), true);
     }
     assert.match(prompt, /not an exhaustive choice set/u);
+    assert.match(prompt, /Ordinary speech may use any allowed dominant_act/u);
     assert.match(prompt,
+      /to surrender now, use exactly \{"op":"commit_surrender"\}, the surrender tag/u);
+    assert.doesNotMatch(prompt,
       /except offer, accept, or promise when no exact supporting operation permits/u);
+    assert.doesNotMatch(prompt,
+      /An offer or promise of a future or code-owned action must select its exact permitted supporting operation/u);
     assert.match(prompt, /silence and leave_conversation mappings available/u);
     assert.doesNotMatch(prompt, /Choose exactly one/u);
   }

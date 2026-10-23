@@ -74,7 +74,8 @@ test('NPC past claims admit belief and a lie that hides a known fact', async () 
       if (!past.includes(source)) issues.push(`${role}: missing past source: ${source}`);
     }
     for (const phrase of ['believed_true', 'knowledge.beliefs',
-      'grounds the belief, not objective truth', 'contradicts or hides']) {
+      'grounds the belief, not objective truth',
+      'contradicted by the visible false assertion']) {
       if (!past.includes(phrase)) issues.push(`${role}: missing belief or lie condition: ${phrase}`);
     }
     if (!past.includes('same past assertion')) {
@@ -110,7 +111,7 @@ test('NPC past claims admit belief and a lie that hides a known fact', async () 
   for (const phrase of [
     'knowledge.known_facts', 'memory.recent_events', 'memory.relevant_long_term_events',
     'a believed_true claim cites in source_knowledge_refs the exact knowledge.beliefs entry',
-    'the exact known fact it contradicts or hides'
+    'the exact known fact contradicted by its visible false assertion'
   ]) {
     if (!mandatory.includes(phrase)) issues.push(`auditor mandatory failure omits ${phrase}`);
   }
@@ -118,10 +119,18 @@ test('NPC past claims admit belief and a lie that hides a known fact', async () 
     'Saying that the NPC does not remember');
   for (const phrase of [
     'a cited belief must state the same belief about that past',
-    'the one contradicted or hidden',
+    'the one contradicted by the visible false assertion',
     'record of speech proves only what was said'
   ]) {
     if (!cited.includes(phrase)) issues.push(`auditor citation rule omits ${phrase}`);
+  }
+  for (const system of Object.values(systems)) {
+    for (const sentence of system.split(/[.!?]\s+/u)) {
+      assert.equal(/knowingly_false/u.test(sentence)
+        && /\bor (?:hides|hidden)\b/u.test(sentence), false, sentence);
+    }
+    assert.match(system, /speaker_posture withheld[^\n]*without a false assertion/u);
+    assert.match(system, /source_knowledge_refs cite the exact known fact concealed/u);
   }
   assert.deepEqual(issues, [], 'past belief and concealed known fact have consistent support');
 });

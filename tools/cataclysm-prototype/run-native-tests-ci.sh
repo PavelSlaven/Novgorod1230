@@ -36,13 +36,13 @@ du -sb "$native/.git" "$native" > "$log_dir/checkout-size.txt"
 
 bash "$repo_root/tools/cataclysm-prototype/apply-overlays.sh" --source "$native" > "$log_dir/overlays.log" 2>&1
 
-for stem in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test novgorod_autosave_test; do
+for stem in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test novgorod_autosave_test novgorod_epoch_names_test; do
   cp "$repo_root/tools/cataclysm-prototype/$stem.cpp" "$native/tests/$stem.cpp"
   cmp "$repo_root/tools/cataclysm-prototype/$stem.cpp" "$native/tests/$stem.cpp"
 done
 mkdir -p "$native/data/mods/novgorod_dev_world"
 cp -R "$repo_root/tools/cataclysm-prototype/dev-world/." "$native/data/mods/novgorod_dev_world/"
-printf 'Скопированы семь родных C++ файлов и dev-world\n' > "$log_dir/staging.log"
+printf 'Скопированы восемь родных C++ файлов и dev-world\n' > "$log_dir/staging.log"
 
 if [[ ${CI783_USE_CCACHE:-0} == 1 ]]; then
   command -v ccache >/dev/null
@@ -88,6 +88,7 @@ run_tag() {
 run_tag slice '[novgorod_slice]'
 run_tag item_uid '[novgorod_item_uid]'
 run_tag rng_state '[novgorod_rng_state]'
+run_tag epoch_names '[novgorod_epoch_names]'
 run_tag delivery '[novgorod_delivery]'
 run_tag autosave_option '[novgorod_autosave][option]'
 run_tag autosave_slow '[novgorod_autosave][slow]'

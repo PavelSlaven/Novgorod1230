@@ -1,3 +1,11 @@
+export const ACT_PATHS = Object.freeze([
+  Object.freeze(['contribution_kind']),
+  Object.freeze(['speech', 'dominant_act']),
+  Object.freeze(['primary_addressee_ref']),
+  Object.freeze(['intended_addressee_refs']),
+  Object.freeze(['interpretation', 'intent'])
+]);
+
 export function coversActPath(errorPath, actPath) {
   if (typeof errorPath !== 'string' || errorPath === '$') return false;
   return errorPath === actPath

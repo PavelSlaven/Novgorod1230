@@ -1,6 +1,12 @@
 import { serverError } from '../errors.js';
 import { CLAIM_KINDS_RULE, FACTUAL_ASSERTION_RULE } from
   './lower-dvina-trace-phase-2-conversation-prompt-contract.js';
+import { ACT_PATHS, coversActPath } from
+  './lower-dvina-trace-conversation-repair-act-paths.js';
+
+const ALLOWED_ROOTS = Object.freeze([
+  'speech', 'interpretation', 'reason', 'supporting_operations'
+]);
 
 const PROMPT = [
   'Return only {"pass":true,"concerns":[]} or',
@@ -79,13 +85,12 @@ export async function auditFreshNpcSpeech({
     }],
     overrides: { temperature: 0, maxTokens: 256 }
   });
-  if (!valid(response?.output, plan)) throw serverError(
+  const output = normalizeConcernLocations(response?.output, plan);
+  if (!valid(output, plan)) throw serverError(
     'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID',
     'NPC speech grounding auditor returned an invalid result.', { status: 503 }
   );
-  return response.output.pass ? true : unsupported(
-    response.output.concerns
-  );
+  return output.pass ? true : unsupported(output.concerns);
 }
 
 function unsupported(concerns) {
@@ -116,16 +121,99 @@ function valid(value, plan) {
 
 function concernQuoteMatchesPlan(concern, plan) {
   const segments = planPathSegments(concern.path);
-  if (segments === null
-    || !['speech', 'interpretation', 'reason', 'supporting_operations']
-      .includes(segments[0])) return false;
-  let target = plan;
-  for (const segment of segments) {
-    if (target === null || typeof target !== 'object'
-      || !Object.hasOwn(target, segment)) return false;
-    target = target[segment];
+  if (segments === null || !ALLOWED_ROOTS.includes(segments[0])) return false;
+  const target = valueAtPath(plan, segments);
+  return target.found && containsExactQuote(target.value, concern.quote);
+}
+
+function normalizeConcernLocations(output, plan) {
+  if (!isCorrectableReject(output)) return output;
+  let normalized = null;
+  for (const [index, concern] of output.concerns.entries()) {
+    const segments = planPathSegments(concern.path);
+    if (segments === null || !ALLOWED_ROOTS.includes(segments[0])
+      || concern.quote.trim().length === 0) return output;
+    const target = valueAtPath(plan, segments);
+    if (target.found && containsExactQuote(target.value, concern.quote)) continue;
+
+    const matches = exactQuoteLeafPaths(plan, concern.quote);
+    if (matches.length !== 1) return output;
+    const match = matches[0];
+    if (match.path === null || match.segments[0] !== segments[0]
+      || !sameActCoverage(concern.path, match.path)) return output;
+    normalized ??= structuredClone(output);
+    normalized.concerns[index].path = match.path;
   }
-  return containsExactQuote(target, concern.quote);
+  return normalized ?? output;
+}
+
+function isCorrectableReject(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === 2
+    && Object.hasOwn(value, 'pass') && value.pass === false
+    && Array.isArray(value.concerns) && value.concerns.length > 0
+    && value.concerns.every((concern) => concern != null
+      && typeof concern === 'object' && !Array.isArray(concern)
+      && Object.keys(concern).length === 3
+      && ['kind', 'path', 'quote'].every((key) =>
+        Object.hasOwn(concern, key) && typeof concern[key] === 'string'
+        && concern[key].trim().length > 0));
+}
+
+function valueAtPath(root, segments) {
+  let value = root;
+  for (const segment of segments) {
+    if (value === null || typeof value !== 'object'
+      || !Object.hasOwn(value, segment)) return { found: false };
+    value = value[segment];
+  }
+  return { found: true, value };
+}
+
+function exactQuoteLeafPaths(plan, quote) {
+  const matches = [];
+  for (const root of ALLOWED_ROOTS) {
+    if (!Object.hasOwn(plan, root)) continue;
+    collectExactQuoteLeaves(plan[root], quote, [root], matches);
+  }
+  return matches;
+}
+
+function collectExactQuoteLeaves(value, quote, segments, matches) {
+  if (typeof value === 'string') {
+    if (value.includes(quote)) {
+      matches.push({ path: jsonPathForSegments(segments), segments });
+    }
+    return;
+  }
+  if (value === null || typeof value !== 'object') return;
+  for (const [key, child] of Object.entries(value)) {
+    collectExactQuoteLeaves(child, quote, [...segments, key], matches);
+  }
+}
+
+function jsonPathForSegments(segments) {
+  let path = '$';
+  for (const segment of segments) {
+    if (/^(0|[1-9]\d*)$/u.test(segment)) {
+      path += '[' + segment + ']';
+    } else if (/^[A-Za-z_][A-Za-z0-9_]*$/u.test(segment)) {
+      path += '.' + segment;
+    } else {
+      return null;
+    }
+  }
+  return path;
+}
+
+function sameActCoverage(originalPath, correctedPath) {
+  const coverage = path => ACT_PATHS
+    .map(parts => '$.' + parts.join('.'))
+    .filter(anchor => coversActPath(path, anchor));
+  const original = coverage(originalPath);
+  const corrected = coverage(correctedPath);
+  return original.length === corrected.length
+    && original.every((path, index) => path === corrected[index]);
 }
 
 function planPathSegments(path) {

@@ -12,7 +12,7 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
-import { coversActPath, semanticRepairOpensIntent } from
+import { ACT_PATHS, coversActPath, semanticRepairOpensIntent } from
   './lower-dvina-trace-conversation-repair-act-paths.js';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
@@ -143,11 +143,6 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   };
   return model;
 }
-
-const ACT_PATHS = Object.freeze([
-  ['contribution_kind'], ['speech', 'dominant_act'], ['primary_addressee_ref'],
-  ['intended_addressee_refs'], ['interpretation', 'intent']
-]);
 
 function unresolvedSemanticRepairQuotes(repair, plan, request) {
   const originalText = repair.original_output?.speech?.utterance_text;

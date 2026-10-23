@@ -430,3 +430,29 @@ materialization не готовы; T06–T12 не запускаются эти�
 Протокольные `[novgorod_semantic]` и `[novgorod_persistence]` в этот job не
 входят: их последовательный прогон требует общего нового `--user-dir` и
 отдельного решения о включении цепочки в CI.
+
+## Аварийное восстановление P3
+
+Синтетическая проверка сравнения не требует native binary:
+
+    npm run test:cataclysm-crash
+
+Для полного прогона нужен cata_test, собранный с crash overlay, и новый пустой
+каталог evidence. Три независимых userdir проверяют остановки после реплики
+игрока, после ответа NPC и в середине сохранения:
+
+    python3 tools/cataclysm-prototype/crash_recovery.py \
+      --native-root "$CDDA" \
+      --binary "$CDDA/build-clang-release/tests/cata_test" \
+      --evidence-root /home/slaven/cataclysm-evidence/new-p3-crash
+
+Сценарий дожидается NOVGOROD_P4_FAILPOINT_REACHED, убивает только запущенный
+им cata_test, затем отдельно загружает сохранение. Для первых двух окон перед
+загрузкой кладётся устаревший ответ NPC. Каждый D216 verdict сохраняется в
+<evidence-root>/<window>/d216-verdict.json; общий результат — в
+d216-summary.json. Несовпадение состояния, повтор речи, отсутствие хода или
+недостигнутый маркер дают ненулевой код выхода. Автоматическая проверка
+видимого времени ограничена Messages::serialize; отображение popup требует
+ручного UI smoke.
+До автоматического наблюдения момента восстановления каждый D216 verdict имеет
+статус NOT_OBSERVED, поэтому общий exit остаётся ненулевым.

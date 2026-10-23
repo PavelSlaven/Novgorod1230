@@ -77,20 +77,20 @@ index d170ad4..105aea7 100644
 
  #define dbg(x) DebugLog((x),D_GAME) << __FILE__ << ":" << __LINE__ << ": "
 
-+static void novgorod_p4_save_failpoint()
++void novgorod_p4_save_failpoint( const char *phase )
 +{
 +    const char *failpoint = std::getenv( "NOVGOROD_P4_FAILPOINT" );
 +    const char *mode = std::getenv( "NOVGOROD_P4_MODE" );
-+    if( !test_mode || failpoint == nullptr || std::string_view( failpoint ) != "mid_save" ||
-+        mode == nullptr || ( std::string_view( mode ) != "create" &&
-+                             std::string_view( mode ) != "apply" ) ) {
++    const bool mode_ok = mode != nullptr && ( std::string_view( mode ) == "apply" ||
++                         ( std::string_view( phase ) == "mid_save" && std::string_view( mode ) == "create" ) );
++    if( !test_mode || failpoint == nullptr || std::string_view( failpoint ) != phase || !mode_ok ) {
 +        return;
 +    }
-+    static constexpr char marker[] = "NOVGOROD_P4_FAILPOINT_REACHED:mid_save\n";
++    const std::string marker = std::string( "NOVGOROD_P4_FAILPOINT_REACHED:" ) + phase + '\n';
 +#if defined(_WIN32)
-+    _write( _fileno( stdout ), marker, sizeof( marker ) - 1 );
++    _write( _fileno( stdout ), marker.data(), static_cast<unsigned int>( marker.size() ) );
 +#else
-+    ::write( STDOUT_FILENO, marker, sizeof( marker ) - 1 );
++    ::write( STDOUT_FILENO, marker.data(), marker.size() );
 +#endif
 +    for( ;; ) {
 +        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
@@ -105,7 +105,7 @@ index d170ad4..105aea7 100644
          }, _( "player data" ) );
      }
 +    if( saved_data ) {
-+        novgorod_p4_save_failpoint();
++        novgorod_p4_save_failpoint( "mid_save" );
 +    }
      const bool saved_map_memory = u.save_map_memory();
      const bool saved_log = write_to_file( playerfile + SAVE_EXTENSION_LOG, [&](

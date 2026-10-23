@@ -62,6 +62,8 @@
 #include "weather.h"
 #include "weather_type.h"
 
+void novgorod_p4_save_failpoint( const char *phase );
+
 namespace
 {
 static constexpr tripoint_bub_ms p3_fixture_center( 60, 60, 0 );
@@ -329,6 +331,7 @@ void write_snapshot( JsonOut &out, const native_snapshot &snapshot )
     out.member( "turn", snapshot.turn );
     out.member( "activity", snapshot.activity );
     out.member( "activity_moves_left", snapshot.activity_moves_left );
+    out.member( "world_signature", snapshot.world_signature );
     out.member( "clock" );
     out.start_object();
     out.member( "native_turn", snapshot.turn );
@@ -2972,4 +2975,102 @@ TEST_CASE( "Novgorod live observation labels match native item action and terrai
         CHECK( row.get_string( "terrain_label" ) != here.ter( target ).id().str() );
     }
     CHECK( target_found );
+}
+
+TEST_CASE( "Novgorod conversation crash checkpoint probe", "[novgorod_crash]" )
+{
+    const char *mode_value = std::getenv( "NOVGOROD_P4_MODE" );
+    const std::string mode = mode_value == nullptr ? "" : mode_value;
+    if( mode != "create" && mode != "apply" && mode != "read" ) {
+        return;
+    }
+
+    const auto write_state = []( const std::string &name ) {
+        return write_to_file( PATH_INFO::user_dir() + name, [&]( std::ostream &stream ) {
+            JsonOut out( stream );
+            out.start_object();
+            out.member( "native_snapshot" );
+            write_current_snapshot( out );
+            std::vector<std::string> player_messages;
+            for( const auto &message : Messages::recent_messages( 500 ) ) {
+                player_messages.push_back( message.second );
+            }
+            out.member( "player_messages", player_messages );
+            out.member( "npcs" );
+            out.start_array();
+            for( const npc &guy : g->all_npcs() ) {
+                out.start_object();
+                out.member( "actor_id", id_text( guy ) );
+                out.member( "records" );
+                out.start_array();
+                for( const memory_record &record : memory_of( guy ) ) {
+                    out.start_object();
+                    out.member( "kind", record.kind );
+                    out.member( "speaker_ref", record.speaker_ref );
+                    out.member( "listener_ref", record.listener_ref );
+                    out.member( "text", record.text );
+                    out.member( "turn", record.turn );
+                    out.end_object();
+                }
+                out.end_array();
+                out.end_object();
+            }
+            out.end_array();
+            out.end_object();
+        }, _( "conversation crash observation" ) );
+    };
+
+    const auto advance_turn = [] {
+        const int prior_turn = to_turn<int>( calendar::turn );
+        for( int attempt = 0; attempt < 20 && to_turn<int>( calendar::turn ) <= prior_turn; ++attempt ) {
+            g->set_test_action_queue( { action_ident( ACTION_PAUSE ) } );
+            g->do_turn();
+        }
+        REQUIRE( to_turn<int>( calendar::turn ) > prior_turn );
+    };
+
+    if( mode == "read" ) {
+        REQUIRE( write_state( "novgorod-crash-loaded.json" ) );
+        write_p3_observation();
+        advance_turn();
+        REQUIRE( write_state( "novgorod-crash-idle.json" ) );
+        return;
+    }
+
+    if( mode == "create" ) {
+        reset_p3_fixture();
+    } else {
+        advance_turn();
+    }
+
+    npc *speaker = nullptr;
+    npc *listener = nullptr;
+    for( npc &guy : g->all_npcs() ) {
+        if( guy.pos_bub() == tripoint_bub_ms( 60, 62, 0 ) ) {
+            speaker = &guy;
+        } else if( guy.pos_bub() == tripoint_bub_ms( 61, 62, 0 ) ) {
+            listener = &guy;
+        }
+    }
+    REQUIRE( speaker != nullptr );
+    REQUIRE( listener != nullptr );
+    refresh_visibility();
+
+    const char *failpoint = std::getenv( "NOVGOROD_P4_FAILPOINT" );
+    const std::string prefix = mode == "create" ? "BASE" : failpoint == nullptr ? "POST_RECOVERY" : "UNSAVED";
+    const std::string player_line = prefix + "_PLAYER";
+    const std::string npc_line = prefix + "_NPC";
+    REQUIRE( run_instant_avatar_speech( player_line, "[\"" + npc_ref( *listener ) + "\"]" ).applied );
+    if( mode == "apply" ) {
+        novgorod_p4_save_failpoint( "after_player_speech" );
+    }
+    REQUIRE( run_npc_request( raw_request( "speak", id_text( *speaker ),
+                              "{\"utterance\":" + json_string( npc_line ) + "}",
+                              "[\"avatar\"]" ) ).applied );
+    if( mode == "apply" ) {
+        novgorod_p4_save_failpoint( "after_npc_reply" );
+    }
+    REQUIRE( g->save() );
+    REQUIRE( write_state( mode == "create" ? "novgorod-crash-baseline.json" :
+                          "novgorod-crash-applied.json" ) );
 }

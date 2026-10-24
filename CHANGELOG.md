@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(turn-step): treats a supplied operation choice as a selection fragment inside the complete semantic response (#888)
 - fix(turn-step): убирает грамматическое правило, которое без контекста относило bare imperative к действию игрока; смысл определяется текущим намерением и адресатом (#878)
 
 - fix(turn-step,cataclysm): исследовательский кандидат — громкость задаёт общий parser до строгой проверки плана и при native-проекции; модель выбирает длительность прямой речи; квалификация не достигнута из-за общей ошибки императива в обеих версиях стенда, production не активирован (#884)

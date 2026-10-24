@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { validateTurnStepPlan } from '@rus/turn';
+import { requestTurnStepPlanWithRepair, validateTurnStepPlan } from '@rus/turn';
 import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { turnStepOperationChoices } from '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { TURN_STEP_COMPOUND_EXAMPLE } from '../src/runtime/lower-dvina-trace-phase-2-turn-step-prompts.js';
 import { turnStepPlanMappings } from '../src/runtime/lower-dvina-trace-turn-step-plan-mappings.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
@@ -84,4 +85,76 @@ test('flat compound speech example and unseen conceptual equivalent validate wit
     assert.equal(plan.continuation.remaining_intent, suffix);
     assert.ok(intent.endsWith(suffix));
   }
+});
+
+
+test('domain operation choice is valid only inside the complete semantic response', async () => {
+  const candidate = {
+    op: 'request_container_access', actor_ref: 'actor_mikula',
+    container_ref: 'container:road-bag', access_kind: 'open'
+  };
+  const input = request({
+    root_player_action: 'открыть дорожную сумку',
+    remaining_intent: 'открыть дорожную сумку',
+    player_safe_state: {
+      visible_entities: [{ entity_ref: 'container:road-bag' }]
+    },
+    available_domain_operations: [candidate]
+  });
+  const [choice] = turnStepOperationChoices(input);
+  assert.ok(choice);
+  const completeOutput = {
+    ...output(),
+    interpretation: {
+      player_goal: input.root_player_action,
+      grounded_attempt: input.remaining_intent,
+      adaptation: 'literal'
+    },
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    direct_result_kind: null,
+    operation_choice: choice.choice_id
+  };
+  let completeCalls = 0;
+  let prompt;
+  const completeResult = await requestTurnStepPlanWithRepair({
+    request: input,
+    allowRepair: false,
+    turnStepModel: createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) {
+        completeCalls += 1;
+        prompt = call.messages[0].content;
+        return { output: completeOutput };
+      } }
+    })
+  });
+  const completePlan = completeResult.plan;
+
+  assert.equal(completeCalls, 1);
+  assert.equal(completeResult.repaired, false);
+  assert.equal(validateTurnStepPlan(completePlan, { request: input }).ok, true);
+  assert.deepEqual(completePlan.operations, [candidate]);
+  const selectionFragment = `The following two-field JSON is only a selection fragment, not a complete semantic response. If you select this choice, include its resolution and operation_choice fields in the single complete JSON object you return, with every other required semantic field. Never return this fragment by itself. ${JSON.stringify({
+    resolution: 'domain_request',
+    operation_choice: choice.choice_id
+  })}`;
+  assert.ok(prompt.includes(selectionFragment));
+
+  const fragment = {
+    resolution: 'domain_request',
+    operation_choice: choice.choice_id
+  };
+  let fragmentCalls = 0;
+  await assert.rejects(requestTurnStepPlanWithRepair({
+    request: input,
+    allowRepair: false,
+    turnStepModel: createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run() {
+        fragmentCalls += 1;
+        return { output: fragment };
+      } }
+    })
+  }), error => error?.code === 'TURN_STEP_PLAN_INVALID');
+  assert.equal(fragmentCalls, 1);
 });

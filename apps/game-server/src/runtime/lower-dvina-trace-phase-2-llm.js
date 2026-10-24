@@ -119,7 +119,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
               'When a choice has player_safe_grounding.semantic_scope, select it only when the current step matches that complete purpose and result scope; shared target words or a generic inspect verb are insufficient.'
             ] : []),
             ...(operationChoices.length === 0 ? [] : [
-              `A valid domain choice is: ${JSON.stringify({
+              `The following two-field JSON is only a selection fragment, not a complete semantic response. If you select this choice, include its resolution and operation_choice fields in the single complete JSON object you return, with every other required semantic field. Never return this fragment by itself. ${JSON.stringify({
                 resolution: 'domain_request',
                 operation_choice: operationChoices[0].choice_id
               })}`

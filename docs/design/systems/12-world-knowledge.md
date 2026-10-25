@@ -39,6 +39,10 @@
 2. Игрок читает рассказ о произошедшей сцене → рассказчик описывает только то, что герой увидел, услышал или узнал → проза не раскрывает скрытого участника и не подставляет современное объяснение → CDDA может фильтровать отдельные сообщения по видимости, но не строит целый безопасный рассказ (частичное покрытие; [карта, §1, строка 10](../../context/cdda-native-map/areas/07-narration-log.md)) → projection owner подготавливает подтверждённый player-safe контекст, narrator пишет только из него.
 3. Игрок просит сложное действие, для которого не хватает факта → получает честно обозначенный пробел → он не превращается в якобы установленное правило → CDDA хранит простые переменные, но не provenance и применимость (не покрывает полную модель знания; [карта, §1, строка 27](../../context/cdda-native-map/areas/03-conversation.md)) → WK возвращает evidence или статус пробела; решение остаётся у domain owner.
 
+**Целевая роль языковой модели:** Модель использует разрешённые сведения при смысловом решении; источники и личный доступ готовит код, повторное чтение само по себе вызова не требует. ([D275 §3.2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+**Особенность:** Личная проекция знания. ([«Как устроен ход»: сквозные примеры](../GDD.md))
+
 ### Что может игрок
 
 - **12.01.** Спросить мастера о неизвестном человеку 1230 года и услышать честное незнание без казённого «не установлено».
@@ -57,10 +61,12 @@
 
 ### Наш слой и владелец
 
-- **Используем** переменные как хранилище; происхождение и доступ к знаниям NPC остаются у knowledge owner. `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+- **Используем** переменные как хранилище; происхождение, память и доступ к знаниям NPC ведёт `@rus/visibility-knowledge-memory`, который готовит безопасную для конкретного NPC проекцию (NPC-safe projection). `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
 - **Используем** родную видимость клеток; **расширяем** память и фильтрацию отдельных сообщений сквозной player-safe проекцией: `@rus/visibility-knowledge-memory` владеет player-safe контекстом и памятью знаний ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)); `@rus/narration` пишет прозу из подтверждённых фактов ([MODULE.md](../../../packages/narration/MODULE.md)). Native карта не подтверждает сквозную проверку всего контекста рассказа.
 - **Используем** существующий игровой шаг Новгорода до P7 для вызова владельцев в установленном порядке: `@rus/turn` организует шаг, а факты и состояния готовят доменные owners ([turn_step_llm_contract.md:10–59](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). WK не определяет успех просьбы игрока.
 - Conversation owner пишет реплику, NPC decision owner принимает решение; оба получают только разрешённое знание персонажа.
+
+Разделение владельцев исторических данных и личного знания сохраняется в целевом устройстве. ([D275 §2.1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 ### Решения владельца
 

@@ -41,6 +41,10 @@
 2. Герой пытается выполнить неавтоматически успешное действие → игрок формулирует попытку, например удержаться на ногах → видит её фактический результат и последствие → CDDA использует подходящую собственную проверку там, где она существует; карта не находит общего видимого игроку d20 ([areas/04-combat-checks-states.md:57–60](../../context/cdda-native-map/areas/04-combat-checks-states.md)) → слой действия передаёт запрос и показывает committed исход CDDA без второго броска.
 3. После удара герой получает рану → игрок продолжает игру или оказывает помощь → видит подтверждённые изменения здоровья, боли и доступных действий, которые сохраняются → CDDA предоставляет здоровье частей тела, раны, эффекты и их применение ([areas/04-combat-checks-states.md:22,67–68](../../context/cdda-native-map/areas/04-combat-checks-states.md)); подходящие исторические данные описывают применяемый контент, не создавая отдельного состояния тела.
 
+**Целевая роль языковой модели:** Модель может разбирать свободную попытку, но не считает состояние тела, числовые эффекты и физические броски. ([D275 §3.2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
+
+**Особенность:** Единственная применимая физическая проверка. ([«Как устроен ход»: сквозные примеры](../GDD.md))
+
 ### Что может игрок
 
 - **09.01.** Проверить действие персонажа броском d20 и увидеть результат вместе с последствием для тела или действия.
@@ -56,6 +60,8 @@
 | Телесный догон NPC упрощён ([areas/04-combat-checks-states.md:74](../../context/cdda-native-map/areas/04-combat-checks-states.md)). | Частичное. | Строка не подтверждает полную offscreen симуляцию. |
 
 Карта описывает upstream CDDA 0d8843f, не подключение Новгорода ([areas/04-combat-checks-states.md:1–5](../../context/cdda-native-map/areas/04-combat-checks-states.md)).
+
+Родные опоры обучения навыкам на пине `0d8843f1`: [`SkillLevel::train`, src/skill.cpp:350](https://github.com/CleverRaven/Cataclysm-DDA/blob/0d8843f1c500052c3e026e3da6f8edaf5e00b626/src/skill.cpp#L350), [`Character::practice`, src/character.cpp:2542](https://github.com/CleverRaven/Cataclysm-DDA/blob/0d8843f1c500052c3e026e3da6f8edaf5e00b626/src/character.cpp#L2542), [`proficiency_set::practice`, src/proficiency.cpp:324](https://github.com/CleverRaven/Cataclysm-DDA/blob/0d8843f1c500052c3e026e3da6f8edaf5e00b626/src/proficiency.cpp#L324). Эти исходники подтверждают опоры, а не готовность нашей интеграции. ([D275 §12.1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
 ### Наш слой и владелец
 

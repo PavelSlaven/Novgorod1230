@@ -30,6 +30,7 @@ and adds no second transaction owner.
 ## Владеет
 
 - Адаптер разговора Lower Dvina владеет промптами разговора NPC, сборкой LLM-запроса, grounding-аудитом и кодовыми проверками исправленного ответа. Формальные контракты и NPC-safe проекция принадлежат `@rus/npc-runtime`; цикл semantic repair и его предел — `@rus/turn`.
+- Ответ grounding-аудитора принят, только если цитата каждого замечания стоит по его пути от корня плана (`$.speech`, `$.interpretation`, `$.reason`, `$.supporting_operations`). Если цитата стоит в другом месте, код переносит путь на единственное точное совпадение в том же корне с тем же покрытием якорей акта; иначе ответ аудитора недействителен (`TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID`, 503), и ход завершается без ответа NPC.
 
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.

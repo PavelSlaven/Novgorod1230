@@ -28,7 +28,7 @@
 - **Сводная таблица (§6)** собирается скриптом из §1 всех областей: `node tools/docs-tools/src/cdda-native-map-table.js` (перезаписывает блок между маркерами BEGIN/END NEEDS TABLE; `--check` — только сверка, входит в `npm run docs:check`). Правишь область — перезапусти скрипт, руками таблицу не править.
 - **Смена пина upstream:** новый снимок (`git archive` нового коммита upstream) и, при использовании графа, новый граф `cdda-upstream-<sha>`; сверка всех `файл:строка` областей скриптом (вывести строку по ссылке и сравнить с символом); правка областей и пина в этом индексе и шапках областей; затем `node tools/docs-tools/src/cdda-native-map-table.js`. Старую карту не смешивать с новым пином.
 
-Итог по 236 нуждам: **полное 119, частичное 104, нет 10**, иное 3 (`04:61` вне области, `07:32` не проверено, `09:21` наблюдение полное / запуск нет).
+Итог по 236 нуждам: **полное 118, частичное 105, нет 10**, иное 3 (`04:61` вне области, `07:32` не проверено, `09:21` наблюдение полное / запуск нет).
 
 ## 1. Топ-10 ловушек: где исполнитель вероятнее всего построит дубль
 
@@ -152,7 +152,7 @@
 | Фракции, отношения, репутация (RS:31, DL:74) | [03-conversation:21](areas/03-conversation.md) | `faction_template`/`faction`; `npc_factions::relationship` (kill on sight, watch your back, share my stuff, share… | полное | Новая фракция и связи фракция→фракция — JSON; смена членства — `npc_change_faction`; мелкие правки чисел — math |
 | Одиночная «фракция» на персонажа для личных связей (DL:183) | [03-conversation:22](areas/03-conversation.md) | `lone_wolf_faction` — шаблон одноместной фракции для динамически созданных NPC | частичное | JSON |
 | Торговля: ассортимент, цены, долг, пополнение (RS:31) | [03-conversation:23](areas/03-conversation.md) | `shopkeeper_item_group`, `shopkeeper_price_rules`, `shopkeeper_consumption_rates`, `shopkeeper_whitelist/blacklist`… | полное | Ассортимент и цены — только JSON |
-| Предметная торговля в меню реплик (выкуп, заказ, торг по предметам) (RS:31) | [03-conversation:24](areas/03-conversation.md) | `repeat_responses` (`for_item`, `for_category`) + `u_buy_item`/`u_sell_item`/`u_buy_monster` | полное | JSON |
+| Предметная торговля в меню реплик (выкуп, заказ, торг по предметам) (RS:31) | [03-conversation:24](areas/03-conversation.md) | `repeat_responses` (`for_item`, `for_category`) + `u_buy_item`/`u_sell_item`/`u_buy_monster` | частичное | JSON |
 | NPC произносит реплику в мир (3 игровые секунды, шум) (TG:13–19, 30–35, 100–112) | [03-conversation:25](areas/03-conversation.md) | `npc::say` → `sounds::sound` тип `speech`; EOC `u_make_sound`/`npc_make_sound` | частичное | JSON/EOC |
 | Речь/разговор с длительностью как действие во времени (TG:13–19, 71–75) | [03-conversation:26](areas/03-conversation.md) | Активность `socialize_activity_actor` (10 минут; NPC-партнёр; сниппет `npc_socialize`; эффект-кулдаун… | частичное | Копировать шаблон: активность + сниппет + эффект-кулдаун; для иной длительности реплики — свой actor в C++ |
 | Знание NPC: что знает постоянно (#220), что узнал (#221) (DL:99–100, TG:116–124) | [03-conversation:27](areas/03-conversation.md) | Переменные `u_val`/`npc_val`/`global_val`/`context_val`/`var_val`; `parse_tags` `<npc_val:VAR>`; шаблон «постоянное… | нет | Постоянные знания — черты/переменные на шаблоне NPC (JSON); приобретённые — EOC по условию |

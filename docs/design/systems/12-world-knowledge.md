@@ -41,7 +41,7 @@
 
 **Целевая роль языковой модели:** Модель использует разрешённые сведения при смысловом решении; источники и личный доступ готовит код, повторное чтение само по себе вызова не требует. ([D275 §3.2](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md))
 
-**Особенность:** Личная проекция знания. ([«Как устроен ход»: сквозные примеры](../GDD.md))
+**Особый шаг хода:** При подготовке контекста решения код строит личную проекцию знаний, поскольку герой и каждый NPC имеют доступ к разным сведениям. ([«Как устроен ход»: сквозные примеры](../GDD.md))
 
 ### Что может игрок
 
@@ -61,7 +61,7 @@
 
 ### Наш слой и владелец
 
-- **Используем** переменные как хранилище; происхождение, память и доступ к знаниям NPC ведёт `@rus/visibility-knowledge-memory`, который готовит безопасную для конкретного NPC проекцию (NPC-safe projection). `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
+- **Используем** переменные как хранилище; проверку и слияние памяти знаний ведёт `@rus/visibility-knowledge-memory`, который владеет безопасной для игрока проекцией ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)). Безопасную для конкретного NPC проекцию (NPC-safe projection) по D275 §2.1 даёт профильный владелец знаний и восприятия; в текущем коде восприятие NPC и построение NPC-safe запроса решения относятся к `@rus/npc-runtime` ([MODULE.md](../../../packages/npc-runtime/MODULE.md); [D275 §2.1](../../plans/Novgorod1230_Approved_Design_37_Decisions_and_Implementation_Plan_2026-10-22.md)). `@rus/world-knowledge` — read-only factual owner, который возвращает bounded slice из compiled pack, не решая исход действия ([MODULE.md](../../../packages/world-knowledge/MODULE.md); [world_knowledge_platform_implementation_contract.md:303–417](../../../data/knowledge-source/corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md)).
 - **Используем** родную видимость клеток; **расширяем** память и фильтрацию отдельных сообщений сквозной player-safe проекцией: `@rus/visibility-knowledge-memory` владеет player-safe контекстом и памятью знаний ([MODULE.md](../../../packages/visibility-knowledge-memory/MODULE.md)); `@rus/narration` пишет прозу из подтверждённых фактов ([MODULE.md](../../../packages/narration/MODULE.md)). Native карта не подтверждает сквозную проверку всего контекста рассказа.
 - **Используем** существующий игровой шаг Новгорода до P7 для вызова владельцев в установленном порядке: `@rus/turn` организует шаг, а факты и состояния готовят доменные owners ([turn_step_llm_contract.md:10–59](../../../data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)). WK не определяет успех просьбы игрока.
 - Conversation owner пишет реплику, NPC decision owner принимает решение; оба получают только разрешённое знание персонажа.

@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { EXCLUSION_REASONS, parseCsv, parseTsv } from "./build-b2-name-pool.mjs";
+import { ENTRY_EXCLUSION_REASONS, EXCLUSION_REASONS, parseCsv, parseTsv } from "./build-b2-name-pool.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GROUP_DIR = path.resolve(SCRIPT_DIR, "..");
@@ -22,7 +22,11 @@ const PEOPLE_DERIVATIONS = new Set(["candidate_origin", "novgorod_land_document"
 const EVIDENCE_PERIODS = new Set(["candidate_compiled", "c1230", "medieval_general"]);
 const CLASS_DERIVATIONS = new Set(["", "calendar_name_any_christian"]);
 const DEFAULT_BLOCKED_FORMS = new Set(["Василиса", "Дарья", "Матрёна", "Прасковья"]);
-const LOWER_WEIGHT_FORMS = new Set(["Елена", "Ольга"]);
+const LOWER_WEIGHT_FORMS = new Set([
+  "Елена", "Ольга", "Борислав", "Держимир", "Дешевко", "Местак", "Местко",
+  "Милка", "Неделька", "Путислав", "Пяток", "Пятьша", "Рюря", "Салько",
+  "Тиша", "Сторонька", "Втора", "Страхота",
+]);
 const TURKIC_GAP_FORMS = new Set(["Гюлопа", "Ильдята", "Кыяс", "Сандус"]);
 const TREATY_READINGS = new Map(Object.entries({
   Adam: "Адам", Albrecht: "Альбрехт", Bernhard: "Бернхард", Dethard: "Детхард",
@@ -97,6 +101,9 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
 
   const sourceIds = new Set(sourceRows.map((row) => row.nm_id));
   const d46Ids = new Set(d46.name_entries.map((row) => row.id));
+  const entryExclusions = new Map((source.entry_exclusions ?? []).map((row) => [row.id, row]));
+  const exclusionsByKey = new Map((source.entry_exclusions ?? []).map((row) => [selectionKey(row), row]));
+  if (entryExclusions.size !== (source.entry_exclusions ?? []).length || exclusionsByKey.size !== entryExclusions.size) errors.push("duplicate personal-name exclusion");
   const evidenceLines = new Set(evidenceRows.map((row) => Number(row.source_line?.slice(1))));
   if (evidenceRows.some((row) => !/^L\d+$/.test(row.source_line)) || evidenceLines.size !== evidenceRows.length || evidenceRows.length !== source.evidence_snapshot.expected_rows) errors.push("invalid evidence snapshot source_line set");
   const additionalEvidenceLines = new Map((additionalEvidenceRows ?? []).map((row) => [row.source_line, row]));
@@ -150,12 +157,26 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     entriesByKey.set(key, row);
   }
 
+  for (const exclusion of entryExclusions.values()) {
+    if (!exclusion.id || !ENTRY_EXCLUSION_REASONS.has(exclusion.gap_type) || !exclusion.reason?.trim() || !exclusion.gap_id || !exclusion.provenance_ref) errors.push(`${exclusion.id}: invalid personal-name exclusion reason or metadata`);
+    if (ids.has(exclusion.id) || entriesByKey.has(selectionKey(exclusion))) errors.push(`${exclusion.id}: excluded personal name leaked into entries`);
+    const gap = report.typed_gaps.find((item) => item.gap_id === exclusion.gap_id);
+    if (!gap || gap.name_id !== exclusion.id || ["gap_type", "name_form", "sex_category", "people_ref", "selection_class", "reason", "provenance_ref"].some((key) => gap[key] !== exclusion[key])) errors.push(`${exclusion.id}: invalid typed exclusion`);
+    if (exclusion.gap_type === "same_name_other_spelling") {
+      const representative = entries.find((row) => row.id === exclusion.representative_id);
+      if (!representative || representative.sex_category !== exclusion.sex_category || representative.people_ref !== exclusion.people_ref) errors.push(`${exclusion.id}: invalid spelling representative`);
+    }
+  }
+
   for (const sourceRow of sourceRows) {
     if (!sourceRow.source_refs) errors.push(`${sourceRow.nm_id}: empty upstream source_refs`);
     const key = [sourceRow.name_form, sourceRow.sex, `pp_${sourceRow.people_ref}`].join("|");
     const entry = entriesByKey.get(key);
     const ref = `${source.input.provenance_prefix}${sourceRow.nm_id}`;
-    if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${sourceRow.nm_id}: compiled candidate missing from merged entry`);
+    const exclusion = entryExclusions.get(sourceRow.nm_id);
+    if (exclusion) {
+      if (selectionKey(exclusion) !== key || !exclusion.provenance_ref.split(" | ").includes(ref)) errors.push(`${sourceRow.nm_id}: invalid compiled candidate exclusion`);
+    } else if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${sourceRow.nm_id}: compiled candidate missing from merged entry`);
   }
   const additionalEntriesById = new Map((source.additional_entries ?? []).map((row) => [row.id, row]));
   if (additionalEntriesById.size !== (source.additional_entries ?? []).length) errors.push("duplicate additional evidence entry id");
@@ -187,14 +208,13 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     for (const sourceRow of row.source_rows ?? []) if (sourceRow.archive_ref !== (row.archive_refs ?? []).find((ref) => ref === sourceRow.archive_ref) || sourceRow.crosswalk_ref?.startsWith("/")) errors.push(`${row.name_form ?? row.variant_form ?? row.component_form ?? row.archive_name}: invalid D46 source-row provenance`);
   }
   const existingNormalizedNames = new Set(entries.filter((row) => !d46Ids.has(row.id)).map((row) => normalizedAlias(row.name_form)));
-  const entryExclusions = new Map((source.entry_exclusions ?? []).map((row) => [row.id, row]));
   for (const row of d46.name_entries) {
     const entry = entriesByKey.get(selectionKey(row));
     const ref = `game-base:names-peoples/personal_names/d46-name-additions.json#name-entry=${row.id}`;
     const exclusion = entryExclusions.get(row.id);
     if (exclusion) {
       const gap = report.typed_gaps.find((item) => item.gap_id === exclusion.gap_id);
-      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || exclusion.gap_type !== "people_ref_unresolved" || !gap || gap.reason !== exclusion.reason || gap.provenance_ref !== exclusion.provenance_ref) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
+      if (entry || exclusion.name_form !== row.name_form || exclusion.people_ref !== row.people_ref || exclusion.sex_category !== row.sex_category || exclusion.selection_class !== row.selection_class || !gap || gap.reason !== exclusion.reason || gap.provenance_ref !== exclusion.provenance_ref || !exclusion.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: invalid typed exclusion or selectable entry leaked`);
       continue;
     }
     if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`${row.id}: D46 name missing from merged entry`);
@@ -205,7 +225,11 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (existingNormalizedNames.has(normalizedAlias(row.name_form))) errors.push(`${row.id}: normalized D46 name duplicates existing entry`);
     if (DEFAULT_BLOCKED_FORMS.has(row.name_form) || LOWER_WEIGHT_FORMS.has(row.name_form) || TURKIC_GAP_FORMS.has(row.name_form)) errors.push(`${row.id}: typed-gap form leaked into selectable entries`);
   }
-  const gapsByForm = new Map(d46.name_gaps.map((row) => [row.name_form, row]));
+  const lowerWeightExclusions = [...entryExclusions.values()].filter((row) => row.gap_type === "lower_weight_required");
+  const gapsByForm = new Map([
+    ...d46.name_gaps.map((row) => [row.name_form, row]),
+    ...lowerWeightExclusions.map((row) => [row.name_form, { ...row, selection_status: "gap", gap_reason: row.reason }]),
+  ]);
   for (const form of DEFAULT_BLOCKED_FORMS) {
     const gap = gapsByForm.get(form);
     if (gap?.gap_type !== "default_1230_1250_requires_new_evidence" || gap.selection_status !== "gap" || !gap.gap_reason?.includes("§5.3")) errors.push(`${form}: invalid closed-list default gap`);
@@ -241,10 +265,13 @@ export function validate({ pools, entries, sourceRows, derivationRows, evidenceR
     if (!CLASSES.has(derived.selection_class) || !SEXES.has(derived.sex_category) || !peopleIds.has(derived.people_ref) || !EVIDENCE_PERIODS.has(derived.evidence_period) || derived.evidence_period === "candidate_compiled") errors.push(`evidence line ${line}: unclosed derived selector`);
     const entry = entriesByKey.get(selectionKey(derived));
     const ref = `${source.evidence_snapshot.provenance_prefix}${line}`;
-    if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`evidence line ${line}: derivation missing from merged entry`);
+    const exclusion = exclusionsByKey.get(selectionKey(derived));
+    if (exclusion) {
+      if (!exclusion.provenance_ref.split(" | ").includes(ref)) errors.push(`evidence line ${line}: invalid personal-name exclusion provenance`);
+    } else if (!entry || !entry.provenance_ref.split(" | ").includes(ref)) errors.push(`evidence line ${line}: derivation missing from merged entry`);
     const isCalendarName = derived.derivation === "calendar_name_gender" || calendarNameForms.has(derived.name_form);
     if (isCalendarName && !["ordinary", "monastic"].includes(derived.selection_class)) errors.push(`evidence line ${line}: calendar name has forbidden selection_class ${derived.selection_class}`);
-    if (isCalendarName && derived.selection_class === "ordinary" && entry?.derivation_class !== "calendar_name_any_christian") errors.push(`evidence line ${line}: calendar name missing class derivation`);
+    if (!exclusion && isCalendarName && derived.selection_class === "ordinary" && entry?.derivation_class !== "calendar_name_any_christian") errors.push(`evidence line ${line}: calendar name missing class derivation`);
   }
 
   const counts = {};
@@ -328,6 +355,13 @@ function validateRevisionParameter(value, knownRevisions) {
 
 function selfTest(base) {
   const probes = [
+    ["excluded personal name leaked", (copy) => {
+      const excluded = copy.source.entry_exclusions[0];
+      copy.entries.push({ ...copy.entries[0], id: excluded.id, name_form: excluded.name_form, sex_category: excluded.sex_category, people_ref: excluded.people_ref });
+    }, /excluded personal name leaked into entries/],
+    ["personal-name exclusion without reason", (copy) => { copy.source.entry_exclusions[0].reason = ""; }, /invalid personal-name exclusion reason/],
+    ["unknown personal-name exclusion reason", (copy) => { copy.source.entry_exclusions[0].gap_type = "guessed"; }, /invalid personal-name exclusion reason/],
+    ["candidate neither selected nor excluded", (copy) => { copy.entries = copy.entries.filter((row) => row.id !== copy.sourceRows[0].nm_id); }, /compiled candidate missing from merged entry/],
     ["missing source", (copy) => { copy.entries[0].provenance_ref = ""; }, /missing provenance_ref/],
     ["source outside snapshot", (copy) => { copy.entries[0].provenance_ref = "game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L999"; }, /unresolved provenance_ref/],
     ["unknown people_ref", (copy) => { copy.entries[0].people_ref = "pp_unknown"; }, /unknown people_ref/],
@@ -408,7 +442,7 @@ function selfTest(base) {
   assert.equal(olsten?.evidence_period, "medieval_general");
   assert.equal(base.d46.rejected.length, 0);
   assert.deepEqual([...DEFAULT_BLOCKED_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "default_1230_1250_requires_new_evidence").map((row) => row.name_form).sort());
-  assert.deepEqual([...LOWER_WEIGHT_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "lower_weight_required").map((row) => row.name_form).sort());
+  assert.deepEqual([...LOWER_WEIGHT_FORMS].sort(), [...base.d46.name_gaps, ...(base.source.entry_exclusions ?? [])].filter((row) => row.gap_type === "lower_weight_required").map((row) => row.name_form).sort());
   assert.deepEqual([...TURKIC_GAP_FORMS].sort(), base.d46.name_gaps.filter((row) => row.gap_type === "people_ref_unresolved").map((row) => row.name_form).sort());
   assert(base.d46.name_variants.some((row) => row.variant_form === "Никита" && row.target_refs.includes("names-peoples/personal_names/name_pool_entries.csv#nov_name_evidence_l24_01_v1")));
   assert(base.d46.name_variants.some((row) => row.variant_form === "Hæil(h)vatr" && row.target_refs.includes("names-peoples/personal_names/d46-name-additions.json#name-entry=nov_name_d46_13_250_v1")));

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(cataclysm): добавляет родную крышу избы на z=1, проекцию исторических личных имён из CSV с проверкой в CI и стартовый запас калорий героя внутри нормального диапазона; изменения применяются при создании новой dev-fixture (#894, пункт 0).
 - fix(turn-step): treats a supplied operation choice as a selection fragment inside the complete semantic response (#888)
 - fix(turn-step): убирает грамматическое правило, которое без контекста относило bare imperative к действию игрока; смысл определяется текущим намерением и адресатом (#878)
 

@@ -8,9 +8,20 @@
     "see_cost": "medium"
   },
   {
+    "type": "overmap_terrain",
+    "id": "novgorod_dev_courtyard_roof",
+    "name": "крыша избы",
+    "sym": "#",
+    "color": "brown",
+    "see_cost": "medium"
+  },
+  {
     "type": "overmap_special",
     "id": "novgorod_dev_courtyard_special",
-    "overmaps": [ { "point": [ 0, 0, 0 ], "overmap": "novgorod_dev_courtyard_north" } ],
+    "overmaps": [
+      { "point": [ 0, 0, 0 ], "overmap": "novgorod_dev_courtyard_north" },
+      { "point": [ 0, 0, 1 ], "overmap": "novgorod_dev_courtyard_roof_north" }
+    ],
     "locations": [ "land" ],
     "city_distance": [ 0, -1 ],
     "city_sizes": [ 0, -1 ],
@@ -52,6 +63,7 @@
     "start_name": "Двор плотника",
     "allowed_locs": [ "novgorod_dev_courtyard_start" ],
     "professions": [ "novgorod_dev_visitor" ],
+    "eoc": [ "EOC_NOVGOROD_DEV_AVATAR_NORMAL_WEIGHT" ],
     "flags": [ "LONE_START", "STANDARD" ]
   }
 ]

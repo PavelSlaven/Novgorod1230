@@ -49,7 +49,7 @@ evidence_line	source_form	name_form	sex_category	people_ref	people_derivation	se
 34	Борис	Борис	male	pp_novgorod_rus	novgorod_land_document	ordinary	calendar_name_gender	c1230	
 35	Вячеслав	Вячеслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 35	Богуслав	Богуслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
-35	Андрейц	Андрейц	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+35	Андрейц	Андреец	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 35	Давыдко	Давыдко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 35	Душилец	Душилец	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 36	Яким	Яким	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
@@ -57,7 +57,7 @@ evidence_line	source_form	name_form	sex_category	people_ref	people_derivation	se
 36	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 36	Судила	Судила	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 36	Вячко	Вячко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
-36	Иваць	Иваць	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+36	Иваць	Ивац	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 36	Рядко	Рядко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 37	Судимир	Судимир	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 38	Петр	Петр	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
@@ -187,11 +187,11 @@ evidence_line	source_form	name_form	sex_category	people_ref	people_derivation	se
 113	Иванко	Иванко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 114	Судила	Судила	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 115	Вячко	Вячко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
-116	Иваць	Иваць	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+116	Иваць	Ивац	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 117	Рядко	Рядко	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 118	Вячеслав	Вячеслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 119	Богуслав	Богуслав	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
-120	Андрейц	Андрейц	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
+120	Андрейц	Андреец	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 121	Давыдко	Давыдко	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	
 122	Душилец	Душилец	male	pp_novgorod_rus	novgorod_land_document	significant	explicit_source_gender	c1230	
 123	Петр	Петр	male	pp_novgorod_rus	novgorod_land_document	ordinary	explicit_source_gender	c1230	

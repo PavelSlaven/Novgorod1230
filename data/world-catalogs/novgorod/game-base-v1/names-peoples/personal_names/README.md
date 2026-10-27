@@ -83,7 +83,7 @@ candidate/evidence references are retained in `provenance_ref`. When sources
 for the same key have different classes, independent `ordinary` evidence
 wins; otherwise the restrictive order is `dynastic`, `significant`,
 `monastic`. Calendar-form admission also wins over the bearer's office. This
-preserves ordinary `Михаил`, `Стефан` and `Спиридон` while keeping the
+preserves ordinary `Михаил` and `Спиридон` while keeping the
 source-marked dynastic `Ростислав` out of ordinary selection. Selected sex
 and people derivations prefer explicit evidence over calendar/candidate
 defaults.
@@ -98,8 +98,12 @@ a closed row-level reason. D46 adds `d46-name-additions.json` as a narrow
 archive-decision owner: 158 origin-bound or local first-name entries are
 projected, 19 variants remain attached to their existing targets, and ten
 forms remain non-selectable typed gaps (four §5.3 exclusions, two forms that
-require lower weight, and four unresolved Turkic origins). The resulting pool
-has 337 unique entries. Exact archive periods, regions, basis, confidence and
+require lower weight, and four unresolved Turkic origins). `entry_exclusions`
+in `b2-name-pool-source.json` withholds further named entries from selection
+with a closed `gap_type` (another spelling of the same name, lower weight,
+unsupported form, no specific attestation, nickname or ethnonym, unresolved
+people); their stable ids are not reused. The resulting pool has 279 unique
+entries. Exact archive periods, regions, basis, confidence and
 source refs stay in the authoring delta; its two repo-local source snapshots
 are pinned by SHA-256. The B2 import schema is unchanged. Typed
 gaps include every people×sex ordinary pool below 10 rows, unresolved

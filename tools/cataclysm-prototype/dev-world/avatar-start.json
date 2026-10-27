@@ -1,0 +1,10 @@
+[
+  {
+    "type": "effect_on_condition",
+    "id": "EOC_NOVGOROD_DEV_AVATAR_NORMAL_WEIGHT",
+    "eoc_type": "ACTIVATION",
+    "effect": [
+      { "math": [ "u_calories('dont_affect_weariness': 1) = u_calories() * 0.9" ] }
+    ]
+  }
+]

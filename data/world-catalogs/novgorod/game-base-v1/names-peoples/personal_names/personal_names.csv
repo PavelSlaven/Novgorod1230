@@ -1,10 +1,10 @@
 nm_id,name_form,sex,people_ref,status_band,name_kind,frequency_class,variants,attestation,source_refs,confidence
 nov_name_ivan_v1,Иван,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,Иванко,"Грамота №729 record 729 Содержание: список имён | НПЛ, 1230 с. 276–277 Иванко Тимощинич",pr98:onomastics/onom_src_gramota_729#novgorod/729 | pr98:onomastics/onom_src_npl_1230#npl/1230/ivanко,A
 nov_name_kirill_v1,Кирилл,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,Кюрил,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
-nov_name_zhirko_v1,Жирко,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,Жирок,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
+nov_name_zhirko_v1,Жирок,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
 nov_name_filipp_v1,Филипп,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,Филип,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
 nov_name_dmitr_v1,Дмитр,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,Дмитрий,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
-nov_name_zhiadok_v1,Жиадок,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
+nov_name_zhiadok_v1,Жядок,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,,Грамота №729 record 729 Содержание: список имён,pr98:onomastics/onom_src_gramota_729#novgorod/729,A
 nov_name_foma_v1,Фома,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,,Грамота №1091 record 1091 Содержание: список имён,pr98:onomastics/onom_src_gramota_1091#novgorod/1091,A
 nov_name_yana_v1,Яна,female,novgorod_rus,common,baptismal_or_vernacular,russian_common_female,Янка,Чайкина 2006 с. 34 Календарные женские имена; Янка №731,pr98:onomastics/onom_src_chaykina_2006#chaykina/2006/yana,A
 nov_name_yakim_v1,Яким,male,novgorod_rus,common,baptismal_or_vernacular,russian_common_male,,"Грамота №1091 record 1091 Содержание: список имён | НПЛ, 1230 с. 276–277 Яким Влункович",pr98:onomastics/onom_src_gramota_1091#novgorod/1091 | pr98:onomastics/onom_src_npl_1230#npl/1230/yakim,A

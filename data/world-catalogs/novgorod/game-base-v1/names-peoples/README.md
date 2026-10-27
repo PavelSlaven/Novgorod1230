@@ -30,7 +30,7 @@ equivalent evidence pass.
   contributes nothing (see `personal_names/README.md`) — it is not
   cross-joined, and it is in any case a declared
   `forbidden_promotion_source` for this candidate.
-  C013b and D46 add a separate 337-entry B2 import projection from that
+  C013b and D46 add a separate 279-entry B2 import projection from that
   candidate, the reviewed name evidence and the archive decision delta, with
   closed sex/people/class/derivation
   selectors. Class is attached to the name form: calendar forms remain

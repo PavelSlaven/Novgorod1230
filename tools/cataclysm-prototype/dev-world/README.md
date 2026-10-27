@@ -1,5 +1,19 @@
 # Двор плотника — dev fixture
 
+Крыша избы задаётся отдельным родным OMT на z=1 над всем контуром здания. Для изменения крыши нужен новый мир: уже сгенерированная карта сохранения не перестраивается из mapgen. Стартовый EOC сценария однократно задаёт герою 90% начального запаса калорий через родной math API; при загрузке сохранения он повторно не применяется.
+
+Случайные полные имена героя и NPC берутся из `personal-names.generated.json`. Файл строится из обычных мужских и женских строк пула `novgorod_1230_1250_personal_names_v1` в `data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pool_entries.csv`. Отбор содержит 204 мужских и 62 женских имени со статусом `draft`; проекция не утверждает исходные данные. Полное имя равно `name_form`, без добавления фамилии или отчества. Родные snippet-категории заменяются через `override: true`; сохранённые имена прежних персонажей не меняются.
+
+Из корня репозитория:
+
+```sh
+node tools/cataclysm-prototype/generate-personal-names.mjs
+node tools/cataclysm-prototype/generate-personal-names.mjs --check
+node --test tools/cataclysm-prototype/personal-names.test.js
+```
+
+Параметр `--output <путь>` записывает проекцию в другой файл. Тест включён в `test:cataclysm-p3` и проверяет байты файла мода, количество имён и соответствие исходному отбору.
+
 Небольшая сцена для проверки живого CDDA: деревянная дверь, стол, один NPC и родные предметы `flint_steel`, `tinder`, `firewood`, `stick`. Это вымышленный двор возле Новгорода, не реконструкция города XIII века и не production world catalog. Вне стартового тайла остаётся обычный мир CDDA.
 
 Мод подключается родным `MOD_INFO` (`data/mods/dda/modinfo.json`, `src/mod_manager.cpp:190–223`). `overmap_special`, `overmap_terrain`, `mapgen`, `start_location` и `scenario` задают место старта (`src/start_location.cpp:289–310,476`); `mapgen.place_npcs` создаёт NPC (`data/mods/aftershock_exoplanet/maps/mapgen/prepnet_orchard.json:71`). `flint_steel` использует штатный `firestarter` и требует трут (`data/json/items/tool/fire.json:70`). Новых C++-механизмов сцена не вводит.

@@ -5822,7 +5822,7 @@
     {
       "variant_form": "Гюрьги",
       "target_refs": [
-        "names-peoples/personal_names/name_pool_entries.csv#nov_name_evidence_l18_09_v1"
+        "names-peoples/personal_names/name_pool_entries.csv#nov_name_evidence_l89_03_v1"
       ],
       "classification": "normalized_variant",
       "basis": "sourced",
@@ -6269,7 +6269,7 @@
     {
       "variant_form": "Сёмюн",
       "target_refs": [
-        "names-peoples/personal_names/name_pool_entries.csv#nov_name_evidence_l62_02_v1"
+        "names-peoples/personal_names/name_pool_entries.csv#nov_name_semyon_v1"
       ],
       "classification": "normalized_variant",
       "basis": "sourced",

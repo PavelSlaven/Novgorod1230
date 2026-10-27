@@ -26,6 +26,14 @@ export const EXCLUSION_REASONS = new Set([
   "sex_category_unresolved",
   "source_requires_separate_temporal_verification",
 ]);
+export const ENTRY_EXCLUSION_REASONS = new Set([
+  "same_name_other_spelling",
+  "lower_weight_required",
+  "unsupported_name_form",
+  "no_specific_attestation",
+  "nickname_or_ethnonym",
+  "people_ref_unresolved",
+]);
 
 export function parseCsv(text) {
   const rows = [];
@@ -200,13 +208,12 @@ export function build() {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(record);
   }
-  const entries = [...groups.values()].filter((group) => {
-    const candidateId = group.find((row) => row.id)?.id;
-    return !source.entry_exclusions?.some((exclusion) => exclusion.id === candidateId);
-  }).map((group) => {
+  const excludedEntryIds = new Set((source.entry_exclusions ?? []).map((row) => row.id));
+  const entries = [...groups.values()].map((group) => {
     const candidate = group.find((row) => row.id);
     const firstEvidence = group.filter((row) => row.evidence_line != null).sort((a, b) => a.evidence_line - b.evidence_line || a.line_index - b.line_index)[0];
     const id = candidate?.id ?? `nov_name_evidence_l${firstEvidence.evidence_line}_${String(firstEvidence.line_index).padStart(2, "0")}_v1`;
+    if (excludedEntryIds.has(id)) return null;
     const selectionClassValue = ranked(group.map((row) => row.selection_class), CLASS_PRIORITY);
     const peopleRef = group[0].people_ref;
     const namePoolId = source.people_to_pool_id?.[peopleRef] ?? (peopleRef === "pp_novgorod_rus" ? source.pool.id : "");
@@ -228,7 +235,7 @@ export function build() {
       status: source.defaults.status,
       provenance_ref: orderedUnique(group.map((row) => row.provenance_ref)).join(" | "),
     };
-  }).sort((a, b) => a.id.localeCompare(b.id, "en"));
+  }).filter(Boolean).sort((a, b) => a.id.localeCompare(b.id, "en"));
 
   const pools = [source.pool, ...(source.foreign_pools ?? [])];
   writeCsv(POOLS_OUT, importContract.tables["world_base.region_name_pools"].csv_columns, pools.map((pool) => ({

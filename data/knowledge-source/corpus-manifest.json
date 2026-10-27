@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "d624a71bd9de6d65e59d16121b7ae63e8c7807dc39026c43ea6817c15c725c7d",
-      "bytes": 25354,
+      "sha256": "e533fd76640cd266140a84d913da61515cdb7d6525ee01a3fc6e9f665b54f988",
+      "bytes": 25812,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -335,8 +335,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "eece47276d0a853b8e4e1bbf1347ef935632e00ae3d9007ab0b91997bf7f5862",
-      "bytes": 62692,
+      "sha256": "a9070c7d9569cecf41449aa22feca52353739d436e7e5962095f21ba6f956057",
+      "bytes": 120033,
       "priority_tier": "highest_materialization_normative"
     },
     {

@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "fd0fd39f68efb442808a7b60ef5d827b3c22bca28cc33b4c2b78d88dd2892360",
-  "chunk_count": 2856,
+  "corpus_hash": "dd5313fc7239f49e29fa52822149a435a6e20cd44ab3f25ea2a4f99ea2b6a948",
+  "chunk_count": 2885,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -1404,8 +1404,8 @@
       "section": "4. Explicit active contracts",
       "line_start": 73,
       "line_end": 94,
-      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; private auditor возвращает ordered source reviews и semantic/literary failures, Adapter детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |",
-      "char_count": 3578
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; третье лицо и прошедшее время, свободный фон в границах фактов, первый пакет сцены и последующие перемены, восемь моментов прозы, 15 признаков слепой оценки и средняя живость не ниже 8,0/10; обычный неисполненный следующий шаг не передаётся рассказчику; private auditor возвращает ordered source reviews и semantic/literary failures, Adapter детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |",
+      "char_count": 3832
     },
     {
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:2",
@@ -14949,33 +14949,42 @@
       "section": "1. Требуемый результат",
       "line_start": 9,
       "line_end": 16,
-      "text": "## situational_prose_requirements.md — 1. Требуемый результат\n## 1. Требуемый результат\n\nПроза должна ощущаться как сцены хорошего исторического романа: конкретные, причинно связанные, читаемые из положения героя и достаточно полные, чтобы игрок понимал, кто он, где находится, что произошло, что вокруг существенно и почему следующий выбор имеет смысл.\n\nПолноценная сцена не означает постоянный большой объём. Один короткий жест может требовать одного плотного абзаца; открытие игры, прибытие, бой или развязка — нескольких. Длина следует смысловой нагрузке. Запрещены две крайности: сухой state-report и текстовая вода, скрывающая бедную проекцию.\n\nВсе требования применяются к открытым классам ситуаций. Перечисленные ниже классы — проверки разных композиционных задач, а не `enum`, роутер, whitelist prompt-ов или каталог фраз. Один существующий writer определяет нужный акцент по переданным player-safe фактам.",
-      "char_count": 915
+      "text": "## situational_prose_requirements.md — 1. Требуемый результат\n## 1. Требуемый результат\n\nПроза должна ощущаться как сцены хорошего исторического романа: конкретные, причинно связанные, читаемые из положения героя и достаточно полные, чтобы игрок понимал, кто он, где находится, что произошло, что вокруг существенно и почему следующий выбор имеет смысл.\n\nПолноценная сцена не означает постоянный большой объём. Один короткий жест может требовать одного плотного абзаца; открытие игры, прибытие, бой или развязка — нескольких. Длина следует смысловой нагрузке, но и короткий ход передаёт восприятие и переживание героя. Запрещены сухой state-report, перечень фактов без сцены и вода, скрывающая нехватку фактов мира. Ощущения, мысли, чувства и связки в границах §4.7 — полноценная литературная подача, а не выдумка мира.\n\nВсе требования применяются к открытым классам ситуаций. Перечисленные ниже классы — проверки разных композиционных задач, а не `enum`, роутер, whitelist prompt-ов или каталог фраз. Один существующий writer определяет нужный акцент по переданным player-safe фактам.",
+      "char_count": 1085
     },
     {
       "id": "situational_prose_requirements.md:2. Неподвижная граница authority:0",
       "file": "situational_prose_requirements.md",
       "section": "2. Неподвижная граница authority",
       "line_start": 17,
-      "line_end": 30,
-      "text": "## situational_prose_requirements.md — 2. Неподвижная граница authority\n## 2. Неподвижная граница authority\n\nNarrator преобразует только переданный authoritative/code-confirmed player-safe контекст в прозу. Для обычного хода это persisted visible package после factual commit; для opening — утверждённый Stage 21 visible context, прошедший writer Stage 22 и audit Stage 23 до общего Stage 25 commit. Норма не требует новой отдельной DB-записи до opening writer. Narrator не:\n\n- создаёт NPC, предмет, маршрут, звук, погоду, телесное ощущение, действие или исход;\n- выводит hidden motive, объективную истинность реплики, происхождение улики или будущее;\n- восполняет отсутствующие nearby/far landmarks, exits, barriers, activities либо историю правдоподобной выдумкой;\n- превращает intent в выполненное действие;\n- превращает отсутствие поля или пустой массив в доказательство пустоты, тишины, неизменности либо отсутствия;\n- назначает точные механику, числа, диагноз, тяжесть, длительность или причинную связь;\n- переписывает committed речь, порядок событий или committed world при reload/retry.",
-      "char_count": 1094
+      "line_end": 31,
+      "text": "## situational_prose_requirements.md — 2. Неподвижная граница authority\n## 2. Неподвижная граница authority\n\nФакты мира narrator берёт только из переданного authoritative/code-confirmed player-safe контекста; способ рассказать, как герой переживает этот мир, свободен в границах §4.7. Для обычного хода это persisted visible package после factual commit; для opening — утверждённый Stage 21 visible context, прошедший writer Stage 22 и audit Stage 23 до общего Stage 25 commit. Норма не требует новой отдельной DB-записи до opening writer. Narrator не:",
+      "char_count": 552
     },
     {
       "id": "situational_prose_requirements.md:2. Неподвижная граница authority:1",
       "file": "situational_prose_requirements.md",
       "section": "2. Неподвижная граница authority",
       "line_start": 17,
-      "line_end": 30,
-      "text": "## situational_prose_requirements.md — 2. Неподвижная граница authority\nанику, числа, диагноз, тяжесть, длительность или причинную связь;\n- переписывает committed речь, порядок событий или committed world при reload/retry.\n\nЕсли нужного для хорошей сцены факта нет во входе, дефект принадлежит materialization, domain owner, perception/knowledge или player-safe projection. Writer обязан сохранить границу, а acceptance обязан зафиксировать upstream gap. Более длинная фраза не считается исправлением.",
-      "char_count": 501
+      "line_end": 31,
+      "text": "## situational_prose_requirements.md — 2. Неподвижная граница authority\ntext, прошедший writer Stage 22 и audit Stage 23 до общего Stage 25 commit. Норма не требует новой отдельной DB-записи до opening writer. Narrator не:\n\n- создаёт или меняет людей, зверей, предметы, постройки, пути, местность, события, последствия, состояние тела, свет, погоду и пору суток; нейтральный фон и субъективные ощущения допускаются по §4.7;\n- совершает за героя невыбранный поступок или решение; непроизвольное движение, которое ничего не меняет в мире, поступком не является;\n- выводит hidden motive, объективную истинность реплики, происхождение улики или будущее;\n- восполняет отсутствующие nearby/far landmarks, exits, barriers, activities либо историю правдоподобной выдумкой;\n- превращает intent в выполненное действие;\n- превращает отсутствие поля или пустой массив в доказательство пустоты, тишины, неизменности либо отсутствия;\n- назначает точные механику, числа, диагноз, тяжесть, длительность или причинную связь;\n- переписывает committed речь, порядок событий или committed world при reload/retry.",
+      "char_count": 1092
+    },
+    {
+      "id": "situational_prose_requirements.md:2. Неподвижная граница authority:2",
+      "file": "situational_prose_requirements.md",
+      "section": "2. Неподвижная граница authority",
+      "line_start": 17,
+      "line_end": 31,
+      "text": "## situational_prose_requirements.md — 2. Неподвижная граница authority\nанику, числа, диагноз, тяжесть, длительность или причинную связь;\n- переписывает committed речь, порядок событий или committed world при reload/retry.\n\nЕсли нужного для хорошей сцены факта мира нет во входе, дефект принадлежит materialization, domain owner, perception/knowledge или player-safe projection. Потерянный доступный факт исправляет владелец передачи сведений, недостающий исходный факт — владелец данных. Утверждённая игровая реконструкция до рассказчика, историческая неопределённость и недоступность герою различаются; пустое поле не разрешает рассказчику реконструировать мир. Writer обязан сохранить границу, а acceptance обязан зафиксировать upstream gap. Более длинная фраза не считается исправлением. Ощущения, мысли и связки по §4.7 даёт сам рассказчик; их отсутствие отдельными строками во входе не является пробелом данных мира.",
+      "char_count": 922
     },
     {
       "id": "situational_prose_requirements.md:2.1. Terminal factual delivery — degraded recovery, не проза:0",
       "file": "situational_prose_requirements.md",
       "section": "2.1. Terminal factual delivery — degraded recovery, не проза",
-      "line_start": 31,
-      "line_end": 44,
+      "line_start": 32,
+      "line_end": 45,
       "text": "## situational_prose_requirements.md — 2.1. Terminal factual delivery — degraded recovery, не проза\n### 2.1. Terminal factual delivery — degraded recovery, не проза\n\nПосле factual commit отдельный `FactualTurnDeliveryScreen v1` возможен только\nдля typed terminal `final_audit_failed` завершённого bounded narration flow.\nЭто availability-only degraded recovery: structured player-safe delivery exact\ncommitted facts и всего применимого обычного public UI (`checks`, panels,\nactions/affordances и прочих полей нормального screen), в котором отсутствует\nтолько approved prose. Он не содержит narrator output, rejected prose, digest,\naudit/provider/retry diagnostics либо новую causal фразу; UI не склеивает его\nполя в prose. Factual delivery не является narration/audit fallback, не\nослабляет strict приёмку и не легализует state-report как игровой ответ.\nВсе provider, infrastructure, malformed-payload и admission failures остаются\npending/retryable и не получают factual terminal screen.",
       "char_count": 988
     },
@@ -14983,35 +14992,62 @@
       "id": "situational_prose_requirements.md:3. Достаточный вход сцены:0",
       "file": "situational_prose_requirements.md",
       "section": "3. Достаточный вход сцены",
-      "line_start": 45,
-      "line_end": 66,
-      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\n## 3. Достаточный вход сцены\n\nPlayer-safe projector передаёт только применимые к текущей сцене сведения. Полный потенциальный набор:",
-      "char_count": 197
+      "line_start": 46,
+      "line_end": 75,
+      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\n## 3. Достаточный вход сцены\n\nВход рассказчика содержит только доступные герою и применимые к текущей сцене сведения. Первый отрывок получает всю сцену; следующие отрывки той же сцены получают только перемены с прошлого отрывка. Состояние героя передаётся только при перемене; первый пакет устанавливает исходное состояние. Расстояние у каждой вещи в пакете не требуется: положение словами («у печи», «за плетнём») допустимо.\n\nДля отрывков после первого сведения, переданные в прежних пакетах той же сцены и не отменённые переменой, остаются основанием прозы. Отсутствие неизменного факта в очередном пакете не означает его отсутствия в сцене и не требует повторной полной выгрузки. Это правило относится и к проверке признака 4 в §16.\n\nПолный потенциальный набор содержания:",
+      "char_count": 840
     },
     {
       "id": "situational_prose_requirements.md:3. Достаточный вход сцены:1",
       "file": "situational_prose_requirements.md",
       "section": "3. Достаточный вход сцены",
-      "line_start": 45,
-      "line_end": 66,
-      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\n## 3. Достаточный вход сцены\n\nPlayer-safe projector передаёт только применимые к текущей сцене сведения. Полный потенциальный набор:\n\n- герой: имя/роль, relevant biography, цели, известная предыстория и память;\n- положение: current place/anchor, ближний план, дальние ориентиры, видимые проходы, направления, barriers и affordances;\n- среда: время, реальный свет, погода, видимость, слышимые процессы и их направление, если оно установлено;\n- тело: текущее воспринимаемое состояние и подтверждённые изменения без raw stats;\n- действие: выполненная попытка, существенные воспринимаемые confirmed results, расход/следствие и player-safe смысл неисполненного остатка;\n- предметы: player-safe identity, положение, внешний вид, состояние, материальные изменения, source/result/waste;\n- NPC: stable identity/recognition, observable cues, current committed actions, exact perceived speech, отношения и память только в доступной герою форме;\n- живой мир: продолжающиеся и завершившиеся процессы, самостоятельные действия NPC, interruptions и последствия, воспринятые героем;\n- знание: known facts, attributed testimony, hypothesis и uncertainty с исходной степенью уверенности;\n- причинное сравнение: before/after либо remembered/current только там, где обе стороны разрешены проекцией.",
-      "char_count": 1343
+      "line_start": 46,
+      "line_end": 75,
+      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\nтсутствия в сцене и не требует повторной полной выгрузки. Это правило относится и к проверке признака 4 в §16.\n\nПолный потенциальный набор содержания:\n\n- герой: имя/роль, relevant biography, цели, известная предыстория и память;\n- положение: current place/anchor, ближний план, дальние ориентиры, видимые проходы, направления, barriers и affordances;\n- среда: время, реальный свет, погода, видимость, слышимые процессы и их направление, если оно установлено;\n- тело: исходное воспринимаемое состояние в первом пакете, затем подтверждённые перемены без raw stats;\n- действие: выполненная попытка, существенные воспринимаемые confirmed results и расход/следствие. Обычный неисполненный следующий шаг рассказчику не передаётся и в прозе не изображается ни сделанным, ни несделанным. Если шаг не мог состояться по воспринимаемой героем причине, рассказчик получает эту причину как воспринятый факт. Неизвестный результат совершённой попытки не является неисполненным следующим шагом и сохраняется;\n- предметы: player-safe identity, положение, внешний вид, состояние, материальные изменения, source/result/waste;\n- NPC: stable identity/recognition, observable cues, current committed actions, exact perceived speech, отношения и память только в доступной герою форме;\n- живой мир: продолжающиеся и завершившиеся процессы, самостоятельные действия NPC, interruptions и последствия, воспринятые героем;\n- знание: known facts, attributed testimony, hypothesis и uncertainty с исходной степенью уверенности;\n- причинное сравнение: before/after либо remembered/current только там, где обе стороны разрешены проекцией.",
+      "char_count": 1672
     },
     {
       "id": "situational_prose_requirements.md:3. Достаточный вход сцены:2",
       "file": "situational_prose_requirements.md",
       "section": "3. Достаточный вход сцены",
-      "line_start": 45,
-      "line_end": 66,
-      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\nertainty с исходной степенью уверенности;\n- причинное сравнение: before/after либо remembered/current только там, где обе стороны разрешены проекцией.\n\nНе каждый ход требует каждого пункта. Projector выбирает полный фактический материал; narrator выбирает литературно уместные детали. Нельзя превращать этот раздел в sensory checklist, где каждый ответ обязан упомянуть зрение, слух, запах, погоду и тело.\n\nТочная длительность хода остаётся у temporal owner и не входит в обязательные\nисточники прозы. Server проецирует из committed `last_turn.time_update.exact_elapsed`\nотдельную UI-подпись длительности рядом с итоговыми календарными часами. Narrator\nне повторяет эту служебную величину и не обязан упоминать время в каждом ответе.",
-      "char_count": 798
+      "line_start": 46,
+      "line_end": 75,
+      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\nertainty с исходной степенью уверенности;\n- причинное сравнение: before/after либо remembered/current только там, где обе стороны разрешены проекцией.\n\nСведения передаются понятными русскими предложениями с пространственными опорами и исходной степенью уверенности. Действие, наблюдение, свидетельство, намерение, память и неизвестный результат различаются по смыслу. Объективная справка не становится автоматически знанием героя или наблюдением текущей сцены. Статусы видимости и узнавания, коды, ссылки, пустые карточки и заглушки не являются фактами и не заменяют содержание.\n\nО человеке и звере вход сообщает доступное «кто, где, чем занят». Имя и связь допустимы при обоснованном узнавании; неизвестное имя не требуется, известное не скрывается заглушкой. Положение задаётся относительно героя или известного ориентира; занятие — наблюдаемым действием или позой, без догадки о намерении и результате. Плохая видимость ограничивает признаки; узнавание по голосу или памяти требует своего основания. Законный предел различимости сам по себе не является дефектом, а недостающее содержание не достраивается из правдоподобия.",
+      "char_count": 1190
+    },
+    {
+      "id": "situational_prose_requirements.md:3. Достаточный вход сцены:3",
+      "file": "situational_prose_requirements.md",
+      "section": "3. Достаточный вход сцены",
+      "line_start": 46,
+      "line_end": 75,
+      "text": "## situational_prose_requirements.md — 3. Достаточный вход сцены\nи требует своего основания. Законный предел различимости сам по себе не является дефектом, а недостающее содержание не достраивается из правдоподобия.\n\nНе каждый отрывок требует каждого пункта. Вход сохраняет применимые факты, narrator выбирает литературно уместные детали. Нельзя превращать этот раздел в sensory checklist, где каждый ответ обязан упомянуть зрение, слух, запах, погоду и тело. Если перечисленных ниже сведений нет в данных мира, проза о них не пишет: отсутствие характеристики не разрешает выдумывать её. Общая свобода литературной подачи определена в §4.7.\n\nТочная длительность хода остаётся у temporal owner и не входит в обязательные\nисточники прозы. Server проецирует из committed `last_turn.time_update.exact_elapsed`\nотдельную UI-подпись длительности рядом с итоговыми календарными часами. Narrator\nне повторяет эту служебную величину и не обязан упоминать время в каждом ответе.",
+      "char_count": 968
+    },
+    {
+      "id": "situational_prose_requirements.md:3.1. Содержание сведений для разных моментов:0",
+      "file": "situational_prose_requirements.md",
+      "section": "3.1. Содержание сведений для разных моментов",
+      "line_start": 76,
+      "line_end": 168,
+      "text": "## situational_prose_requirements.md — 3.1. Содержание сведений для разных моментов\n### 3.1. Содержание сведений для разных моментов\n\nТаблица задаёт содержание входа, когда сведения применимы и доступны герою. Примеры значений поясняют вид сведений и не утверждают наличие перечисленного в конкретной сцене. Первый пакет и последующие перемены подчиняются общему правилу §3; таблица не требует повторной полной передачи. Пора года передаётся словами; в пакет входит день церковного календаря, включая применимые праздник и пост. Сословие и ремесло по виду остаются помеченным выводом по доступным признакам; сведения об отношении другого человека не раскрывают его мысли.",
+      "char_count": 671
+    },
+    {
+      "id": "situational_prose_requirements.md:3.1. Содержание сведений для разных моментов:1",
+      "file": "situational_prose_requirements.md",
+      "section": "3.1. Содержание сведений для разных моментов",
+      "line_start": 76,
+      "line_end": 168,
+      "text": "## situational_prose_requirements.md — 3.1. Содержание сведений для разных моментов\nи пост. Сословие и ремесло по виду остаются помеченным выводом по доступным признакам; сведения об отношении другого человека не раскрывают его мысли.\n\n| Сведение | Примеры содержания |\n|---|---|\n| **Место и постройка** | |\n| Место: название, тип, местность вокруг | двор плотника; посад под Новгородом; деревня; монастырь над рекой |\n| Постройка и помещение: вид и назначение | изба, клеть, навес, горница, подклет, поварня, баня |\n| Материал и вид стен, пола, кровли, двери, печи | бревенчатые стены; земляной или дощатый пол; дверь из тёсаных досок; глинобитная печь по-чёрному |\n| Состояние и возраст постройки и места | новый сруб; закопчённый потолок; прибрано; обгорело; разорено |\n| Размер, высота, окна, выходы помещения | тесно; низкая притолока; без окон, свет из двери; волоковое оконце, бычий пузырь, слюда |\n| Положение места и рельеф | на угоре над рекой; у дороги; за оградой; в низине |\n| Ворота, ограда, двери: есть ли, открыты ли, кто стережёт | дверь закрыта; калитка заперта; ворота настежь, у ворот сторож |\n| Растительность и покров места | трава, мёртвая трава, бурьян у тына, щепа, камень |\n| **Помещение и вещи** | |\n| Род вещи и число | топор; полено (одно); два бревна; корзина |\n| Положение вещи словами: где она и где относительно героя | на столе, у печи, у стены, у входа, в углу, под ногами, в шаге от героя |\n| Материал вещи | дуб, осина, береста, железо, медь, глина, кожа, солома |\n| Облик вещи: размер, форма, цвет, отделка | в руку толщиной; кривая; плетёная; резная |\n| Состояние вещи | острый, зазубренный, ржавый; захватанная ручка; сырое или сухое дерево; треснул |\n| Приметы и знаки | клеймо, тамга, резьба, починка |\n| Содержимое и доступность | пустая; в корзине мелочь; ларец заперт; в кошеле кресало |\n| Чья вещь и кто её держит | двора Жирко; в руках у Жирко; за поясом |\n| Печь и огонь: топится ли, жар, дым | печь не топлена; тлеют угли; дым слоями под потолком |\n| Еда и питьё, посуда | каша в горшке; квас в жбане; хлеб на столе |\n| **Человек** | |\n| Знает ли его герой и под каким именем | знаком, зовёт «Жирко»; не знаком, имя услышит от соседа |\n| Облик: рост, сложение, волосы, борода, лицо, возраст по признакам | высокий, сухощавый; русая борода с проседью; морщины у глаз |\n| Постоянная примета | шрам на брови; косица; хромает на левую |\n| Одежда: предметы, обувь, головной убор, что на поясе | рубаха, порты, онучи, поршни; за поясом долото |\n| Одежда: ткань, цвет, состояние | холщовая некрашеная рубаха; в смоле; заплата на локте |\n| Что в руках и при себе | плотницкий топор; нож; посох |\n| Где стоит и в какой позе | у печи; на лавке; склонился над брусом; на корточках |\n| Занятие сейчас, его шаг, орудие и материал | тешет брус топором; выбирает паз долотом; колет поленья |\n| Результат и готовность работы | брус обтёсан с двух сторон; сруб в пять венцов |\n| Отношение и видимый отклик на героя | не враждебен; не обратил внимания; поднял глаза; кивнул |\n| Видимое состояние тела | потный; хромает; пьян; руки в смоле |\n| Сословие и ремесло по виду | по виду мастеровой; инок; боярин |\n| Руки и следы ремесла | мозоли, смола, ссадины, стружка в бороде |\n| Привычная манера держаться и жесты | теребит бороду; держится прямо |\n| **Речь** | |\n| Реплика дословно; кто говорит и к кому | точная фраза из данных; Жирко — герою |\n| Источник голоса: где, расстояние, преграда, виден ли говорящий | за стеной избы; со двора; из темноты |\n| Что расслышано и что нет | слов не разобрать; разобрал только имя |\n| Голос и манера речи | глуховатый; вполголоса; кричит; просторечие; ломаная речь |\n| Язык говорящего и понимает ли его герой; толмач | немецкий гость; татарин через толмача |\n| Кто ещё слышит | подмастерье рядом; толпа |\n| **Среда** | |\n| Время суток | около полудня; сумерки; перед рассветом |\n| Пора года и календарь словами | поздняя весна; перед Троицей; Петров пост |\n| Погода и её следствие для героя | ясно, нежарко; блики мешают смотреть; после дождя грязь |\n| Свет на месте героя: сила, источник, число огней | солнце во дворе; в избе свет только из двери; лучина в светце |\n| Видимость: что различимо и на каком расстоянии | со свету не разглядеть; силуэт в дверях; туман |\n| Температура и воздух | нежарко; сыро; душно; натоплено |\n| Звук с источником, направлением и расстоянием | стук топора в избе; лай за тыном; скрип ворот |\n| Запах, выдающий скрытое | дым — где-то топят; хлеб за стеной; навоз — скот за перегородкой; смрад |\n| Ветер: сила и сторона | лёгкий ветер с востока |\n| Огонь и дым вдали | дым над посадом; зарево |\n| Состояние земли и воды | сухо; грязь; лужи; наст; лёд на реке |\n| **Звери** | |\n| Вид, число, положение и движение | конь у коновязи; пёс у ворот; куры у крыльца |\n| Состояние зверя | хромает; в пене; исхудал; ранен |\n| Звук или молчание и отклик на чужое | пёс рычит; пёс не лает; конь прянул |\n| Хозяин, масть, упряжь | конь Жирко; гнедой; седло сбито набок |\n| **Бой и тело** | |\n| Стороны и число | свои и чужие; трое на одного |\n| Оружие и защита участников и их состояние | топор; кольчуга; щит раскололся |\n| Исход каждого действия | попал; броня выдержала; упал; не знает, убил ли |\n| Место героя в схватке, укрытия рядом | у ворот; за возом; на льду |\n| Раны и боль героя | рассечено плечо; рука онемела; кровь заливает глаза |\n| Признаки тела раненого, больного, умирающего; где лежит | хриплое дыхание; жар; кровь на губах; лежит на лавке |\n| Граница сознания героя | потерял сознание; очнулся |\n| Раненые, павшие, пленные, трофеи рядом | сосед убит; с убитого сняли бронь |\n| **Путь** | |\n| Вид и состояние дороги | наезженная; тропа; колея; распутица |\n| Переправа и вода на пути | брод по колено; тонкий лёд; мост из жердей |\n| Вехи и направление | вниз по Волхову; до Торга; левым берегом |\n| **Память и знание героя** | |\n| Имя героя | имя, которым его зовут |\n| Кто герой: пол, возраст, откуда, ремесло | мужчина 25 лет, пришлый |\n| Одежда и снаряжение героя | онучи, рубаха, порты, поршни, пояс, кошель |\n| Самочувствие героя | голоден; озяб; устал |\n| Поза и место героя | стоит на пороге; сидит на лавке |\n| Куда смотрит и идёт герой | впереди дверь; печь слева |\n| Журнал действий героя | прошёл шесть шагов вдоль стены, открыл дверь |\n| События мира, дошедшие до героя | человек отложил топор; кто-то вошёл; пришёл гонец |\n| Что герой знает о месте и людях и откуда | слышал от купцов; бывал здесь прошлой зимой |\n| Память о прошлой встрече | видел семь лет назад, тогда был без седины |\n| Близкие люди и прошлое героя | мать в деревне; умерший брат |\n| Цель или поручение (что велел игрок) | дойти до Жирко |\n| Прошедший срок | полдня; три дня; с Пасхи |",
+      "char_count": 6674
     },
     {
       "id": "situational_prose_requirements.md:4. Общая композиционная норма:0",
       "file": "situational_prose_requirements.md",
       "section": "4. Общая композиционная норма",
-      "line_start": 67,
-      "line_end": 68,
+      "line_start": 169,
+      "line_end": 170,
       "text": "## situational_prose_requirements.md — 4. Общая композиционная норма\n## 4. Общая композиционная норма",
       "char_count": 101
     },
@@ -15019,8 +15055,8 @@
       "id": "situational_prose_requirements.md:4.1. Центр сцены:0",
       "file": "situational_prose_requirements.md",
       "section": "4.1. Центр сцены",
-      "line_start": 69,
-      "line_end": 72,
+      "line_start": 171,
+      "line_end": 174,
       "text": "## situational_prose_requirements.md — 4.1. Центр сцены\n### 4.1. Центр сцены\n\nКаждый ответ имеет один композиционный фокус: новое положение, результат попытки, реплика, внешнее событие, телесная перемена либо развязка. Это не лимит числа событий: одна сцена может содержать несколько существенных действий, ответов и перемен, если factual flow довёл их до общей player-response boundary. Первый абзац быстро вводит читателя в фокус через личность/историю, подтверждённое восприятие, действие или материальное изменение — по задаче текущей сцены. Остальные сведения выстраиваются вокруг него: дают ориентацию, показывают причинный порядок, реакцию мира и границу следующего решения.",
       "char_count": 681
     },
@@ -15028,206 +15064,359 @@
       "id": "situational_prose_requirements.md:4.2. Причинный порядок:0",
       "file": "situational_prose_requirements.md",
       "section": "4.2. Причинный порядок",
-      "line_start": 73,
-      "line_end": 76,
-      "text": "## situational_prose_requirements.md — 4.2. Причинный порядок\n### 4.2. Причинный порядок\n\nПроза сохраняет factual order. Причина предшествует видимому следствию; следующий NPC видит только уже произошедшее; состояние тела, предметов и места соответствует итоговому committed state. Литературная связь допустима пространственная, временная или наблюдательная. Причинную связь можно утверждать только когда она передана.",
-      "char_count": 418
+      "line_start": 175,
+      "line_end": 178,
+      "text": "## situational_prose_requirements.md — 4.2. Причинный порядок\n### 4.2. Причинный порядок\n\nПроза сохраняет factual order. Причина предшествует видимому следствию; следующий NPC видит только уже произошедшее; состояние тела, предметов и места соответствует итоговому committed state. Литературная связь допустима пространственная, временная или наблюдательная. Причинную связь можно утверждать только когда она передана; догадка героя о причине остаётся явно помеченной догадкой и не создаёт нового факта.",
+      "char_count": 503
     },
     {
       "id": "situational_prose_requirements.md:4.3. Конкретность без инвентаризации:0",
       "file": "situational_prose_requirements.md",
       "section": "4.3. Конкретность без инвентаризации",
-      "line_start": 77,
-      "line_end": 80,
-      "text": "## situational_prose_requirements.md — 4.3. Конкретность без инвентаризации\n### 4.3. Конкретность без инвентаризации\n\nПредпочтительны точные существительные и наблюдаемые глаголы. Поля safe-проекции объединяются в предметные образы и действия. Нельзя последовательно переписать каждую строку входа отдельным предложением, назвать поля/ID/raw stats или завершить текст диагностическим выводом об evidence. Grounded количество, длительность, время, расстояние и иные числа допустимы, когда они естественно нужны сцене.",
-      "char_count": 516
+      "line_start": 179,
+      "line_end": 184,
+      "text": "## situational_prose_requirements.md — 4.3. Конкретность без инвентаризации\n### 4.3. Конкретность без инвентаризации\n\nПредпочтительны точные существительные и наблюдаемые глаголы. Поля safe-проекции объединяются в предметные образы и действия. Нельзя последовательно переписать каждую строку входа отдельным предложением, назвать поля/ID/raw stats или завершить текст диагностическим выводом об evidence. Все числа берутся из данных; толпа и масса называются порядком величины словами, точное число — когда его можно охватить глазом. Количество, прошедший срок, расстояние и другие числа допустимы, когда нужны сцене, с ограничениями времени ниже. Часов и градусов в прозе нет.\n\nВремя передаётся светом, порой суток и порой года, праздником и постом. Число месяца, месяц и год называются только если их знает герой. Прошедший срок словами не является служебной строкой точной длительности хода.",
+      "char_count": 894
     },
     {
       "id": "situational_prose_requirements.md:4.4. Фокус и повтор:0",
       "file": "situational_prose_requirements.md",
       "section": "4.4. Фокус и повтор",
-      "line_start": 81,
-      "line_end": 84,
-      "text": "## situational_prose_requirements.md — 4.4. Фокус и повтор\n### 4.4. Фокус и повтор\n\nКаждое существенное воспринимаемое confirmed change обязательно по смыслу и появляется один раз. Служебные, дублирующие и не воспринимаемые переходы не превращаются в отдельные литературные пункты. Совпадающие outcome и uncertainty объединяются в одно естественное высказывание. Статический контекст повторяется лишь когда нужен для ориентации, контраста или последствия. Описание берега, одежды, раны или NPC не перезапускается с нуля каждый ход.",
-      "char_count": 531
+      "line_start": 185,
+      "line_end": 188,
+      "text": "## situational_prose_requirements.md — 4.4. Фокус и повтор\n### 4.4. Фокус и повтор\n\nКаждое существенное воспринимаемое confirmed change обязательно по смыслу и появляется один раз. Служебные, дублирующие и не воспринимаемые переходы не превращаются в отдельные литературные пункты. Совпадающие outcome и uncertainty объединяются в одно естественное высказывание. Первый отрывок устанавливает сцену, дальше описываются перемены; повторный вход передаётся обновлённой деталью. Использование известной вещи в новом действии не требует повторного описания всей сцены. Описание берега, одежды, раны или NPC не перезапускается с нуля каждый ход.",
+      "char_count": 639
     },
     {
       "id": "situational_prose_requirements.md:4.5. Голос:0",
       "file": "situational_prose_requirements.md",
       "section": "4.5. Голос",
-      "line_start": 85,
-      "line_end": 88,
-      "text": "## situational_prose_requirements.md — 4.5. Голос\n### 4.5. Голос\n\nАвторский голос использует русский литературный текст, второе лицо `вы`, устойчивую временную рамку сцены. Воспоминания и причинная предыстория естественно допускают прошедшее время внутри текущего повествования; дефектом является случайное, мешающее чтению переключение времени. Авторский голос избегает современного сленга, псевдоархаики, канцелярита, энциклопедической вставки и театрального нагнетания. Историчность проявляется в материальных обстоятельствах, уже разрешённых контекстом, а не в декоративных «давеча» и «воистину». Exact committed speech воспроизводится дословно даже при иной стилистике, анахронизме или неудобном времени глагола: narrator не редактирует голос персонажа.",
-      "char_count": 758
+      "line_start": 189,
+      "line_end": 192,
+      "text": "## situational_prose_requirements.md — 4.5. Голос\n### 4.5. Голос\n\nАвторский голос использует русский литературный текст, третье лицо и прошедшее время; героя называют по имени. Настоящее время целых сцен не переносится из литературного образца в игру. Мысль героя передаётся несобственно-прямой речью в прошедшей рамке, без лишнего «подумал»; внутри мысли допустимы вопрос, восклицание и настоящее время для вечного. «Я» и «ты» допускаются только в кавычках как обращение героя к известному по данным адресату, к Богу или к себе. Авторский голос избегает современного сленга, псевдоархаики, канцелярита, энциклопедической вставки и театрального нагнетания. Историчность проявляется в материальных обстоятельствах, уже разрешённых контекстом, а не в декоративных «давеча» и «воистину». Exact committed speech воспроизводится дословно даже при иной стилистике, анахронизме или неудобном времени глагола: narrator не редактирует голос персонажа.",
+      "char_count": 942
     },
     {
       "id": "situational_prose_requirements.md:4.6. Абзацы:0",
       "file": "situational_prose_requirements.md",
       "section": "4.6. Абзацы",
-      "line_start": 89,
-      "line_end": 92,
+      "line_start": 193,
+      "line_end": 196,
       "text": "## situational_prose_requirements.md — 4.6. Абзацы\n### 4.6. Абзацы\n\nАбзац соответствует изменению beat: ориентация, действие/ответ, последствие/граница выбора. Несколько абзацев допустимы и нужны для крупных сцен. UI обязан сохранить их видимое разбиение; текущий `white-space: pre-wrap` внутри одного безопасно escaped `<p>` это уже делает. Запрет на source ledger не означает запрет на полноценную многоабзацную сцену или требование отдельной HTML-ноды на каждый абзац.",
       "char_count": 471
     },
     {
-      "id": "situational_prose_requirements.md:5. Opening: первое появление героя и мира:0",
+      "id": "situational_prose_requirements.md:4.7. Свободный рассказ и факты мира:0",
       "file": "situational_prose_requirements.md",
-      "section": "5. Opening: первое появление героя и мира",
-      "line_start": 93,
-      "line_end": 108,
-      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\n## 5. Opening: первое появление героя и мира\n\n**Необходимый контекст.** Кто герой, откуда и зачем оказался здесь; relevant authored memories/relationships; current place; near/far orientation; видимые exits/barriers; время, свет, погода, звуки; тело; присутствующие NPC/предметы; immediate pressure и uncertainty.\n\n**Обязательный смысл.** Игрок после одного чтения понимает личность героя, исходную историю, настоящее физическое положение, важнейшие окружающие признаки и ближайшую ставку. Предыстория связывается с настоящим через память, цель, утрату, поручение или отношение, реально переданные входом.\n\n**Литературная подача.** Возможны, например, биографический зачин или вход через текущее восприятие; это не исчерпывающий перечень. Выбор зависит от того, что лучше вводит именно эту историю. Используются только фрагменты прошлого, объясняющие положение и цель; opening завершается открытым настоящим, где видна возможность действовать. Обычно уместны 2–4 абзаца, но это не обязательный word count.",
-      "char_count": 1086
+      "section": "4.7. Свободный рассказ и факты мира",
+      "line_start": 197,
+      "line_end": 206,
+      "text": "## situational_prose_requirements.md — 4.7. Свободный рассказ и факты мира\n### 4.7. Свободный рассказ и факты мира\n\nРассказчик свободно передаёт ощущения, мысли, чувства, впечатления, сравнения и связки; небольшие непроизвольные движения тела допустимы, если ничего не меняют в мире и не выбирают поступок за игрока. Чувства соразмерны сцене: рассказ не нагнетает неподтверждённую угрозу. Мысль или впечатление героя не утверждает нового факта о мире или его прошлом.\n\nФон, не влияющий на механику, рассказчик добавляет свободно: пение птиц, шорох травы, насекомые, мелкие шорохи. Свободная деталь не меняет состояние игры и не вводит неподтверждённого данными источника, предмета, человека, зверя, опасности или иной зацепки для действия игрока. Проверка границы: может ли игрок опереться на деталь, чтобы пойти, взять, посмотреть ближе или спросить? Если да, нужен факт мира. Нейтральное пение птиц не создаёт доступную птицу, которую можно найти, поймать или спугнуть.",
+      "char_count": 971
     },
     {
-      "id": "situational_prose_requirements.md:5. Opening: первое появление героя и мира:1",
+      "id": "situational_prose_requirements.md:4.7. Свободный рассказ и факты мира:1",
       "file": "situational_prose_requirements.md",
-      "section": "5. Opening: первое появление героя и мира",
-      "line_start": 93,
-      "line_end": 108,
-      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nжение и цель; opening завершается открытым настоящим, где видна возможность действовать. Обычно уместны 2–4 абзаца, но это не обязательный word count.\n\n**Избыточно/запрещено.** Dossier dump; перечисление всех параметров; историческая лекция; generic «вы приходите в себя» без factual basis; полное описание каждого предмета; invented destination/cause; повтор названия места вместо сцены.\n\n**Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».\n\nStage 23 проверяет это через обязательный `literary_composition_check` существующего semantic auditor. Factual-only approval недостаточен: dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.",
-      "char_count": 1033
+      "section": "4.7. Свободный рассказ и факты мира",
+      "line_start": 197,
+      "line_end": 206,
+      "text": "## situational_prose_requirements.md — 4.7. Свободный рассказ и факты мира\nпосмотреть ближе или спросить? Если да, нужен факт мира. Нейтральное пение птиц не создаёт доступную птицу, которую можно найти, поймать или спугнуть.\n\nФон становится фактом, как только указывает на конкретный источник: звук или запах, выдающий скрытое, требует данных. Стук за закрытой дверью, запах дыма из невидимой избы, голос, след и признак опасности не добавляются ради атмосферы. Запах, присущий видимому материалу, свободен; дым видимой печи, которая топится по данным, допустим в пределах этих сведений. Свет, погода и пора суток берутся из данных, свободна их литературная подача.\n\nВещь описывается свободно в пределах её характеристик: деталь должна следовать из записанных материала, вида или состояния. Оттенок дерева у деревянной вещи допустим; резьба, краска и клеймо не следуют из одного материала и требуют соответствующей характеристики в данных. Нехватка характеристики — пункт плана расширения мира, а не разрешение выдумывать свойство. Для допустимых литературных деталей фона, ощущений и связок отдельный источник не нужен.",
+      "char_count": 1121
     },
     {
-      "id": "situational_prose_requirements.md:5. Opening: первое появление героя и мира:2",
+      "id": "situational_prose_requirements.md:4.8. Взгляд, мысль и ритм:0",
       "file": "situational_prose_requirements.md",
-      "section": "5. Opening: первое появление героя и мира",
-      "line_start": 93,
-      "line_end": 108,
-      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nRY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.\n\n**Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.",
-      "char_count": 481
+      "section": "4.8. Взгляд, мысль и ритм",
+      "line_start": 207,
+      "line_end": 216,
+      "text": "## situational_prose_requirements.md — 4.8. Взгляд, мысль и ритм\n### 4.8. Взгляд, мысль и ритм\n\nРассказчик находится в точке героя и называет её при новом месте: на пороге, у стены, с крыльца. Он описывает доступное отсюда и сейчас; невидимое опускается либо прямо названо невидимым. Незнакомого человека не называют по имени, знакомого называют сразу. Мысли, чувства и намерения других людей, толпы и зверей не раскрываются. Вместо них даются внешний признак и, после него, догадка героя с пометой «показалось», «видно было». Любое движение и мимика другого человека берутся из данных.\n\nБытовые вещи называются точными словами из данных без объяснений: изба, клеть, поршни, онучи, тесло. Незнакомое герою называется его словами и его меркой. Оценки «богатый», «бедный», «огромный» заменяются материалом, состоянием, числом огней и усилием тела. Рабочие слова и объяснение технологии допустимы в переданной речи мастера, а не как лекция автора.",
+      "char_count": 944
     },
     {
-      "id": "situational_prose_requirements.md:6. Новое место:0",
+      "id": "situational_prose_requirements.md:4.8. Взгляд, мысль и ритм:1",
       "file": "situational_prose_requirements.md",
-      "section": "6. Новое место",
-      "line_start": 109,
-      "line_end": 122,
-      "text": "## situational_prose_requirements.md — 6. Новое место\n## 6. Новое место\n\n**Необходимый контекст.** Confirmed movement/arrival; current position; ближайшая геометрия; дальние landmarks; видимые exits с направлением; barriers/access; environment; people/objects/processes; body after travel.\n\n**Обязательный смысл.** Ясно, что перемещение состоялось, где оказался герой, чем новое место отличается и как оно устроено для следующего решения. При неизвестном destination название не выдумывается.\n\n**Литературная подача.** Вход в место задаёт новую композицию: граница перехода, первый salient foreground, затем middle/far plane и действующая жизнь. Exits и barriers вплетаются как физические продолжения пространства, не как меню маршрутов.\n\n**Избыточно/запрещено.** Повтор всей биографии; tour-guide catalogue; неразрешённые направления; «локация сменилась»; скрытые помещения; invented shelter или поселение по одному следу.\n\n**Good / bad.** Good позволяет мысленно нарисовать место и выбрать осмысленный следующий шаг. Bad меняет только заголовок или сообщает одну атмосферную деталь без географии.",
-      "char_count": 1098
+      "section": "4.8. Взгляд, мысль и ритм",
+      "line_start": 207,
+      "line_end": 216,
+      "text": "## situational_prose_requirements.md — 4.8. Взгляд, мысль и ритм\nатериалом, состоянием, числом огней и усилием тела. Рабочие слова и объяснение технологии допустимы в переданной речи мастера, а не как лекция автора.\n\nМысль вырастает из воспринятого и возвращается к нему: абзац с мыслью начинается или кончается вещью, звуком, светом или позой из данных. Ориентир — не больше двух чувств на абзац; каждое подкрепляется телесным признаком или деталью сцены. Воспоминание запускается воспринятым и называет только людей, места и вещи из памяти героя в данных. Сомнение допустимо, решение за игрока — нет; абзац кончается вопросом, обрывом или возвратом к внешнему, без морали и справки.\n\nОбычный момент занимает один абзац. Ориентир для ряда — до пяти названных предметов, для обычного абзаца — до двух чувственных каналов, кроме первого входа в новое место. В схватке и скачке фразы короче, с глаголом впереди; в покое допустима длинная перечислительная фраза. Все числовые рамки длины и числа примет в документе — ориентиры подачи, а не запреты и не самостоятельное основание отказа в приёмке (§16).",
+      "char_count": 1099
     },
     {
-      "id": "situational_prose_requirements.md:6. Новое место:1",
+      "id": "situational_prose_requirements.md:4.9. Чего из литературного образца не брать:0",
       "file": "situational_prose_requirements.md",
-      "section": "6. Новое место",
-      "line_start": 109,
-      "line_end": 122,
-      "text": "## situational_prose_requirements.md — 6. Новое место\nзволяет мысленно нарисовать место и выбрать осмысленный следующий шаг. Bad меняет только заголовок или сообщает одну атмосферную деталь без географии.\n\n**Unseen validation.** Прибытие с реки в тесный двор с закрытыми воротами, видимым проходом в сени и голосами за стеной. Проверить ориентацию без invented людей за преградой и без списка affordances.",
-      "char_count": 405
+      "section": "4.9. Чего из литературного образца не брать",
+      "line_start": 217,
+      "line_end": 231,
+      "text": "## situational_prose_requirements.md — 4.9. Чего из литературного образца не брать\n### 4.9. Чего из литературного образца не брать\n\n- Голос всезнающего автора: историю места и вещи, родословие, справки о соседях и эпохе, лекции о сроках пути, вещах и ремёслах.\n- Прогноз, итог судьбы, мораль и обобщение об эпохе в зачине и концовке.\n- Переход к мыслям собеседника, толпы или зверя.\n- Доведение сомнения героя до принятого за игрока решения.\n- Настоящее время целых сцен, авторское «я», ссылки на летописцев и сравнения с позднейшими веками.\n- Рассказ о том, что происходило после потери сознания героя, скобочное «после» и посмертную память.\n- Часы, градусы и летописную датировку; правило известной герою даты определено в §4.3.\n- Парадные описи и длинные перечни; числовой ориентир ряда дан в §4.8.\n- Длинные богословские диспуты и допросы как добавляемый автором приём: переносится интонация, а подтверждённая речь сохраняется дословно, без сокращений.\n- Авторскую оговорку о незнании героя с последующей лекцией о скрытом; можно назвать незнание, но нельзя раскрыть то, что за ним стоит.\n- Объяснение технологии и обычая голосом рассказчика.\n- Выдумки пробных модельных текстов как факты мира: бороды, печи, тесноту и чужие предметы сверх данных.",
+      "char_count": 1251
+    },
+    {
+      "id": "situational_prose_requirements.md:5. Начало игры: первое появление героя и мира:0",
+      "file": "situational_prose_requirements.md",
+      "section": "5. Начало игры: первое появление героя и мира",
+      "line_start": 232,
+      "line_end": 257,
+      "text": "## situational_prose_requirements.md — 5. Начало игры: первое появление героя и мира\n## 5. Начало игры: первое появление героя и мира\n\n**Что читатель должен понять:** где герой (название места, если герой его знает, и вид места), когда (пора суток и года, погода), кто вокруг и чем занят, куда отсюда можно пойти.\n\n**Порядок:** первая фраза — место и время суток или дело героя, а не итог и не справка. Затем природная рама — не больше трёх предметов из данных, погода через следствие для героя (блики мешают смотреть). Затем ближний план от точки героя: постройки с материалом, вещи с положением, люди с занятием, звук с источником. Абзац кончается тем, к чему можно пойти: дверью, человеком, дорогой. Состояние героя — одной фразой, если оно ощутимо.\n\n**Длина:** весь первый отрывок — два-три абзаца, ориентир 700–1200 знаков; природная рама — не больше абзаца; погода — фраза.\n\n**Сведения:** место (название, тип, местность), время суток, пора года, погода, свет, постройки с материалом и состоянием, вещи с положением, люди с обликом и занятием, звук с источником, имя и одежда героя.\n\n**Свободно:** птицы, насекомые, шорох травы, ветер, оттенки неба и дерева, тепло солнца на лице, настроение героя, одно сравнение.",
+      "char_count": 1220
+    },
+    {
+      "id": "situational_prose_requirements.md:5. Начало игры: первое появление героя и мира:1",
+      "file": "situational_prose_requirements.md",
+      "section": "5. Начало игры: первое появление героя и мира",
+      "line_start": 232,
+      "line_end": 257,
+      "text": "## situational_prose_requirements.md — 5. Начало игры: первое появление героя и мира\nмя и одежда героя.\n\n**Свободно:** птицы, насекомые, шорох травы, ветер, оттенки неба и дерева, тепло солнца на лице, настроение героя, одно сравнение.\n\n**Нельзя:** историческая справка о Новгороде и эпохе; прогноз вроде «впереди ждали беды»; прошлое и цель героя, которых нет в данных; люди, звери и звуки, создающие источник или зацепку сверх данных; мораль в концовке.\n\nСведения о предыстории, отношениях и поручении используются только в известной герою и нужной для настоящего форме; вступление не становится биографической справкой. Свободные звуки не создают новых источников и зацепок (§4.7).\n\n**Дополнительный контекст.** Кто герой, откуда и зачем оказался здесь; relevant authored memories/relationships; current place; near/far orientation; видимые exits/barriers; время, свет, погода, звуки; тело; присутствующие NPC/предметы; immediate pressure и uncertainty.\n\n**Дополнительные ограничения.** Dossier dump; перечисление всех параметров; историческая лекция; generic «вы приходите в себя» без factual basis; полное описание каждого предмета; invented destination/cause; повтор названия места вместо сцены.",
+      "char_count": 1201
+    },
+    {
+      "id": "situational_prose_requirements.md:5. Начало игры: первое появление героя и мира:2",
+      "file": "situational_prose_requirements.md",
+      "section": "5. Начало игры: первое появление героя и мира",
+      "line_start": 232,
+      "line_end": 257,
+      "text": "## situational_prose_requirements.md — 5. Начало игры: первое появление героя и мира\nия; generic «вы приходите в себя» без factual basis; полное описание каждого предмета; invented destination/cause; повтор названия места вместо сцены.\n\n**Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».\n\nStage 23 проверяет это через обязательный `literary_composition_check` существующего semantic auditor. Factual-only approval недостаточен: dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.\n\n**Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.",
+      "char_count": 1049
+    },
+    {
+      "id": "situational_prose_requirements.md:6. Новое место и вход в помещение:0",
+      "file": "situational_prose_requirements.md",
+      "section": "6. Новое место и вход в помещение",
+      "line_start": 258,
+      "line_end": 283,
+      "text": "## situational_prose_requirements.md — 6. Новое место и вход в помещение\n## 6. Новое место и вход в помещение\n\n**Что читатель должен понять:** куда попал герой; каково здесь — светло или темно, тепло или холодно, бедно или достаточно; кто здесь и где; что можно взять и куда выйти.\n\n**Порядок снаружи:** имя места или условие (ночь, туман), одна главная примета, две-четыре приметы построек с материалом, ворота и проход, люди и звери на виду, один отклик героя или переход к действию. Ночью, в дыму, от усталости план сужается до света, звука и тела. Беда — предвестием (кони, запах, звук) раньше картины.\n\n**Порядок внутри:** порог и перемена среды (пригнулся, со света в сумрак), первое сильное ощущение, источник света, три-шесть предметов и людей с положением от входа (у печи, на лавке, в углу), одна фоновая деталь. В темноте — только освещённое; помещение проявляется по мере того, как привыкают глаза.\n\n**Длина:** обычный интерьер — два-четыре предложения, 250–700 знаков; вид места снаружи — абзац около 500–700; первый вход в большую палату или храм — до 1000–1500; повторный заход — одна деталь, обновлённая переменой.",
+      "char_count": 1130
+    },
+    {
+      "id": "situational_prose_requirements.md:6. Новое место и вход в помещение:1",
+      "file": "situational_prose_requirements.md",
+      "section": "6. Новое место и вход в помещение",
+      "line_start": 258,
+      "line_end": 283,
+      "text": "## situational_prose_requirements.md — 6. Новое место и вход в помещение\n; вид места снаружи — абзац около 500–700; первый вход в большую палату или храм — до 1000–1500; повторный заход — одна деталь, обновлённая переменой.\n\n**Сведения:** вид и назначение помещения; материал стен, пола, кровли, двери, печи; свет, печь и огонь; размер, окна, выходы; вещи с положением и материалом; люди с местом и занятием; состояние (сажа, чисто, новый сруб); звук и запах с источником. Для места снаружи — название, положение, ворота, люди и звери на виду, состояние места.\n\n**Свободно:** оттенок материала в его пределах; одна нейтральная фоновая мелочь в границах §4.7; ослепление, тепло, дрожь героя; сравнение по памяти героя.\n\n**Нельзя:** перечень вещей сразу после входа; печь, лавка, окно, «теснота», которых нет в данных; невидимое в темноте; история места; сравнение с тем, чего герой не видел; слова «бедный», «богатый» вместо материалов.",
+      "char_count": 935
+    },
+    {
+      "id": "situational_prose_requirements.md:6. Новое место и вход в помещение:2",
+      "file": "situational_prose_requirements.md",
+      "section": "6. Новое место и вход в помещение",
+      "line_start": 258,
+      "line_end": 283,
+      "text": "## situational_prose_requirements.md — 6. Новое место и вход в помещение\nтеснота», которых нет в данных; невидимое в темноте; история места; сравнение с тем, чего герой не видел; слова «бедный», «богатый» вместо материалов.\n\nПервым идёт то, что дошло до героя раньше при данных условиях. Работа, слышная раньше, чем видна, — звуком; переход со света в тёмное или жаркое — телом и светом; открытое место днём — видом; запах впереди, когда он силён или зрение закрыто. Свет называется при входе и при перемене; тепло и холод — когда ощутимы или отличаются от ожидаемого. Любая фоновая мелочь допускается только по границе §4.7: она не создаёт доступную мышь, скрытый источник треска или другое новое существо и событие.\n\n**Дополнительный контекст.** Confirmed movement/arrival; current position; ближайшая геометрия; дальние landmarks; видимые exits с направлением; barriers/access; environment; people/objects/processes; body changes after travel.\n\n**Дополнительные ограничения.** Повтор всей биографии; tour-guide catalogue; неразрешённые направления; «локация сменилась»; скрытые помещения; invented shelter или поселение по одному следу.",
+      "char_count": 1139
+    },
+    {
+      "id": "situational_prose_requirements.md:6. Новое место и вход в помещение:3",
+      "file": "situational_prose_requirements.md",
+      "section": "6. Новое место и вход в помещение",
+      "line_start": 258,
+      "line_end": 283,
+      "text": "## situational_prose_requirements.md — 6. Новое место и вход в помещение\nей биографии; tour-guide catalogue; неразрешённые направления; «локация сменилась»; скрытые помещения; invented shelter или поселение по одному следу.\n\n**Good / bad.** Good позволяет мысленно нарисовать место и выбрать осмысленный следующий шаг. Bad меняет только заголовок или сообщает одну атмосферную деталь без географии.\n\n**Unseen validation.** Прибытие с реки в тесный двор с закрытыми воротами, видимым проходом в сени и голосами за стеной. Проверить ориентацию без invented людей за преградой и без списка affordances.",
+      "char_count": 599
+    },
+    {
+      "id": "situational_prose_requirements.md:6.1. Впервые увиденный человек или зверь:0",
+      "file": "situational_prose_requirements.md",
+      "section": "6.1. Впервые увиденный человек или зверь",
+      "line_start": 284,
+      "line_end": 299,
+      "text": "## situational_prose_requirements.md — 6.1. Впервые увиденный человек или зверь\n### 6.1. Впервые увиденный человек или зверь\n\n**Что читатель должен понять:** кто это — знакомый или чужой; какого он звания и дела по виду; где он и чем занят; что у него в руках; заметил ли он героя; опасен ли. О звере — какой, где, что делает, опасен ли, чей.\n\n**Порядок:** издали или в работе — место и занятие, одна-две приметы или одна заметная вещь (шапка, топор). Вблизи или когда человек становится собеседником — три-шесть примет сверху вниз (рост и сложение, волосы и борода, лицо, одежда, руки), затем что в руках и что делает, затем видимый отклик на героя. Имя — сразу, если герой знает человека; иначе после облика или из чужих уст. Ночью облик дан через свет — свечу, костёр, факел. Повторная встреча — срок, две-четыре перемены, одна сохранившаяся черта, а если перемен нет, так и сказано. Зверь — вид и признак, важный для следующего шага (хромает, лает, рычит, молчит), где он и что сделал; масса вдали — виды без числа.\n\n**Длина:** мимолётный человек — одна фраза; значимый — абзац 300–700 знаков (медиана портрета у Балашова 510); зверь без значения — одна строка, значимый — цепочка коротких действий.",
+      "char_count": 1203
+    },
+    {
+      "id": "situational_prose_requirements.md:6.1. Впервые увиденный человек или зверь:1",
+      "file": "situational_prose_requirements.md",
+      "section": "6.1. Впервые увиденный человек или зверь",
+      "line_start": 284,
+      "line_end": 299,
+      "text": "## situational_prose_requirements.md — 6.1. Впервые увиденный человек или зверь\nодна фраза; значимый — абзац 300–700 знаков (медиана портрета у Балашова 510); зверь без значения — одна строка, значимый — цепочка коротких действий.\n\n**Сведения:** знает ли его герой и под каким именем; облик и возраст по признакам; постоянная примета; одежда; что в руках; где и в какой позе; занятие; видимое состояние тела; отношение и отклик на героя; свет и расстояние. О звере — вид, число, положение, движение, состояние, звук, хозяин.\n\n**Свободно:** впечатление героя с пометой («по виду мастеровой»); вывод героя о ремесле по топору и долоту; сравнение с иконой или зверем, если оно не вводит новых вещей; оттенок цвета известной одежды.\n\n**Нельзя:** мысли, чувства, намерения человека и зверя; число лет и родословие без данных; имя незнакомца в первой фразе; борода, шрам, мимика, которых нет в данных; перечень из семи и больше примет для случайного человека.",
+      "char_count": 953
+    },
+    {
+      "id": "situational_prose_requirements.md:6.1. Впервые увиденный человек или зверь:2",
+      "file": "situational_prose_requirements.md",
+      "section": "6.1. Впервые увиденный человек или зверь",
+      "line_start": 284,
+      "line_end": 299,
+      "text": "## situational_prose_requirements.md — 6.1. Впервые увиденный человек или зверь\nловие без данных; имя незнакомца в первой фразе; борода, шрам, мимика, которых нет в данных; перечень из семи и больше примет для случайного человека.\n\nПри первой встрече одежда занимает одну-две приметы в общем счёте; подробные два-пять предметов одежды уместны, когда одежда сама является предметом момента. Вывод о ремесле идёт после признаков и остаётся помеченным выводом. Расстояние ограничивает различимость, но не вводит обязанности передавать расстояние до каждой вещи. Видимый отклик, движения и мимика другого человека требуют данных (§4.8).",
+      "char_count": 632
     },
     {
       "id": "situational_prose_requirements.md:7. Exploration, search и inspection:0",
       "file": "situational_prose_requirements.md",
       "section": "7. Exploration, search и inspection",
-      "line_start": 123,
-      "line_end": 136,
-      "text": "## situational_prose_requirements.md — 7. Exploration, search и inspection\n## 7. Exploration, search и inspection\n\n**Необходимый контекст.** Точная цель наблюдения; подтверждение выполненной попытки; затраченное время/effort; доступный scope; известные до попытки признаки; новые наблюдения; negative resolution или uncertainty; body/environment effects.\n\n**Обязательный смысл.** Отделить сам процесс от результата. Показать каждую найденную/подтверждённую деталь, цену поиска и границу неизвестного. `No confirmed find in this attempt` не превращается в `ничего нет в мире`.\n\n**Литературная подача.** Для inspection центр — предмет и его наблюдаемая структура; для search — продвижение внимания по физическому пространству и итог. Не повторять формулировку intent. Сведения складываются в зримо расположенную сцену, а не список «обнаружено».\n\n**Избыточно/запрещено.** Invented hand contact, запах, температура, звук или действие; эпистемическая фраза «наблюдение не доказывает»; carrierless clue; объявление ownership/history/authenticity без переданного basis; отрицание вне exact search scope. Уже подтверждённые player-safe ownership, history или authenticity допустимы и не должны теряться.",
-      "char_count": 1195
+      "line_start": 300,
+      "line_end": 313,
+      "text": "## situational_prose_requirements.md — 7. Exploration, search и inspection\n## 7. Exploration, search и inspection\n\n**Необходимый контекст.** Точная цель наблюдения; подтверждение выполненной попытки; затраченное время/effort; доступный scope; известные до попытки признаки; новые наблюдения; negative resolution или uncertainty; body/environment effects.\n\n**Обязательный смысл.** Отделить сам процесс от результата. Показать каждую найденную/подтверждённую деталь, цену поиска и границу неизвестного. `No confirmed find in this attempt` не превращается в `ничего нет в мире`.\n\n**Литературная подача.** Для inspection центр — предмет и его наблюдаемая структура; для search — продвижение внимания по физическому пространству и итог. Не повторять формулировку intent. Сведения складываются в зримо расположенную сцену, а не список «обнаружено».",
+      "char_count": 842
     },
     {
       "id": "situational_prose_requirements.md:7. Exploration, search и inspection:1",
       "file": "situational_prose_requirements.md",
       "section": "7. Exploration, search и inspection",
-      "line_start": 123,
-      "line_end": 136,
-      "text": "## situational_prose_requirements.md — 7. Exploration, search и inspection\nереданного basis; отрицание вне exact search scope. Уже подтверждённые player-safe ownership, history или authenticity допустимы и не должны теряться.\n\n**Good / bad.** Good отвечает, что герой действительно сделал, что теперь видит/знает и чего всё ещё не знает. Bad заменяет результат атмосферой, объявляет поиск успешным из intent или выдаёт technical uncertainty после перечня фактов.\n\n**Unseen validation.** Осмотр уже известной пряжки, поиск сухой травы под навесом и попытка услышать движение за дверью. Все три должны пройти общий механизм с разными perceptual channels, без отдельных handlers и без обязательного «ничего не найдено».",
-      "char_count": 716
+      "line_start": 300,
+      "line_end": 313,
+      "text": "## situational_prose_requirements.md — 7. Exploration, search и inspection\nния по физическому пространству и итог. Не повторять формулировку intent. Сведения складываются в зримо расположенную сцену, а не список «обнаружено».\n\n**Избыточно/запрещено.** Неподтверждённый контакт, поступок или результат; запах, звук и субъективное ощущение допустимы в границах §4.7, но не создают свойство или скрытый источник; эпистемическая фраза «наблюдение не доказывает»; carrierless clue; объявление ownership/history/authenticity без переданного basis; отрицание вне exact search scope. Уже подтверждённые player-safe ownership, history или authenticity допустимы и не должны теряться.\n\n**Good / bad.** Good отвечает, что герой действительно сделал, что теперь видит/знает и чего всё ещё не знает. Bad заменяет результат атмосферой, объявляет поиск успешным из intent или выдаёт technical uncertainty после перечня фактов.\n\n**Unseen validation.** Осмотр уже известной пряжки, поиск сухой травы под навесом и попытка услышать движение за дверью. Все три должны пройти общий механизм с разными perceptual channels, без отдельных handlers и без обязательного «ничего не найдено».",
+      "char_count": 1165
     },
     {
-      "id": "situational_prose_requirements.md:8. Свободное действие, craft и смешанный незавершённый intent:0",
+      "id": "situational_prose_requirements.md:8. Итог действия и работа: свободное действие и craft:0",
       "file": "situational_prose_requirements.md",
-      "section": "8. Свободное действие, craft и смешанный незавершённый intent",
-      "line_start": 137,
-      "line_end": 150,
-      "text": "## situational_prose_requirements.md — 8. Свободное действие, craft и смешанный незавершённый intent\n## 8. Свободное действие, craft и смешанный незавершённый intent\n\n**Необходимый контекст.** Grounded attempt; используемые source/tool refs; фактический порядок подшагов; checks; elapsed; source transitions; outputs/waste/nonworking result; item/body/place changes; player-safe semantic remaining intent и player-response boundary.\n\n**Обязательный смысл.** Показать ближайшую реальную попытку и фактический результат. Для craft ясны преобразованный материал, самостоятельный результат, остаток/отход и практическое состояние. Для mixed intent проза естественно различает реально завершённое и то, до чего действие ещё не дошло; неисполненный остаток остаётся открытым и не маскируется общим успехом либо ложным провалом. Точный persisted remaining intent служит semantic evidence, но не требует буквального воспроизведения или технического списка.\n\n**Литературная подача.** Физическая последовательность строится вокруг сопротивления материала, доступных инструментов и видимого результата, если эти признаки подтверждены. Partial/nonworking/waste — полноценные причинные исходы, а не системная ошибка. На boundary текст естественно возвращает управление игроку.",
-      "char_count": 1263
+      "section": "8. Итог действия и работа: свободное действие и craft",
+      "line_start": 314,
+      "line_end": 337,
+      "text": "## situational_prose_requirements.md — 8. Итог действия и работа: свободное действие и craft\n## 8. Итог действия и работа: свободное действие и craft\n\n**Что читатель должен понять:** что сделал герой и что вышло (состояние вещи, готовность), чего это стоило телу, что изменилось вокруг. О чужой работе — что человек делает, каким орудием, из чего и на каком шаге.\n\n**Порядок:** цепочка глаголов в порядке журнала действий — орудие, материал, место, шаг за шагом; затем видимый результат и состояние вещи; затем телесная цена героя одной фразой; затем отклик мира, если он есть в данных. Чужая работа: звук или запах, если работа слышна раньше, чем видна; место; человек; два-пять глаголов с орудием; реплика мастера, если она есть. Оборванная или сменившаяся работа называется как перемена, без причины, которой герой не знает.\n\n**Длина:** простое действие — одно-два предложения; сцена работы — абзац 300–600 знаков (медианы «занятия» и «труда» — 474 и 569); перемена занятия — короткий кадр до 300.\n\n**Сведения:** журнал действий героя; орудие и материал; состояние вещи до и после; результат и число (венцы, мешки); положение вещей; тело героя. О чужой работе — занятие и его шаг, орудие, материал, поза, звук работы, готовность.",
+      "char_count": 1232
     },
     {
-      "id": "situational_prose_requirements.md:8. Свободное действие, craft и смешанный незавершённый intent:1",
+      "id": "situational_prose_requirements.md:8. Итог действия и работа: свободное действие и craft:1",
       "file": "situational_prose_requirements.md",
-      "section": "8. Свободное действие, craft и смешанный незавершённый intent",
-      "line_start": 137,
-      "line_end": 150,
-      "text": "## situational_prose_requirements.md — 8. Свободное действие, craft и смешанный незавершённый intent\nтверждены. Partial/nonworking/waste — полноценные причинные исходы, а не системная ошибка. На boundary текст естественно возвращает управление игроку.\n\n**Избыточно/запрещено.** Recipe report; invented manipulation; создание материала из воздуха; mechanics/damage из prose descriptor; автоматическое завершение продолжения; `не удалось` для ещё не исполненного остатка; новая identity там, где физически продолжается тот же объект.\n\n**Good / bad.** Good различает attempt, outcome и remaining intent и сохраняет физическую непрерывность объектов. Bad пишет «вы сделали X» по одной заявке, хотя код подтвердил лишь подготовку или первый подшаг.\n\n**Unseen validation.** Игрок пытается из обломка доски сделать клин, вставить его в дверь и позвать спутника. После изготовления клина возникает новая граница состояния: проза подтверждает клин и расход материала, а дверь и зов оставляет pending без специального branch по слову «клин».",
-      "char_count": 1031
+      "section": "8. Итог действия и работа: свободное действие и craft",
+      "line_start": 314,
+      "line_end": 337,
+      "text": "## situational_prose_requirements.md — 8. Итог действия и работа: свободное действие и craft\nе; результат и число (венцы, мешки); положение вещей; тело героя. О чужой работе — занятие и его шаг, орудие, материал, поза, звук работы, готовность.\n\n**Свободно:** ритм; ощущения героя — тяжесть, жар, запах свежей щепы в пределах материала; его оценка чужого мастерства; звук без значения.\n\n**Нельзя:** поступки героя, которых нет в журнале; объяснение технологии и обычая голосом рассказчика («так принято»); выдуманные поломки и драма; «устал», «радовался» о другом человеке — только видимое: пот, движение, голос.\n\nДля craft сохраняются преобразованный материал, самостоятельный результат, остаток материала, отходы и практическое состояние. Частичный, неработающий результат и отход — причинные исходы, а не системная ошибка. Материальный остаток не следует путать с неисполненным следующим шагом. Рассказчик получает и описывает совершённое; обычное несделанное продолжение ему не передаётся и не изображается ни сделанным, ни несделанным. При невозможности шага передаётся воспринятая причина помехи. Неизвестный результат уже совершённой попытки сохраняется.",
+      "char_count": 1160
     },
     {
-      "id": "situational_prose_requirements.md:9. Диалог, exact speech и несколько NPC:0",
+      "id": "situational_prose_requirements.md:8. Итог действия и работа: свободное действие и craft:2",
       "file": "situational_prose_requirements.md",
-      "section": "9. Диалог, exact speech и несколько NPC",
-      "line_start": 151,
-      "line_end": 164,
-      "text": "## situational_prose_requirements.md — 9. Диалог, exact speech и несколько NPC\n## 9. Диалог, exact speech и несколько NPC\n\n**Необходимый контекст.** Exact perceived utterance; speaker ref/recognition; intended и actual perceived audience; order; delivery/gesture cues; current observable state каждого NPC; knowledge updates; uncertainty; player-response boundary.\n\n**Обязательный смысл.** Кто сказал точные слова, кому речь была адресована, кто её фактически воспринял в доступной герою мере, что видимо произошло после неё и где разговор ждёт игрока. Содержание claims остаётся речью/мнением, пока другой owner не дал knowledge.\n\n**Литературная подача.** Exact utterance воспроизводится дословно, с ясной атрибуцией. Внешнее описание окружает реплику, не пересказывает её. Голоса различаются содержанием и уже разрешёнными social/biographical cues, а не карикатурным диалектом. В multi-NPC сцене ответы идут в committed causal order; действие или реплика следующего NPC учитывает воспринятое предыдущее.",
-      "char_count": 1005
+      "section": "8. Итог действия и работа: свободное действие и craft",
+      "line_start": 314,
+      "line_end": 337,
+      "text": "## situational_prose_requirements.md — 8. Итог действия и работа: свободное действие и craft\nни сделанным, ни несделанным. При невозможности шага передаётся воспринятая причина помехи. Неизвестный результат уже совершённой попытки сохраняется.\n\n**Дополнительный контекст.** Grounded attempt; используемые source/tool refs; фактический порядок подшагов; checks; elapsed; source transitions; outputs/waste/nonworking result; item/body/place changes; воспринимаемая причина невозможности шага, если она есть, и player-response boundary.\n\n**Дополнительные ограничения.** Recipe report; invented manipulation; создание материала из воздуха; mechanics/damage из prose descriptor; автоматическое завершение продолжения; `не удалось` для ещё не исполненного остатка; новая identity там, где физически продолжается тот же объект.\n\n**Good / bad.** Good различает совершённую попытку, результат и переданную помеху и сохраняет физическую непрерывность объектов. Bad пишет «вы сделали X» по одной заявке, хотя код подтвердил лишь подготовку или первый подшаг.",
+      "char_count": 1047
     },
     {
-      "id": "situational_prose_requirements.md:9. Диалог, exact speech и несколько NPC:1",
+      "id": "situational_prose_requirements.md:8. Итог действия и работа: свободное действие и craft:3",
       "file": "situational_prose_requirements.md",
-      "section": "9. Диалог, exact speech и несколько NPC",
-      "line_start": 151,
-      "line_end": 164,
-      "text": "## situational_prose_requirements.md — 9. Диалог, exact speech и несколько NPC\n карикатурным диалектом. В multi-NPC сцене ответы идут в committed causal order; действие или реплика следующего NPC учитывает воспринятое предыдущее.\n\n**Избыточно/запрещено.** Перефразирование exact speech; добавление признания, обещания или смягчение угрозы; перенос реплики/жеста другому NPC; hidden motive и speaker posture; «все услышали» без perception results; единая модель, разыгрывающая нескольких NPC из общего hidden context; атрибуция молчания по отсутствию ответа.\n\n**Good / bad.** Good позволяет без UI metadata понять говорящего, последовательность и открытый вопрос. Bad выдаёт стенограмму без сцены, смешивает говорящих или авторским голосом подтверждает ложную реплику.\n\n**Unseen validation.** Один NPC задаёт вопрос игроку, второй слышит лишь часть и вмешивается жестом, третий присутствует, но не получил response boundary. Проза сохраняет exact text, разные perception states и не заставляет третьего реагировать.",
-      "char_count": 1014
+      "section": "8. Итог действия и работа: свободное действие и craft",
+      "line_start": 314,
+      "line_end": 337,
+      "text": "## situational_prose_requirements.md — 8. Итог действия и работа: свободное действие и craft\nпомеху и сохраняет физическую непрерывность объектов. Bad пишет «вы сделали X» по одной заявке, хотя код подтвердил лишь подготовку или первый подшаг.\n\n**Unseen validation.** Игрок пытается из обломка доски сделать клин, вставить его в дверь и позвать спутника. После изготовления клина возникает новая граница состояния: проза подтверждает клин и расход материала, дверь и зов в прозе не описываются: обычное продолжение остаётся у владельца хода, без специального branch по слову «клин».",
+      "char_count": 582
     },
     {
-      "id": "situational_prose_requirements.md:10. Ожидание, процессы и живой мир:0",
+      "id": "situational_prose_requirements.md:9. Речь: диалог, exact speech и несколько NPC:0",
       "file": "situational_prose_requirements.md",
-      "section": "10. Ожидание, процессы и живой мир",
-      "line_start": 165,
-      "line_end": 178,
-      "text": "## situational_prose_requirements.md — 10. Ожидание, процессы и живой мир\n## 10. Ожидание, процессы и живой мир\n\n**Необходимый контекст.** Continuing/completed/interrupted activities; process transitions; autonomous NPC actions; environment/light/weather changes; body thresholds; perception results; unchanged facts только если они явно спроецированы. Exact elapsed остаётся в code-owned UI projection.\n\n**Обязательный смысл.** Текст показывает фактически воспринятые изменения, завершение или продолжение причинных процессов и цену для тела. Точная длительность видна в панели статуса и не повторяется в прозе. Если единственное изменение — ход часов, достаточно grounded сцены без invented waiting action, изменения позиции или утверждения неизменности.\n\n**Литературная подача.** Сжатие времени через один-два подтверждённых изменяющихся признака. Parallel changes объединяются в последовательность по exact order. Background остаётся фоном; interruption становится новым центром сцены и объясняет остановку только supplied reason.",
-      "char_count": 1034
+      "section": "9. Речь: диалог, exact speech и несколько NPC",
+      "line_start": 338,
+      "line_end": 361,
+      "text": "## situational_prose_requirements.md — 9. Речь: диалог, exact speech и несколько NPC\n## 9. Речь: диалог, exact speech и несколько NPC\n\n**Что читатель должен понять:** кто говорит, кому, что именно сказано, как (голос, жест), кто ещё слышит и что происходит рядом.\n\n**Порядок:** в новой сцене — подводка в одно-два предложения: где, кто слышит, чем освещено. Первая реплика каждого говорящего — с одной приметой. Дальше реплики без ремарок, пока не сменится говорящий или его состояние. Ответ без слов (кивок, молчание) — если он есть в данных. Услышанная речь: сначала звук, потом источник и преграда, потом только расслышанное, с прямым «слов не разобрать», если так; незнакомый язык — тоном, числом голосов и жестом, без перевода; ломаная речь — как есть, без пояснения.\n\n**Длина:** подводка короче реплик; ремарок не больше половины реплик; у Балашова медиана диалоговой записи — три абзаца и 390 знаков.\n\n**Сведения:** реплика дословно; кто и кому; имя говорящего для героя; голос и громкость; жест, поза, предмет в руках; занятие во время речи; виден ли говорящий; расстояние и преграда; язык и понимает ли его герой; кто ещё слышит.\n\n**Свободно:** оттенок голоса в пределах громкости; нейтральный шум фона в пределах известных вещей и условий; чувство героя.",
+      "char_count": 1264
     },
     {
-      "id": "situational_prose_requirements.md:10. Ожидание, процессы и живой мир:1",
+      "id": "situational_prose_requirements.md:9. Речь: диалог, exact speech и несколько NPC:1",
       "file": "situational_prose_requirements.md",
-      "section": "10. Ожидание, процессы и живой мир",
-      "line_start": 165,
-      "line_end": 178,
-      "text": "## situational_prose_requirements.md — 10. Ожидание, процессы и живой мир\nоследовательность по exact order. Background остаётся фоном; interruption становится новым центром сцены и объясняет остановку только supplied reason.\n\n**Избыточно/запрещено.** Служебная строка длительности и mechanically forced присоединение времени к случайной детали; invented bustle; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без basis; minute-by-minute montage; повтор всех processes. Оценивается литературный переход целиком, не наличие конкретной фразы или отдельного предложения.\n\n**Good / bad.** Good создаёт ощущение независимого мира и показывает новый decision boundary. Bad повторяет UI-время в прозе либо декоративно оживляет мир событиями, которых нет в committed package.\n\n**Unseen validation.** Пока герой чинит ремень, огонь догорает, знакомый NPC завершает работу и уходит, а дождь начинается после окончания ремонта. Проверить factual order, perceptual scope и отсутствие invented реакции героя.",
-      "char_count": 1031
+      "section": "9. Речь: диалог, exact speech и несколько NPC",
+      "line_start": 338,
+      "line_end": 361,
+      "text": "## situational_prose_requirements.md — 9. Речь: диалог, exact speech и несколько NPC\nо герой; кто ещё слышит.\n\n**Свободно:** оттенок голоса в пределах громкости; нейтральный шум фона в пределах известных вещей и условий; чувство героя.\n\n**Нельзя:** пересказ и сокращение реплик; ярлыки манеры; мысли и намерения говорящего; выдуманные жесты и предметы, на которые игрок может опереться (швырнул кость, достал кошель); лекции в репликах, если их нет в данных; лицо невидимого собеседника.\n\nПодтверждённая речь сохраняется полностью, даже когда её длина превышает литературные ориентиры. Содержание утверждения остаётся речью или мнением говорящего, пока не получено отдельное основание знания. В сцене с несколькими NPC сохраняются говорящий, адресат, фактически воспринятая аудитория и причинный порядок; нельзя переносить жест или реплику другому человеку. Новое действие, отсутствие ответа и слышимость не выводятся из самого произнесения. Нейтральный шум не создаёт новую посуду, горящую лучину или скрытого собеседника (§4.7).\n\n**Дополнительный контекст.** Exact perceived utterance; speaker ref/recognition; intended и actual perceived audience; order; delivery/gesture cues; current observable state каждого NPC; knowledge updates; uncertainty; player-response boundary.",
+      "char_count": 1276
+    },
+    {
+      "id": "situational_prose_requirements.md:9. Речь: диалог, exact speech и несколько NPC:2",
+      "file": "situational_prose_requirements.md",
+      "section": "9. Речь: диалог, exact speech и несколько NPC",
+      "line_start": 338,
+      "line_end": 361,
+      "text": "## situational_prose_requirements.md — 9. Речь: диалог, exact speech и несколько NPC\ntual perceived audience; order; delivery/gesture cues; current observable state каждого NPC; knowledge updates; uncertainty; player-response boundary.\n\n**Дополнительные ограничения.** Перефразирование exact speech; добавление признания, обещания или смягчение угрозы; перенос реплики/жеста другому NPC; hidden motive и speaker posture; «все услышали» без perception results; единая модель, разыгрывающая нескольких NPC из общего hidden context; атрибуция молчания по отсутствию ответа.\n\n**Good / bad.** Good позволяет без UI metadata понять говорящего, последовательность и открытый вопрос. Bad выдаёт стенограмму без сцены, смешивает говорящих или авторским голосом подтверждает ложную реплику.\n\n**Unseen validation.** Один NPC задаёт вопрос игроку, второй слышит лишь часть и вмешивается жестом, третий присутствует, но не получил response boundary. Проза сохраняет exact text, разные perception states и не заставляет третьего реагировать.",
+      "char_count": 1027
+    },
+    {
+      "id": "situational_prose_requirements.md:10. Ожидание, сон, долгая работа: процессы и живой мир:0",
+      "file": "situational_prose_requirements.md",
+      "section": "10. Ожидание, сон, долгая работа: процессы и живой мир",
+      "line_start": 362,
+      "line_end": 385,
+      "text": "## situational_prose_requirements.md — 10. Ожидание, сон, долгая работа: процессы и живой мир\n## 10. Ожидание, сон, долгая работа: процессы и живой мир\n\n**Что читатель должен понять:** сколько прошло, каким стал мир к концу срока, что теперь можно сделать.\n\n**Порядок:** первая фраза — прошедший срок или примета поры, не длиннее 150 знаков и без оценки; затем не больше четырёх вещей, воспринятых героем за срок (погода к концу, чем заняты люди рядом, что стало с вещами и припасами); один знак долготы; конец — перемена, на которую игрок может ответить. Пробуждение: тело и место героя, вещь при нём и чужое дело рядом, звук или реплика. Сон не пересказывается; засыпание — одной придаточной.\n\n**Длина:** один абзац, около 300 знаков (медиана категории 308).\n\n**Сведения:** прошедший срок; пора года и праздник; события, дошедшие до героя; погода в конце срока; занятия людей рядом; место героя; тело героя; состояние припасов и места.\n\n**Свободно:** томление, последняя мысль перед сном, настроение героя, литературная подача известных света и поры суток.\n\n**Нельзя:** поступки героя за срок, которых игрок не выбирал; чужие судьбы, политика и вести, не дошедшие до героя; прыжки на годы; будущее.",
+      "char_count": 1200
+    },
+    {
+      "id": "situational_prose_requirements.md:10. Ожидание, сон, долгая работа: процессы и живой мир:1",
+      "file": "situational_prose_requirements.md",
+      "section": "10. Ожидание, сон, долгая работа: процессы и живой мир",
+      "line_start": 362,
+      "line_end": 385,
+      "text": "## situational_prose_requirements.md — 10. Ожидание, сон, долгая работа: процессы и живой мир\nы суток.\n\n**Нельзя:** поступки героя за срок, которых игрок не выбирал; чужие судьбы, политика и вести, не дошедшие до героя; прыжки на годы; будущее.\n\nПродолжающиеся, завершившиеся и прерванные занятия, самостоятельные события мира и телесные перемены описываются только в воспринятой героем части. Прежние сведения сцены сохраняют основание по §3 без повторной передачи неизменного. Точный elapsed остаётся в code-owned UI; переданный прошедший срок словами допустим. Нельзя выдумывать занятие героя во время ожидания, перемену позиции, суету NPC или утверждать неизменность без основания.\n\n**Дополнительный контекст.** Continuing/completed/interrupted activities; process transitions; autonomous NPC actions; environment/light/weather changes; body thresholds; perception results; прежние не отменённые сведения сцены по §3. Exact elapsed остаётся в code-owned UI projection.",
+      "char_count": 972
+    },
+    {
+      "id": "situational_prose_requirements.md:10. Ожидание, сон, долгая работа: процессы и живой мир:2",
+      "file": "situational_prose_requirements.md",
+      "section": "10. Ожидание, сон, долгая работа: процессы и живой мир",
+      "line_start": 362,
+      "line_end": 385,
+      "text": "## situational_prose_requirements.md — 10. Ожидание, сон, долгая работа: процессы и живой мир\nt/weather changes; body thresholds; perception results; прежние не отменённые сведения сцены по §3. Exact elapsed остаётся в code-owned UI projection.\n\n**Дополнительные ограничения.** Служебная строка длительности и mechanically forced присоединение времени к случайной детали; неподтверждённые события и действия; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без основания в данных сцены; minute-by-minute montage; повтор всех processes. Оценивается литературный переход целиком, не наличие конкретной фразы или отдельного предложения.\n\n**Good / bad.** Good создаёт ощущение независимого мира и показывает новый decision boundary. Bad повторяет UI-время в прозе либо декоративно оживляет мир событиями, которых нет в committed package.\n\n**Unseen validation.** Пока герой чинит ремень, огонь догорает, знакомый NPC завершает работу и уходит, а дождь начинается после окончания ремонта. Проверить factual order, perceptual scope и отсутствие invented реакции героя.",
+      "char_count": 1097
+    },
+    {
+      "id": "situational_prose_requirements.md:10.1. Заметная перемена:0",
+      "file": "situational_prose_requirements.md",
+      "section": "10.1. Заметная перемена",
+      "line_start": 386,
+      "line_end": 399,
+      "text": "## situational_prose_requirements.md — 10.1. Заметная перемена\n### 10.1. Заметная перемена\n\n**Что читатель должен понять:** что изменилось и требует ли это ответа.\n\n**Порядок:** сигнал, как он дошёл до героя (звук, свет, запах, движение); его источник, если виден или известен; следствие для героя (не видно, скользко, стемнело); отклик героя — чувство, а не поступок. Скрытая причина («пожар», «враг») не называется, пока герой её не увидел. Для группы людей — место и порядок величины, один-три типа состава, предметы в руках у ближних, движение, звук; давка показана тем, чего герой не может сделать.\n\n**Длина:** одно-два предложения; гроза, пожар, приход толпы — до абзаца.\n\n**Сведения:** событие мира, дошедшее до героя; источник, направление и расстояние звука или запаха; новая погода и свет; видимость; для группы — место, состав, порядок величины, поведение (молчит, ропщет, расступилась), предметы в руках, движение.\n\n**Свободно:** чувство героя, его непроизвольное движение, телесный отклик.\n\n**Нельзя:** причина, которой герой не знает; прогноз и толкование знамения; чувства и намерения толпы; повтор неизменного фона из прошлого отрывка.",
+      "char_count": 1151
     },
     {
       "id": "situational_prose_requirements.md:11. Travel, arrival и return:0",
       "file": "situational_prose_requirements.md",
       "section": "11. Travel, arrival и return",
-      "line_start": 179,
-      "line_end": 192,
-      "text": "## situational_prose_requirements.md — 11. Travel, arrival и return\n## 11. Travel, arrival и return\n\n**Необходимый контекст.** Confirmed traversal outcome; route observations; промежуточные events/interruptions; environment; body/load; destination/anchor; arrival exits/barriers; remembered prior state и current delta для return. Elapsed остаётся в панели статуса.\n\n**Обязательный смысл.** Для travel — продвижение, цена и существенные изменения пути; для arrival — completed movement и новая ориентация; для return — узнавание и только подтверждённые отличия от памяти. `paused`, `blocked`, `stranded` и `interrupted` различаются.\n\n**Литературная подача.** Не пересказывать карту. Выбрать route beats, меняющие положение, условия или решение. Arrival получает собственный final beat. Return может вызвать память, но она остаётся памятью персонажа; настоящее описывается отдельно.\n\n**Избыточно/запрещено.** Teleport prose; invented scenery между endpoints; destination при неизвестном route; «всё осталось как прежде» без current comparison; скрытые события в отсутствие героя; raw distance/speed factors.",
-      "char_count": 1106
+      "line_start": 400,
+      "line_end": 413,
+      "text": "## situational_prose_requirements.md — 11. Travel, arrival и return\n## 11. Travel, arrival и return\n\n**Необходимый контекст.** Confirmed traversal outcome; route observations; промежуточные events/interruptions; environment; изменения body/load; destination/anchor; arrival exits/barriers; remembered prior state и current delta для return. Elapsed остаётся в панели статуса.\n\n**Обязательный смысл.** Для travel — продвижение, цена и существенные изменения пути; для arrival — completed movement и новая ориентация; для return — узнавание и только подтверждённые отличия от памяти. `paused`, `blocked`, `stranded` и `interrupted` различаются.\n\n**Литературная подача.** Не пересказывать карту. Выбрать route beats, меняющие положение, условия или решение. Arrival получает собственный final beat. Return может вызвать память, но она остаётся памятью персонажа; настоящее описывается отдельно.\n\n**Избыточно/запрещено.** Teleport prose; invented scenery между endpoints; destination при неизвестном route; «всё осталось как прежде» без current comparison; скрытые события в отсутствие героя; raw distance/speed factors.",
+      "char_count": 1116
     },
     {
       "id": "situational_prose_requirements.md:11. Travel, arrival и return:1",
       "file": "situational_prose_requirements.md",
       "section": "11. Travel, arrival и return",
-      "line_start": 179,
-      "line_end": 192,
+      "line_start": 400,
+      "line_end": 413,
       "text": "## situational_prose_requirements.md — 11. Travel, arrival и return\n; destination при неизвестном route; «всё осталось как прежде» без current comparison; скрытые события в отсутствие героя; raw distance/speed factors.\n\n**Good / bad.** Good позволяет понять, дошёл ли герой, как изменились время/тело и что перед ним теперь. Bad пишет «вы отправились и прибыли» без причинного пути либо объявляет знакомое место неизменным по одной памяти.\n\n**Unseen validation.** Возврат к переправе после ночного обхода: знакомый ориентир сохранился, проход закрыт, другой звук идёт с реки, герой устал. Все различия берутся из current/remembered projections, без нового return template.",
       "char_count": 672
     },
     {
-      "id": "situational_prose_requirements.md:12. Combat, injury, failure и death:0",
+      "id": "situational_prose_requirements.md:12. Бой, рана, смерть: combat, injury и failure:0",
       "file": "situational_prose_requirements.md",
-      "section": "12. Combat, injury, failure и death",
-      "line_start": 193,
-      "line_end": 206,
-      "text": "## situational_prose_requirements.md — 12. Combat, injury, failure и death\n## 12. Combat, injury, failure и death\n\n**Необходимый контекст.** Ordered combat events; actors/targets; distance/position; exact perceived statements; check result band и margin без raw roll/DC/audit; harm/body/item/movement consequences; current threats; combat status; elapsed; death cause/timer/terminal result. Для generic player check narrator получает тот же safe band/margin и action binding, чтобы не превращать частичный успех в полный либо неудачу в успех; числовую арифметику показывает отдельная UI-card, не проза.\n\n**Обязательный смысл.** Кто сделал что, кому и с каким воспринимаемым результатом; как изменились положение, способность действовать, предметы и угроза; закончился ли бой или управление вернулось игроку. Injury описывается только supplied symptoms/location/severity. Failure сохраняет попытку и её конкретное последствие. Death называется только после code-owned terminal outcome.\n\n**Литературная подача.** Короткие ясные causal beats, пространственная разборчивость, глагольная энергия. Большой exchange допускает несколько абзацев. Речь в бою exact. После удара текст задерживается на реально значимом body/world consequence, а не на броске.",
-      "char_count": 1247
+      "section": "12. Бой, рана, смерть: combat, injury и failure",
+      "line_start": 414,
+      "line_end": 435,
+      "text": "## situational_prose_requirements.md — 12. Бой, рана, смерть: combat, injury и failure\n## 12. Бой, рана, смерть: combat, injury и failure\n\n**Что читатель должен понять:** кто против кого; что герой видит со своего места; чем кончился каждый удар; что осталось после.\n\n**Порядок:** сигнал (звук, свет); схватка короткими фразами с глаголом в начале — удар или поворот на фразу; видимый исход из данных; отдельный итог — кто остался и пал рядом (по имени, если герой знает), пленные, конь и оружие, тело героя. Из давки видны ближние лица и свой удар, остальное — звук; картина поля — только с высоты. Потеря сознания обрывает момент, следующий начинается с пробуждения. Смерть при герое — три-шесть внешних знаков (дыхание, взгляд, руки, остановка, лицо), затем жест или звук присутствующих. Смерть самого героя — чувства гаснут одно за другим, без слов «умер», не длиннее трёх-четырёх предложений. Болезнь — сперва один-три признака, имя болезни — только если его знает герой.\n\n**Длина:** удар — одно-два предложения; схватка — абзац; поединок — не больше трёх абзацев; смерть у постели — один-три абзаца, до 700 знаков.",
+      "char_count": 1120
     },
     {
-      "id": "situational_prose_requirements.md:12. Combat, injury, failure и death:1",
+      "id": "situational_prose_requirements.md:12. Бой, рана, смерть: combat, injury и failure:1",
       "file": "situational_prose_requirements.md",
-      "section": "12. Combat, injury, failure и death",
-      "line_start": 193,
-      "line_end": 206,
-      "text": "## situational_prose_requirements.md — 12. Combat, injury, failure и death\nой exchange допускает несколько абзацев. Речь в бою exact. После удара текст задерживается на реально значимом body/world consequence, а не на броске.\n\n**Избыточно/запрещено.** Raw HP/DC/roll; invented gore, pain, diagnosis или weapon effect; объявление смерти по низкому health; vague «завязывается бой» вместо произошедшего; heroic embellishment; завершение боя narrator-ом; автоматический следующий удар игрока.\n\n**Good / bad.** Good даёт восстановимую последовательность и понятную новую тактическую ситуацию. Bad красив, но нельзя определить, кто ранен, где находится оружие и ждёт ли мир решения игрока.\n\n**Unseen validation.** Борьба в тесном проходе: попытка захвата не достигла цели, щит выпал, другой NPC крикнул exact warning, раненый ещё способен действовать. Проверить failure, item position, speech attribution и отсутствие premature death.",
-      "char_count": 929
+      "section": "12. Бой, рана, смерть: combat, injury и failure",
+      "line_start": 414,
+      "line_end": 435,
+      "text": "## situational_prose_requirements.md — 12. Бой, рана, смерть: combat, injury и failure\nгерой.\n\n**Длина:** удар — одно-два предложения; схватка — абзац; поединок — не больше трёх абзацев; смерть у постели — один-три абзаца, до 700 знаков.\n\n**Сведения:** стороны и число; оружие и защита с их состоянием; исход действия; место героя и укрытия; свет и видимость; звуки с источником; раны героя; признаки тела раненого или больного; павшие и раненые рядом; граница сознания.\n\n**Свободно:** страх и ярость героя, шум в ушах, оцепенение, ритм.\n\n**Нельзя:** картина всего поля без высоты; то, что было после потери сознания героя; мысли врага; раны, которых нет в данных; «умер от…» без причины в данных; прогноз судьбы и посмертная память.",
+      "char_count": 733
+    },
+    {
+      "id": "situational_prose_requirements.md:12. Бой, рана, смерть: combat, injury и failure:2",
+      "file": "situational_prose_requirements.md",
+      "section": "12. Бой, рана, смерть: combat, injury и failure",
+      "line_start": 414,
+      "line_end": 435,
+      "text": "## situational_prose_requirements.md — 12. Бой, рана, смерть: combat, injury и failure\nо, что было после потери сознания героя; мысли врага; раны, которых нет в данных; «умер от…» без причины в данных; прогноз судьбы и посмертная память.\n\n**Дополнительный контекст.** Ordered combat events; actors/targets; distance/position; exact perceived statements; check result band и margin без raw roll/DC/audit; harm/body/item/movement consequences; current threats; combat status; elapsed; death cause/timer/terminal result. Для generic player check narrator получает тот же safe band/margin и action binding, чтобы не превращать частичный успех в полный либо неудачу в успех; числовую арифметику показывает отдельная UI-card, не проза. Часов и градусов в художественном тексте нет; служебная длительность не пересказывается.\n\nРанение и механическое состояние тела берутся только из данных. Свободное субъективное ощущение не создаёт новую рану, диагноз, тяжесть или эффект оружия. Смерть героя требует code-owned terminal outcome, но не требует слова «умер» в прозе. Нельзя объявлять смерть по низкому health, завершать бой рассказчиком или автоматически добавлять следующий удар игрока.",
+      "char_count": 1181
+    },
+    {
+      "id": "situational_prose_requirements.md:12. Бой, рана, смерть: combat, injury и failure:3",
+      "file": "situational_prose_requirements.md",
+      "section": "12. Бой, рана, смерть: combat, injury и failure",
+      "line_start": 414,
+      "line_end": 435,
+      "text": "## situational_prose_requirements.md — 12. Бой, рана, смерть: combat, injury и failure\nтребует слова «умер» в прозе. Нельзя объявлять смерть по низкому health, завершать бой рассказчиком или автоматически добавлять следующий удар игрока.\n\n**Good / bad.** Good даёт восстановимую последовательность и понятную новую тактическую ситуацию. Bad красив, но нельзя определить, кто ранен, где находится оружие и ждёт ли мир решения игрока.\n\n**Unseen validation.** Борьба в тесном проходе: попытка захвата не достигла цели, щит выпал, другой NPC крикнул exact warning, раненый ещё способен действовать. Проверить failure, item position, speech attribution и отсутствие premature death.",
+      "char_count": 677
     },
     {
       "id": "situational_prose_requirements.md:13. Recovery и reload/replay:0",
       "file": "situational_prose_requirements.md",
       "section": "13. Recovery и reload/replay",
-      "line_start": 207,
-      "line_end": 220,
+      "line_start": 436,
+      "line_end": 449,
       "text": "## situational_prose_requirements.md — 13. Recovery и reload/replay\n## 13. Recovery и reload/replay\n\n**Необходимый контекст.** Для in-world recovery: elapsed, treatment/rest activity, before/after body conditions, interruptions, resources и current scene. Для reload/retry: persisted screen/narration identity и exact committed current state.\n\n**Обязательный смысл.** Recovery показывает постепенное фактическое изменение и оставшиеся ограничения. Reload/replay не является событием мира: он возвращает тот же committed текст и состояние без нового пробуждения, повторного действия, reroll или переоценки NPC.\n\n**Литературная подача.** После длительного перерыва допустима краткая reorientation из текущей safe-проекции, если создаётся новая factual scene; она не переписывает прежний outcome. Treatment связывается с телесным изменением и временем, но не обещает полного исцеления.\n\n**Избыточно/запрещено.** «Вы снова открываете глаза» при browser reload; повтор opening; мгновенное исчезновение тяжёлой раны; invented memory lapse; новая вариация persisted speech/prose на transport retry.",
       "char_count": 1091
     },
@@ -15235,8 +15424,8 @@
       "id": "situational_prose_requirements.md:13. Recovery и reload/replay:1",
       "file": "situational_prose_requirements.md",
       "section": "13. Recovery и reload/replay",
-      "line_start": 207,
-      "line_end": 220,
+      "line_start": 436,
+      "line_end": 449,
       "text": "## situational_prose_requirements.md — 13. Recovery и reload/replay\nbrowser reload; повтор opening; мгновенное исчезновение тяжёлой раны; invented memory lapse; новая вариация persisted speech/prose на transport retry.\n\n**Good / bad.** Good сохраняет непрерывность партии и отличает восстановление тела от восстановления UI. Bad использует reload как сюжетный переход или меняет детали мира после повторной доставки.\n\n**Unseen validation.** Reload во время paused treatment и отдельный новый ход после завершившегося сна. Первый должен быть byte/meaning-equivalent replay; второй — новая сцена с подтверждёнными body/time/environment changes.",
       "char_count": 642
     },
@@ -15244,134 +15433,188 @@
       "id": "situational_prose_requirements.md:14. Clue, testimony и uncertainty:0",
       "file": "situational_prose_requirements.md",
       "section": "14. Clue, testimony и uncertainty",
-      "line_start": 221,
-      "line_end": 234,
-      "text": "## situational_prose_requirements.md — 14. Clue, testimony и uncertainty\n## 14. Clue, testimony и uncertainty\n\n**Необходимый контекст.** Physical carrier/location; exact observable qualities; acquisition/placement; attributed speaker/source; knowledge status; hypothesis/uncertainty; confirmed links и запрещённые conclusions.\n\n**Обязательный смысл.** Игрок различает: что физически увидено, что сказал конкретный человек, что герой помнит/предполагает и что действительно известно. Улика существует как предмет/след, а не как авторский вывод.\n\n**Литературная подача.** Сначала предметная конкретика в пространстве; затем, если supplied, естественная мысль или вопрос героя с сохранением степени уверенности. Testimony остаётся атрибутированным. Несколько признаков можно связать наблюдением, но не скрытой причинностью.\n\n**Избыточно/запрещено.** «Это доказывает» без authority; виновник/мотив/направление по правдоподобию; authenticity; carrierless «разрезанная застёжка»; диагностический финал «наблюдения сами по себе не устанавливают»; repeated clue catalogue каждый ход.\n\n**Good / bad.** Good создаёт интригу конкретной вещью и честной неопределённостью. Bad либо раскрывает ответ, либо боится любого вывода настолько, что превращает сцену в юридическую оговорку.",
-      "char_count": 1268
+      "line_start": 450,
+      "line_end": 463,
+      "text": "## situational_prose_requirements.md — 14. Clue, testimony и uncertainty\n## 14. Clue, testimony и uncertainty\n\n**Необходимый контекст.** Physical carrier/location; exact observable qualities; acquisition/placement; attributed speaker/source; knowledge status; hypothesis/uncertainty; confirmed links и запрещённые conclusions.\n\n**Обязательный смысл.** Игрок различает: что физически увидено, что сказал конкретный человек, что герой помнит/предполагает и что действительно известно. Улика существует как предмет/след, а не как авторский вывод.\n\n**Литературная подача.** Сначала предметная конкретика в пространстве; затем естественная мысль или вопрос героя в границах §4.7 с сохранением степени уверенности. Для самой мысли отдельный источник не нужен; новые факты и воспоминания ею не создаются. Testimony остаётся атрибутированным. Несколько признаков можно связать наблюдением, но не скрытой причинностью.\n\n**Избыточно/запрещено.** «Это доказывает» без authority; виновник/мотив/направление по правдоподобию; authenticity; carrierless «разрезанная застёжка»; диагностический финал «наблюдения сами по себе не устанавливают»; repeated clue catalogue каждый ход.",
+      "char_count": 1164
     },
     {
       "id": "situational_prose_requirements.md:14. Clue, testimony и uncertainty:1",
       "file": "situational_prose_requirements.md",
       "section": "14. Clue, testimony и uncertainty",
-      "line_start": 221,
-      "line_end": 234,
-      "text": "## situational_prose_requirements.md — 14. Clue, testimony и uncertainty\nретной вещью и честной неопределённостью. Bad либо раскрывает ответ, либо боится любого вывода настолько, что превращает сцену в юридическую оговорку.\n\n**Unseen validation.** Обугленный обрывок письма с читаемой строкой, услышанный слух и старый след колеса. Проверить три разных epistemic статуса без special case по письму, слуху или следу.",
-      "char_count": 415
+      "line_start": 450,
+      "line_end": 463,
+      "text": "## situational_prose_requirements.md — 14. Clue, testimony и uncertainty\nuthenticity; carrierless «разрезанная застёжка»; диагностический финал «наблюдения сами по себе не устанавливают»; repeated clue catalogue каждый ход.\n\n**Good / bad.** Good создаёт интригу конкретной вещью и честной неопределённостью. Bad либо раскрывает ответ, либо боится любого вывода настолько, что превращает сцену в юридическую оговорку.\n\n**Unseen validation.** Обугленный обрывок письма с читаемой строкой, услышанный слух и старый след колеса. Проверить три разных epistemic статуса без special case по письму, слуху или следу.",
+      "char_count": 608
     },
     {
       "id": "situational_prose_requirements.md:15. Final scene и epilogue:0",
       "file": "situational_prose_requirements.md",
       "section": "15. Final scene и epilogue",
-      "line_start": 235,
-      "line_end": 248,
-      "text": "## situational_prose_requirements.md — 15. Final scene и epilogue\n## 15. Final scene и epilogue\n\n**Необходимый контекст.** Explicit terminal state; resolved/unresolved goals; surviving actors; body/place/time; known consequences; commitments; player-safe later outcomes, если отдельный owner действительно materialized их; причина смерти, если применимо.\n\n**Обязательный смысл.** Final scene завершает текущую causal arc и честно оставляет нерешённое нерешённым. Epilogue сообщает только разрешённые later outcomes. Если будущие последствия не materialized, закрытие остаётся в непосредственном committed настоящем.\n\n**Литературная подача.** Возврат к одному-двум ранее установленным образам допустим, если current projection подтверждает их и они изменились или получили новый смысл. Последний абзац объединяет состояние героя, мира и главной ставки, не подменяя ответ абстрактной моралью.\n\n**Избыточно/запрещено.** Invented future; судьбы удалённых NPC; авторский исторический итог; канонизация слуха; «и жили они...» без facts; ложное закрытие pending goals; omniscient post-death camera без approved epilogue projection.",
-      "char_count": 1124
+      "line_start": 464,
+      "line_end": 477,
+      "text": "## situational_prose_requirements.md — 15. Final scene и epilogue\n## 15. Final scene и epilogue\n\n**Необходимый контекст.** Explicit terminal state; resolved/unresolved goals; surviving actors; body/place/time; known consequences; commitments; последствия, доступные восприятию и знанию героя; причина смерти, если применимо.\n\n**Обязательный смысл.** Final scene завершает текущую causal arc и честно оставляет нерешённое нерешённым. Epilogue не раскрывает недоступного герою будущего и посмертной памяти; закрытие остаётся в доступном герою моменте.\n\n**Литературная подача.** Возврат к одному-двум ранее установленным образам допустим, если они установлены прежними сведениями той же сцены и не отменены переменой либо подтверждены текущими сведениями, а повтор служит перемене или новому смыслу. Последний абзац объединяет состояние героя, мира и главной ставки, не подменяя ответ абстрактной моралью.\n\n**Избыточно/запрещено.** Invented future; судьбы удалённых NPC; авторский исторический итог; канонизация слуха; «и жили они...» без facts; ложное закрытие pending goals; omniscient post-death camera, даже при наличии отдельной epilogue projection.",
+      "char_count": 1151
     },
     {
       "id": "situational_prose_requirements.md:15. Final scene и epilogue:1",
       "file": "situational_prose_requirements.md",
       "section": "15. Final scene и epilogue",
-      "line_start": 235,
-      "line_end": 248,
-      "text": "## situational_prose_requirements.md — 15. Final scene и epilogue\nский итог; канонизация слуха; «и жили они...» без facts; ложное закрытие pending goals; omniscient post-death camera без approved epilogue projection.\n\n**Good / bad.** Good ощущается завершением именно сыгранной причинной истории. Bad — универсальная торжественная концовка, которую можно приложить к любой партии.\n\n**Unseen validation.** Тихое завершение без победы: герой передал известие, но не выяснил судьбу спутника; наступило утро, рана стабилизирована, лодка ушла. Текст закрывает выполненное и сохраняет неизвестную судьбу без invented sequel.",
+      "line_start": 464,
+      "line_end": 477,
+      "text": "## situational_prose_requirements.md — 15. Final scene и epilogue\nнизация слуха; «и жили они...» без facts; ложное закрытие pending goals; omniscient post-death camera, даже при наличии отдельной epilogue projection.\n\n**Good / bad.** Good ощущается завершением именно сыгранной причинной истории. Bad — универсальная торжественная концовка, которую можно приложить к любой партии.\n\n**Unseen validation.** Тихое завершение без победы: герой передал известие, но не выяснил судьбу спутника; наступило утро, рана стабилизирована, лодка ушла. Текст закрывает выполненное и сохраняет неизвестную судьбу без invented sequel.",
       "char_count": 618
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:0",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение имеет точный player-safe source; intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech, material uncertainty и смысл незавершённого остатка переданы по смыслу один раз; технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой или водой.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.\n\n`PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.",
-      "char_count": 1178
+      "line_start": 478,
+      "line_end": 479,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist",
+      "char_count": 159
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:1",
+      "id": "situational_prose_requirements.md:16.1. Слепая оценка прозы:0",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.\n\nОбычный approved `TurnScreen` — единственный качественный narration `PASS`.\nПоявление `FactualTurnDeliveryScreen` означает degraded presentation после\nterminal `final_audit_failed`: оно сохраняет доступность уже committed хода,\nно никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC\nacceptance. Любой такой экран в этих прогонах автоматически создаёт blocking\nnarration finding; Contract Auditor не меняет эту норму, чтобы легализовать\nнепрошедший writer/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.",
-      "char_count": 873
+      "section": "16.1. Слепая оценка прозы",
+      "line_start": 480,
+      "line_end": 505,
+      "text": "## situational_prose_requirements.md — 16.1. Слепая оценка прозы\n### 16.1. Слепая оценка прозы\n\nКаждый слепой судья читает текст вместе с доступными рассказчику сведениями и отмечает каждый признак «да» или «нет»; «да» — хорошо. Список применяется вместе с отдельной оценкой живости, а не вместо неё.",
+      "char_count": 300
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:2",
+      "id": "situational_prose_requirements.md:16.1. Слепая оценка прозы:1",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\niter/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.\n\nВ обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и\n`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом\nисходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`\nкаждый исходный индекс указан ровно один раз, с хотя бы одним существующим\nсегментом; пустой исходный массив требует пустого coverage. Несколько исходных\nсмыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе\nсмысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;\nнеизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.\nНезависимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;\n`fail` требует соответственно concern `literary_quality` или\n`technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное\ncoverage, отсутствие concerns и непустое evidence. Public verdict и coverage\nсобирает Adapter детерминированно из private source reviews и failures; LLM их\nне назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.",
-      "char_count": 1406
+      "section": "16.1. Слепая оценка прозы",
+      "line_start": 480,
+      "line_end": 505,
+      "text": "## situational_prose_requirements.md — 16.1. Слепая оценка прозы\nассказчику сведениями и отмечает каждый признак «да» или «нет»; «да» — хорошо. Список применяется вместе с отдельной оценкой живости, а не вместо неё.\n\n1. Весь текст вне прямой речи написан в третьем лице и прошедшем времени.\n2. Нет ни одного поступка или решения героя, которого нет в журнале действий.\n3. Нет мыслей, чувств и намерений других людей и зверей; чужое состояние дано внешним признаком или догадкой героя с пометой («показалось», «видно было»).\n4. Каждый названный человек, зверь, вещь, постройка, а также звук или запах, к которому можно пойти, есть в данных отрывка.\n5. У каждой названной вещи и постройки есть хотя бы один признак из данных — материал, состояние или положение; голых названий нет.\n6. Первая фраза о новом месте называет точку героя или порог и первое ощущение, а не перечень вещей и не панораму.\n7. В помещении и ночью назван источник света; в темноте нет цветов и подробностей, которых герой не может различить.\n8. При первом виде человека названо не больше шести примет облика, и имя незнакомца не стоит раньше облика.\n9. Чужая речь дана дословно; манера передана самими словами, без ярлыков вроде «с акцентом» или «церковным слогом».\n10. К первой реплике каждого говорящего приложена хотя бы одна примета (голос, жест, поза или обращение), а ремарок не больше половины реплик.\n11. Нет исторических справок, дат и лет без опоры в данных, прогнозов, морали, обобщений об эпохе и авторского «я».\n12. Все числа есть в данных; толпа и масса названы порядком величины.\n13. В абзаце названо не больше двух чувств героя, и рядом с каждым есть телесный признак или деталь сцены.\n14. Мысль героя начинается или кончается внешней деталью и не кончается решением за игрока.\n15. Повторно описанное место и неизменный фон не пересказаны заново: дана только перемена.",
+      "char_count": 1854
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:3",
+      "id": "situational_prose_requirements.md:16.1. Слепая оценка прозы:2",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nе назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.\n\nPrivate wire сохраняет обязательные текущие факты в `required_current_beat`\nс changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,\n`constraints` содержит do_not_imply/allowed_tensions/style_policy.\nПри любом change или uncertainty `optional_support` содержит только\nvisible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает\nтолько относящиеся к текущему beat детали; весь sensory snapshot не пересказывается.\nStatic NPC/object/inventory/body arrays, known_context и snapshot metadata\nне поступают writer/auditor/repair.\nНовые существенные факты должны приходить через visible_changes. Существующие\nprojection owners продвигают воспринимаемые признаки applied observation,\ndestination facts, видимых NPC и подтверждённый маршрут arrival, а также\nфакты текущего ordinary scene seed. Причинное основание задаёт результат owner,\nа не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.\nДополнять текущий\nрезультат пересказом static snapshot нельзя. Эти данные остаются authoritative\nи доступны профильным panels. Если оба source arrays пусты и сама сцена является\nрезультатом, descriptive support сохраняется для scene-only/perception prose.\nRaw visible_context не дублируется; used_references остаётся пустым.\nConfirmed_outcome/action_intent и role-specific output/segments/concerns/phase\nсохраняют существующую доступность. Uncertainty о вопросе не становится доказательством\nдействия; явно неисполненный continuation остаётся неначатым, а результат неизвестным.\nCommitted transient attempt в required change подтверждает выполненное физическое\nобращение/contact. Открытым остаётся только observation/discovery\nresult или новый факт. Narrator изображает совершённое движение конкретно, без\nпересказа attempt/status metadata и без выдуманной новой находки. goal_result pending\nне отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор\nпродолжить/изменить действие, если unexecuted continuation не передан.\nProjection transient attempt создаёт два соседних atomic current-beat source:\nпервый отдельно подтверждает выполненное обращение, второй отдельно\nсохраняет неизвестность observation result. Оба остаются changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.",
-      "char_count": 2610
+      "section": "16.1. Слепая оценка прозы",
+      "line_start": 480,
+      "line_end": 505,
+      "text": "## situational_prose_requirements.md — 16.1. Слепая оценка прозы\nончается внешней деталью и не кончается решением за игрока.\n15. Повторно описанное место и неизменный фон не пересказаны заново: дана только перемена.\n\nДля отрывков после первого данные отрывка в признаке 4 включают сведения прежних пакетов той же сцены, не отменённые переменой (§3). Отсутствие неизменного факта в очередном пакете не означает его отсутствия в сцене и не требует повторной полной выгрузки. Например, тесло и его характеристики из первого пакета обосновывают упоминание тесла в следующем отрывке о выполненном действии, хотя новый пакет передаёт только перемены.\n\n«Нет» по признакам 2–4 считается нарушением; остальные «нет» — замечания к прозе. Разрешённые §4.7 фон и ощущения не считаются выдуманными фактами по признаку 4. Непроизвольное движение без изменения мира и решения за игрока не является новым поступком по признаку 2. Числовые рамки длины, числа деталей, примет и ремарок — ориентиры: превышение само по себе не блокирует приёмку. Указанный в §4.5 отдельный оборот мысли о вечном не переводит целую сцену в настоящее время; замечание по признаку 1 остаётся неблокирующим.",
+      "char_count": 1167
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:4",
+      "id": "situational_prose_requirements.md:16.1. Слепая оценка прозы:3",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nся changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.\n\nPrivate auditor возвращает только exact shape с `reviewed_segments`,\n`source_reviews`, `unsupported`, `literary_failures` и `evidence`.\n`reviewed_segments` содержит полный canonical ordered набор segment choices.\n`source_reviews` содержит ровно ordered refs из `required_current_beat`; каждая\nзапись `{ref,segment_choices}` получает choices только если все атомарные\npropositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.",
-      "char_count": 770
+      "section": "16.1. Слепая оценка прозы",
+      "line_start": 480,
+      "line_end": 505,
+      "text": "## situational_prose_requirements.md — 16.1. Слепая оценка прозы\n приёмку. Указанный в §4.5 отдельный оборот мысли о вечном не переводит целую сцену в настоящее время; замечание по признаку 1 остаётся неблокирующим.\n\nКаждый слепой судья ставит живость от 0 до 10. Текст-протокол получает 0. Порог приёмки — среднее арифметическое оценок судей не ниже 8,0 из 10: 8,0 проходит. При отсутствии нарушений и других применимых блокирующих ошибок отрывок длиннее ориентира 1200 знаков со средним 8,2 проходит, со средним 7,9 — нет. Замечания по признакам, кроме 2–4, не блокируют PASS сами по себе и не превращаются в blocking concerns, artistic или technical failure только из-за отрицательной отметки в списке. Это не отменяет проверки фактических изменений, причинности и дословной речи по остальным применимым правилам.",
+      "char_count": 816
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:5",
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:0",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\npositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.\n\nПеред ответом модель проверяет каждую factual proposition, включая subordinate\nclauses, и сообщает только failures. Semantic grounding failures находятся в\n`unsupported` как `{segment_choice,kind,reason}`. Художественные нарушения\nнаходятся в `literary_failures` как `{check,segment_choice,reason}` для пяти\nchecks: current_beat_buried, elapsed_as_service_report, static_context_dump,\nweak_literary_composition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.",
-      "char_count": 803
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\n### 16.2. Смысловая и техническая приёмка\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:",
+      "char_count": 194
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:6",
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:1",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nosition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.\n\nAdapter требует exact own-key set, source refs/order, canonical unique choices,\nallowed semantic kinds/literary checks и непустые reasons. Затем код выводит\nsource_index по исходному порядку, собирает coverage, missing_visible_change и\nостальные concerns, artistic/technical verdict и общий pass. Чистый отчёт требует\nнепустое evidence. Любой malformed private output преобразуется в невалидный\naudit и блокирует flow fail-closed; Adapter не синтезирует repair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.",
-      "char_count": 857
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\n### 16.2. Смысловая и техническая приёмка\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждый факт мира имеет player-safe основание в текущих или прежних не отменённых сведениях той же сцены; intent и правдоподобие не служат evidence. Свободным литературным деталям по §4.7 отдельный source не нужен.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech и material uncertainty, включая неизвестный результат совершённой попытки, переданы по смыслу один раз; технический перечень не требуется. Обычный неисполненный следующий шаг не передаётся рассказчику и не подлежит покрытию; переданная воспринимаемая причина невозможности шага передаётся в прозе.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой или водой.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.",
+      "char_count": 1281
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:7",
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:2",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.\n\nTemporal/aspectual overlap и persistence между фактами требуют явного основания:\nscene label не доказывает ambience, тишину или субъективный темп. Длительность\nхода не передаётся narrator как evidence. Любая придуманная временная величина\nявляется unsupported fact, а служебная формулировка дополнительно получает\n`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.\nГрамматическое подчинение раннего выполненного действия позднему допустимо, когда\nглагольный вид или явный маркер однозначно сохраняет смысл «завершено раньше». Запрещены\nreversal и подчинение со смыслом simultaneous/ongoing; обязательной словоформы\nили раздельных предложений нет.\n`weak_literary_composition` включает пересказ pending remainder как metadata\nили пояснение плана вместо конкретного открытого следующего выбора. Полный и\nфактически верный пересказ required sources по одному и в исходном порядке тоже\nостаётся `weak_literary_composition`, если действие или воспринятый результат не\nорганизует поддержанные пространственные детали в сцену. Один союз не делает\nнабор фактов художественной сценой; выдумывать отсутствующую связь запрещено.\nRepair concerns не являются\nисчерпывающим whitelist: все правила повторно применяются ко всей прозе,\nпри sparse support текст сокращается, а не украшается выдуманными связями.\nPASS также требует двух pass verdicts, полной coverage, пустых concerns и непустого\nмассива evidence. Повторный semantic repair запрещён. Private writer и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.",
-      "char_count": 1865
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nся ledger, справкой или водой.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.\n\n`PASS` требует соблюдения применимых фактических и технических границ и порога живости §16.1. Неблокирующие замечания списка §16.1 допускаются и сами по себе не означают провал оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.\n\nОбычный approved `TurnScreen` может получить качественный narration `PASS` при соблюдении правил §16, в том числе с неблокирующими замечаниями §16.1.\nПоявление `FactualTurnDeliveryScreen` означает degraded presentation после\nterminal `final_audit_failed`: оно сохраняет доступность уже committed хода,\nно никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC\nacceptance. Любой такой экран в этих прогонах автоматически создаёт blocking\nnarration finding; Contract Auditor не меняет эту норму, чтобы легализовать\nнепрошедший writer/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.",
+      "char_count": 1229
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:8",
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:3",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nriter и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.\n\nЦентр ответа — текущие confirmed changes и uncertainties. Незавершённое действие\nясно остаётся ещё не начатым, его результат неизвестен; возможность продолжить\nзамысел или изменить решение передаётся естественно, без системного отчёта.\nТочное произнесённое слово сохраняется. Прошедшее время вплетается в текущий\nэпизод: служебная временная заставка с последующей статической сводкой не проходит\nтехническую приёмку. Даже фактически верный пересказ берега, тела или инвентаря\nне проходит художественную приёмку, если вытесняет смысл текущего результата.\nПри малом количестве подтверждённого материала краткая связная сцена достаточна.\nСамо произнесение не подтверждает слышимость, ответ или отсутствие ответа:\nдля реакции слушателя требуется отдельный confirmed perception/conversation fact.\nOpening сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.",
-      "char_count": 1196
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\niter/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.\n\nВ обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и\n`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом\nисходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`\nкаждый исходный индекс указан ровно один раз, с хотя бы одним существующим\nсегментом; пустой исходный массив требует пустого coverage. Несколько исходных\nсмыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе\nсмысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;\nнеизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.\nНезависимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;\n`fail` требует соответственно concern `literary_quality` или\n`technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное\ncoverage, отсутствие блокирующих concerns и непустое evidence; замечания §16.1 сами по себе не препятствуют PASS. Public verdict и coverage\nсобирает Adapter детерминированно из private source reviews и failures; LLM их\nне назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.",
+      "char_count": 1448
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:9",
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:4",
       "file": "situational_prose_requirements.md",
-      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
-      "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\ning сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.\n\nПроверки не должны искать обязательные слова и конструкции. Рисковая карта полного qualification/acceptance покрытия для каждого класса включает:\n\n- один позитивный grounded case;\n- один factual trap: tempting, но unsupported detail;\n- один sparse-context case, который обязан выявить upstream gap, а не породить воду;\n- один unseen-equivalent с другим местом, предметом, NPC и формулировкой;\n- один continuity case после следующего хода либо reload;\n- blind semantic/literary review реального model output, а не только snapshot system prompt.\n\nЭто целевая матрица покрытия, а не требование запускать новый массовый benchmark при каждой локальной правке. Принятие нормы и локальный change проверяют relevant focused subset и не означают соответствия всей игры. Полная матрица служит итоговым gate художественной приёмки и model qualification.\n\nНовый unseen case не должен требовать нового `situation_kind`, handler, enum, phrase rule или template. Если требует, решение заскриптовано.",
-      "char_count": 1234
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nе назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.\n\nPrivate wire сохраняет обязательные текущие факты в `required_current_beat`\nс changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,\n`constraints` содержит do_not_imply/allowed_tensions/style_policy.\nИмя статуса `unperformed_result_unknown` не требует передавать обычный\nнеисполненный следующий шаг: здесь сохраняется только существенная неизвестность\nрезультата совершённой попытки. Вместо несостоявшегося шага рассказчик получает\nвоспринимаемую причину невозможности, когда она есть в данных.\nПри любом change или uncertainty `optional_support` содержит только\nvisible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает\nтолько относящиеся к текущему beat факты; весь sensory snapshot не пересказывается.\nСвободные ощущения, мысли, связки и нейтральный фон по §4.7 не ограничиваются\nсписком переданных sensory_details и не требуют отдельного source.\nStatic NPC/object/inventory/body arrays, known_context и snapshot metadata\nне поступают writer/auditor/repair.\nНовые существенные факты должны приходить через visible_changes. Существующие\nprojection owners продвигают воспринимаемые признаки applied observation,\ndestination facts, видимых NPC и подтверждённый маршрут arrival, а также\nфакты текущего ordinary scene seed. Причинное основание задаёт результат owner,\nа не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.\nДополнять текущий\nрезультат пересказом static snapshot нельзя. Эти данные остаются authoritative\nи доступны профильным panels. Если оба source arrays пусты и сама сцена является\nрезультатом, descriptive support сохраняется для scene-only/perception prose.\nRaw visible_context не дублируется; used_references остаётся пустым.\nConfirmed_outcome/action_intent и role-specific output/segments/concerns/phase\nсохраняют существующую доступность. Uncertainty о вопросе не становится доказательством\nдействия. Обычный неисполненный continuation не передаётся рассказчику\nи не описывается ни сделанным, ни несделанным; неизвестный результат\nдействительно совершённой попытки сохраняется отдельно.\nCommitted transient attempt в required change подтверждает выполненное физическое\nобращение/contact. Открытым остаётся только observation/discovery\nresult или новый факт. Narrator изображает совершённое движение конкретно, без\nпересказа attempt/status metadata и без выдуманной новой находки. goal_result pending\nне отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор\nпродолжить/изменить действие ради обычного неисполненного продолжения.\nProjection transient attempt создаёт два соседних atomic current-beat source:\nпервый отдельно подтверждает выполненное обращение, второй отдельно\nсохраняет неизвестность observation result. Оба остаются changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.",
+      "char_count": 3137
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:5",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nся changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.\n\nPrivate auditor возвращает только exact shape с `reviewed_segments`,\n`source_reviews`, `unsupported`, `literary_failures` и `evidence`.\n`reviewed_segments` содержит полный canonical ordered набор segment choices.\n`source_reviews` содержит ровно ordered refs из `required_current_beat`; каждая\nзапись `{ref,segment_choices}` получает choices только если все атомарные\npropositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.",
+      "char_count": 749
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:6",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\npositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.\n\nПеред ответом модель проверяет каждую factual proposition, включая subordinate\nclauses, и сообщает только failures. Факты мира отделяются от разрешённых §4.7\nлитературных деталей: отсутствие отдельного source у фона, ощущения или связки\nне является semantic grounding failure. Замечания §16.1 сами по себе не являются failures. Semantic grounding failures находятся в\n`unsupported` как `{segment_choice,kind,reason}`. Художественные нарушения\nнаходятся в `literary_failures` как `{check,segment_choice,reason}` для пяти\nchecks: current_beat_buried, elapsed_as_service_report, static_context_dump,\nweak_literary_composition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.",
+      "char_count": 994
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:7",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nosition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.\n\nAdapter требует exact own-key set, source refs/order, canonical unique choices,\nallowed semantic kinds/literary checks и непустые reasons. Затем код выводит\nsource_index по исходному порядку, собирает coverage, missing_visible_change и\nостальные concerns, artistic/technical verdict и общий pass. Чистый отчёт требует\nнепустое evidence. Любой malformed private output преобразуется в невалидный\naudit и блокирует flow fail-closed; Adapter не синтезирует repair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.",
+      "char_count": 836
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:8",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.\n\nTemporal/aspectual overlap и persistence между фактами требуют явного основания:\nscene label не доказывает ambience, тишину или субъективный темп как фактические\nсостояния. Это не запрещает нейтральный фон и литературный ритм по §4.7. Длительность\nхода не передаётся narrator как evidence. Любая придуманная временная величина\nявляется unsupported fact, а служебная формулировка дополнительно получает\n`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.\nГрамматическое подчинение раннего выполненного действия позднему допустимо, когда\nглагольный вид или явный маркер однозначно сохраняет смысл «завершено раньше». Запрещены\nreversal и подчинение со смыслом simultaneous/ongoing; обязательной словоформы\nили раздельных предложений нет.\n`weak_literary_composition` включает пересказ pending remainder как metadata\nили пояснение несделанного плана; обычный следующий шаг вообще не передаётся\nрассказчику. Предлагать продолжить замысел или изменить решение не требуется. Полный и\nфактически верный пересказ required sources по одному и в исходном порядке тоже\nостаётся `weak_literary_composition`, если действие или воспринятый результат не\nорганизует поддержанные пространственные детали в сцену. Один союз не делает\nнабор фактов художественной сценой; выдумывать отсутствующую фактическую или\nпричинную связь запрещено, литературные связки по §4.7 свободны.\nRepair concerns не являются\nисчерпывающим whitelist: все правила повторно применяются ко всей прозе,\nпри sparse support текст сокращается по фактам мира, а не украшается выдуманными\nпричинами, объектами и событиями. Допустимые ощущения, мысли, фон и связки\nпо §4.7 сохраняют свободу рассказа.\nPASS также требует двух pass verdicts, полной coverage, отсутствия блокирующих\nconcerns и непустого массива evidence; замечания §16.1 допускаются. Повторный semantic repair запрещён. Private writer и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.",
+      "char_count": 2245
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:9",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\nriter и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.\n\nЦентр ответа — текущие confirmed changes и существенная неизвестность результата\nсовершённой попытки. Обычный неисполненный следующий шаг не передаётся рассказчику\nи не изображается ни сделанным, ни несделанным. Если шаг не мог состояться\nпо воспринимаемой причине, рассказчик получает и показывает эту причину\nкак воспринятый факт, без отчёта о несделанном и без обязательного предложения выбора.\nТочное произнесённое слово сохраняется. Прошедшее время вплетается в текущий\nэпизод: служебная временная заставка с последующей статической сводкой не проходит\nтехническую приёмку. Даже фактически верный пересказ берега, тела или инвентаря\nне проходит художественную приёмку, если вытесняет смысл текущего результата.\nПри малом количестве подтверждённого материала краткая связная сцена достаточна.\nСамо произнесение не подтверждает слышимость, ответ или отсутствие ответа:\nдля реакции слушателя требуется отдельный confirmed perception/conversation fact.\nOpening сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.",
+      "char_count": 1337
+    },
+    {
+      "id": "situational_prose_requirements.md:16.2. Смысловая и техническая приёмка:10",
+      "file": "situational_prose_requirements.md",
+      "section": "16.2. Смысловая и техническая приёмка",
+      "line_start": 506,
+      "line_end": 670,
+      "text": "## situational_prose_requirements.md — 16.2. Смысловая и техническая приёмка\ning сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.\n\nПроверки не должны искать обязательные слова и конструкции. Рисковая карта полного qualification/acceptance покрытия для каждого класса включает:\n\n- один позитивный grounded case;\n- один factual trap: tempting, но unsupported detail;\n- один sparse-context case, который обязан выявить upstream gap, а не породить воду;\n- один unseen-equivalent с другим местом, предметом, NPC и формулировкой;\n- один continuity case после следующего хода либо reload;\n- blind semantic/literary review реального model output, а не только snapshot system prompt.\n\nЭто целевая матрица покрытия, а не требование запускать новый массовый benchmark при каждой локальной правке. Принятие нормы и локальный change проверяют relevant focused subset и не означают соответствия всей игры. Полная матрица служит итоговым gate художественной приёмки и model qualification.\n\nНовый unseen case не должен требовать нового `situation_kind`, handler, enum, phrase rule или template. Если требует, решение заскриптовано.",
+      "char_count": 1213
     },
     {
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:0",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 671,
+      "line_end": 715,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:",
       "char_count": 175
     },
@@ -15379,8 +15622,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:1",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 671,
+      "line_end": 715,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:\n\n- [`AGENTS.md`](../../../../AGENTS.md), §§3–14 — свободная причинная игра, authority и persistence;\n- [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md), §§4, 8.1 — active contracts и Narration/UI scope;\n- [`packages/narration/MODULE.md`](../../../../packages/narration/MODULE.md) — workflow writer/audit/repair;\n- [`apps/game-server/MODULE.md`](../../../../apps/game-server/MODULE.md) — persisted safe projection и composition;\n- [`apps/game-web/MODULE.md`](../../../../apps/game-web/MODULE.md) — faithful UI rendering;\n- [`packages/materialization/MODULE.md`](../../../../packages/materialization/MODULE.md) — grounded detail и identity;\n- [`turn_step_llm_contract.md`](turn_step_llm_contract.md), §§6, 8–9 — completed steps и remaining intent;\n- [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md), §§18–19, 23, 29–31, 36 — exact speech, audience, causal order и narration;\n- [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md), §§3.5, 12–20 — time, processes, body и visible package;\n- [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.",
       "char_count": 1448
     },
@@ -15388,19 +15631,37 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:2",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
-      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.\n\nСами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.\n\nPrivate narration auditor использует exact `request.segments[].segment_id` во всех\nreviewed_segments, source_reviews, unsupported и literary_failures. Positional\naliases и нормализация не допускаются; Adapter детерминированно собирает\ncoverage/verdict, а final audit строго проверяется по IDs\nповторно сегментированной approved prose. Длительность хода не входит в private\nprose wire: её вычисляет temporal owner и показывает server-owned UI projection.\nЛюбая придуманная narrator временная величина является unsupported fact, а\nслужебная формулировка дополнительно проваливает elapsed_as_service_report.\nПри current beat private wire\nдопускает visible_scene + sensory_details; narrator выбирает только относящиеся\nк этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.",
-      "char_count": 1205
+      "line_start": 671,
+      "line_end": 715,
+      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.\n\nСами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.",
+      "char_count": 406
     },
     {
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:3",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
-      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\nsible_scene + sensory_details; narrator выбирает только относящиеся\nк этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.\n\nTemporal/aspect grounding не позволяет выводить длительность из действия или\nsensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic\nrequired source; неизвестный результат нельзя опустить или заменить\nfailure/success. Речь передаётся естественно с дословным\nсодержанием и speaker, discovery — через подтверждённое восприятие без status report.\n\nApplied-step causal projection оставляет semantic_activity duration temporal owner;\nsingle transient_item_use получает два соседних atomic current-beat source:\nвыполненную попытку с exact description, затем отдельно неизвестный observation result.\nКаждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step\nудаляется перед финальной сборкой; search передаёт только выполненное действие и результат.\nNarrator переводит evidence wording в естественную речь и конкретное движение,\nне копирует служебные слова step/attempt и не добавляет минуты.",
-      "char_count": 1216
+      "line_start": 671,
+      "line_end": 715,
+      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\nтолько на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.\n\nPrivate narration auditor использует exact `request.segments[].segment_id` во всех\nreviewed_segments, source_reviews, unsupported и literary_failures. Positional\naliases и нормализация не допускаются; Adapter детерминированно собирает\ncoverage/verdict, а final audit строго проверяется по IDs\nповторно сегментированной approved prose. Длительность хода не входит в private\nprose wire: её вычисляет temporal owner и показывает server-owned UI projection.\nЛюбая придуманная narrator временная величина является unsupported fact, а\nслужебная формулировка дополнительно проваливает elapsed_as_service_report.\nПри current beat private wire\nдопускает visible_scene + sensory_details; narrator выбирает только относящиеся\nк этому эпизоду факты, а unrelated/all-facts dump остаётся static_context_dump.\nЭто не ограничивает свободные литературные детали по §4.7 переданным списком.",
+      "char_count": 1099
+    },
+    {
+      "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:4",
+      "file": "situational_prose_requirements.md",
+      "section": "17. Владельцы и связанные контракты",
+      "line_start": 671,
+      "line_end": 715,
+      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n эпизоду факты, а unrelated/all-facts dump остаётся static_context_dump.\nЭто не ограничивает свободные литературные детали по §4.7 переданным списком.\n\nTemporal/aspect grounding не позволяет выводить длительность из действия или\nsensory sky/weather/sound. Ощущения, мысли и связки героя связывают сцену\nи в границах §4.7 не требуют отдельного source. Source review требует все propositions каждого atomic\nrequired source; неизвестный результат нельзя опустить или заменить\nfailure/success. Речь передаётся естественно с дословным\nсодержанием и speaker, discovery — через подтверждённое восприятие без status report.",
+      "char_count": 690
+    },
+    {
+      "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:5",
+      "file": "situational_prose_requirements.md",
+      "section": "17. Владельцы и связанные контракты",
+      "line_start": 671,
+      "line_end": 715,
+      "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\nаменить\nfailure/success. Речь передаётся естественно с дословным\nсодержанием и speaker, discovery — через подтверждённое восприятие без status report.\n\nApplied-step causal projection оставляет semantic_activity duration temporal owner;\nsingle transient_item_use получает два соседних atomic current-beat source:\nвыполненную попытку с exact description, затем отдельно неизвестный observation result.\nКаждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step\nудаляется перед финальной сборкой; search передаёт только выполненное действие и результат.\nNarrator переводит evidence wording в естественную речь и конкретное движение,\nне копирует служебные слова step/attempt и не добавляет минуты.",
+      "char_count": 813
     },
     {
       "id": "spatial_architecture_standard_g0_g6.md:Архитектурный стандарт пространственной модели G0–G6 и сценической топологии:0",

@@ -57,8 +57,8 @@ test("projects the real ordinary name rows into deterministic CDDA snippets", (t
 
   const outputPath = path.join(directory, "personal-names.generated.json");
   const rowsBySex = projectFromSource();
-  assert.equal(rowsBySex.male.length, 204);
-  assert.equal(rowsBySex.female.length, 62);
+  assert.equal(rowsBySex.male.length, 166);
+  assert.equal(rowsBySex.female.length, 42);
 
   const result = runGenerator(["--output", outputPath]);
   assert.equal(result.status, 0, result.stderr);

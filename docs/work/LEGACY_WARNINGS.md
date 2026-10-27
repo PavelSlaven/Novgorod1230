@@ -45,6 +45,7 @@
 | 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 043 | `lower-dvina-trace-narration-llm.js`, `lower-dvina-trace-narration-audit.js`, `packages/narration/MODULE.md` | промпты и MODULE старого движка расходятся с нормой прозы | [#916](https://github.com/PavelSlaven/Novgorod1230/issues/916) |
 
 ## Записи
 
@@ -190,3 +191,8 @@
 - **Что.** На main ACTIVE D-005 и строка 176 `code_driven_world_materialization_architecture.md`, `items_and_property.txt:10` и UNDECLARED-гайд `npc_generation_profiles.txt:7` («LLM не создаёт NPC») (direct action не создаёт «ценные» предметы) расходятся с буквой PC §9.1:240 (по решению D8 LLM лишь сопоставляет запрос с ролью, а экземпляр создаёт код) и с классовым запретом, который PC §9.1 снял; сильнее всего с ним расходятся `code_driven_world_materialization_architecture.md:180` (restricted weapon/currency/document → `authority_required`), D-014 и `turn_step_llm_contract.md:1706` (полный список — #146 шаг 2). Решения владельца: [5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425), [5839745154](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154). Обычного NPC по запросу игрока создаёт код по сохранённому броску и лимиту места, изготовить можно всё реалистичное, typed gap — только для вещей по authority-записи. `knowledge:query` на main выдаёт старые формулировки. Нормы правит #146 на ветке PR #98; на main они придут с merge PR #98.
 - **Как жить.** При конфликте действуют PC §9.1 и решения #133. Эти формулировки не закреплять новыми тестами и не цитировать в CR как норму.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-043 — промпты и MODULE старого движка расходятся с нормой прозы
+- **Что.** `apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js:6` требует второе лицо, а `:17` — передать неисполненное продолжение как следующий выбор; `apps/game-server/src/runtime/lower-dvina-trace-narration-audit.js:29`, `:34` поддерживает прежнюю трактовку. `packages/narration/MODULE.md:51–52` сохраняет явно переданный остаток намерения и неисполненный continuation. Действующая `situational_prose_requirements.md` требует третье лицо и прошедшее время по D158, а по D162 обычный неисполненный следующий шаг рассказчику не передаётся и не изображается ни сделанным, ни несделанным. Норма права; её принятие не доказывает соответствие старых промптов и аудита.
+- **Как жить.** При оценке прозы применять норму, а не прежние промпты. Владелец исправления — `@rus/narration`. Закрыть запись после согласования промптов, аудита и MODULE с третьим лицом и правилом непередачи обычного неисполненного продолжения и проверки этих правил через существующий путь рассказчика. Код и MODULE не исправляются правкой нормы.
+- **Issue.** [#916](https://github.com/PavelSlaven/Novgorod1230/issues/916)

@@ -83,7 +83,7 @@ candidate/evidence references are retained in `provenance_ref`. When sources
 for the same key have different classes, independent `ordinary` evidence
 wins; otherwise the restrictive order is `dynastic`, `significant`,
 `monastic`. Calendar-form admission also wins over the bearer's office. This
-preserves ordinary `Михаил`, `Стефан` and `Спиридон` while keeping the
+preserves ordinary `Михаил` and `Спиридон` while keeping the
 source-marked dynastic `Ростислав` out of ordinary selection. Selected sex
 and people derivations prefer explicit evidence over calendar/candidate
 defaults.

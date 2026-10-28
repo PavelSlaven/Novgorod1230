@@ -23,6 +23,7 @@
 | `docs/work/LEGACY_WARNINGS.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | до правки — `rg` по затрагиваемым путям: [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) |
 | `docs/work/audits/` | `UNDECLARED` | evidence | снимки аудитов процесса, входные данные для исправлений; норм не создают: [аудит 2026-10-05](work/audits/process-audit-2026-10-05.md) |
 | `docs/work/temporal-world-v4/` | `UNDECLARED` | evidence | только задачи temporal v4; файлы читают tools (LW-010) — не переносить |
+| `docs/work/art-generator-data-needs.*` | `UNDECLARED` | evidence | перенос генератора картинок в игру (CR #908): какие данные нужны каждому виду картинок и где они лежат — [анализ](work/art-generator-data-needs.md), таблица `.tsv` рядом |
 | `docs/playtests/` | `UNDECLARED` | evidence | отчёты реальных gameplay runs по WR §24.1: [README](playtests/README.md); текущее поведение не описывают, читать только нужный run |
 | `docs/architecture/` | `UNDECLARED` | правила модулей и knowledge-source | код в apps/packages, границы зависимостей, правка корпуса |
 | `docs/domain/` | `UNDECLARED` | context (OWNERSHIP_MAP) | поиск владельца; точный owner и public contract — `MODULE.md` |

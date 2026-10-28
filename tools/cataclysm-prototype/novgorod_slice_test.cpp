@@ -555,10 +555,24 @@ TEST_CASE( "Novgorod natural fauna decisions cover native groups", "[novgorod_fa
         INFO( id );
         CHECK( allow.count( id ) + deny.count( id ) == 1 );
     }
+    size_t native_zombify_paths = 0;
+    std::ostringstream native_zombify_ids;
+    bool first_native_zombify_id = true;
     for( const std::string &id : allow ) {
         INFO( id );
         CHECK( natural.count( id ) == 1 );
+        const mtype_id type( id );
+        if( type.is_valid() && !type->zombify_into.is_empty() ) {
+            ++native_zombify_paths;
+            if( !first_native_zombify_id ) {
+                native_zombify_ids << ", ";
+            }
+            native_zombify_ids << id;
+            first_native_zombify_id = false;
+        }
     }
+    INFO( "allowed native species with zombify_into: " << native_zombify_ids.str() );
+    CHECK( native_zombify_paths > 0 );
     for( const std::string &id : deny ) {
         INFO( id );
         CHECK( natural.count( id ) == 1 );
@@ -626,21 +640,17 @@ TEST_CASE( "Novgorod fauna policy filters natural groups", "[novgorod_fauna]" )
         CHECK( MonsterGroupManager::monster_is_blacklisted( mtype_id( id ) ) );
         CHECK( natural.count( id ) == 0 );
     }
-    size_t corpse_paths = 0;
     for( const std::string &id : allow ) {
         INFO( id );
         const mtype_id type( id );
         REQUIRE( type.is_valid() );
         CHECK_FALSE( MonsterGroupManager::monster_is_blacklisted( type ) );
         CHECK( natural.count( id ) == 1 );
-        if( !type->zombify_into.is_empty() ) {
-            ++corpse_paths;
-            const item corpse = item::make_corpse( type );
-            REQUIRE_FALSE( corpse.has_var( "zombie_form" ) );
-            CHECK_FALSE( corpse.can_revive() );
-        }
+        const item corpse = item::make_corpse( type );
+        REQUIRE_FALSE( corpse.has_var( "zombie_form" ) );
+        CHECK_FALSE( corpse.can_revive() );
+        CHECK( type->zombify_into.is_empty() );
     }
-    CHECK( corpse_paths > 0 );
     CHECK_FALSE( get_option<bool>( "ZOMBIFY_INTO_ENABLED" ) );
 }
 

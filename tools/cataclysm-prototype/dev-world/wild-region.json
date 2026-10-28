@@ -1,0 +1,163 @@
+[
+  {
+    "type": "region_settings",
+    "id": "default",
+    "copy-from": "default",
+    "ocean": null,
+    "ravines": null,
+    "forest_trails": null,
+    "highways": null,
+    "cities": "no_cities",
+    "place_roads": false,
+    "place_railroads": false,
+    "neighbor_connections": false,
+    "place_specials": true,
+    "place_swamps": true,
+    "npc_spawntime": 0,
+    "feature_flag_settings": {
+      "blacklist": [ "EXTRADIMENSIONAL" ],
+      "whitelist": [ "NOVGOROD_DEV_COURTYARD" ]
+    }
+  },
+  {
+    "type": "region_settings_map_extras",
+    "id": "default",
+    "copy-from": "default",
+    "extras": [ "forest", "forest_thick", "forest_water", "field", "river" ]
+  },
+  {
+    "type": "weather_generator",
+    "id": "default",
+    "copy-from": "default",
+    "weather_white_list": [
+      "clear",
+      "sunny",
+      "cloudy",
+      "light_drizzle",
+      "drizzle",
+      "rain",
+      "rainstorm",
+      "thunder",
+      "lightning",
+      "flurries",
+      "snowing",
+      "snowstorm",
+      "mist",
+      "fog"
+    ]
+  },
+  {
+    "type": "map_extra_collection",
+    "id": "forest",
+    "copy-from": "forest",
+    "chance": 40,
+    "extras": [
+      [ "mx_blackberry_patch", 450 ],
+      [ "mx_point_dead_vegetation", 500 ],
+      [ "mx_point_burned_ground", 500 ],
+      [ "mx_strawberry_patch", 180 ],
+      [ "mx_blueberry_patch", 180 ],
+      [ "mx_raspberry_patch", 180 ],
+      [ "mx_huckleberry_patch", 180 ],
+      [ "mx_grove", 500 ],
+      [ "mx_shrubbery", 500 ],
+      [ "mx_clearcut", 125 ],
+      [ "mx_pond", 125 ],
+      [ "mx_pond_forest", 125 ],
+      [ "mx_grass2", 40 ],
+      [ "mx_grass", 20 ],
+      [ "mx_beehive_natural", 20 ]
+    ]
+  },
+  {
+    "type": "map_extra_collection",
+    "id": "forest_thick",
+    "copy-from": "forest_thick",
+    "chance": 30,
+    "extras": [
+      [ "mx_blackberry_patch", 22500 ],
+      [ "mx_grove", 25000 ],
+      [ "mx_shrubbery", 25000 ],
+      [ "mx_point_dead_vegetation", 25000 ],
+      [ "mx_point_burned_ground", 25000 ],
+      [ "mx_strawberry_patch", 7500 ],
+      [ "mx_blueberry_patch", 7500 ],
+      [ "mx_raspberry_patch", 7500 ],
+      [ "mx_huckleberry_patch", 7500 ],
+      [ "mx_clearcut", 6250 ],
+      [ "mx_pond", 6250 ],
+      [ "mx_pond_forest", 6250 ],
+      [ "mx_beehive_natural", 1500 ],
+      [ "mx_grass2", 1000 ],
+      [ "mx_grass", 500 ],
+      [ "mx_jabberwock", 1 ]
+    ]
+  },
+  {
+    "type": "map_extra_collection",
+    "id": "forest_water",
+    "copy-from": "forest_water",
+    "chance": 20,
+    "extras": [
+      [ "mx_pond", 240 ],
+      [ "mx_point_dead_vegetation", 60 ],
+      [ "mx_grass2", 20 ],
+      [ "mx_grass", 10 ],
+      [ "mx_beehive_natural", 25 ]
+    ]
+  },
+  {
+    "type": "map_extra_collection",
+    "id": "field",
+    "copy-from": "field",
+    "chance": 6,
+    "extras": [
+      [ "mx_grass", 3500 ],
+      [ "mx_grass2", 3500 ],
+      [ "mx_trees2", 800 ],
+      [ "mx_point_burned_ground", 500 ],
+      [ "mx_point_dead_vegetation", 500 ],
+      [ "mx_trees", 500 ],
+      [ "mx_sand_patch", 200 ],
+      [ "mx_pond", 150 ],
+      [ "mx_worm_sign", 20 ],
+      [ "mx_golden_monoliths", 1 ]
+    ]
+  },
+  {
+    "type": "map_extra_collection",
+    "id": "river",
+    "copy-from": "river",
+    "chance": 1,
+    "extras": [ [ "mx_null", 66 ] ]
+  },
+  { "type": "forest_biome_component", "id": "clutter_forest", "copy-from": "clutter_forest", "types": [ [ "t_trunk", 128 ], [ "t_dirtmound", 128 ], [ "f_boulder_small", 128 ], [ "f_rubble_rock", 32 ], [ "f_boulder_medium", 8 ], [ "f_boulder_large", 1 ] ] },
+  { "type": "forest_biome_component", "id": "clutter_forest_thick", "copy-from": "clutter_forest_thick", "types": [ [ "t_trunk", 64 ], [ "t_dirtmound", 64 ], [ "f_boulder_small", 32 ], [ "f_rubble_rock", 32 ], [ "f_boulder_medium", 16 ], [ "f_boulder_large", 4 ] ] },
+  { "type": "forest_biome_component", "id": "trees_forest_water", "copy-from": "trees_forest_water", "types": [ [ "t_tree", 40 ], [ "t_tree_young", 80 ], [ "t_tree_pine", 40 ], [ "t_tree_birch", 20 ], [ "t_tree_elm", 20 ], [ "t_tree_cottonwood", 20 ], [ "t_tree_alder", 80 ], [ "t_tree_maple", 40 ], [ "t_tree_willow", 40 ], [ "t_tree_hazelnut", 2 ], [ "t_tree_crabapple", 2 ], [ "t_tree_apple", 1 ], [ "t_tree_cherry", 1 ], [ "t_tree_juniper", 2 ], [ "t_tree_nannyberry", 10 ], [ "t_region_tree_dead", 90 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_groundcover", "copy-from": "default_t_region_groundcover", "replace_with_terrain": [ [ "t_grass", 12000 ], [ "t_grass_dead", 2000 ], [ "t_dirt", 1000 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_groundcover_swamp", "copy-from": "default_t_region_groundcover_swamp", "replace_with_terrain": [ [ "t_grass_long", 300 ], [ "t_grass_tall", 100 ], [ "t_moss", 200 ], [ "t_dirt", 200 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_groundcover_barren", "copy-from": "default_t_region_groundcover_barren", "replace_with_terrain": [ [ "t_dirt", 30 ], [ "t_grass_dead", 2 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_groundcover_ravine", "copy-from": "default_t_region_groundcover_ravine", "replace_with_terrain": [ [ "t_grass", 12000 ], [ "t_grass_dead", 2000 ], [ "t_dirt", 1000 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_forest_dense", "copy-from": "default_t_region_shrub_forest_dense", "replace_with_terrain": [ [ "t_underbrush", 450 ], [ "t_shrub", 150 ], [ "t_fern", 75 ], [ "t_shrub_huckleberry", 2 ], [ "t_shrub_raspberry", 1 ], [ "t_shrub_blackberry", 1 ], [ "t_shrub_blueberry", 1 ], [ "t_shrub_strawberry", 1 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_forest", "copy-from": "default_t_region_shrub_forest", "replace_with_terrain": [ [ "t_region_shrub_forest_dense", 350 ], [ "t_shrub_rose", 5 ], [ "t_shrub_blackberry", 5 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_plains", "copy-from": "default_t_region_shrub_plains", "replace_with_terrain": [ [ "t_shrub", 50 ], [ "t_shrub_blueberry", 2 ], [ "t_shrub_blackberry", 2 ], [ "t_shrub_rose", 2 ], [ "t_shrub_huckleberry", 1 ], [ "t_shrub_strawberry", 1 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_swamp", "copy-from": "default_t_region_shrub_swamp", "replace_with_terrain": [ [ "t_fern", 2 ], [ "t_shrub_raspberry", 2 ], [ "t_shrub_blueberry", 2 ], [ "t_shrub_huckleberry", 1 ], [ "t_shrub_rose", 1 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_fruit", "copy-from": "default_t_region_shrub_fruit", "replace_with_terrain": [ [ "t_shrub_blueberry", 6 ], [ "t_shrub_strawberry", 6 ], [ "t_shrub_raspberry", 4 ], [ "t_shrub_blackberry", 2 ], [ "t_shrub_huckleberry", 2 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_shrub_decorative", "copy-from": "default_t_region_shrub_decorative", "replace_with_terrain": [ [ "t_shrub", 30 ], [ "t_fern", 5 ], [ "t_shrub_rose", 20 ], [ "t_tree_nannyberry", 15 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_forest_dense", "copy-from": "default_t_region_tree_forest_dense", "replace_with_terrain": [ [ "t_tree", 18 ], [ "t_tree_pine", 9 ], [ "t_tree_maple", 7 ], [ "t_tree_birch", 7 ], [ "t_tree_cottonwood", 4 ], [ "t_tree_elm", 4 ], [ "t_region_tree_dead", 5 ], [ "t_region_tree_forest_other", 5 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_forest_other", "copy-from": "default_t_region_tree_forest_other", "replace_with_terrain": [ [ "t_tree_willow", 15 ], [ "t_tree_alder", 15 ], [ "t_tree_basswood", 10 ], [ "t_tree_hazelnut", 10 ], [ "t_region_tree_fruit_wild", 20 ], [ "t_tree_juniper", 5 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree", "copy-from": "default_t_region_tree", "replace_with_terrain": [ [ "t_tree", 128 ], [ "t_tree_young", 128 ], [ "t_tree_birch", 16 ], [ "t_tree_elm", 16 ], [ "t_tree_cottonwood", 8 ], [ "t_tree_basswood", 16 ], [ "t_tree_alder", 16 ], [ "t_tree_pine", 64 ], [ "t_tree_maple", 32 ], [ "t_tree_willow", 32 ], [ "t_region_tree_nut", 16 ], [ "t_tree_spruce", 8 ], [ "t_region_tree_fruit_wild", 4 ], [ "t_region_tree_dead", 48 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_shade", "copy-from": "default_t_region_tree_shade", "replace_with_terrain": [ [ "t_tree", 64 ], [ "t_tree_young", 32 ], [ "t_tree_birch", 16 ], [ "t_tree_elm", 16 ], [ "t_tree_cottonwood", 16 ], [ "t_tree_basswood", 16 ], [ "t_tree_alder", 16 ], [ "t_tree_maple", 32 ], [ "t_tree_willow", 32 ], [ "t_tree_dead", 2 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_fruit", "copy-from": "default_t_region_tree_fruit", "replace_with_terrain": [ [ "t_tree_young", 4 ], [ "t_tree_apple", 2 ], [ "t_tree_crabapple", 1 ], [ "t_tree_cherry", 2 ], [ "t_tree_nannyberry", 2 ], [ "t_tree_dead", 4 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_fruit_wild", "copy-from": "default_t_region_tree_fruit_wild", "replace_with_terrain": [ [ "t_tree_young", 4 ], [ "t_tree_crabapple", 2 ], [ "t_tree_juniper", 2 ], [ "t_tree_nannyberry", 2 ], [ "t_tree_dead", 4 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_dead", "copy-from": "default_t_region_tree_dead", "replace_with_terrain": [ [ "t_tree_dead", 7 ], [ "t_tree_deadpine", 3 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_t_region_tree_nut", "copy-from": "default_t_region_tree_nut", "replace_with_terrain": [ [ "t_tree_young", 4 ], [ "t_tree_hazelnut", 2 ], [ "t_tree_dead", 4 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_flower", "copy-from": "default_f_region_flower", "replace_with_furniture": [ [ "f_flower_spurge", 100 ], [ "f_chamomile", 100 ], [ "f_dandelion", 100 ], [ "f_bluebell", 100 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_flower_decorative", "copy-from": "default_f_region_flower_decorative", "replace_with_furniture": [ [ "f_bluebell", 2 ], [ "f_fireweed", 1 ], [ "f_flower_spurge", 1 ], [ "f_chicory", 1 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_weed", "copy-from": "default_f_region_weed", "replace_with_furniture": [ [ "f_thistle", 400 ], [ "f_dandelion", 400 ], [ "f_burdock", 400 ], [ "f_chamomile", 300 ], [ "f_carrot_wild", 300 ], [ "f_bluebell", 200 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_plain", "copy-from": "default_f_region_plain", "replace_with_furniture": [ [ "f_dandelion", 600 ], [ "f_flower_spurge", 400 ], [ "f_chamomile", 400 ], [ "f_carrot_wild", 300 ], [ "f_thistle", 300 ], [ "f_fireweed", 100 ], [ "f_selfheal", 100 ], [ "f_chicory", 100 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_forest", "copy-from": "default_f_region_forest", "replace_with_furniture": [ [ "f_burdock", 2000 ], [ "f_bluebell", 600 ], [ "f_chamomile", 500 ], [ "f_carrot_wild", 300 ], [ "f_wintergreen", 100 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_forest_dense", "copy-from": "default_f_region_forest_dense", "replace_with_furniture": [ [ "f_burdock", 2000 ], [ "f_bluebell", 800 ], [ "f_wintergreen", 200 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_forest_water", "copy-from": "default_f_region_forest_water", "replace_with_furniture": [ [ "f_burdock", 4 ], [ "f_purple_loosestrife", 3 ] ] },
+  { "type": "region_terrain_furniture", "id": "default_f_region_water_plant", "copy-from": "default_f_region_water_plant", "replace_with_furniture": [ [ "f_cattails", 15 ], [ "f_purple_loosestrife", 10 ], [ "f_lilypad", 1 ] ] }
+]

@@ -1,0 +1,15 @@
+[
+  { "type": "effect_on_condition", "id": "EOC_RandEnc", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_remove", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_Roadstop_add", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_Roadstop_refugee_add", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_Roadstop_camper_add", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_RC_Shoppers_add", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_RandEnc_RC_JohnBailey_add", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_BANDIT_ASSASSIN", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_BANDIT_ASSASSIN_2", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_BANDIT_ASSASSIN_3", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_OLD_GUARD_ASSASSIN", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_PORTAL_NPC", "eoc_type": "ACTIVATION", "effect": [] },
+  { "type": "effect_on_condition", "id": "EOC_PORTAL_STORM_WARN_OR_CAUSE_RECURRING", "eoc_type": "ACTIVATION", "effect": [] }
+]

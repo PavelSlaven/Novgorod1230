@@ -39,6 +39,7 @@
         "+": "t_door_c"
       },
       "furniture": { "T": "f_table", "O": "f_clay_oven" },
+      "place_zones": [ { "type": "ZONE_START_POINT", "faction": "your_followers", "x": [ 0, 0 ], "y": [ 7, 7 ] } ],
       "place_loot": [
         { "item": "flint_steel", "x": 11, "y": 10, "chance": 100 },
         { "item": "tinder", "x": 11, "y": 10, "chance": 100 },

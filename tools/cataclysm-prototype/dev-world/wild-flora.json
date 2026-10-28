@@ -1,0 +1,56 @@
+[
+  {
+    "type": "terrain",
+    "id": "t_shrub_huckleberry",
+    "copy-from": "t_shrub_huckleberry",
+    "name": "голубика"
+  },
+  {
+    "type": "terrain",
+    "id": "t_shrub_strawberry",
+    "copy-from": "t_shrub_strawberry",
+    "name": "земляника лесная"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_cottonwood",
+    "copy-from": "t_tree_cottonwood",
+    "name": "осина"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_basswood",
+    "copy-from": "t_tree_basswood",
+    "name": "липа мелколистная (сердцевидная)"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_apple",
+    "copy-from": "t_tree_apple",
+    "name": "яблоня лесная"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_crabapple",
+    "copy-from": "t_tree_crabapple",
+    "name": "яблоня лесная"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_cherry",
+    "copy-from": "t_tree_cherry",
+    "name": "черёмуха обыкновенная"
+  },
+  {
+    "type": "terrain",
+    "id": "t_tree_nannyberry",
+    "copy-from": "t_tree_nannyberry",
+    "name": "калина обыкновенная"
+  },
+  {
+    "type": "furniture",
+    "id": "f_wintergreen",
+    "copy-from": "f_wintergreen",
+    "name": "брусника"
+  }
+]

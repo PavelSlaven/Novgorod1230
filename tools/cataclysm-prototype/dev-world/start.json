@@ -25,7 +25,9 @@
     "locations": [ "land" ],
     "city_distance": [ 0, -1 ],
     "city_sizes": [ 0, -1 ],
-    "occurrences": [ 1, 1 ]
+    "occurrences": [ 1, 1 ],
+    "flags": [ "NOVGOROD_DEV_COURTYARD", "GLOBALLY_UNIQUE" ],
+    "rotate": false
   },
   {
     "type": "start_location",

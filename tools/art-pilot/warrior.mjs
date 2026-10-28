@@ -69,7 +69,6 @@ function kit() {
   };
   const outline = (d, sw) => (sw ? `<path d="${d}" fill="none" stroke="${OUT}" stroke-width="${sw}" stroke-linejoin="round"/>` : '');
 
-  // Cel shading: the part shifted toward the light leaves a hard shadow band on the far side.
   const shaded = (d, c, o = {}) => {
     const { sx = 12, sy = 3, hx = 3, hy = 3, sw = 2.5, inner = '' } = o;
     const a = clip(d);

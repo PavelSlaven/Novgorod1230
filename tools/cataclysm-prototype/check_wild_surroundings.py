@@ -55,7 +55,6 @@ class Context:
         self.whitelisted_types = set()
         self.master_ids = set()
         self.saved_items = {}
-        self.npcs = []
         self.field_counts = Counter()
         self.sound_counts = Counter()
         self.message_counts = Counter()
@@ -117,7 +116,6 @@ class Context:
                 value = self._json(path)
                 if isinstance(value, dict):
                     self.overmaps.append((path, (int(match[1]), int(match[2])), value))
-                    self.npcs.extend(value.get("npcs", []))
         for path in sorted(self.args.world.glob("*.sav")):
             value = self._json(path)
             if isinstance(value, dict):

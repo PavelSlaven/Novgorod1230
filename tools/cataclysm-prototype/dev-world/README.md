@@ -43,7 +43,7 @@ timeout 1200s ./tests/cata_test --rng-seed 17 --mods=novgorod_dev_world --user-d
 | `NOVGOROD_WILD_REFERENCE_CAPTURE` | каталог `capture25` с эталонной записью и `inputs.log` |
 | `NOVGOROD_WILD_REFERENCE_WORLD` | конечное сохранение задания 25 |
 | `NOVGOROD_WILD_MOD` | каталог установленного мода `novgorod_dev_world` |
-| `NOVGOROD_WILD_ALLOWLIST` | необязательный путь; по умолчанию `tools/cataclysm-prototype/wild-surroundings-allowlist.tsv` |
+| `NOVGOROD_WILD_ALLOWLIST` | путь к TSV allowlist; unit-тест требует эту переменную, а в приведённой команде CLI при её отсутствии используется `tools/cataclysm-prototype/wild-surroundings-allowlist.tsv` |
 | `NOVGOROD_WILD_RUN30` | запись из 50 вводов задания 30 после её создания |
 | `NOVGOROD_WILD_WORLD30` | копия `world-after-route` после реального маршрута |
 
@@ -58,7 +58,7 @@ python3 tools/cataclysm-prototype/check_wild_surroundings.py \
   --allowlist "${NOVGOROD_WILD_ALLOWLIST:-tools/cataclysm-prototype/wild-surroundings-allowlist.tsv}"
 ```
 
-Unit-тест использует внешние capture/save/mod, поэтому не подключён к CI #31 как автономный тест без этих данных. Для полного запуска задайте `NOVGOROD_WILD_REFERENCE_CAPTURE`, `NOVGOROD_WILD_REFERENCE_WORLD`, `NOVGOROD_WILD_MOD`, `NOVGOROD_WILD_RUN30`, `NOVGOROD_WILD_WORLD30` и при необходимости `NOVGOROD_WILD_ALLOWLIST`, затем выполните:
+Unit-тест использует внешние capture/save/mod. Если ни одна из шести переменных не задана, `unittest` пропускает весь модуль с причиной «нет данных записи servak: переменные NOVGOROD_WILD_* не заданы». При частичной настройке `setUp` выдаёт `RuntimeError` со списком незаданных переменных. Чтобы тесты выполнялись без пропусков, задайте все шесть переменных `NOVGOROD_WILD_*`, затем выполните:
 
 ```sh
 python3 -m unittest tools/cataclysm-prototype/test_check_wild_surroundings.py

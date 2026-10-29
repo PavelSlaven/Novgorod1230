@@ -18,6 +18,19 @@ MASTER_TYPES = (HERO_TYPES - {"leather_pouch"}) | {"chisel", "ax"}
 COURT_TERRAIN = {"t_dirt", "t_wall_wood", "t_floor", "t_door_c", "t_door_o", "t_open_air", "t_wood_treated_roof"}
 COURT_FURNITURE = {"f_table", "f_clay_oven"}
 COURT_ITEMS = {"flint_steel", "tinder", "firewood", "stick", "straw_basket", "stick_common", "log"}
+WILD_ENVIRONMENT = (
+    "NOVGOROD_WILD_REFERENCE_CAPTURE",
+    "NOVGOROD_WILD_REFERENCE_WORLD",
+    "NOVGOROD_WILD_MOD",
+    "NOVGOROD_WILD_ALLOWLIST",
+    "NOVGOROD_WILD_RUN30",
+    "NOVGOROD_WILD_WORLD30",
+)
+
+
+def setUpModule():
+    if not any(name in os.environ for name in WILD_ENVIRONMENT):
+        raise unittest.SkipTest("нет данных записи servak: переменные NOVGOROD_WILD_* не заданы")
 
 
 def read_json(path):
@@ -51,13 +64,12 @@ class WildFixture(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory(prefix="wild-surroundings-")
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
-        required = ("NOVGOROD_WILD_REFERENCE_CAPTURE", "NOVGOROD_WILD_REFERENCE_WORLD", "NOVGOROD_WILD_MOD")
-        missing = [name for name in required if not os.environ.get(name)]
+        missing = [name for name in WILD_ENVIRONMENT if not os.environ.get(name)]
         if missing:
             raise RuntimeError("Отсутствуют данные настоящей записи: " + ", ".join(missing))
-        self.reference_run = Path(os.environ[required[0]])
-        self.reference_world = Path(os.environ[required[1]])
-        self.source_mod = Path(os.environ[required[2]])
+        self.reference_run = Path(os.environ["NOVGOROD_WILD_REFERENCE_CAPTURE"])
+        self.reference_world = Path(os.environ["NOVGOROD_WILD_REFERENCE_WORLD"])
+        self.source_mod = Path(os.environ["NOVGOROD_WILD_MOD"])
         self.reference_inputs = self.reference_run / "inputs.log"
         self.run = self.root / "run"
         self.world = self.root / "world"
@@ -69,7 +81,7 @@ class WildFixture(unittest.TestCase):
         for name in ("core", "json"):
             (self.mod.parent.parent / name).symlink_to(data / name, target_is_directory=True)
         self.allowlist = self.root / "allowlist.tsv"
-        shutil.copyfile(os.environ.get("NOVGOROD_WILD_ALLOWLIST", SCRIPT.with_name("wild-surroundings-allowlist.tsv")), self.allowlist)
+        shutil.copyfile(os.environ["NOVGOROD_WILD_ALLOWLIST"], self.allowlist)
         originals = [json.loads(line) for line in (self.reference_run / "perception.jsonl").read_text(encoding="utf-8").splitlines()]
         self.original_packets = originals
         source_frame = next(packet["frame"] for packet in originals if packet.get("kind") == "full")
@@ -184,6 +196,37 @@ class WildFixture(unittest.TestCase):
         result = self.invoke()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
+
+    def assert_diagnostic(self, result, rule, location, list_name, identifier):
+        expected = [rule, str(location), list_name, str(identifier)]
+        rows = [line.split(" — ", 4)[:4] for line in result.stdout.splitlines()]
+        self.assertIn(expected, rows, result.stdout[-4000:] + result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout[-4000:] + result.stderr)
+
+    def native_group_record(self, group_id):
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        overmap = read_json(self.reference_world / section)
+        record = next((
+            copy.deepcopy(row)
+            for row in overmap.get("monster_groups", [])
+            if isinstance(row, list)
+            and len(row) == 2
+            and isinstance(row[0], dict)
+            and isinstance(row[1], list)
+            and row[0].get("type") == group_id
+            and type(row[0].get("population")) is int
+            and row[0]["population"] > 0
+            and not row[0].get("monsters")
+            and row[1]
+            and all(
+                isinstance(position, list)
+                and len(position) == 3
+                and all(type(coordinate) is int for coordinate in position)
+                for position in row[1]
+            )
+        ), None)
+        self.assertIsNotNone(record, f"В исходной секции {section} нет native {group_id} с population > 0")
+        return section, record
 
     def add_allowance(self, kind, identifier, name="образец", reason="Природное событие образца настоящего кадра"):
         with self.allowlist.open("a", encoding="utf-8", newline="") as stream:
@@ -1430,6 +1473,727 @@ class CompletenessTests(WildFixture):
         self.flush()
         self.world.joinpath(self.save_name).write_text("{\n", encoding="utf-8")
         self.assert_bad("неполный прогон", flush=False)
+
+
+class A22PriorityTests(WildFixture):
+    def saved_horde_monster(self, identifier):
+        for path in sorted(self.reference_world.glob("o.*.*")):
+            horde_map = read_json(path).get("horde_map", [])
+            for index in range(0, len(horde_map) - len(horde_map) % 6, 6):
+                monster = horde_map[index + 1]
+                if isinstance(monster, dict) and monster.get("typeid") == identifier:
+                    return copy.deepcopy(monster)
+        self.fail(f"В сохранении задания 25 не найден native horde monster {identifier}")
+
+    def test_yard_overmap_terrain_on_wrong_z_is_reported(self):
+        self.assert_clean()
+        local_x, local_y = self.court[0] % 180, self.court[1] % 180
+        wrong_x = (local_x + 1) % 180
+        identifier = "novgorod_dev_courtyard_north"
+        set_oter(self.overmap, wrong_x, local_y, 1, identifier)
+
+        result = self.invoke()
+
+        location = f"{self.court_section[0] * 180 + wrong_x},{self.court[1]},1"
+        self.assert_diagnostic(result, "карта", location, "oter", identifier)
+
+    def test_saved_group_actual_non_allow_member_is_reported(self):
+        _, record = self.native_group_record("GROUP_RIVER")
+        self.overmap["monster_groups"] = [record]
+        self.assert_clean()
+
+        monster = self.saved_horde_monster("mon_zombie")
+        record[0]["monsters"] = [monster]
+        position = record[1][0]
+        location = f"{self.court_section[0] * 180 + position[0] // 2},{self.court_section[1] * 180 + position[1] // 2},{position[2]}"
+        result = self.invoke()
+
+        self.assert_diagnostic(result, "существо", location, "creature", "mon_zombie")
+
+    def test_crosswalk_denied_group_member_is_reported(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        self.overmap["monster_groups"] = [record]
+        self.assert_clean()
+
+        identifier = "mon_beaver"
+        policy = read_json(self.mod / "fauna-policy.json")
+        whitelist = next(row["monsters"] for row in policy if row.get("type") == "MONSTER_WHITELIST")
+        self.assertIn(identifier, whitelist)
+        crosswalk = self.mod / "mtype_taxon_crosswalk.csv"
+        with crosswalk.open(encoding="utf-8-sig", newline="") as stream:
+            reader = csv.DictReader(stream)
+            columns = reader.fieldnames
+            rows = list(reader)
+        entry = next(row for row in rows if row["mtype_id"] == identifier)
+        self.assertEqual(entry["decision"], "allow")
+        entry["decision"] = "deny"
+        with crosswalk.open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=columns)
+            writer.writeheader()
+            writer.writerows(rows)
+
+        result = self.invoke()
+
+        self.assert_diagnostic(result, "существо", section, "creature", identifier)
+
+    def test_saved_courtyard_mapgen_furniture_outside_court_cell_is_reported(self):
+        source_map = read_json(self.reference_world / self.map_relative)
+        source_submap = next(
+            submap for submap in source_map
+            if any(len(row) == 3 and row[2] == "f_table" for row in submap.get("furniture", []))
+        )
+        coordinates = copy.deepcopy(source_submap["coordinates"])
+        furniture = copy.deepcopy(next(row for row in source_submap["furniture"] if row[2] == "f_table"))
+        self.assertEqual((coordinates[0] // 2, coordinates[1] // 2, coordinates[2]), self.court)
+        submap = next(row for row in self.submaps if row["coordinates"] == coordinates)
+        submap["furniture"] = [furniture]
+        self.assert_clean()
+
+        submap["coordinates"][0] += 2
+        moved = submap["coordinates"]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, moved))}[{furniture[0]},{furniture[1]}]"
+        result = self.invoke()
+
+        self.assert_diagnostic(result, "мебель вне двора", location, "furniture", "f_table")
+
+
+class A22SubmapFormatTestsA(WildFixture):
+    def test_a22_841_non_object_real_submap_reports_object(self):
+        self.submaps[0] = None
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", str(self.world / self.map_relative), "submap", "object")
+
+    def test_a22_855_missing_version_reports_submap_field(self):
+        self.submaps[0].pop("version")
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", str(self.world / self.map_relative), "submap", "version")
+
+    def test_a22_858_invalid_version_type_reports_field(self):
+        self.submaps[0]["version"] = "invalid"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", str(self.world / self.map_relative), "version", "version")
+
+    def test_a22_864_malformed_coordinates_reports_coordinates(self):
+        self.submaps[0]["coordinates"] = [0, 0]
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", str(self.world / self.map_relative), "submap", "coordinates")
+
+    def test_a22_870_unmapped_coordinates_report_missing_overmap(self):
+        coordinates = [999999, 999999, 0]
+        self.submaps[0]["coordinates"] = coordinates
+        location = f"{self.world / self.map_relative}:{','.join(map(str, coordinates))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "подкарта", location, "overmap", "missing")
+
+    def test_a22_880_non_list_terrain_reports_shape(self):
+        self.submaps[0]["terrain"] = None
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "terrain", "shape")
+
+    def test_a22_890_malformed_terrain_run_reports_run(self):
+        self.submaps[0]["terrain"] = [None]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "terrain", "run")
+
+    def test_a22_893_terrain_overflow_reports_cells(self):
+        self.submaps[0]["terrain"] = [["t_dirt", 145]]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "terrain", "cells")
+
+    def test_a22_899_short_terrain_reports_exact_cell_count(self):
+        self.submaps[0]["terrain"] = [["t_dirt", 143]]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "terrain", "cells=143")
+
+    def test_a22_903_non_list_furniture_reports_shape(self):
+        self.submaps[0]["furniture"] = None
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "furniture", "shape")
+
+    def test_a22_908_malformed_furniture_entry_reports_entry(self):
+        self.submaps[0]["furniture"] = [None]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "furniture", "entry")
+
+    def test_a22_915_non_list_phase_reverts_reports_shape(self):
+        self.submaps[0]["phase_reverts"] = None
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "phase_reverts", "shape")
+
+    def test_a22_920_malformed_phase_revert_entry_reports_entry(self):
+        self.submaps[0]["phase_reverts"] = [None]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "phase_reverts", "entry")
+
+    def test_a22_927_non_list_fields_reports_shape(self):
+        self.submaps[0]["fields"] = None
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "fields", "shape")
+
+    def test_a22_930_incomplete_fields_triplet_reports_entries(self):
+        self.submaps[0]["fields"] = [0]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", location, "fields", "entries")
+
+
+class A22OvermapFormatTests(WildFixture):
+    def test_layers_non_array_reports_both_shape_errors(self):
+        self.overmap["layers"] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        expected = ["карта", section, "overmap", "layers"]
+        self.assert_diagnostic(result, *expected)
+        rows = [line.split(" — ", 4)[:4] for line in result.stdout.splitlines()]
+        self.assertEqual(rows.count(expected), 2, result.stdout + result.stderr)
+
+    def test_layers_missing_level_is_reported(self):
+        self.overmap["layers"].pop()
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "карта", section, "overmap", "layers")
+
+    def test_layer_runs_must_be_array(self):
+        self.overmap["layers"][12] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}:2"
+        self.assert_diagnostic(result, "карта", section, "oter", "layers")
+
+    def test_layer_run_must_have_two_values(self):
+        malformed_run = ["field"]
+        self.overmap["layers"][12] = [malformed_run]
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}:2"
+        self.assert_diagnostic(result, "карта", section, "oter", str(malformed_run))
+
+    def test_layer_run_count_must_be_positive_integer(self):
+        self.overmap["layers"][12] = [["field", 0]]
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}:2"
+        self.assert_diagnostic(result, "карта", section, "oter", "field")
+
+    def test_layer_run_must_not_exceed_cell_count(self):
+        self.overmap["layers"][12] = [["field", 32401]]
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}:2"
+        self.assert_diagnostic(result, "карта", section, "oter", "field")
+
+    def test_layer_run_cell_count_must_match_section(self):
+        self.overmap["layers"][12] = [["field", 32399]]
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}:2"
+        self.assert_diagnostic(result, "карта", section, "oter", "cells=32399")
+
+    def test_roof_xy_must_match_courtyard(self):
+        court_x, court_y = self.court[0] % 180, self.court[1] % 180
+        roof_x = (court_x + 1) % 180
+        identifier = "novgorod_dev_courtyard_roof_north"
+        set_oter(self.overmap, court_x, court_y, 1, "open_air")
+        set_oter(self.overmap, roof_x, court_y, 1, identifier)
+
+        result = self.invoke()
+        location = f"{self.court_section[0] * 180 + roof_x},{self.court_section[1] * 180 + court_y},1"
+        self.assert_diagnostic(result, "карта", location, "oter", identifier)
+
+
+class A22FrameFormatTests(WildFixture):
+    def test_line_1198_rejects_non_array_player_messages(self):
+        self.frame["journal"]["player_messages"]["messages"] = "not-an-array"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "journal.player_messages", "messages")
+
+    def test_line_1217_rejects_non_array_sounds(self):
+        self.frame["sounds"] = "not-an-array"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "sounds", "array")
+
+    def test_line_1300_rejects_non_array_objects(self):
+        self.frame["objects"] = "not-an-array"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "objects", "array")
+
+    def test_line_1304_rejects_non_object_entry_in_objects(self):
+        self.frame["objects"][0] = None
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "objects", "object")
+
+    def test_line_1352_rejects_known_trap_object(self):
+        furniture = next(obj for obj in self.frame["objects"] if obj.get("kind") == "furniture")
+        furniture["kind"] = "known_trap"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "objects", "known_trap")
+
+    def test_line_1356_rejects_non_array_creatures(self):
+        self.frame["creatures"] = "not-an-array"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "array")
+
+    def test_line_1361_rejects_non_object_creature(self):
+        self.frame["creatures"][0] = None
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "object")
+
+    def test_line_1371_rejects_unknown_creature_kind(self):
+        self.frame["creatures"][0]["kind"] = "unrecognized_capture_creature"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "unrecognized_capture_creature")
+
+    def test_line_1394_reports_missing_npc_wielded(self):
+        self.frame["creatures"][0].pop("wielded")
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "wielded")
+        row = ["неизвестный вход", f"кадр {number}", "creatures", "wielded"]
+        self.assertEqual(sum(line.split(" — ", 4)[:4] == row for line in result.stdout.splitlines()), 2, result.stdout)
+
+    def test_line_1396_reports_missing_npc_worn(self):
+        self.frame["creatures"][0].pop("worn")
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "worn")
+        row = ["неизвестный вход", f"кадр {number}", "creatures", "worn"]
+        self.assertEqual(sum(line.split(" — ", 4)[:4] == row for line in result.stdout.splitlines()), 2, result.stdout)
+
+    def test_line_1403_reports_other_creature_kind(self):
+        self.frame["creatures"][0]["kind"] = "other_creature"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "creatures", "other_creature")
+
+    def test_line_1426_rejects_non_array_body_parts(self):
+        self.frame["player_state"]["body_parts"] = "not-an-array"
+        number = self.packets.index(self.packet) + 1
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", f"кадр {number}", "player_state", "body_parts")
+
+
+class A22ActorFormatTests(WildFixture):
+    def saved_submap_item(self):
+        with self.allowlist.open(encoding="utf-8-sig", newline="") as stream:
+            allowed = {
+                row["id"]
+                for row in csv.DictReader(stream, delimiter="\t")
+                if row["list"] == "item" and row["decision"] in ("keep", "keep_rename")
+            }
+        for path in sorted((self.reference_world / "maps").rglob("*.map")):
+            for submap in read_json(path):
+                entries = submap.get("items", [])
+                for index in range(0, len(entries) - 2, 3):
+                    stack = entries[index + 2]
+                    if not isinstance(stack, list):
+                        continue
+                    for item in stack:
+                        if (
+                            isinstance(item, dict)
+                            and item.get("typeid") in allowed
+                            and type(item.get("uid")) in (str, int)
+                            and str(item["uid"])
+                            and not item.get("contents")
+                        ):
+                            return copy.deepcopy(item)
+        self.fail("В настоящем сохранении не найден простой разрешённый предмет подкарты")
+
+    def saved_player_item(self):
+        worn = self.save["player"].get("worn", {})
+        items = worn.get("worn", []) if isinstance(worn, dict) else worn
+        item = next(
+            (
+                entry
+                for entry in items
+                if isinstance(entry, dict)
+                and isinstance(entry.get("typeid"), str)
+                and type(entry.get("uid")) in (str, int)
+                and str(entry["uid"])
+            ),
+            None,
+        )
+        self.assertIsNotNone(item, "В настоящем сохранении нет предмета героя с UID")
+        return copy.deepcopy(item)
+
+    def saved_player_location(self):
+        return str(self.world / self.save_name)
+
+    def saved_submap_item_location(self):
+        coordinates = self.submaps[0]["coordinates"]
+        location = f"{self.world / self.map_relative}:{','.join(map(str, coordinates))}[0,0]"
+        return location
+
+    def test_missing_crosswalk_reports_exact_unknown_input(self):
+        path = self.mod / "mtype_taxon_crosswalk.csv"
+        path.unlink()
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", path, "fauna", "mtype_taxon_crosswalk.csv")
+
+    def test_non_list_monster_blacklist_reports_exact_unknown_input(self):
+        path = self.mod / "fauna-policy.json"
+        policy = read_json(path)
+        blacklist = next(row for row in policy if row.get("type") == "MONSTER_BLACKLIST")
+        blacklist["monsters"] = None
+        write_json(path, policy)
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", path, "fauna", "MONSTER_BLACKLIST")
+
+    def test_saved_submap_item_without_typeid_reports_exact_unknown_input(self):
+        item = self.saved_submap_item()
+        item.pop("typeid")
+        self.submaps[0]["items"] = [0, 0, [item]]
+        result = self.invoke()
+        self.assert_diagnostic(
+            result,
+            "неизвестный вход",
+            self.saved_submap_item_location(),
+            "item",
+            "typeid",
+        )
+
+    def test_saved_submap_item_with_empty_uid_reports_exact_unknown_input(self):
+        item = self.saved_submap_item()
+        item["uid"] = ""
+        self.submaps[0]["items"] = [0, 0, [item]]
+        result = self.invoke()
+        self.assert_diagnostic(
+            result,
+            "неизвестный вход",
+            self.saved_submap_item_location(),
+            "item",
+            "uid",
+        )
+
+    def test_player_worn_non_container_reports_exact_unknown_input(self):
+        self.save["player"]["worn"] = "malformed"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "worn", "shape")
+
+    def test_player_worn_items_non_list_reports_exact_unknown_input(self):
+        self.save["player"]["worn"] = {"worn": "malformed"}
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "worn", "worn")
+
+    def test_player_weapon_non_mapping_reports_exact_unknown_input(self):
+        self.save["player"]["weapon"] = "malformed"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "weapon", "shape")
+
+    def test_player_inventory_non_container_reports_exact_unknown_input(self):
+        self.save["player"]["inventory"] = True
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "inventory", "shape")
+
+    def test_player_inventory_item_without_typeid_reports_exact_unknown_input(self):
+        item = self.saved_player_item()
+        item.pop("typeid")
+        self.save["player"].setdefault("inventory", []).append(item)
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "item", "typeid")
+
+    def test_player_inventory_item_with_empty_uid_reports_exact_unknown_input(self):
+        item = self.saved_player_item()
+        item["uid"] = ""
+        self.save["player"].setdefault("inventory", []).append(item)
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "item", "uid")
+
+    def test_duplicate_saved_player_item_uid_reports_exact_unknown_input(self):
+        item = self.saved_player_item()
+        identifier = str(item["uid"])
+        self.save["player"].setdefault("inventory", []).append(item)
+        result = self.invoke()
+        self.assert_diagnostic(result, "неизвестный вход", self.saved_player_location(), "item", identifier)
+
+    def test_empty_perception_reports_exact_completeness_diagnostic(self):
+        self.packets = []
+        result = self.invoke()
+        self.assert_diagnostic(result, "неполный прогон", "perception.jsonl", "recording", "empty")
+
+    def test_changed_terminal_key_reports_exact_completeness_diagnostic(self):
+        self.inputs[-1]["keys"] = "not-Q"
+        result = self.invoke()
+        self.assert_diagnostic(result, "неполный прогон", "inputs.log", "terminal_keys", "49,50")
+
+
+class A22SubmapFormatTestsB(WildFixture):
+    def saved_submap_category(self, category):
+        for index, source in enumerate(read_json(self.reference_world / self.map_relative)):
+            if source.get(category):
+                return self.submaps[index], copy.deepcopy(source[category])
+        self.fail(f"В сохранении нет непустой категории {category}")
+
+    def submap_location(self, submap, cell=None):
+        coordinates = ",".join(map(str, submap["coordinates"]))
+        location = f"{self.world / self.map_relative}:{coordinates}"
+        return location if cell is None else f"{location}[{cell[0]},{cell[1]}]"
+
+    def saved_vehicle(self):
+        for path in sorted((self.reference_world / "maps").rglob("*.map")):
+            for submap in read_json(path):
+                if submap.get("vehicles"):
+                    return copy.deepcopy(submap["vehicles"][0])
+        self.fail("В сохранении нет непустой категории vehicles")
+
+    def saved_active_monsters(self):
+        return copy.deepcopy(read_json(self.reference_world / self.save_name)["active_monsters"])
+
+    def save_location(self):
+        return str(self.world / self.save_name)
+
+    def test_saved_field_entry_position_shape_is_reported(self):
+        submap, fields = self.saved_submap_category("fields")
+        fields[0] = 12
+        submap["fields"] = fields
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "fields", "entry")
+
+    def test_saved_field_value_tail_is_reported(self):
+        submap, fields = self.saved_submap_category("fields")
+        x, y, entries = fields[:3]
+        entries.append("tail")
+        submap["fields"] = fields
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap, (x, y)), "fields", "values")
+
+    def test_saved_field_value_type_is_reported(self):
+        submap, fields = self.saved_submap_category("fields")
+        x, y, entries = fields[:3]
+        entries[1] = "invalid"
+        submap["fields"] = fields
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap, (x, y)), "fields", "value")
+
+    def test_saved_item_container_shape_is_reported(self):
+        submap, items = self.saved_submap_category("items")
+        submap["items"] = {"entries": items}
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "items", "shape")
+
+    def test_saved_item_entry_tail_is_reported(self):
+        submap, items = self.saved_submap_category("items")
+        items.append("tail")
+        submap["items"] = items
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "items", "entries")
+
+    def test_saved_item_entry_position_shape_is_reported(self):
+        submap, items = self.saved_submap_category("items")
+        items[0] = 12
+        submap["items"] = items
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "items", "entry")
+
+    def test_saved_radiation_container_shape_is_reported(self):
+        submap, radiation = self.saved_submap_category("radiation")
+        submap["radiation"] = {"runs": radiation}
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "radiation", "shape")
+
+    def test_saved_radiation_run_type_is_reported(self):
+        submap, radiation = self.saved_submap_category("radiation")
+        radiation[0] = "invalid"
+        submap["radiation"] = radiation
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "radiation", "run")
+
+    def test_saved_radiation_cell_total_is_reported(self):
+        submap, radiation = self.saved_submap_category("radiation")
+        radiation[1] -= 1
+        expected_cells = sum(radiation[1::2])
+        submap["radiation"] = radiation
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.submap_location(submap), "radiation", f"cells={expected_cells}")
+
+    def test_saved_vehicle_container_shape_is_reported(self):
+        submap = self.submaps[0]
+        submap["vehicles"] = self.saved_vehicle()
+        self.assert_diagnostic(self.invoke(), "транспорт", self.submap_location(submap), "vehicle", "vehicles")
+
+    def test_saved_player_object_shape_is_reported(self):
+        self.save["player"] = []
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.save_location(), "player", "object")
+
+    def test_saved_active_monster_container_shape_is_reported(self):
+        self.save["active_monsters"] = dict(enumerate(self.saved_active_monsters()))
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.save_location(), "active_monsters", "shape")
+
+    def test_saved_active_monster_typeid_type_is_reported(self):
+        monsters = self.saved_active_monsters()
+        monster = next(row for row in monsters if isinstance(row, dict) and isinstance(row.get("typeid"), str))
+        monster["typeid"] = None
+        self.save["active_monsters"] = monsters
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.save_location(), "active_monsters", "typeid")
+
+    def test_saved_active_monster_location_shape_is_reported(self):
+        monsters = self.saved_active_monsters()
+        monster = next(row for row in monsters if isinstance(row, dict) and isinstance(row.get("location"), list))
+        monster["location"] = "invalid"
+        self.save["active_monsters"] = monsters
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", self.save_location(), "active_monsters", "location")
+
+
+class A22FrameShapeTests(WildFixture):
+    def current_frame_number(self):
+        return next(index for index, packet in enumerate(self.packets, 1) if packet is self.packet)
+
+    def first_visible_terrain_group(self):
+        self.packet = next(packet for packet in self.packets if packet["frame"]["visible_terrain"])
+        self.frame = self.packet["frame"]
+        return self.frame["visible_terrain"][0]
+
+    def test_a22_exact_rejects_nonobject_journal(self):
+        self.frame["journal"] = None
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "journal", "object")
+
+    def test_a22_exact_rejects_missing_nested_required_key(self):
+        del self.frame["journal"]["player_messages"]
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "journal", "player_messages")
+
+    def test_a22_inventory_must_be_array(self):
+        self.frame["inventory"] = "not-an-array"
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "inventory", "array")
+
+    def test_a22_visible_terrain_must_be_array(self):
+        self.frame["visible_terrain"] = None
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "visible_terrain", "array")
+
+    def test_a22_visible_terrain_positions_must_be_array(self):
+        self.first_visible_terrain_group()["positions"] = "not-an-array"
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "visible_terrain", "positions")
+
+    def test_a22_visible_terrain_count_matches_positions(self):
+        group = self.first_visible_terrain_group()
+        group["count"] += 1
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", f"кадр {self.current_frame_number()}", "visible_terrain", "count")
+
+    def test_a22_perception_packet_must_be_object(self):
+        self.packets[0] = "not-an-object"
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", "кадр 1", "perception", "object")
+
+    def test_a22_perception_kind_must_be_known(self):
+        self.packets[0]["kind"] = "unrecognized"
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", "кадр 1", "perception", "kind")
+
+    def test_a22_perception_frame_payload_must_be_object(self):
+        self.packets[0]["frame"] = None
+        self.assert_diagnostic(self.invoke(), "неизвестный вход", "кадр 1", "perception", "frame")
+
+
+class A22OvermapActorFormatTests(WildFixture):
+    def test_overmap_npcs_must_be_array(self):
+        self.overmap["npcs"] = "bad"
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "карта", section, "npc", "npcs")
+
+    def test_overmap_npcs_reject_non_object(self):
+        identifier = "A22_BAD_NPC"
+        self.overmap["npcs"][0] = identifier
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "человек", section, "npc", identifier)
+
+    def test_master_id_must_be_integer(self):
+        identifier = "A22_BAD_MASTER_ID"
+        self.master["id"] = identifier
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "человек", section, "npc", identifier)
+
+    def test_master_location_must_be_valid(self):
+        self.master["location"] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "человек", section, "npc", "location")
+
+    def test_monster_groups_must_be_array(self):
+        self.overmap["monster_groups"] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "карта", section, "monster_group", "monster_groups")
+
+    def test_monster_group_record_must_have_expected_shape(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        record[0] = "bad"
+        self.overmap["monster_groups"] = [record]
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "monster_group", str(record))
+
+    def test_monster_group_monsters_must_be_array(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        record[0]["monsters"] = "bad"
+        group_id = record[0]["type"]
+        self.overmap["monster_groups"] = [record]
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "monster_group", group_id)
+
+    def test_monster_group_population_must_be_nonnegative_integer(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        record[0]["population"] = -1
+        group_id = record[0]["type"]
+        self.overmap["monster_groups"] = [record]
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "monster_group", group_id)
+
+    def test_monster_group_id_must_be_string(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        record[0]["type"] = None
+        self.overmap["monster_groups"] = [record]
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "monster_group", "None")
+
+    def test_monster_group_positions_must_be_valid(self):
+        section, record = self.native_group_record("GROUP_RIVER")
+        group_id = record[0]["type"]
+        record[1][0] = "bad"
+        self.overmap["monster_groups"] = [record]
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "monster_group", group_id)
+
+    def test_horde_map_must_be_array(self):
+        self.overmap["horde_map"] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "карта", section, "creature", "horde_map")
+
+    def test_horde_map_length_must_be_multiple_of_six(self):
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        native_overmap = read_json(self.reference_world / section)
+        self.overmap["horde_map"] = copy.deepcopy(native_overmap["horde_map"][:6])
+        self.assertEqual(len(self.overmap["horde_map"]), 6)
+        self.overmap["horde_map"].pop()
+
+        result = self.invoke()
+        self.assert_diagnostic(result, "карта", section, "creature", "horde_map")
+
+    def test_overmap_null_npcs_is_reported_by_format_rule(self):
+        self.overmap["npcs"] = None
+
+        result = self.invoke()
+        section = f"o.{self.court_section[0]}.{self.court_section[1]}"
+        self.assert_diagnostic(result, "карта", section, "npc", "npcs")
 
 
 if __name__ == "__main__":

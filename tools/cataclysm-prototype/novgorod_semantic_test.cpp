@@ -100,6 +100,7 @@ void reset_p3_fixture()
     avatar &you = get_avatar();
     map &here = get_map();
     calendar::turn = calendar::turn_zero + 12_hours;
+    g->reset_light_level();
     you.setpos( here, p3_fixture_center );
     you.set_moves( 1000 );
     for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
@@ -167,7 +168,11 @@ void reset_p3_fixture()
 
 void require_p3_wall_hides_npc( avatar &you, npc &subject )
 {
+    on_out_of_scope restore_light( [] { g->reset_light_level(); } );
+    scoped_weather_override sunny_weather( p3_sunny_weather );
+    g->reset_light_level();
     map &here = get_map();
+    here.ter_set( p3_fixture_center + tripoint_rel_ms( 0, -1, 0 ), p3_ter_floor );
     const auto refresh = [&]() {
         here.invalidate_map_cache( you.posz() );
         here.build_map_cache( you.posz() );

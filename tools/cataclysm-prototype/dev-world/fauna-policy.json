@@ -232,6 +232,7 @@
   },
   {
     "type": "MONSTER_WHITELIST",
+    "mode": "EXCLUSIVE",
     "monsters": [
       "mon_bat",
       "mon_bear",

@@ -31,7 +31,7 @@ static const ter_str_id ter_t_dirt( "t_dirt" );
 static const ter_str_id ter_t_floor( "t_floor" );
 static const ter_str_id ter_t_wall( "t_wall" );
 static const ter_str_id ter_t_door_c( "t_door_c" );
-static const mtype_id mon_zombie( "mon_zombie" );
+static const mtype_id mon_beaver( "mon_beaver" );
 static const npc_template_id npc_template_test_talker( "test_talker" );
 static const std::vector<itype_id> fixture_items = {
     itype_id( "rock" ), itype_id( "stick" ), itype_id( "2x4" ),
@@ -354,11 +354,12 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     get_map().ter_set( fixture_center + tripoint::east, ter_t_dirt );
     get_map().ter_set( fixture_center + tripoint( 1, -1, 0 ), ter_t_dirt );
     get_map().ter_set( fixture_center + tripoint( 1, 1, 0 ), ter_t_wall );
-    monster *zombie = g->place_critter_at( mon_zombie, fixture_center + tripoint( 3, 2, 0 ) );
-    REQUIRE( zombie != nullptr );
+    monster *hostile = g->place_critter_at( mon_beaver, fixture_center + tripoint( 3, 2, 0 ) );
+    REQUIRE( hostile != nullptr );
+    hostile->anger = 100;
     get_map().build_map_cache( 0 );
     get_map().update_visibility_cache( 0 );
-    const bool initially_visible = get_avatar().sees( get_map(), *zombie );
+    const bool initially_visible = get_avatar().sees( get_map(), *hostile );
     REQUIRE_FALSE( initially_visible );
     const std::string danger_before = player_json();
     std::string stopped_readback;
@@ -368,7 +369,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     tripoint_bub_ms stopped_position;
     set_novgorod_test_input_observer( [&]() {
         std::cout << "{\"scenario\":\"T05_input_boundary\",\"index\":" << observed_inputs
-                  << ",\"visible\":" << get_avatar().sees( get_map(), *zombie )
+                  << ",\"visible\":" << get_avatar().sees( get_map(), *hostile )
                   << ",\"safe_mode\":" << static_cast<int>( g->safe_mode )
                   << ",\"x\":" << get_avatar().pos_abs().x()
                   << ",\"y\":" << get_avatar().pos_abs().y() << "}\n";
@@ -377,7 +378,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
             stopped_readback = player_json();
             stopped = g->safe_mode == SAFE_MODE_STOP;
             stopped_position = get_avatar().pos_bub();
-            visible_at_stop = get_avatar().sees( get_map(), *zombie );
+            visible_at_stop = get_avatar().sees( get_map(), *hostile );
         }
     } );
     const reset_input_observer observer_guard;
@@ -386,7 +387,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     REQUIRE_FALSE( g->do_turn() );
     emit_transition( "T05_safe_mode_interrupt", danger_before,
                      ",\"initial_threat_visible\":" + std::string( initially_visible ? "true" : "false" ) +
-                     ",\"final_threat_visible\":" + std::string( get_avatar().sees( get_map(), *zombie ) ? "true" : "false" ) +
+                     ",\"final_threat_visible\":" + std::string( get_avatar().sees( get_map(), *hostile ) ? "true" : "false" ) +
                      ",\"stop_readback\":" + stopped_readback +
                      ",\"native_stop_observed\":" + std::string( stopped ? "true" : "false" ) );
     CHECK( observed_inputs == 4 );
@@ -394,7 +395,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     CHECK( stopped );
     CHECK( visible_at_stop );
     CHECK( get_avatar().pos_bub() == fixture_center + tripoint::east );
-    CHECK( get_avatar().sees( get_map(), *zombie ) );
+    CHECK( get_avatar().sees( get_map(), *hostile ) );
 }
 
 TEST_CASE( "Novgorod test input exhaustion is explicit", "[novgorod_slice]" )
@@ -555,10 +556,24 @@ TEST_CASE( "Novgorod natural fauna decisions cover native groups", "[novgorod_fa
         INFO( id );
         CHECK( allow.count( id ) + deny.count( id ) == 1 );
     }
+    size_t native_zombify_paths = 0;
+    std::ostringstream native_zombify_ids;
+    bool first_native_zombify_id = true;
     for( const std::string &id : allow ) {
         INFO( id );
         CHECK( natural.count( id ) == 1 );
+        const mtype_id type( id );
+        if( type.is_valid() && !type->zombify_into.is_empty() ) {
+            ++native_zombify_paths;
+            if( !first_native_zombify_id ) {
+                native_zombify_ids << ", ";
+            }
+            native_zombify_ids << id;
+            first_native_zombify_id = false;
+        }
     }
+    INFO( "allowed native species with zombify_into: " << native_zombify_ids.str() );
+    CHECK( native_zombify_paths > 0 );
     for( const std::string &id : deny ) {
         INFO( id );
         CHECK( natural.count( id ) == 1 );
@@ -626,21 +641,17 @@ TEST_CASE( "Novgorod fauna policy filters natural groups", "[novgorod_fauna]" )
         CHECK( MonsterGroupManager::monster_is_blacklisted( mtype_id( id ) ) );
         CHECK( natural.count( id ) == 0 );
     }
-    size_t corpse_paths = 0;
     for( const std::string &id : allow ) {
         INFO( id );
         const mtype_id type( id );
         REQUIRE( type.is_valid() );
         CHECK_FALSE( MonsterGroupManager::monster_is_blacklisted( type ) );
         CHECK( natural.count( id ) == 1 );
-        if( !type->zombify_into.is_empty() ) {
-            ++corpse_paths;
-            const item corpse = item::make_corpse( type );
-            REQUIRE_FALSE( corpse.has_var( "zombie_form" ) );
-            CHECK_FALSE( corpse.can_revive() );
-        }
+        const item corpse = item::make_corpse( type );
+        REQUIRE_FALSE( corpse.has_var( "zombie_form" ) );
+        CHECK_FALSE( corpse.can_revive() );
+        CHECK( type->zombify_into.is_empty() );
     }
-    CHECK( corpse_paths > 0 );
     CHECK_FALSE( get_option<bool>( "ZOMBIFY_INTO_ENABLED" ) );
 }
 

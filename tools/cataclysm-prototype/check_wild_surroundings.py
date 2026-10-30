@@ -49,11 +49,17 @@ class Context:
         self.court_positions = set()
         self.hero_types = set()
         self.master_types = set()
+        self.watchman_types = set()
         self.fauna = set()
         self.exclusive = False
         self.blacklisted_types = set()
         self.whitelisted_types = set()
         self.master_ids = set()
+        self.watchman_ids = set()
+        self.npc_ids = {
+            "novgorod_dev_master": self.master_ids,
+            "novgorod_dev_watchman": self.watchman_ids,
+        }
         self.saved_items = {}
         self.field_counts = Counter()
         self.sound_counts = Counter()
@@ -84,7 +90,7 @@ class Context:
     def _load(self):
         self.packets = self._lines(self.args.run / "perception.jsonl")
         self.inputs = self._lines(self.args.run / "inputs.log")
-        self.reference_inputs = self._lines(self.args.reference_inputs)
+        self.reference_inputs = self._lines(self.args.reference_inputs) if self.args.reference_inputs else []
         state = None
         for number, packet in enumerate(self.packets, 1):
             if not isinstance(packet, dict):
@@ -190,7 +196,7 @@ class Context:
 
 
 def check_permissions(context):
-    typed_lists = {"terrain", "furniture", "item", "oter", "field", "sound", "message"}
+    typed_lists = {"terrain", "furniture", "item", "oter", "field", "sound", "message", "npc"}
     processed_rows = 0
     for row in context.rows:
         if not isinstance(row, dict):
@@ -357,10 +363,10 @@ def check_permissions(context):
                 if key not in ("item", "group"):
                     yield from item_ids(child, groups)
 
-    master_groups = {
-        "novgorod_dev_master_worn",
-        "novgorod_dev_master_carried",
-        "novgorod_dev_master_weapon",
+    npc_item_groups = {
+        "novgorod_dev_master": {"novgorod_dev_master_worn", "novgorod_dev_master_carried",
+                                 "novgorod_dev_master_weapon"},
+        "novgorod_dev_watchman": {"novgorod_dev_master_worn", "novgorod_dev_master_weapon"},
     }
     crosswalk_path = context.args.mod / "mtype_taxon_crosswalk.csv"
     try:
@@ -375,8 +381,11 @@ def check_permissions(context):
     for entry in context.mod_objects:
         if not isinstance(entry, dict):
             continue
-        if entry.get("type") == "item_group" and entry.get("id") in master_groups:
-            context.master_types.update(item_ids(entry.get("entries", [])))
+        if entry.get("type") == "item_group":
+            for npc_type, groups in npc_item_groups.items():
+                if isinstance(entry.get("id"), str) and entry["id"] in groups:
+                    target = context.master_types if npc_type == "novgorod_dev_master" else context.watchman_types
+                    target.update(item_ids(entry.get("entries", [])))
         if entry.get("type") == "profession" and entry.get("id") == "novgorod_dev_visitor":
             context.hero_types.update(item_ids(entry.get("items", {})))
         if entry.get("type") == "MONSTER_BLACKLIST":
@@ -558,27 +567,57 @@ def check_overmaps(context):
     else:
         context.court_positions = {(yard_positions[0][0], yard_positions[0][1], 0)}
 
-    masters = []
-    for path, npc in saved_npcs:
-        if not isinstance(npc, dict):
-            context.issue("человек", path.name, "npc", str(npc))
-            continue
-        identifier = npc.get("id")
-        is_master = npc.get("unique_id") == "novgorod_dev_master" and npc.get("idz") == "novgorod_dev_master"
-        if not is_master:
-            context.issue("человек", path.name, "npc", str(npc.get("unique_id", npc.get("idz", identifier))))
-            continue
-        if type(identifier) is not int:
-            context.issue("человек", path.name, "npc", str(identifier))
-            continue
-        context.master_ids.add(str(identifier))
-        masters.append(npc)
-        location = npc.get("location")
-        if (not isinstance(location, list) or len(location) != 3 or
-                any(type(coordinate) is not int for coordinate in location)):
-            context.issue("человек", path.name, "npc", "location")
-    if len(masters) != 1:
-        context.issue("человек", "overmap", "npc", f"masters={len(masters)}")
+    if context.args.mode == "task30":
+        masters = []
+        for path, npc in saved_npcs:
+            if not isinstance(npc, dict):
+                context.issue("человек", path.name, "npc", str(npc))
+                continue
+            identifier = npc.get("id")
+            is_master = npc.get("unique_id") == "novgorod_dev_master" and npc.get("idz") == "novgorod_dev_master"
+            if not is_master:
+                context.issue("человек", path.name, "npc", str(npc.get("unique_id", npc.get("idz", identifier))))
+                continue
+            if type(identifier) is not int:
+                context.issue("человек", path.name, "npc", str(identifier))
+                continue
+            context.master_ids.add(str(identifier))
+            masters.append(npc)
+            location = npc.get("location")
+            if (not isinstance(location, list) or len(location) != 3 or
+                    any(type(coordinate) is not int for coordinate in location)):
+                context.issue("человек", path.name, "npc", "location")
+        if len(masters) != 1:
+            context.issue("человек", "overmap", "npc", f"masters={len(masters)}")
+    else:
+        npc_counts = Counter()
+        saved_npc_ids = set()
+        for path, npc in saved_npcs:
+            if not isinstance(npc, dict):
+                context.issue("человек", path.name, "npc", str(npc))
+                continue
+            identifier = npc.get("id")
+            npc_type = npc.get("unique_id")
+            if (not isinstance(npc_type, str) or npc_type not in context.npc_ids or
+                    npc_type not in context.allowed["npc"] or
+                    npc.get("idz") != npc_type):
+                context.issue("человек", path.name, "npc", str(npc_type or npc.get("idz", identifier)))
+                continue
+            if type(identifier) is not int:
+                context.issue("человек", path.name, "npc", str(identifier))
+                continue
+            if identifier in saved_npc_ids:
+                context.issue("человек", path.name, "npc", f"duplicate_id={identifier}")
+            saved_npc_ids.add(identifier)
+            npc_counts[npc_type] += 1
+            context.npc_ids[npc_type].add(str(identifier))
+            location = npc.get("location")
+            if (not isinstance(location, list) or len(location) != 3 or
+                    any(type(coordinate) is not int for coordinate in location)):
+                context.issue("человек", path.name, "npc", "location")
+        for npc_type in context.npc_ids:
+            if npc_counts[npc_type] != 1:
+                context.issue("человек", "overmap", "npc", f"{npc_type}={npc_counts[npc_type]}")
 
     for path, (section_x, section_y), overmap in context.overmaps:
         groups = overmap.get("monster_groups", [])
@@ -1020,9 +1059,15 @@ def check_submaps(context):
             if not isinstance(npc, dict):
                 continue
             identifier = str(npc.get("id"))
-            is_master = npc.get("unique_id") == "novgorod_dev_master" and identifier in context.master_ids
-            allowed = context.master_types if is_master else set()
-            check_actor(npc, f"{path}:npc:{identifier}", allowed, "снаряжение мастера",
+            npc_type = npc.get("unique_id")
+            is_saved_npc = (isinstance(npc_type, str) and npc_type in context.npc_ids and
+                            (context.args.mode == "task30" or npc_type in context.allowed["npc"]) and
+                            identifier in context.npc_ids[npc_type])
+            allowed = (context.master_types if npc_type == "novgorod_dev_master" else
+                       context.watchman_types if npc_type == "novgorod_dev_watchman" else set()) if is_saved_npc else set()
+            gear_rule = ("снаряжение мастера" if context.args.mode == "task30" or
+                         npc_type == "novgorod_dev_master" else "снаряжение сторожа")
+            check_actor(npc, f"{path}:npc:{identifier}", allowed, gear_rule,
                         ("inventory", "inv", "companion_mission_inv"))
 
     context.summary.append(f"подкарт проверено — {checked}")
@@ -1353,15 +1398,18 @@ def check_frames(context):
         if not isinstance(creatures, list):
             form_issue(number, "creatures", "array")
         else:
-            npc_count = 0
+            visible_npc_counts = Counter()
             for creature in creatures:
                 if not isinstance(creature, dict):
                     form_issue(number, "creatures", "object")
                     continue
                 kind = creature.get("kind")
                 common = {"kind", "position", "distance", "direction", "name"}
+                npc_fields = {"id", "type", "status", "attitude", "worn", "wielded"}
+                if context.args.mode != "task30":
+                    npc_fields |= {"activity", "posture", "attention"}
                 extras = {
-                    "npc": {"id", "type", "status", "attitude", "worn", "wielded"},
+                    "npc": npc_fields,
                     "creature": {"type", "attitude"},
                     "other_creature": set(),
                 }
@@ -1374,24 +1422,57 @@ def check_frames(context):
                 typed(creature.get("direction"), lambda value: isinstance(value, str), number, "creatures", "direction")
                 typed(creature.get("name"), lambda value: isinstance(value, str), number, "creatures", "name")
                 if kind == "npc":
-                    npc_count += 1
                     validate_fields(creature, ("id", "type", "status", "attitude"),
                                     lambda value: isinstance(value, str), number, "creatures")
                     identifier = creature.get("type")
                     npc_id = creature.get("id")
-                    if (npc_count > 1 or identifier != "novgorod_dev_master" or
-                            not isinstance(npc_id, str) or npc_id not in context.master_ids):
-                        semantic_issue("человек", number, "creatures", "npc", identifier or str(npc_id), "npc")
-                    check_item_list(creature.get("worn"), number, "creatures.worn", context.master_types,
+                    allowed_type = (isinstance(identifier, str) and identifier in context.npc_ids and
+                                    (context.args.mode == "task30" or identifier in context.allowed["npc"]) and
+                                    (context.args.mode != "task30" or identifier == "novgorod_dev_master"))
+                    if allowed_type:
+                        visible_npc_counts[identifier] += 1
+                    known_ids = context.npc_ids.get(identifier, set()) if isinstance(identifier, str) else set()
+                    if (not allowed_type or visible_npc_counts[identifier] > 1 or
+                            not isinstance(npc_id, str) or npc_id not in known_ids):
+                        semantic_id = identifier if isinstance(identifier, str) else str(identifier or npc_id)
+                        semantic_issue("человек", number, "creatures", "npc", semantic_id, "npc")
+                    npc_types = (context.master_types if context.args.mode == "task30" or
+                                 identifier == "novgorod_dev_master" else context.watchman_types)
+                    check_item_list(creature.get("worn"), number, "creatures.worn", npc_types,
                                     "снаряжение мастера", saved=True)
                     wielded = creature.get("wielded")
                     if wielded is not None:
-                        check_item(wielded, number, "creatures.wielded", context.master_types,
+                        check_item(wielded, number, "creatures.wielded", npc_types,
                                    "снаряжение мастера", saved=True)
                     elif "wielded" not in creature:
                         form_issue(number, "creatures", "wielded")
                     if "worn" not in creature:
                         form_issue(number, "creatures", "worn")
+                    if context.args.mode != "task30":
+                        activity = creature.get("activity")
+                        if activity is not None:
+                            if exact(activity, {"id", "verb", "tool", "material"}, number, "creatures.activity"):
+                                validate_fields(activity, ("id", "verb"),
+                                                lambda value: isinstance(value, str) and bool(value.strip()),
+                                                number, "creatures.activity")
+                                validate_fields(activity, ("tool", "material"),
+                                                lambda value: value is None or
+                                                (isinstance(value, str) and bool(value.strip())),
+                                                number, "creatures.activity")
+                                if activity.get("id") == "ACT_CHOP_PLANKS":
+                                    typed(activity.get("tool"),
+                                          lambda value: isinstance(value, str) and bool(value.strip()),
+                                          number, "creatures.activity", "tool")
+                                    typed(activity.get("material"), lambda value: value == "log",
+                                          number, "creatures.activity", "material")
+                        typed(creature.get("posture"),
+                              lambda value: isinstance(value, str) and value in
+                              {"standing", "sitting", "crouching", "prone"},
+                              number, "creatures", "posture")
+                        typed(creature.get("attention"),
+                              lambda value: isinstance(value, str) and value in
+                              {"attends", "unaware", "notices"},
+                              number, "creatures", "attention")
                 elif kind == "creature":
                     validate_fields(creature, ("type", "attitude"), lambda value: isinstance(value, str), number, "creatures")
                     identifier = creature.get("type")
@@ -1464,7 +1545,101 @@ def check_frames(context):
         context.summary.append(f"кадров проверено — {processed}")
 
 
+def check_new_completeness(context):
+    rule = "неполный прогон"
+    if not context.packets:
+        context.issue(rule, "perception.jsonl", "recording", "empty")
+
+    if context.args.mode == "route":
+        reference_by_number = {
+            row.get("number"): row
+            for row in context.reference_inputs
+            if isinstance(row, dict) and type(row.get("number")) is int
+        }
+        input_numbers = [row.get("number") if isinstance(row, dict) else None for row in context.inputs]
+        reference_numbers = [row.get("number") if isinstance(row, dict) else None
+                             for row in context.reference_inputs]
+        inputs_valid = (
+            reference_numbers == list(range(1, 51))
+            and all(isinstance(row, dict) and type(row.get("number")) is int
+                    for row in context.reference_inputs)
+            and all(type(row.get("number")) is int for row in context.inputs if isinstance(row, dict))
+            and input_numbers == list(range(1, len(context.inputs) + 1))
+            and len(context.inputs) >= 50
+            and all(isinstance(row, dict) and isinstance(row.get("keys"), str)
+                    and isinstance(row.get("intent"), str) for row in context.inputs)
+            and all(isinstance(row, dict) and isinstance(row.get("keys"), str)
+                    and isinstance(row.get("intent"), str) for row in context.reference_inputs)
+        )
+        if inputs_valid:
+            prefix_matches = all(
+                (context.inputs[number - 1]["keys"], context.inputs[number - 1]["intent"])
+                == (reference_by_number[number].get("keys"), reference_by_number[number].get("intent"))
+                for number in range(1, 48)
+            )
+            terminal_matches = all(
+                (row["keys"], row["intent"])
+                == (reference_by_number[number].get("keys"), reference_by_number[number].get("intent"))
+                for row, number in zip(context.inputs[-3:], (48, 49, 50))
+            )
+        else:
+            prefix_matches = terminal_matches = False
+        if not inputs_valid or not prefix_matches or not terminal_matches:
+            context.issue(rule, "inputs.log", "route", "task30_prefix_and_terminal")
+
+        framed_inputs = {
+            packet.get("input_number")
+            for _, packet, _ in context.frames
+            if type(packet.get("input_number")) is int
+        }
+        last_in_world_input = len(context.inputs) - 2 if len(context.inputs) >= 2 else 0
+        for input_number in range(1, last_in_world_input + 1):
+            if input_number not in framed_inputs:
+                context.issue(rule, "perception.jsonl", "input_number", input_number)
+
+        if not any(
+            isinstance(state.get("place"), dict) and state["place"].get("roofed") is True
+            for _, _, state in context.frames
+            if isinstance(state, dict)
+        ):
+            context.issue(rule, "perception.jsonl", "place", "roofed")
+
+        last_packet = context.packets[-1] if context.packets else {}
+        last_state = (
+            context.frames[-1][2]
+            if context.frames and context.frames[-1][0] == len(context.packets)
+            else {}
+        )
+        if (
+            not isinstance(last_packet, dict)
+            or last_packet.get("reason") != "exit"
+            or not isinstance(last_state, dict)
+            or not isinstance(last_state.get("place"), dict)
+            or last_state["place"].get("roofed") is not False
+        ):
+            context.issue(rule, "perception.jsonl", "last_frame", "exit")
+
+    if context._json(context.args.world / "mods.json") != ["dda", "novgorod_dev_world"]:
+        context.issue(rule, "mods.json", "mods", "dda, novgorod_dev_world")
+
+    if not context.saves:
+        context.issue(rule, "world", "save", "missing")
+    elif context.frames and context.frames[-1][0] == len(context.packets):
+        last_packet = context.packets[-1] if context.packets else {}
+        last_native_turn = last_packet.get("native_turn") if isinstance(last_packet, dict) else None
+        if isinstance(last_native_turn, int) and not any(
+            isinstance(save, dict)
+            and isinstance(save.get("turn"), int)
+            and save["turn"] >= last_native_turn
+            for _, save in context.saves
+        ):
+            context.issue(rule, "world", "turn", last_native_turn)
+
+
 def check_completeness(context):
+    if context.args.mode != "task30":
+        check_new_completeness(context)
+        return
     rule = "неполный прогон"
     # В эталоне `l` остановлен безопасным режимом и не переместил героя.
     EXCLUDED_REFERENCE_INPUT_NUMBER = 16
@@ -1538,12 +1713,16 @@ def check_completeness(context):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=("task30", "day", "route"), default="task30")
     parser.add_argument("--run", required=True, type=Path)
-    parser.add_argument("--reference-inputs", required=True, type=Path)
+    parser.add_argument("--reference-inputs", type=Path)
     parser.add_argument("--world", required=True, type=Path)
     parser.add_argument("--mod", required=True, type=Path)
     parser.add_argument("--allowlist", required=True, type=Path)
-    context = Context(parser.parse_args(argv))
+    args = parser.parse_args(argv)
+    if args.mode in ("task30", "route") and args.reference_inputs is None:
+        parser.error(f"--reference-inputs обязателен в режиме {args.mode}")
+    context = Context(args)
     for check in (check_permissions, check_overmaps, check_submaps, check_frames, check_completeness):
         check(context)
     for path, error in context.errors:

@@ -8,3 +8,5 @@ native-control-tests
 native-live-input
 native-autosave-options
 native-camp-exact-lookup
+native-npc-post-work
+native-perception-capture

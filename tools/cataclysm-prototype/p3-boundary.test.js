@@ -687,8 +687,8 @@ test('sealed package shares one attempt budget and evidence root across all rese
       npcAutonomousModel: request => npcRunner.run(request) };
   }, nativeAdapterFactory: config => {
     nativeConfigs.push(config);
-    const npcProjection = { actor_id: '8', native_turn: 3, assignment_id: '',
-      assignment_status: '', activity_id: 'ACT_WORK', visible_actors: [], visible_items: [],
+    const npcProjection = { actor_id: '8', native_turn: 3, activity_id: 'ACT_WORK',
+      visible_actors: [], visible_items: [],
       visible_targets: [{ target_ref: 'target:61:62:0', position: [61, 62, 0],
         terrain: 't_dirt', openable: false }] };
     const npcObservation = { ...observation,
@@ -705,27 +705,31 @@ test('sealed package shares one attempt budget and evidence root across all rese
           native_effect: { effect_status: 'progressing' } } : {}),
         before: { turn: 3 }, after: { turn: 3 }, native_trace: { operation: envelope.primitive } }; } };
   } });
-  assert.equal(result.provider_calls, 18);
+  assert.equal(result.provider_calls, 21);
   assert.equal(providerCalls, 15);
-  assert.equal(npcProviderCalls, 3);
-  assert.equal(nativeNpcOperations, 3);
+  assert.equal(npcProviderCalls, 6);
+  assert.equal(nativeNpcOperations, 0);
   assert.equal(roleRunnerCreations, 1);
   assert.deepEqual([...rolesUsed].sort(), ['planner', 'repair']);
   assert.equal(nativePreflights, 18);
   assert.equal(new Set(nativeConfigs.map(({ world }) => world)).size, 18);
   assert.equal(result.reset_results.length, 18);
-  assert.equal(new Set(operationIds).size, 16);
+  assert.equal(new Set(operationIds).size, 15);
   assert.equal(result.acceptance, 'not_evaluated');
   assert.ok(result.reset_results.filter(({ case_id }) => case_id !== 'T09')
     .every(({ native_goal_result }) => native_goal_result === 'partially_achieved'));
   const t09 = result.reset_results.filter(({ case_id }) => case_id === 'T09');
   assert.equal(t09.length, 3);
-  assert.ok(t09.every(({ effect_status }) => effect_status === 'progressing'));
+  assert.ok(t09.every(({ status, effect_status, native_goal_result }) =>
+    status === 'no_native_readback' && effect_status === 'unknown'
+      && native_goal_result === 'unknown'));
   assert.ok(t09.every(({ npc_semantic_decision_count, npc_replay_decision_count,
     npc_semantic_provider_calls, npc_native_operation_count, npc_replay_native_operation_count,
-    npc_boundary, npc_replay }) => npc_semantic_decision_count === 1
-      && npc_replay_decision_count === 0 && npc_semantic_provider_calls === 1
-      && npc_native_operation_count === 1 && npc_replay_native_operation_count === 0
+    npc_boundary, npc_replay }) => npc_semantic_decision_count === 2
+      && npc_replay_decision_count === 0 && npc_semantic_provider_calls === 2
+      && npc_native_operation_count === 0 && npc_replay_native_operation_count === 0
+      && npc_boundary.decision.reason_code === 'P3_NPC_OPERATION_UNAVAILABLE'
+      && !Object.hasOwn(npc_boundary, 'native_operation')
       && npc_boundary.boundary_id === npc_replay.boundary_id));
   const events = (await readFile(path.join(result.evidence_directory, 'run.jsonl'), 'utf8'))
     .trim().split('\n').map(line => JSON.parse(line));
@@ -788,8 +792,7 @@ test('native speech rejects either deaf listener in a two-listener heard set', (
 test('T09 NPC boundary replays the committed semantic checkpoint without another decision call', async () => {
   const replay = new Map();
   let decisions = 0;
-  const input = { nativeProjection: { actor_id: 'npc-8', assignment_id: 'duty-2',
-    assignment_status: 'decision_required' }, snapshots: {},
+  const input = { nativeProjection: { actor_id: 'npc-8' }, snapshots: {},
   decision: { boundary: { boundary_id: 'boundary-2' } }, semanticModel: async () => ({}), replay,
   buildRequest: () => ({ schema: 'npc_action_decision_request_v1', request_id: 'request-2' }),
   requestDecision: async request => { decisions++; assert.equal(request.request.request_id, 'request-2');
@@ -798,14 +801,12 @@ test('T09 NPC boundary replays the committed semantic checkpoint without another
   const second = await runP3NpcBoundary(input);
   assert.deepEqual(second, first);
   assert.equal(decisions, 1);
-  assert.equal(first.native_projection.assignment_id, 'duty-2');
+  assert.equal(first.native_actor_id, 'npc-8');
   assert.deepEqual(first.decision.trace.plan, { operation: 'continue duty' });
 });
 
-test('T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays', async () => {
-  const projection = { actor_id: '8', native_turn: 120, assignment_id: 'duty-2',
-    assignment_status: 'interrupted_waiting_for_semantic_decision',
-    interrupt_cause: 'native_movement_not_applied',
+test('T09 NPC request_movement is rejected with a parse reason and no native operation', async () => {
+  const projection = { actor_id: '8', native_turn: 120,
     native_snapshot: { private_world_snapshot_marker: 'must-not-reach-owner' },
     activity_id: 'ACT_WORK', visible_actors: [],
     visible_items: [{ item_ref: 'item:41', item_uid: '41', type: 'hammer', position: [4, 4, 0] }],
@@ -841,36 +842,80 @@ test('T09 native NPC CLI flow builds safe request, validates decision, applies n
       committed_state_version: request.committed_state_version,
       working_revision: request.working_revision, decision_index: request.decision_index,
       npc_ref: request.npc_ref,
-      interpretation: { npc_goal: 'continue assigned duty',
+      interpretation: { npc_goal: 'move to the observed patch',
         grounded_attempt: 'walk to the observed patch', adaptation: 'literal' },
       resolution: 'domain_request', goal_result: 'pending',
       activity: { owner: 'domain', duration_class: null, effort: null },
       operations: [{ op: 'request_movement', actor_ref: request.npc_ref,
         target_ref: 'target:5:4:0', movement_kind: 'local' }], check: null,
-      reason_code: 'continue_duty', reason: 'Observed target supports duty movement.' };
+      reason_code: 'move_to_patch', reason: 'The NPC should move to the observed patch.' };
   };
-  const first = await runP3NativeNpcFlow({ nativeAdapter, actorId: '8', semanticModel, replay, evidence });
-  const second = await runP3NativeNpcFlow({ nativeAdapter, actorId: '8', semanticModel, replay, evidence });
-  assert.equal(buildP3NativeNpcDecisionInput(projection).request.schema,
-    'npc_action_decision_request_v1');
-  assert.equal(first.request.npc_ref, 'npc-8');
-  assert.equal(first.request.npc.current_activity.status,
-    'interrupted_waiting_for_semantic_decision');
-  assert.match(first.request.decision_reasons.perceived_changes[0], /Duty duty-2/);
-  assert.match(first.request.decision_reasons.perceived_changes[0], /native_movement_not_applied/);
+  const refusals = [];
+  const refuse = () => assert.rejects(
+    runP3NativeNpcFlow({ nativeAdapter, actorId: '8', semanticModel, replay, evidence }),
+    error => { refusals.push(error); return error.code === 'P3_NPC_OPERATION_UNAVAILABLE'; });
+  await refuse();
+  await refuse();
+  assert.deepEqual(refusals.map(({ details }) => details.operation),
+    ['request_movement', 'request_movement']);
+  const [first, second] = refusals.map(({ details }) => details.checkpoint);
+  const input = buildP3NativeNpcDecisionInput(projection);
+  assert.equal(input.request.schema, 'npc_action_decision_request_v1');
+  assert.equal(input.request.npc_ref, 'npc-8');
+  assert.deepEqual(input.request.decision_scope.operation_contract, {});
+  assert.match(input.request.decision_reasons.perceived_changes[0], /Native activity ACT_WORK/);
   assert.equal(JSON.stringify(first.request).includes('must-not-reach-owner'), false);
-  const uninterrupted = buildP3NativeNpcDecisionInput({ ...projection,
-    assignment_status: 'decision_required' });
-  assert.equal(uninterrupted.request.decision_reasons.perceived_changes[0],
-    'Duty duty-2 requires a decision.');
   assert.deepEqual(second, first);
-  assert.equal(semanticCalls, 1);
-  assert.equal(nativeCalls, 1);
-  assert.equal(first.native_readback.native_effect.effect_status, 'progressing');
+  assert.equal(first.decision.status, 'rejected');
+  assert.equal(first.decision.reason_code, 'P3_NPC_OPERATION_UNAVAILABLE');
+  assert.ok(first.decision.trace.plan.diagnostics.some(({ code }) =>
+    code === 'npc_step_operations_invalid'));
+  assert.ok(first.decision.trace.plan.diagnostics.some(({ code, operation }) =>
+    code === 'P3_NPC_OPERATION_UNAVAILABLE' && operation === 'request_movement'));
+  assert.equal(Object.hasOwn(first, 'native_operation'), false);
+  assert.equal(Object.hasOwn(first, 'native_readback'), false);
+  assert.equal(semanticCalls, 2);
+  assert.equal(nativeCalls, 0);
   assert.equal(evidenceEvents.length, 2);
   assert.equal(evidenceEvents[0].checkpoint.request.request_id, first.request.request_id);
-  assert.equal(evidenceEvents[0].checkpoint.native_readback.operation_id,
-    first.native_readback.operation_id);
+  assert.equal(evidenceEvents[0].checkpoint.decision.reason_code,
+    'P3_NPC_OPERATION_UNAVAILABLE');
+});
+
+test('NPC movement refusal reason follows the final repaired operation', async () => {
+  const projection = { actor_id: '8', native_turn: 120, activity_id: 'ACT_WORK',
+    visible_actors: [], visible_items: [], visible_targets: [] };
+  const observation = { npc_projections: [projection] };
+  let semanticCalls = 0;
+  let nativeCalls = 0;
+  const semanticModel = async request => {
+    semanticCalls++;
+    const operation = semanticCalls === 1
+      ? { op: 'request_movement', actor_ref: request.npc_ref,
+        target_ref: 'target:5:4:0', movement_kind: 'local' }
+      : { op: 'request_activity', actor_ref: request.npc_ref,
+        activity_kind: 'work', target_refs: [], description: 'Continue the activity.' };
+    return { schema: 'npc_step_plan_v1', request_id: request.request_id,
+      root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
+      committed_state_version: request.committed_state_version,
+      working_revision: request.working_revision, decision_index: request.decision_index,
+      npc_ref: request.npc_ref,
+      interpretation: { npc_goal: 'continue the activity', grounded_attempt: 'continue working',
+        adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [operation], check: null, reason_code: 'continue_activity',
+      reason: 'The NPC should continue the activity.' };
+  };
+  await assert.rejects(runP3NativeNpcFlow({
+    nativeAdapter: { refreshObservation: async () => observation,
+      async execute() { nativeCalls++; } },
+    actorId: '8', semanticModel
+  }), error => error?.code === 'TURN_NPC_PLAN_INVALID'
+    && error.details?.validation_errors?.some(({ code }) =>
+      code === 'npc_step_operations_invalid'));
+  assert.equal(semanticCalls, 2);
+  assert.equal(nativeCalls, 0);
 });
 
 test('T10 applies exact native speech, heard actors, and elapsed native time once through conversation owner', () => {

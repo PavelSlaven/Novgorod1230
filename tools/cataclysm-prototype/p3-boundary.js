@@ -127,7 +127,38 @@ export async function requestP3TurnPlan({ request, turnStepModel, semanticPlanVa
 }
 
 export async function requestP3NpcDecision(input = {}, onDecision = async () => {}) {
-  const result = await requestNpcSemanticDecision(input);
+  let npcMovementPlanReturned = false;
+  let semanticModel = input.semanticModel;
+  if (typeof semanticModel === 'function') {
+    const sourceModel = semanticModel;
+    semanticModel = async (request, context) => {
+      const plan = await sourceModel(request, context);
+      npcMovementPlanReturned = Array.isArray(plan?.operations)
+        && plan.operations.some(operation => operation?.op === 'request_movement'
+          && operation.actor_ref === request.npc_ref);
+      return plan;
+    };
+    semanticModel.validateFreshPlan = sourceModel.validateFreshPlan;
+    semanticModel.originalOutputOf = sourceModel.originalOutputOf;
+  }
+  let result;
+  try {
+    result = await requestNpcSemanticDecision({ ...input, semanticModel });
+  } catch (error) {
+    const parserErrors = error?.details?.validation_errors;
+    if (!npcMovementPlanReturned || error?.code !== 'TURN_NPC_PLAN_INVALID'
+        || !parserErrors?.some(({ code }) => code === 'npc_step_operations_invalid')) {
+      throw error;
+    }
+    const reason = 'NPC request_movement is unavailable because live CDDA owns NPC movement.';
+    result = { status: 'rejected', plan: null, reason_code: 'P3_NPC_OPERATION_UNAVAILABLE',
+      reason, trace: { boundary_id: input.boundary?.boundary_id, plan: {
+        status: 'rejected', diagnostics: [...parserErrors, {
+          code: 'P3_NPC_OPERATION_UNAVAILABLE', path: '$.operations',
+          operation: 'request_movement', message: reason
+        }]
+      } } };
+  }
   await onDecision({ request: input.request, ...result });
   return result;
 }
@@ -136,12 +167,11 @@ export async function runP3NpcBoundary({ nativeProjection, snapshots, decision,
   semanticModel, replay = new Map(), buildRequest = buildP3NpcRequest,
   requestDecision = requestP3NpcDecision } = {}) {
   if (!nativeProjection || typeof nativeProjection.actor_id !== 'string'
-      || !nativeProjection.actor_id || typeof nativeProjection.assignment_id !== 'string'
-      || !nativeProjection.assignment_id || !decision?.boundary || !snapshots
+      || !nativeProjection.actor_id || !decision?.boundary || !snapshots
       || typeof semanticModel !== 'function') throw new Error('P3_NPC_BOUNDARY_INPUT_INVALID');
   const request = buildRequest(snapshots);
   const boundaryId = decision.boundary.boundary_id;
-  const checkpointId = `${boundaryId}:${nativeProjection.assignment_id}`;
+  const checkpointId = `${boundaryId}:${nativeProjection.actor_id}`;
   const fingerprint = JSON.stringify({ nativeProjection, request, boundary: decision.boundary });
   const prior = replay.get(checkpointId);
   if (prior) {
@@ -150,8 +180,7 @@ export async function runP3NpcBoundary({ nativeProjection, snapshots, decision,
   }
   const result = await requestDecision({ ...decision, boundary: decision.boundary,
     request, semanticModel });
-  const checkpoint = { native_actor_id: nativeProjection.actor_id,
-    assignment_id: nativeProjection.assignment_id, boundary_id: boundaryId,
+  const checkpoint = { native_actor_id: nativeProjection.actor_id, boundary_id: boundaryId,
     native_projection: structuredClone(nativeProjection), request: structuredClone(request),
     decision: structuredClone(result) };
   replay.set(checkpointId, { fingerprint, result: checkpoint });
@@ -309,7 +338,6 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
       || !Array.isArray(nativeProjection.visible_targets)) {
     throw new Error('P3_NATIVE_NPC_PROJECTION_INVALID');
   }
-  const assignmentId = nativeProjection.assignment_id || `p3-duty-${nativeProjection.actor_id}`;
   const npcRef = `npc-${nativeProjection.actor_id}`;
   const turn = nativeProjection.native_turn;
   const stateVersion = turn + 1;
@@ -319,7 +347,8 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
   const occurredAt = { whole_minutes: String(Math.floor(turn / 60)),
     subminute_numerator: String(remainder / common),
     subminute_denominator: String(60 / common) };
-  const sourceEvent = { entity_kind: 'event', entity_id: `npc-duty-${assignmentId}` };
+  const sourceEvent = { entity_kind: 'event',
+    entity_id: `npc-activity-${nativeProjection.actor_id}-${turn}` };
   const subject = { entity_kind: 'npc', entity_id: npcRef };
   const signal = buildNpcDecisionSignal({ occurred_at: occurredAt, category: 'objective',
     significance: 'material', source_event_ref: sourceEvent, subject_ref: subject,
@@ -336,11 +365,6 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
   const visibleActors = nativeProjection.visible_actors.map(actor => ({
     actor_ref: `npc-${actor.actor_id}`, position: actor.position
   }));
-  const interruptionSummary = nativeProjection.assignment_status
-      === 'interrupted_waiting_for_semantic_decision'
-      && typeof nativeProjection.interrupt_cause === 'string'
-      && nativeProjection.interrupt_cause
-    ? ` Native interruption cause: ${nativeProjection.interrupt_cause}.` : '';
   const snapshots = {
     request_identity: { request_id: `npc-request-${turn}-${nativeProjection.actor_id}`,
       root_turn_id: `npc-turn-${turn}`, committed_state_version: stateVersion,
@@ -352,61 +376,21 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
       machine_state: {}, role_ref: { id: 'native-duty' } },
     current_activity_snapshot: { activity_ref: null,
       summary: nativeProjection.activity_id || 'idle',
-      status: nativeProjection.assignment_status || 'decision_required',
+      status: 'decision_required',
       can_continue_automatically: false },
     perception_snapshot: {
       perceived_changes: [{ source_event_ref: sourceEvent,
-        summary: `Duty ${nativeProjection.assignment_id} requires a decision.${interruptionSummary}` }],
+        summary: `Native activity ${nativeProjection.activity_id || 'idle'} requires a decision.` }],
       visible_scene: nativeProjection.visible_targets.map(({ terrain }) => terrain).filter(Boolean),
       present_actors: visibleActors, visible_objects: nativeProjection.visible_items.map(item => ({
         object_ref: item.item_ref, summary: item.type || item.item_ref
       })), uncertainties: []
-    }, resolved_signals: [signal],
-    operation_contract: { request_movement: { target_refs:
-      nativeProjection.visible_targets.map(({ target_ref }) => target_ref),
-      movement_kinds: ['local'] } }
+    }, resolved_signals: [signal], operation_contract: {}
   };
   const snapshotsRequest = buildP3NpcRequest(snapshots);
-  return { nativeProjection: { ...structuredClone(nativeProjection), assignment_id: assignmentId }, snapshots,
+  return { nativeProjection: structuredClone(nativeProjection), snapshots,
     decision: { boundary, orderedSignals: [signal],
       revalidateStateVersion: async () => stateVersion }, request: snapshotsRequest };
-}
-
-export async function executeP3NativeNpcBoundary({ nativeProjection, snapshots, decision,
-  semanticModel, nativeAdapter, nativeObservation, replay = new Map(),
-  requestDecision = requestP3NpcDecision } = {}) {
-  const checkpoint = await runP3NpcBoundary({ nativeProjection, snapshots, decision,
-    semanticModel, replay, requestDecision });
-  if (checkpoint.native_readback) return checkpoint;
-  const plan = checkpoint.decision?.plan;
-  const operation = plan?.operations?.length === 1 ? plan.operations[0] : null;
-  if (operation?.op !== 'request_movement'
-      || operation.actor_ref !== checkpoint.request?.npc_ref) {
-    throw new Error('P3_NATIVE_NPC_MOVEMENT_PLAN_REQUIRED');
-  }
-  const target = nativeProjection.visible_targets.find(({ target_ref }) =>
-    target_ref === operation.target_ref);
-  const actor = nativeObservation?.actors?.find(({ actor_id, actor_ref }) =>
-    actor_id === nativeProjection.actor_id && actor_ref !== 'avatar');
-  if (!target || !actor || !Array.isArray(actor.position)
-      || !Array.isArray(target.position)) throw new Error('P3_NATIVE_NPC_TARGET_UNRESOLVED');
-  const direction = [target.position[0] - actor.position[0], target.position[1] - actor.position[1]];
-  if (Math.max(Math.abs(direction[0]), Math.abs(direction[1])) !== 1
-      || target.position[2] !== actor.position[2]) throw new Error('P3_NATIVE_NPC_TARGET_NOT_ADJACENT');
-  const envelope = createP3OperationEnvelope({ operationId: `${decision.boundary.boundary_id}-native`,
-    observation: nativeObservation, actorRef: actor.actor_ref, primitive: 'npc_move',
-    args: { direction, assignment_id: nativeProjection.assignment_id,
-      intent: plan.interpretation.grounded_attempt }, registeredPrimitives: ['npc_move'] });
-  const readback = typeof nativeAdapter?.execute === 'function'
-    ? await nativeAdapter.execute(envelope)
-    : (await nativeAdapter.writeOperationRequest(envelope),
-      await nativeAdapter.readOperationReadback(envelope));
-  const validated = validateP3Readback(envelope, readback);
-  const result = { ...checkpoint, native_operation: envelope, native_readback: validated };
-  replay.set(`${decision.boundary.boundary_id}:${nativeProjection.assignment_id}`,
-    { fingerprint: JSON.stringify({ nativeProjection, request: checkpoint.request,
-      boundary: decision.boundary }), result });
-  return structuredClone(result);
 }
 
 export async function runP3NativeNpcFlow({ nativeAdapter, actorId, semanticModel,
@@ -415,16 +399,19 @@ export async function runP3NativeNpcFlow({ nativeAdapter, actorId, semanticModel
       || typeof semanticModel !== 'function') throw new Error('P3_NATIVE_NPC_FLOW_INPUT_INVALID');
   const observation = nativeObservation ?? await nativeAdapter.refreshObservation();
   const nativeProjection = (observation.npc_projections ?? []).find(row => row.actor_id === actorId);
-  if (!nativeProjection || !['', 'decision_required', 'interrupted_waiting_for_semantic_decision']
-    .includes(nativeProjection.assignment_status ?? '')) {
-    throw new Error('P3_NATIVE_NPC_DECISION_BOUNDARY_UNAVAILABLE');
-  }
+  if (!nativeProjection) throw new Error('P3_NATIVE_NPC_DECISION_BOUNDARY_UNAVAILABLE');
   const input = buildP3NativeNpcDecisionInput(nativeProjection);
-  const checkpoint = await executeP3NativeNpcBoundary({ ...input, semanticModel,
-    nativeAdapter, nativeObservation: observation, replay });
+  const checkpoint = await runP3NpcBoundary({ ...input, semanticModel, replay });
   if (evidence?.record) await evidence.record({ event: 'native_npc_semantic_boundary',
-    checkpoint: { request: checkpoint.request, decision: checkpoint.decision,
-      native_operation: checkpoint.native_operation, native_readback: checkpoint.native_readback } });
+    checkpoint: { request: checkpoint.request, decision: checkpoint.decision } });
+  const { decision } = checkpoint;
+  if (decision?.status === 'rejected') {
+    const error = new Error(decision.reason);
+    error.code = decision.reason_code;
+    error.details = { checkpoint, operation: decision.trace?.plan?.diagnostics
+      ?.find(({ code }) => code === decision.reason_code)?.operation ?? null };
+    throw error;
+  }
   return checkpoint;
 }
 
@@ -525,10 +512,7 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
 
 export function selectP3NativeNpcFixture(observation) {
   const candidates = (observation?.npc_projections ?? []).filter(row =>
-    /^\d+$/u.test(row.actor_id ?? '')
-      && ['', 'decision_required', 'interrupted_waiting_for_semantic_decision']
-        .includes(row.assignment_status ?? '')
-      && Array.isArray(row.visible_targets) && row.visible_targets.length > 0);
+    /^\d+$/u.test(row.actor_id ?? ''));
   candidates.sort((left, right) => BigInt(left.actor_id) < BigInt(right.actor_id) ? -1
     : BigInt(left.actor_id) > BigInt(right.actor_id) ? 1 : 0);
   return candidates[0]?.actor_id ?? null;
@@ -1362,19 +1346,22 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
               operations++;
               return native.writeOperationRequest(...args);
             } }) };
+          const runNpcFlow = () => runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
+            nativeObservation: npcObservation, semanticModel: measuredModel,
+            replay, evidence }).catch(error => {
+            const refused = error?.details?.checkpoint;
+            if (refused?.decision?.status !== 'rejected') throw error;
+            return refused;
+          });
           const callsBeforeNpc = budget.calls;
           const decisionsBeforeNpc = decisions;
           const operationsBeforeNpc = operations;
-          npcBoundary = await runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
-            nativeObservation: npcObservation, semanticModel: measuredModel,
-            replay, evidence });
+          npcBoundary = await runNpcFlow();
           npcSemanticDecisionCount = decisions - decisionsBeforeNpc;
           npcNativeOperationCount = operations - operationsBeforeNpc;
           const replayDecisionsBefore = decisions;
           const replayOperationsBefore = operations;
-          npcReplay = await runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
-            nativeObservation: npcObservation, semanticModel: measuredModel,
-            replay, evidence });
+          npcReplay = await runNpcFlow();
           npcReplayDecisionCount = decisions - replayDecisionsBefore;
           npcReplayNativeOperationCount = operations - replayOperationsBefore;
           npcSemanticProviderCalls = budget.calls - callsBeforeNpc;

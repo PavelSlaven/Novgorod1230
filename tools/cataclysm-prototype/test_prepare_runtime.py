@@ -41,6 +41,37 @@ class PrepareRuntimeTest(unittest.TestCase):
         self.tiles_build = self.make_build("build-tiles", {
             "cataclysm-tiles": "#!/bin/sh\n", "data/json/items.json": "[]",
             "data/mods/dda/modinfo.json": "[]", "gfx/ASCIITileset/tile_config.json": "{}"})
+        self.text_make_build = self.root / "build-make-text"
+        self.text_make_build.mkdir()
+        (self.text_make_build / "cataclysm").write_text("#!/bin/sh\n")
+        (self.text_make_build / "cataclysm").chmod(0o755)
+        self.make_log = self.root / "make-calls.log"
+        make = self.bin / "make"
+        make.write_text("#!/bin/sh\n"
+                        "{\n"
+                        "printf 'BEGIN\\n'\n"
+                        "for arg in \"$@\"; do printf 'ARG=%s\\n' \"$arg\"; done\n"
+                        "printf 'PREFIX_ENV=%s\\n' \"${PREFIX-<unset>}\"\n"
+                        "printf 'LANGUAGES_ENV=%s\\n' \"${LANGUAGES-<unset>}\"\n"
+                        "printf 'END\\n'\n"
+                        "} >> \"$NOVGOROD_TEST_MAKE_LOG\"\n"
+                        "source_dir=''\n"
+                        "destdir=''\n"
+                        "next_is_source=0\n"
+                        "for arg in \"$@\"; do\n"
+                        "    if [ \"$next_is_source\" = 1 ]; then source_dir=$arg; next_is_source=0; fi\n"
+                        "    case \"$arg\" in\n"
+                        "        -C) next_is_source=1 ;;\n"
+                        "        DESTDIR=*) destdir=${arg#DESTDIR=} ;;\n"
+                        "    esac\n"
+                        "done\n"
+                        "if [ -n \"$destdir\" ]; then\n"
+                        "    mkdir -p \"$destdir/usr/bin\" \"$destdir/usr/share/cataclysm-dda\"\n"
+                        "    printf '#!/bin/sh\\n' > \"$destdir/usr/bin/cataclysm\"\n"
+                        "    chmod +x \"$destdir/usr/bin/cataclysm\"\n"
+                        "    cp -a \"$source_dir/data/.\" \"$destdir/usr/share/cataclysm-dda/\"\n"
+                        "fi\n")
+        make.chmod(0o755)
         self.fixture = self.root / "seed"
         (self.fixture / "save/novgorod-dev").mkdir(parents=True)
         (self.fixture / "save/novgorod-dev/seed.txt").write_text("seed")
@@ -90,6 +121,56 @@ class PrepareRuntimeTest(unittest.TestCase):
         with mock.patch.dict(prepare.ARCHIVE, {"sha256": digest}):
             prepare.main(argv)
 
+    def run_prepare_make(self, digest, *extra, build=None):
+        self.make_log.unlink(missing_ok=True)
+        argv = ["--runtime-root", str(self.runtime_root), "--source", str(self.source),
+                "--assets-dir", str(self.assets), "--text-make-build",
+                str(build or self.text_make_build), "--fixture", str(self.fixture), *extra]
+        with mock.patch.dict(prepare.ARCHIVE, {"sha256": digest}), \
+                mock.patch.dict(os.environ, {"NOVGOROD_TEST_MAKE_LOG": str(self.make_log)}):
+            prepare.main(argv)
+
+    def make_calls(self):
+        if not self.make_log.exists():
+            return []
+        calls = []
+        current = None
+        for line in self.make_log.read_text().splitlines():
+            if line == "BEGIN":
+                current = {"args": []}
+            elif line == "END":
+                calls.append(current)
+                current = None
+            elif current is not None and line.startswith("ARG="):
+                current["args"].append(line[4:])
+            elif current is not None and line.startswith("PREFIX_ENV="):
+                current["prefix"] = line.split("=", 1)[1]
+            elif current is not None and line.startswith("LANGUAGES_ENV="):
+                current["languages"] = line.split("=", 1)[1]
+        return calls
+
+    def write_capture_build_command_fixtures(self):
+        git = self.bin / "git"
+        git.write_text("#!/bin/sh\n"
+                       "[ \"$1\" = \"-C\" ] || exit 2\n"
+                       "shift 2\n"
+                       "case \"$1\" in\n"
+                       "    rev-parse)\n"
+                       "        case \"$2\" in\n"
+                       "            --show-toplevel) printf '%s\\n' \"$NOVGOROD_TEST_REPO_ROOT\" ;;\n"
+                       "            --is-inside-work-tree) printf 'true\\n' ;;\n"
+                       "            HEAD) printf '0d8843f1c500052c3e026e3da6f8edaf5e00b626\\n' ;;\n"
+                       "            *) exit 2 ;;\n"
+                       "        esac ;;\n"
+                       "    status|apply) exit 0 ;;\n"
+                       "    *) exit 2 ;;\n"
+                       "esac\n")
+        git.chmod(0o755)
+        for name in ("gcc-13", "g++-13"):
+            compiler = self.bin / name
+            compiler.write_text("#!/bin/sh\nprintf '13.2.0\\n'\n")
+            compiler.chmod(0o755)
+
     def options(self):
         entries = json.loads((self.runtime_root / "fixture/config/options.json").read_text())
         return {entry["name"]: entry["value"] for entry in entries}
@@ -124,8 +205,11 @@ class PrepareRuntimeTest(unittest.TestCase):
         self.assertEqual(
             {path.relative_to(installed_mod): path.read_bytes()
              for path in installed_mod.rglob("*") if path.is_file()},
-            {path.relative_to(MOD): path.read_bytes()
-             for path in MOD.rglob("*") if path.is_file()})
+            {**{path.relative_to(MOD): path.read_bytes()
+                for path in MOD.rglob("*") if path.is_file()},
+             Path("mtype_taxon_crosswalk.csv"):
+                 (Path(__file__).resolve().parents[2] / "data/world-catalogs/novgorod/game-base-v1/"
+                  "mtype_taxon_crosswalk.csv").read_bytes()})
         for name in ("cataclysm", "cataclysm-tiles"):
             self.assertEqual((runtime / name).read_text(), "#!/bin/sh\n")
             self.assertTrue((runtime / name).stat().st_mode & 0o100)
@@ -239,6 +323,79 @@ class PrepareRuntimeTest(unittest.TestCase):
         with mock.patch.dict(prepare.ARCHIVE, {"sha256": digest}), self.assertRaises(SystemExit):
             prepare.main(argv)
         self.assertFalse(self.runtime_root.exists())
+
+    def test_text_make_build_cannot_be_combined_with_text_build(self):
+        with self.assertRaises(SystemExit):
+            self.run_prepare_make(self.write_archive(), "--text-build", str(self.text_build))
+        self.assertEqual(self.make_calls(), [])
+        self.assertFalse(self.runtime_root.exists())
+
+    def test_text_make_build_rejects_cmake_directory_and_missing_binary(self):
+        digest = self.write_archive()
+        empty_build = self.root / "build-make-empty"
+        empty_build.mkdir()
+        for build in (self.text_build, empty_build):
+            with self.subTest(build=build), self.assertRaises(SystemExit):
+                self.run_prepare_make(digest, build=build)
+            self.assertEqual(self.make_calls(), [])
+            self.assertFalse(self.runtime_root.exists())
+
+    def test_text_make_runtime_copies_existing_build_source_and_translation(self):
+        digest = self.write_archive()
+        with mock.patch.dict(os.environ, {"PREFIX": "/must-not-leak", "LANGUAGES": "de"}):
+            self.run_prepare_make(digest)
+        runtime = self.runtime_root / "runtime"
+        self.assertEqual((runtime / "cataclysm").read_bytes(),
+                         (self.text_make_build / "cataclysm").read_bytes())
+        self.assertTrue((runtime / "cataclysm").stat().st_mode & 0o100)
+        for source_file in (self.source / "data").rglob("*"):
+            if source_file.is_file():
+                relative = source_file.relative_to(self.source / "data")
+                self.assertEqual((runtime / "data" / relative).read_bytes(), source_file.read_bytes())
+        self.assertEqual((runtime / prepare.TRANSLATION).read_bytes(), b"ru-mo")
+        self.assertEqual(self.make_calls(), [])
+
+    def test_capture_make_wrapper_omits_prefix_languages_and_install(self):
+        self.write_capture_build_command_fixtures()
+        source = self.root / "capture-source"
+        (source / "src").mkdir(parents=True)
+        build = self.root / "capture-build"
+        build.mkdir()
+        self.make_log.unlink(missing_ok=True)
+        repo_root = Path(__file__).resolve().parents[2]
+        environment = os.environ.copy()
+        environment.update({"PATH": f"{self.bin}:{environment['PATH']}",
+                            "NOVGOROD_TEST_REPO_ROOT": str(repo_root),
+                            "NOVGOROD_TEST_MAKE_LOG": str(self.make_log),
+                            "PREFIX": str(self.root / "inherited-prefix"),
+                            "LANGUAGES": "ru"})
+        script = Path(__file__).with_name("build-native-capture-text.sh")
+        subprocess.run(["bash", str(script), "--source", str(source), "--build-dir", str(build),
+                        "--jobs", "2"], check=True, env=environment, capture_output=True, text=True)
+        calls = self.make_calls()
+        self.assertGreater(len(calls), 0)
+        build_target = str(build.resolve() / "cataclysm")
+        target_calls = [call for call in calls if build_target in call["args"]]
+        self.assertEqual(len(target_calls), 1)
+        for call in calls:
+            self.assertFalse(any(arg.startswith("PREFIX=") for arg in call["args"]))
+            self.assertFalse(any(arg.startswith("LANGUAGES=") for arg in call["args"]))
+            self.assertFalse(any(arg.startswith("DESTDIR=") for arg in call["args"]))
+            self.assertNotIn("install", call["args"])
+            self.assertEqual(call["prefix"], "<unset>")
+            self.assertEqual(call["languages"], "<unset>")
+        self.assertIn(f"BUILD_PREFIX={build.resolve()}/", target_calls[0]["args"])
+
+    def test_runtime_copies_canonical_mtype_taxon_crosswalk_unchanged(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        source_crosswalk = (repo_root / "data/world-catalogs/novgorod/game-base-v1/"
+                            "mtype_taxon_crosswalk.csv")
+        self.assertTrue(source_crosswalk.is_file())
+        self.run_prepare(self.write_archive(), "--fixture", str(self.fixture))
+        runtime_crosswalk = (self.runtime_root / "runtime/data/mods/novgorod_dev_world/"
+                             "mtype_taxon_crosswalk.csv")
+        self.assertTrue(runtime_crosswalk.is_file())
+        self.assertEqual(runtime_crosswalk.read_bytes(), source_crosswalk.read_bytes())
 
 
 if __name__ == "__main__":

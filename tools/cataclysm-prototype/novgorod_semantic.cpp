@@ -48,6 +48,7 @@
 #include "map_scale_constants.h"
 #include "messages.h"
 #include "npc.h"
+#include "novgorod_capture.h"
 #include "npc_class.h"
 #include "npctalk.h"
 #include "output.h"
@@ -914,6 +915,9 @@ void observe_heard_speech( const Character &listener, const tripoint_bub_ms &sou
     append_memory( *guy, { "heard", evidence->speaker_ref,
                            addressed ? own_ref : evidence->addressees.front(), evidence->utterance,
                            to_turn<int>( calendar::turn ) } );
+    if( addressed && evidence->speaker_ref == "avatar" ) {
+        novgorod_capture::addressed( *guy );
+    }
 }
 
 bool refuse_operation( const std::string &code )
@@ -1008,6 +1012,7 @@ steady_clock::time_point deadline;
 
 void disconnect()
 {
+    novgorod_capture::clear_attention();
     if( live_fd >= 0 ) close( live_fd );
     live_fd = -1;
     incoming.clear();
@@ -1186,6 +1191,7 @@ void live_input()
                                *std::exchange( live_input_for_test, std::nullopt ) :
                                string_input_popup().title( "Свободное действие" ).query_string();
     if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
+    novgorod_capture::capture_input( "NOVGOROD_SEMANTIC_TEXT", {}, intent );
     try {
         submit_live_intent( intent );
     } catch( const std::exception &error ) {

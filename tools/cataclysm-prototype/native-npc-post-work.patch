@@ -1,0 +1,649 @@
+diff --git a/src/npc_class.h b/src/npc_class.h
+--- a/src/npc_class.h
++++ b/src/npc_class.h
+@@ -107,6 +107,7 @@
+         // Work shift hours [start, end). Default [0,24] = always on duty.
+         // Wraps midnight: [22,6] means 10pm-6am.
+         std::pair<int, int> work_hours_ = { 0, 24 };
++        std::map<activity_id, int> job_priorities_;
+
+     public:
+         npc_class_id id;
+@@ -155,6 +156,7 @@
+         };
+         const time_duration &get_shop_restock_interval() const;
+         const std::pair<int, int> &get_work_hours() const;
++        const std::map<activity_id, int> &get_job_priorities() const;
+         faction_price_rule const *get_price_rules( item const &it, npc const &guy ) const;
+
+         bool is_common() const;
+diff --git a/src/npc_class.cpp b/src/npc_class.cpp
+--- a/src/npc_class.cpp
++++ b/src/npc_class.cpp
+@@ -275,6 +275,23 @@
+     if( jo.has_array( "work_hours" ) ) {
+         JsonArray arr = jo.get_array( "work_hours" );
+         work_hours_ = { arr.get_int( 0 ), arr.get_int( 1 ) };
++    }
++    if( jo.has_member( "job_priorities" ) ) {
++        for( const JsonMember member : jo.get_object( "job_priorities" ) ) {
++            const activity_id task( member.name() );
++            const int priority = member.get_int();
++            if( !task.is_valid() ) {
++                jo.throw_error_at( "job_priorities", "unknown activity in job priorities" );
++            }
++            if( priority < 0 ) {
++                jo.throw_error_at( "job_priorities", "job priorities must not be negative" );
++            }
++            job_data native_jobs;
++            if( !native_jobs.set_task_priority( task, priority ) ) {
++                jo.throw_error_at( "job_priorities", "activity is not a native NPC job" );
++            }
++            job_priorities_[task] = priority;
++        }
+     }
+     optional( jo, was_loaded, "worn_override", worn_override );
+     optional( jo, was_loaded, "carry_override", carry_override );
+@@ -436,6 +453,11 @@
+     return work_hours_;
+ }
+
++const std::map<activity_id, int> &npc_class::get_job_priorities() const
++{
++    return job_priorities_;
++}
++
+ bool is_within_work_hours( int hour, int start, int end )
+ {
+     if( start <= end ) {
+diff --git a/src/npc.h b/src/npc.h
+--- a/src/npc.h
++++ b/src/npc.h
+@@ -880,6 +880,7 @@
+         void npc_dismount();
+         weak_ptr_fast<monster> chosen_mount;
+         // Generating our stats, etc.
++        void apply_class_job_priorities();
+         void randomize( const npc_class_id &type = npc_class_id::NULL_ID(),
+                         const npc_template_id &tem_id = npc_template_id::NULL_ID() );
+         void randomize_from_faction( faction *fac );
+@@ -1245,6 +1246,7 @@
+
+         npc_action address_needs();
+         npc_action address_needs( float danger );
++        npc_action address_normal_food_drink();
+         bool wear_warmest_item();
+         bool take_shelter_nearby();
+         // Local resource acquisition: find helpers return scored candidates
+@@ -1351,6 +1353,11 @@
+         // workers at camp relaxing/wandering
+         void worker_downtime();
+         bool find_job_to_perform();
++        bool can_work_at_guard_post() const;
++        bool has_guard_job_context() const;
++        bool has_guard_job_activity() const;
++        bool has_guard_job_backlog() const;
++        void suspend_guard_job_activity();
+         // Same as if the player pressed '.'
+         void move_pause();
+
+diff --git a/src/npc.cpp b/src/npc.cpp
+--- a/src/npc.cpp
++++ b/src/npc.cpp
+@@ -643,6 +643,19 @@
+
+ npc::~npc() = default;
+
++void npc::apply_class_job_priorities()
++{
++    if( !myclass.is_valid() ) {
++        return;
++    }
++    for( const auto &[task, priority] : myclass.obj().get_job_priorities() ) {
++        if( !job.set_task_priority( task, priority ) ) {
++            debugmsg( "NPC class %s sets priority for unsupported job %s", myclass.c_str(),
++                      task.c_str() );
++        }
++    }
++}
++
+ void npc::randomize( const npc_class_id &type, const npc_template_id &tem_id )
+ {
+     if( !getID().is_valid() ) {
+@@ -702,6 +715,7 @@
+     } else {
+         myclass = type;
+     }
++    apply_class_job_priorities();
+
+     set_str_base( str_base + myclass->roll_strength() );
+     set_dex_base( dex_base + myclass->roll_dexterity() );
+diff --git a/src/npcmove.cpp b/src/npcmove.cpp
+--- a/src/npcmove.cpp
++++ b/src/npcmove.cpp
+@@ -1667,6 +1667,7 @@
+         }
+         const tripoint_bub_ms escape_dir = good_escape_direction( sees_dangerous_field( pos_bub() ) );
+         if( escape_dir != pos_bub() ) {
++            suspend_guard_job_activity();
+             move_to( escape_dir );
+             return;
+         }
+@@ -1850,9 +1851,15 @@
+             }
+             // adopted on every path, including a completion or interrupt this turn
+             adopt_goal( new_goal );
++            if( has_guard_job_activity() ) {
++                activity.auto_resume = true;
++            }
+
+             // Dispatch based on the (possibly committed) goal.
+             if( new_goal == "return_to_guard_pos" ) {
++                if( !can_work_at_guard_post() ) {
++                    suspend_guard_job_activity();
++                }
+                 if( !ai_cache.guard_pos ) {
+                     ai_cache.guard_pos = get_effective_guard_pos();
+                 }
+@@ -1866,9 +1873,26 @@
+                 action = npc_goto_to_this_pos;
+             } else if( new_goal == "hold_position" ) {
+                 action = address_needs( NPC_DANGER_VERY_LOW + 1 );
++                // Only thirst opens the normal block on a post: an empty stomach alone reads as
++                // hunger 100, camp food is refused above 95% of healthy calories, and the block
++                // would then drink terrain water every few minutes.
++                if( action == npc_undecided && assigned_camp &&
++                    ( mission == NPC_MISSION_CAMP_RESIDENT ||
++                      previous_mission == NPC_MISSION_CAMP_RESIDENT ) &&
++                    ai_cache.danger <= NPC_DANGER_VERY_LOW && get_thirst() > NPC_THIRST_CONSUME ) {
++                    action = address_normal_food_drink();
++                }
+                 if( action == npc_undecided ) {
+-                    // Otherwise legacy cascade overrides BT's duty decision.
+-                    action = npc_pause;
++                    if( can_work_at_guard_post() ) {
++                        if( has_guard_job_activity() || has_guard_job_backlog() ||
++                            ( calendar::once_every( 10_minutes ) && find_job_to_perform() ) ) {
++                            action = npc_player_activity;
++                        }
++                    }
++                    if( action == npc_undecided ) {
++                        // Otherwise legacy cascade overrides BT's duty decision.
++                        action = npc_pause;
++                    }
+                 }
+             } else if( new_goal == "camp_work" ) {
+                 last_job_scan = calendar::turn;
+@@ -1914,6 +1938,7 @@
+                     }
+                 }
+             } else if( is_executor_goal( new_goal ) ) {
++                suspend_guard_job_activity();
+                 const need_result result = execute_need_goal( new_goal );
+                 if( result == need_result::progressed && activity ) {
+                     // Undo attitude/mission change from assign_activity.
+@@ -2965,6 +2990,68 @@
+     return try_to_fix;
+ }
+
++npc_action npc::address_normal_food_drink()
++{
++    const npc_attitude saved_attitude = attitude;
++    const npc_mission saved_mission = mission;
++    const auto self_activity = [&]() -> npc_action {
++        attitude = saved_attitude;
++        mission = saved_mission;
++        return npc_player_activity;
++    };
++    map &here = get_map();
++
++    // Normal food/drink: camp -> inventory -> ground food -> terrain water.
++    // All under the same random gate so ground never outranks camp/inventory.
++    if( needs_food() && one_in( 3 ) && ( get_thirst() > NPC_THIRST_CONSUME ||
++                                         get_hunger() > NPC_HUNGER_CONSUME ) ) {
++        if( consume_food_from_camp() ) {
++            return npc_noop;
++        }
++        if( consume_food() ) {
++            return npc_noop;
++        }
++        for( scored_item &c : find_nearby_food() ) {
++            if( square_dist( pos_bub(), c.loc.pos_bub( here ) ) <= 1 ) {
++                if( consume_food_at( c.loc ) ) {
++                    return npc_noop;
++                }
++            } else {
++                const npc_trip_spec walk = npc_trip_spec::within_range( c.loc.pos_bub( here ), 1, false );
++                if( may_walk_to( walk ) && move_to_and_verify( walk ) ) {
++                    return npc_noop;
++                }
++            }
++        }
++        for( scored_water_source &ws : find_nearby_water_sources() ) {
++            if( square_dist( pos_bub(), ws.pos ) <= 1 ) {
++                if( drink_from_water_source( ws.pos ) ) {
++                    return npc_noop;
++                }
++            } else {
++                const npc_trip_spec walk = npc_trip_spec::within_range( ws.pos, 1, false );
++                if( may_walk_to( walk ) && move_to_and_verify( walk ) ) {
++                    return npc_noop;
++                }
++            }
++        }
++        // Last resort: harvest scavenging (same as extreme path).
++        for( const scored_water_source &h : find_nearby_harvestable( true ) ) {
++            if( square_dist( pos_bub(), h.pos ) <= 1 ) {
++                if( !may_occupy_here() ) {
++                    continue;
++                }
++                here.examine( *this, h.pos );
++                return activity ? self_activity() : npc_noop;
++            } else if( may_walk_to( npc_trip_spec::within_range( h.pos, 1, false ) ) &&
++                       move_to_and_verify( npc_trip_spec::within_range( h.pos, 1, false ) ) ) {
++                return npc_noop;
++            }
++        }
++    }
++    return npc_undecided;
++}
++
+ npc_action npc::address_needs( float danger )
+ {
+     // Activities assigned here are self-initiated (the NPC addressing its own
+@@ -3174,53 +3261,8 @@
+         }
+     }
+
+-    // Normal food/drink: camp -> inventory -> ground food -> terrain water.
+-    // All under the same random gate so ground never outranks camp/inventory.
+-    if( needs_food() && one_in( 3 ) && ( get_thirst() > NPC_THIRST_CONSUME ||
+-                                         get_hunger() > NPC_HUNGER_CONSUME ) ) {
+-        if( consume_food_from_camp() ) {
+-            return npc_noop;
+-        }
+-        if( consume_food() ) {
+-            return npc_noop;
+-        }
+-        for( scored_item &c : find_nearby_food() ) {
+-            if( square_dist( pos_bub(), c.loc.pos_bub( here ) ) <= 1 ) {
+-                if( consume_food_at( c.loc ) ) {
+-                    return npc_noop;
+-                }
+-            } else {
+-                const npc_trip_spec walk = npc_trip_spec::within_range( c.loc.pos_bub( here ), 1, false );
+-                if( may_walk_to( walk ) && move_to_and_verify( walk ) ) {
+-                    return npc_noop;
+-                }
+-            }
+-        }
+-        for( scored_water_source &ws : find_nearby_water_sources() ) {
+-            if( square_dist( pos_bub(), ws.pos ) <= 1 ) {
+-                if( drink_from_water_source( ws.pos ) ) {
+-                    return npc_noop;
+-                }
+-            } else {
+-                const npc_trip_spec walk = npc_trip_spec::within_range( ws.pos, 1, false );
+-                if( may_walk_to( walk ) && move_to_and_verify( walk ) ) {
+-                    return npc_noop;
+-                }
+-            }
+-        }
+-        // Last resort: harvest scavenging (same as extreme path).
+-        for( const scored_water_source &h : find_nearby_harvestable( true ) ) {
+-            if( square_dist( pos_bub(), h.pos ) <= 1 ) {
+-                if( !may_occupy_here() ) {
+-                    continue;
+-                }
+-                here.examine( *this, h.pos );
+-                return activity ? self_activity() : npc_noop;
+-            } else if( may_walk_to( npc_trip_spec::within_range( h.pos, 1, false ) ) &&
+-                       move_to_and_verify( npc_trip_spec::within_range( h.pos, 1, false ) ) ) {
+-                return npc_noop;
+-            }
+-        }
++    if( const npc_action a = address_normal_food_drink(); a != npc_undecided ) {
++        return a;
+     }
+
+     if( one_in( 3 ) && wants_to_recharge_cbm() && recharge_cbm() ) {
+@@ -3979,6 +4021,72 @@
+     }
+
+     move_to( best_pos, no_bash_atk, nomove );
++}
++
++bool npc::can_work_at_guard_post() const
++{
++    if( !guard_pos || !fac_id.is_valid() || !is_on_shift() || !has_job() ) {
++        return false;
++    }
++
++    const zone_manager &manager = zone_manager::get_manager();
++    for( const zone_manager::ref_const_zone_data &zone_ref : manager.get_zones( fac_id ) ) {
++        const zone_data &zone = zone_ref.get();
++        if( zone.get_enabled() && !zone.get_temporarily_disabled() &&
++            zone.has_inside( *guard_pos ) ) {
++            return true;
++        }
++    }
++    return false;
++}
++
++bool npc::has_guard_job_context() const
++{
++    if( !guard_pos ) {
++        return false;
++    }
++    return is_guarding() || mission == NPC_MISSION_CAMP_RESIDENT ||
++           ( mission == NPC_MISSION_ACTIVITY &&
++             ( previous_mission == NPC_MISSION_GUARD ||
++               previous_mission == NPC_MISSION_GUARD_ALLY ||
++               previous_mission == NPC_MISSION_GUARD_PATROL ||
++               previous_mission == NPC_MISSION_CAMP_RESIDENT ) );
++}
++
++bool npc::has_guard_job_activity() const
++{
++    if( !has_guard_job_context() || !activity ) {
++        return false;
++    }
++    if( job.get_priority_of_job( activity.id() ) > 0 ) {
++        return true;
++    }
++    return activity.auto_resume && !backlog.empty() &&
++           job.get_priority_of_job( backlog.front().id() ) > 0;
++}
++
++bool npc::has_guard_job_backlog() const
++{
++    if( !has_guard_job_context() || backlog.empty() || !backlog.front().auto_resume ) {
++        return false;
++    }
++    if( job.get_priority_of_job( backlog.front().id() ) > 0 ) {
++        return true;
++    }
++    const auto parent = std::next( backlog.begin() );
++    return parent != backlog.end() && job.get_priority_of_job( parent->id() ) > 0;
++}
++
++void npc::suspend_guard_job_activity()
++{
++    if( !has_guard_job_activity() ) {
++        return;
++    }
++    activity.auto_resume = true;
++    assign_activity( player_activity{} );
++    attitude = previous_attitude;
++    mission = previous_mission;
++    current_activity_id = activity_id::NULL_ID();
+ }
+
+ bool npc::find_job_to_perform()
+@@ -4835,7 +4943,12 @@
+     const bool multi_type = activity ? activity.is_multi_type() : false;
+     const int moves_before = moves;
+     while( moves > 0 && activity && !has_destination() ) {
++        const activity_id previous_activity = activity.id();
+         activity.do_turn( *this );
++        if( activity && activity.id() != previous_activity &&
++            job.get_priority_of_job( previous_activity ) > 0 && has_guard_job_context() ) {
++            activity.auto_resume = true;
++        }
+         if( !is_active() ) {
+             return true;
+         }
+@@ -4848,6 +4961,25 @@
+         // workaround: auto resuming craft activity may cause infinite loop
+         while( !backlog.empty() && backlog.front().id() == ACT_CRAFT ) {
+             backlog.pop_front();
++        }
++        if( has_guard_job_backlog() ) {
++            if( !can_work_at_guard_post() ) {
++                current_activity_id = activity_id::NULL_ID();
++                attitude = previous_attitude;
++                mission = previous_mission;
++                return moves != old_moves;
++            }
++            resume_backlog_activity();
++            if( activity ) {
++                if( has_guard_job_context() && !backlog.empty() &&
++                    job.get_priority_of_job( backlog.front().id() ) > 0 ) {
++                    activity.auto_resume = true;
++                }
++                current_activity_id = activity.id();
++                attitude = NPCATT_ACTIVITY;
++                mission = NPC_MISSION_ACTIVITY;
++                return moves != old_moves;
++            }
+         }
+         if( !backlog.empty() ) {
+             activity = backlog.front();
+diff --git a/src/savegame_json.cpp b/src/savegame_json.cpp
+--- a/src/savegame_json.cpp
++++ b/src/savegame_json.cpp
+@@ -2065,6 +2065,7 @@
+
+     data.read( "assigned_camp", assigned_camp );
+     data.read( "job", job );
++    apply_class_job_priorities();
+
+     // remove migration in 0.K
+     if( data.read( "mission", misstmp ) ) {
+diff --git a/src/activity_actor_definitions.h b/src/activity_actor_definitions.h
+--- a/src/activity_actor_definitions.h
++++ b/src/activity_actor_definitions.h
+@@ -3533,7 +3533,18 @@
+ {
+     public:
+         chop_planks_activity_actor() = default;
+         explicit chop_planks_activity_actor( int moves ) : moves( moves ) {}
++        chop_planks_activity_actor( int moves, const itype_id &selected_tool_type,
++                                    const itype_id &input_material_type ) :
++            moves( moves ), selected_tool_type_( selected_tool_type ),
++            input_material_type_( input_material_type ) {}
++
++        const itype_id &selected_tool_type() const {
++            return selected_tool_type_;
++        }
++        const itype_id &input_material_type() const {
++            return input_material_type_;
++        }
+
+         const activity_id &get_type() const override {
+             static const activity_id ACT_CHOP_PLANKS( "ACT_CHOP_PLANKS" );
+@@ -3552,7 +3563,9 @@
+         static std::unique_ptr<activity_actor> deserialize( JsonValue &jsin );
+
+     private:
+-        int moves;
++        int moves = 0;
++        itype_id selected_tool_type_ = itype_id::NULL_ID();
++        itype_id input_material_type_ = itype_id::NULL_ID();
+ };
+
+ class chop_tree_activity_actor : public activity_actor
+diff --git a/src/activity_item_handling.cpp b/src/activity_item_handling.cpp
+--- a/src/activity_item_handling.cpp
++++ b/src/activity_item_handling.cpp
+@@ -3425,16 +3425,19 @@
+     if( best_qual.is_null() ) {
+         return false;
+     }
++    const itype_id selected_tool_type = best_qual.typeId();
+     if( best_qual.type->can_have_charges() ) {
+         best_qual.consume_tool_uses( 1, get_map(), you.pos_bub(), &you );
+     }
+     map &here = get_map();
+     for( item &i : here.i_at( src_loc ) ) {
+         if( i.typeId() == itype_log ) {
++            const itype_id input_material_type = i.typeId();
+             here.i_rem( src_loc, &i );
+             int moves = to_moves<int>( 20_minutes );
+             you.add_msg_if_player( _( "You cut the log into planks." ) );
+-            you.assign_activity( chop_planks_activity_actor( moves ) );
++            you.assign_activity( chop_planks_activity_actor( moves, selected_tool_type,
++                                  input_material_type ) );
+             you.activity.placement = here.get_abs( src_loc );
+             return true;
+         }
+diff --git a/src/activity_actor.cpp b/src/activity_actor.cpp
+--- a/src/activity_actor.cpp
++++ b/src/activity_actor.cpp
+@@ -10461,18 +10461,22 @@
+     jsout.start_object();
+
+     jsout.member( "moves", moves );
++    jsout.member( "selected_tool_type", selected_tool_type_ );
++    jsout.member( "input_material_type", input_material_type_ );
+
+     jsout.end_object();
+ }
+
+ std::unique_ptr<activity_actor> chop_planks_activity_actor::deserialize( JsonValue &jsin )
+ {
+-    chop_planks_activity_actor actor( {} );
++    chop_planks_activity_actor actor;
+
+     JsonObject data = jsin.get_object();
+
+     data.read( "moves", actor.moves );
++    data.read( "selected_tool_type", actor.selected_tool_type_ );
++    data.read( "input_material_type", actor.input_material_type_ );
+
+     return actor.clone();
+ }
+
+diff --git a/src/iuse.h b/src/iuse.h
+--- a/src/iuse.h
++++ b/src/iuse.h
+@@ -216,4 +216,7 @@
+ void cut_log_into_planks( Character & );
++void cut_log_into_planks( Character &,
++                          const itype_id &selected_tool_type,
++                          const itype_id &input_material_type );
+ void play_music( Character *p, const tripoint_bub_ms &source, int volume, int max_morale,
+                  bool play_sounds = true );
+ void make_music( Character *p, const tripoint_bub_ms &source, int volume, int max_morale,
+diff --git a/src/iuse.cpp b/src/iuse.cpp
+--- a/src/iuse.cpp
++++ b/src/iuse.cpp
+@@ -4230,11 +4230,18 @@
+ void iuse::cut_log_into_planks( Character &p )
++{
++    cut_log_into_planks( p, itype_id::NULL_ID(), itype_id::NULL_ID() );
++}
++
++void iuse::cut_log_into_planks( Character &p, const itype_id &selected_tool_type,
++                                const itype_id &input_material_type )
+ {
+     if( p.cant_do_mounted() ) {
+         return;
+     }
+     const int moves = to_moves<int>( 20_minutes );
+     p.add_msg_if_player( _( "You cut the log into planks." ) );
+ 
+-    p.assign_activity( chop_planks_activity_actor( moves ) );
++    p.assign_activity( chop_planks_activity_actor( moves, selected_tool_type,
++                          input_material_type ) );
+     p.activity.placement = get_map().get_abs( p.pos_bub() );
+ }
+@@ -4253,7 +4260,9 @@
+     // Check if player is standing on any lumber
+     for( item &i : here.i_at( p->pos_bub() ) ) {
+         if( i.typeId() == itype_log ) {
++            const itype_id selected_tool_type = it->typeId();
++            const itype_id input_material_type = i.typeId();
+             here.i_rem( p->pos_bub(), &i );
+-            cut_log_into_planks( *p );
++            cut_log_into_planks( *p, selected_tool_type, input_material_type );
+             return 1;
+         }
+@@ -4276,4 +4285,6 @@
+-    p->i_rem( &*loc );
+-    cut_log_into_planks( *p );
++    const itype_id selected_tool_type = it->typeId();
++    const itype_id input_material_type = loc->typeId();
++    p->i_rem( &*loc );
++    cut_log_into_planks( *p, selected_tool_type, input_material_type );
+     return 1;
+ }
+diff --git a/src/mapgen.cpp b/src/mapgen.cpp
+--- a/src/mapgen.cpp
++++ b/src/mapgen.cpp
+@@ -20,6 +20,7 @@
+
+ #include "all_enum_values.h"
+ #include "avatar.h"
++#include "basecamp.h"
+ #include "calendar.h"
+ #include "cata_assert.h"
+ #include "cata_utility.h"
+@@ -6682,6 +6683,12 @@
+     temp->spawn_at_precise( get_abs( { p, abs_sub.z() } ) );
+     temp->toggle_trait( trait_NPC_STATIC_NPC );
+     overmap_buffer.insert_npc( temp );
++    if( const std::optional<basecamp *> camp = overmap_buffer.find_camp( temp->pos_abs_omt().xy() );
++        camp && ( *camp )->point_within_camp( temp->pos_abs_omt() ) &&
++        ( *camp )->get_owner() == temp->get_fac_id() ) {
++        temp->set_mission( NPC_MISSION_CAMP_RESIDENT );
++        ( *camp )->add_assignee( temp->getID() );
++    }
+     return temp->getID();
+ }
+
+diff --git a/src/character_oracle.cpp b/src/character_oracle.cpp
+--- a/src/character_oracle.cpp
++++ b/src/character_oracle.cpp
+@@ -3,6 +3,7 @@
+ #include <algorithm>
+ #include <memory>
+ #include <optional>
++#include <utility>
+ #include <vector>
+
+ #include "basecamp.h"
+@@ -17,6 +18,7 @@
+ #include "mapdata.h"
+ #include "npc.h"
+ #include "npc_arbitration.h"
++#include "npc_class.h"
+ #include "overmapbuffer.h"
+ #include "point.h"
+ #include "ret_val.h"
+@@ -65,6 +67,17 @@
+     return ( *bcp )->point_within_camp( n.pos_abs_omt() );
+ }
+
++static bool npc_outside_work_hours( const npc &n )
++{
++    if( !n.myclass.is_valid() ) {
++        return false;
++    }
++    const std::pair<int, int> &hours = n.myclass.obj().get_work_hours();
++    return ( hours.first != 0 || hours.second != 24 ) &&
++           !is_within_work_hours( to_hours<int>( time_past_midnight( calendar::turn ) ),
++                                  hours.first, hours.second );
++}
++
+ namespace behavior
+ {
+
+@@ -521,7 +534,7 @@
+     if( !n || !n->assigned_camp || n->mission != NPC_MISSION_CAMP_RESIDENT ) {
+         return status_t::failure;
+     }
+-    if( !npc_within_camp( *n ) ) {
++    if( !npc_within_camp( *n ) || npc_outside_work_hours( *n ) ) {
+         return status_t::failure;
+     }
+     if( !n->has_job() ) {
+@@ -561,7 +574,7 @@
+ {
+     const npc *n = dynamic_cast<const npc *>( subject );
+     if( !n || !n->assigned_camp || n->mission != NPC_MISSION_CAMP_RESIDENT
+-        || !npc_within_camp( *n ) || !n->has_job() ) {
++        || !npc_within_camp( *n ) || !n->has_job() || npc_outside_work_hours( *n ) ) {
+         return 0.0f;
+     }
+     return 0.4f;

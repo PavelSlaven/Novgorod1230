@@ -284,7 +284,7 @@ struct native_snapshot {
     std::string world_signature;
     std::vector<item_fact> inventory;
     std::vector<item_fact> ground;
-    std::vector<std::tuple<std::string, std::vector<int>, std::string, std::string, int, std::string>> npcs;
+    std::vector<std::tuple<std::string, std::vector<int>>> npcs;
 };
 
 native_snapshot take_snapshot()
@@ -303,9 +303,7 @@ native_snapshot take_snapshot()
     for( const npc &guy : g->all_npcs() ) {
         if( you.sees( here, guy.pos_bub() ) ) {
             result.npcs.emplace_back( std::to_string( guy.getID().get_value() ),
-                                      position_of( guy.pos_bub() ),
-                                      guy.novgorod_semantic_assignment_id(), guy.novgorod_semantic_status(),
-                                      guy.novgorod_semantic_progress(), guy.novgorod_semantic_interrupt_cause() );
+                                      position_of( guy.pos_bub() ) );
         }
     }
     for( const item *it : you.items_with( []( const item & ) { return true; } ) ) {
@@ -373,10 +371,6 @@ void write_snapshot( JsonOut &out, const native_snapshot &snapshot )
         out.start_object();
         out.member( "actor_id", std::get<0>( fact ) );
         out.member( "position", std::get<1>( fact ) );
-        out.member( "assignment_id", std::get<2>( fact ) );
-        out.member( "assignment_status", std::get<3>( fact ) );
-        out.member( "progress", std::get<4>( fact ) );
-        out.member( "interrupt_cause", std::get<5>( fact ) );
         out.end_object();
     }
     out.end_array();

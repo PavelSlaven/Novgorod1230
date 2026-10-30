@@ -31,7 +31,22 @@
     "common": false,
     "worn_override": "novgorod_dev_master_worn",
     "carry_override": "novgorod_dev_master_carried",
-    "weapon_override": "novgorod_dev_master_weapon"
+    "weapon_override": "novgorod_dev_master_weapon",
+    "work_hours": [ 5, 20 ],
+    "traits": [ { "trait": "RETURN_TO_START_POS" } ],
+    "job_priorities": { "ACT_MULTIPLE_CHOP_PLANKS": 1 },
+    "skills": [ { "skill": "fabrication", "bonus": { "rng": [ 5, 7 ] } } ]
+  },
+  {
+    "type": "npc_class",
+    "id": "novgorod_dev_watchman_class",
+    "name": { "str": "сторож" },
+    "job_description": "Держу ночной пост у ворот.",
+    "common": false,
+    "worn_override": "novgorod_dev_master_worn",
+    "weapon_override": "novgorod_dev_master_weapon",
+    "work_hours": [ 20, 5 ],
+    "traits": [ { "trait": "RETURN_TO_START_POS" } ]
   },
   {
     "type": "npc",
@@ -44,5 +59,34 @@
     "attitude": 0,
     "mission": "GUARD",
     "chat": "TALK_STRANGER_NEUTRAL"
+  },
+  {
+    "type": "npc",
+    "id": "novgorod_dev_watchman",
+    "name_unique": "Прокша",
+    "gender": "male",
+    "faction": "novgorod_dev_master_household",
+    "personality": { "aggression": 1, "bravery": 2, "collector": 3, "altruism": 0 },
+    "class": "novgorod_dev_watchman_class",
+    "attitude": 0,
+    "mission": "GUARD",
+    "chat": "TALK_STRANGER_NEUTRAL"
+  },
+  {
+    "type": "effect_on_condition",
+    "id": "EOC_NOVGOROD_DEV_NPC_START_BODY",
+    "eoc_type": "ACTIVATION",
+    "global": true,
+    "run_for_npcs": true,
+    "condition": { "and": [ "u_is_npc", { "math": [ "u_novgorod_start_body == 0" ] } ] },
+    "effect": [
+      {
+        "if": { "math": [ "u_calories( 'format': 'percent' ) < 100" ] },
+        "then": [
+          { "math": [ "u_calories( 'dont_affect_weariness': 1 ) = round( u_calories() * 100 / u_calories( 'format': 'percent' ) )" ] }
+        ]
+      },
+      { "math": [ "u_novgorod_start_body = 1" ] }
+    ]
   }
 ]

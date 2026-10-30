@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { createP3AttemptBudget, createP3RoleRuntime,
   loadP3QwenSettingsOwner, runP3NativeNpcFlow, runP3TurnStep,
+  selectP3NativeNpcFixture,
   validateP3RoleConfigs } from './p3-boundary.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -133,12 +134,10 @@ async function dryCapture() {
         scenarioErrors.push({ scenario: `planner_${index + 1}`, error: safeError(error) });
       }
     }
-    const npc = observation.npc_projections.find(({ assignment_status }) =>
-      ['', 'decision_required', 'interrupted_waiting_for_semantic_decision']
-        .includes(assignment_status ?? ''));
-    if (!npc) throw new Error('P3_WIRE_NPC_DECISION_FIXTURE_REQUIRED');
+    const actorId = selectP3NativeNpcFixture(observation);
+    if (!actorId) throw new Error('P3_WIRE_NPC_DECISION_FIXTURE_REQUIRED');
     try {
-      await runP3NativeNpcFlow({ nativeAdapter: {}, actorId: npc.actor_id,
+      await runP3NativeNpcFlow({ nativeAdapter: {}, actorId,
         nativeObservation: observation, semanticModel: runtime.npcAutonomousModel });
     } catch (error) {
       scenarioErrors.push({ scenario: 'npc_autonomous_decider', error: safeError(error) });

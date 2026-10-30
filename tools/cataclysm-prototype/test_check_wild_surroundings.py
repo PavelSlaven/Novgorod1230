@@ -181,21 +181,45 @@ class WildFixture(unittest.TestCase):
         for name, value in self.world_files.items():
             write_json(self.world / name, value)
 
-    def invoke(self, flush=True, extra=()):
+    def invoke(self, flush=True, extra=(), reference_inputs=None):
         if flush:
             self.flush()
-        return subprocess.run([sys.executable, str(SCRIPT), "--run", str(self.run), "--reference-inputs", str(self.reference_inputs), "--world", str(self.world), "--mod", str(self.mod), "--allowlist", str(self.allowlist), *extra], text=True, capture_output=True, encoding="utf-8")
+        return subprocess.run([sys.executable, str(SCRIPT), "--run", str(self.run), "--reference-inputs", str(reference_inputs or self.reference_inputs), "--world", str(self.world), "--mod", str(self.mod), "--allowlist", str(self.allowlist), *extra], text=True, capture_output=True, encoding="utf-8")
 
-    def assert_bad(self, rule, flush=True):
-        result = self.invoke(flush=flush)
+    def assert_bad(self, rule, flush=True, extra=(), reference_inputs=None):
+        result = self.invoke(flush=flush, extra=extra, reference_inputs=reference_inputs)
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
         self.assertIn(rule + " — ", result.stdout)
         return result
 
-    def assert_clean(self):
-        result = self.invoke()
+    def assert_clean(self, extra=(), reference_inputs=None):
+        result = self.invoke(extra=extra, reference_inputs=reference_inputs)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
+
+    def prepare_task31_capture(self):
+        watchman_id = self.master["id"] + 1000000
+        watchman = copy.deepcopy(self.master)
+        watchman.update({"id": watchman_id, "unique_id": "novgorod_dev_watchman",
+                         "idz": "novgorod_dev_watchman"})
+        for key in ("inventory", "inv", "companion_mission_inv", "worn", "weapon"):
+            watchman.pop(key, None)
+        self.overmap["npcs"].append(watchman)
+        for packet in self.packets:
+            npcs = [creature for creature in packet["frame"]["creatures"]
+                    if creature.get("kind") == "npc" and creature.get("type") == "novgorod_dev_master"]
+            for master in npcs:
+                master.update({"activity": None, "posture": "standing", "attention": "notices"})
+                observer = copy.deepcopy(master)
+                observer.update({"id": str(watchman_id), "type": "novgorod_dev_watchman",
+                                 "activity": None, "posture": "standing", "attention": "unaware",
+                                 "worn": [], "wielded": None})
+                packet["frame"]["creatures"].append(observer)
+
+    def route_reference(self):
+        path = self.root / "task30-inputs.log"
+        path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in self.inputs), encoding="utf-8")
+        return path
 
     def assert_diagnostic(self, result, rule, location, list_name, identifier):
         expected = [rule, str(location), list_name, str(identifier)]
@@ -2194,6 +2218,160 @@ class A22OvermapActorFormatTests(WildFixture):
         result = self.invoke()
         section = f"o.{self.court_section[0]}.{self.court_section[1]}"
         self.assert_diagnostic(result, "карта", section, "npc", "npcs")
+
+
+class Task31CaptureTests(WildFixture):
+    def test_day_mode_checks_format_and_world_without_task30_route_length(self):
+        self.prepare_task31_capture()
+        self.inputs = []
+
+        self.assert_clean(extra=("--mode", "day"))
+
+    def test_route_mode_accepts_task30_prefix_with_original_terminal_inputs(self):
+        self.prepare_task31_capture()
+        reference = self.route_reference()
+
+        self.assert_clean(extra=("--mode", "route"), reference_inputs=reference)
+
+    def test_route_mode_rejects_changed_task30_prefix_intent(self):
+        self.prepare_task31_capture()
+        reference = self.route_reference()
+        self.inputs[0]["intent"] += " изменено"
+
+        result = self.assert_bad("неполный прогон", extra=("--mode", "route"),
+                                 reference_inputs=reference)
+        self.assertIn("task30_prefix_and_terminal", result.stdout)
+
+    def test_route_mode_requires_frame_for_each_continuation_input(self):
+        self.prepare_task31_capture()
+        reference = self.route_reference()
+        self.inputs.insert(47, {"number": 0, "keys": "u", "intent": "Подойти к сторожу"})
+        for number, row in enumerate(self.inputs, 1):
+            row["number"] = number
+        for packet in self.packets:
+            if type(packet.get("input_number")) is int and packet["input_number"] >= 48:
+                packet["input_number"] += 1
+
+        result = self.assert_bad("неполный прогон", extra=("--mode", "route"),
+                                 reference_inputs=reference)
+        self.assertIn("perception.jsonl — input_number — 48", result.stdout)
+
+    def test_route_mode_rejects_changed_task30_prefix_keys(self):
+        self.prepare_task31_capture()
+        reference = self.route_reference()
+        self.inputs[29]["keys"] += "x"
+
+        result = self.assert_bad("неполный прогон", extra=("--mode", "route"),
+                                 reference_inputs=reference)
+        self.assertIn("inputs.log — route — task30_prefix_and_terminal", result.stdout)
+
+    def test_route_mode_accepts_two_continuation_inputs_with_frames(self):
+        self.prepare_task31_capture()
+        reference = self.route_reference()
+        for offset, keys in enumerate(("u", "u"), 48):
+            self.inputs.insert(offset - 1, {"number": 0, "keys": keys, "intent": "Подойти к сторожу"})
+        for number, row in enumerate(self.inputs, 1):
+            row["number"] = number
+        for packet in self.packets:
+            if type(packet.get("input_number")) is int and packet["input_number"] >= 48:
+                packet["input_number"] += 2
+        source = next(index for index, packet in enumerate(self.packets) if packet["input_number"] == 47)
+        for offset in (1, 2):
+            added = copy.deepcopy(self.packets[source])
+            added["input_number"] = 47 + offset
+            self.packets.insert(source + offset, added)
+        for sequence, packet in enumerate(self.packets, 1):
+            packet["sequence"] = sequence
+
+        result = self.assert_clean(extra=("--mode", "route"), reference_inputs=reference)
+        self.assertNotIn("неполный прогон — ", result.stdout)
+
+    def test_day_mode_rejects_activity_without_required_chop_tool(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["activity"] = {"id": "ACT_CHOP_PLANKS", "verb": "Распиливает", "tool": None, "material": "log"}
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures.activity — tool", result.stdout)
+
+    def test_day_mode_rejects_chop_activity_with_non_log_material(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["activity"] = {"id": "ACT_CHOP_PLANKS", "verb": "Распиливает", "tool": "hand_saw", "material": "2x4"}
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures.activity — material", result.stdout)
+
+    def test_day_mode_rejects_activity_with_extra_schema_field(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["activity"] = {"id": "ACT_CHOP_PLANKS", "verb": "Распиливает", "tool": "hand_saw",
+                           "material": "log", "extra": "not-native"}
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures.activity — extra", result.stdout)
+
+    def test_day_mode_accepts_chop_activity_with_tool_and_log(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["activity"] = {"id": "ACT_CHOP_PLANKS", "verb": "Распиливает", "tool": "ax", "material": "log"}
+
+        self.assert_clean(extra=("--mode", "day"))
+
+    def test_day_mode_rejects_missing_activity_field(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        del npc["activity"]
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures — activity", result.stdout)
+
+    def test_day_mode_rejects_invalid_posture_enum(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["posture"] = "lying"
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures — posture", result.stdout)
+
+    def test_day_mode_rejects_invalid_attention_enum(self):
+        self.prepare_task31_capture()
+        npc = next(creature for creature in self.frame["creatures"] if creature.get("kind") == "npc")
+        npc["attention"] = "watching"
+
+        result = self.assert_bad("неизвестный вход", extra=("--mode", "day"))
+        self.assertIn("creatures — attention", result.stdout)
+
+    def test_day_mode_rejects_duplicate_watchman_in_frame(self):
+        self.prepare_task31_capture()
+        packet = next(packet for packet in self.packets
+                      if any(creature.get("type") == "novgorod_dev_watchman"
+                             for creature in packet["frame"]["creatures"]))
+        duplicate = copy.deepcopy(next(creature for creature in packet["frame"]["creatures"]
+                                       if creature.get("type") == "novgorod_dev_watchman"))
+        packet["frame"]["creatures"].append(duplicate)
+
+        result = self.assert_bad("человек", extra=("--mode", "day"))
+        self.assertIn("novgorod_dev_watchman", result.stdout)
+
+    def test_day_mode_rejects_unlisted_npc_type(self):
+        self.prepare_task31_capture()
+        packet = next(packet for packet in self.packets
+                      if any(creature.get("type") == "novgorod_dev_watchman"
+                             for creature in packet["frame"]["creatures"]))
+        watchman = next(creature for creature in packet["frame"]["creatures"]
+                        if creature.get("type") == "novgorod_dev_watchman")
+        watchman["type"] = "novgorod_dev_outsider"
+
+        result = self.assert_bad("человек", extra=("--mode", "day"))
+        self.assertIn("novgorod_dev_outsider", result.stdout)
+
+    def test_day_mode_rejects_duplicate_saved_watchman(self):
+        self.prepare_task31_capture()
+        self.overmap["npcs"].append(copy.deepcopy(self.overmap["npcs"][-1]))
+
+        result = self.assert_bad("человек", extra=("--mode", "day"))
+        self.assertIn("novgorod_dev_watchman=2", result.stdout)
 
 
 if __name__ == "__main__":

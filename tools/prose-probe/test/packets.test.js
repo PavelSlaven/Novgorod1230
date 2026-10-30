@@ -51,6 +51,72 @@ async function packets(t, rows, moments, actions, gameData = []) {
   return { dir, output, result, values: await readJson(join(output, 'packets.json')) };
 }
 
+function changeNpc(row, changes) {
+  const index = row.frame.creatures.findIndex(creature => creature.id === '2');
+  assert.notEqual(index, -1);
+  return changeFrame(row, `creatures.${index}`, { ...row.frame.creatures[index], ...changes });
+}
+
+function nextFrame(row) {
+  return { ...row, sequence: row.sequence + 1, native_turn: row.native_turn + 1 };
+}
+
+test('a null activity leaves the captured NPC packet unchanged', async t => {
+  const row = await source('inside-before-step');
+  const original = await packets(t, [row], [moment('M1', row.native_turn)]);
+  const withNullActivity = changeNpc(row, { activity: null });
+  const explicitNull = await packets(t, [withNullActivity], [moment('M1', row.native_turn)]);
+  assert.deepEqual(explicitNull.values[0].parts[0].packet, original.values[0].parts[0].packet);
+  assert.ok(textsInPart(explicitNull.values[0].parts[0]).every(text => !text.includes('Текущее занятие существа')));
+});
+
+test('activity uses ITEM names through copy-from and changes only once for a known NPC', async t => {
+  const row = await source('inside-before-step');
+  const gameData = await setup(t, 'npc-item-names-');
+  await writeJson(join(gameData, 'items.json'), [
+    { type: 'ITEM', id: 'ax', name: { str: 'топор' } },
+    { type: 'ITEM', id: 'ax', 'copy-from': 'ax', name: { str: 'плотницкий топор' } },
+    { type: 'ITEM', id: 'wood', name: { str_sp: 'бревно' } },
+    { type: 'ITEM', id: 'log', 'copy-from': 'wood' }
+  ]);
+  const activity = { id: 'ACT_MULTIPLE_CHOP_PLANKS', verb: 'Рубит', tool: 'ax', material: 'log' };
+  const changed = nextFrame(changeNpc(row, { activity }));
+  const repeated = nextFrame(changed);
+  const rows = [row, changed, repeated];
+  const ctx = await packets(t, rows, rows.map((entry, i) => moment(`M${i + 1}`, entry.native_turn)), undefined, [gameData]);
+  const change = textsInPart(ctx.values[1].parts[0]).find(text => text.startsWith('Изменилось состояние существа «Жирко».'));
+  assert.ok(change);
+  assert.ok(change.includes('Текущее занятие существа «Жирко» — «Рубит».'));
+  assert.ok(change.includes('плотницкий топор'));
+  assert.ok(change.includes('бревно'));
+  assert.ok(!/\b(?:ax|log)\b/u.test(change));
+  assert.ok(!change.includes('ACT_MULTIPLE_CHOP_PLANKS'));
+  assert.deepEqual(textsInPart(ctx.values[2].parts[0]), []);
+});
+
+test('posture and attention changes for a known NPC are rendered once', async t => {
+  const cases = [
+    ['posture', 'standing', 'стоит'],
+    ['posture', 'sitting', 'сидит'],
+    ['posture', 'crouching', 'держится пригнувшись'],
+    ['posture', 'prone', 'лежит'],
+    ['attention', 'attends', 'внимательно слушает героя'],
+    ['attention', 'unaware', 'не видит героя'],
+    ['attention', 'notices', 'видит героя']
+  ];
+  for (const [field, value, expected] of cases) {
+    const initial = await source('inside-before-step');
+    const changed = nextFrame(changeNpc(initial, { [field]: value }));
+    const repeated = nextFrame(changed);
+    const rows = [initial, changed, repeated];
+    const ctx = await packets(t, rows, rows.map((entry, i) => moment(`M${i + 1}`, entry.native_turn)));
+    const change = textsInPart(ctx.values[1].parts[0]).find(text => text.startsWith('Изменилось состояние существа «Жирко».'));
+    assert.ok(change);
+    assert.ok(change.includes(expected));
+    assert.deepEqual(textsInPart(ctx.values[2].parts[0]), []);
+  }
+});
+
 test('R1: packet text writes numbers as words', async t => {
   const frame = await source('courtyard');
   const identifiers = new Set();

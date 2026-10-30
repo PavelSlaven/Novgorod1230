@@ -24,8 +24,9 @@ function lines(text, path) {
   });
 }
 
-async function descriptions(dirs) {
-  const result = new Map();
+async function gameData(dirs) {
+  const descriptions = new Map();
+  const items = new Map();
   async function visit(path) {
     const entries = await readdir(path, { withFileTypes: true });
     for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name, 'en'))) {
@@ -36,14 +37,36 @@ async function descriptions(dirs) {
         for (const definition of Array.isArray(data) ? data : [data]) {
           const text = definition.description;
           const value = typeof text === 'string' ? text : text?.str ?? text?.str_sp;
-          if (typeof value !== 'string') continue;
-          for (const id of Array.isArray(definition.id) ? definition.id : [definition.id]) if (typeof id === 'string') result.set(id, clean(value));
+          if (typeof value === 'string') for (const id of Array.isArray(definition.id) ? definition.id : [definition.id]) if (typeof id === 'string') descriptions.set(id, clean(value));
+          if (definition.type !== 'ITEM' || typeof definition.id !== 'string') continue;
+          const prior = items.get(definition.id);
+          const rawName = typeof definition.name === 'string' ? definition.name : definition.name?.str || definition.name?.str_sp;
+          const declaredCopyFrom = typeof definition['copy-from'] === 'string' ? definition['copy-from'] : undefined;
+          const hasName = typeof rawName === 'string' && rawName.trim();
+          const name = hasName ? rawName : declaredCopyFrom && declaredCopyFrom !== definition.id ? undefined : prior?.name;
+          const copyFrom = declaredCopyFrom
+            ? declaredCopyFrom === definition.id ? prior?.copyFrom ?? definition.id : declaredCopyFrom
+            : prior?.copyFrom;
+          items.set(definition.id, { name, copyFrom });
         }
       }
     }
   }
   for (const dir of dirs ?? []) await visit(dir);
-  return result;
+  function itemNameById(id) {
+    const requested = id;
+    const seen = new Set();
+    while (typeof id === 'string' && id && !seen.has(id)) {
+      seen.add(id);
+      const item = items.get(id);
+      if (!item) break;
+      const name = clean(item.name ?? '');
+      if (name) return name;
+      id = item.copyFrom;
+    }
+    throw new Error(`Нет названия ITEM ${requested} в --game-data`);
+  }
+  return { descriptions, itemNameById };
 }
 
 const positionKey = position => JSON.stringify(position);
@@ -73,6 +96,31 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const itemName = item => clean(item.name).split(/\s*>\s*/u);
 const changingState = new Set(['Пора суток', 'Погода', 'Свет', 'Самочувствие']);
 const distanceAt = (position, hero) => Math.trunc(Math.hypot(...position.map((value, index) => value - hero[index])));
+const postureWords = { standing: 'стоит', sitting: 'сидит', crouching: 'держится пригнувшись', prone: 'лежит' };
+const attentionWords = { attends: 'внимательно слушает героя', unaware: 'не видит героя', notices: 'видит героя' };
+
+function creatureStateText(creature, data) {
+  const lines = [];
+  const name = clean(creature.name);
+  if (creature.activity !== undefined && creature.activity !== null) {
+    const verb = typeof creature.activity.verb === 'string' ? clean(creature.activity.verb) : '';
+    if (!verb) throw new Error(`Нет глагола занятия у существа «${name}»`);
+    lines.push(`Текущее занятие существа «${name}» — «${verb}».`);
+    if (creature.activity.tool !== undefined && creature.activity.tool !== null) lines.push(`Орудие — «${data.itemNameById(creature.activity.tool)}».`);
+    if (creature.activity.material !== undefined && creature.activity.material !== null) lines.push(`Материалом служит «${data.itemNameById(creature.activity.material)}».`);
+  }
+  if (creature.posture !== undefined && creature.posture !== null) {
+    const word = Object.hasOwn(postureWords, creature.posture) ? postureWords[creature.posture] : null;
+    if (!word) throw new Error(`Неизвестная поза существа «${name}»: ${creature.posture}`);
+    lines.push(`${name} ${word}.`);
+  }
+  if (creature.attention !== undefined && creature.attention !== null) {
+    const word = Object.hasOwn(attentionWords, creature.attention) ? attentionWords[creature.attention] : null;
+    if (!word) throw new Error(`Неизвестный отклик существа «${name}»: ${creature.attention}`);
+    lines.push(`${name} ${word}.`);
+  }
+  return lines.length ? ` ${lines.join(' ')}` : '';
+}
 
 function itemSentence(item, prefix, descriptions) {
   const [name, ...contents] = itemName(item);
@@ -82,7 +130,8 @@ function itemSentence(item, prefix, descriptions) {
   return text;
 }
 
-function project(frame, descriptions, knownDoors) {
+function project(frame, data, knownDoors) {
+  const { descriptions } = data;
   const facts = new Map();
   const add = (key, section, text, extra = {}) => facts.set(key, { section, text, state: text, ...extra });
   add('hero', 'Герой', `Имя героя — ${clean(frame.player_state.name)}. Герой — ${frame.player_state.male ? 'мужчина' : 'женщина'}.`);
@@ -176,8 +225,17 @@ function project(frame, descriptions, knownDoors) {
     let text = `${sentence(where)} — ${label}.`;
     for (const item of creature.worn ?? []) text += ` ${itemSentence(item, `Видимая одежда существа «${label}»`, descriptions)}`;
     if (creature.wielded) text += ` ${itemSentence(creature.wielded, `В руках у существа «${label}»`, descriptions)}`;
+    text += creatureStateText(creature, data);
     // Без записанного id сравнимы только количества внутри и вне места, а не перемещения особей.
-    add(`${base}:${ordinal}`, 'Люди и звери', text, { label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, state: [label, (creature.worn ?? []).map(item => clean(item.name)), creature.wielded ? clean(creature.wielded.name) : null], creature: true });
+    const state = [
+      label,
+      (creature.worn ?? []).map(item => clean(item.name)),
+      creature.wielded ? clean(creature.wielded.name) : null,
+      creature.activity == null ? null : [creature.activity.id ?? null, creature.activity.verb ?? null, creature.activity.tool ?? null, creature.activity.material ?? null],
+      creature.posture ?? null,
+      creature.attention ?? null
+    ];
+    add(`${base}:${ordinal}`, 'Люди и звери', text, { label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, state, creature: true });
   }
   const presentItems = new Set((frame.objects ?? []).filter(object => object.item).map(object => `ground:${object.item.uid}`));
   return { facts, visible, terrain, occupied, presentItems };
@@ -268,7 +326,7 @@ export async function packets(options) {
   const momentsText = await read(options.moments);
   const moments = JSON.parse(momentsText);
   checkMoments(moments, options.moments);
-  const descriptionsByType = await descriptions(options['game-data']);
+  const data = await gameData(options['game-data']);
   const actionRows = options.actions ? lines(await read(options.actions), options.actions) : [];
   const actions = new Map(actionRows.map(row => [row.native_turn, row]));
   for (const row of actionRows) for (const input of row.inputs ?? []) if (!movement[input.action] && input.action !== 'open' && !ignored.has(input.action)) console.error(`Предупреждение: неизвестное action ${input.action}; поступок исключён`);
@@ -296,7 +354,7 @@ export async function packets(options) {
         if (first) delivered.set(row.scene, { facts: new Map(), terrain: new Map(), doors: new Map(), vehicles: new Set() });
       }
       const memory = delivered.get(row.scene);
-      const current = project(row.frame, descriptionsByType, memory.doors);
+      const current = project(row.frame, data, memory.doors);
       const initial = memory.facts.size === 0;
       const acts = row.reason === 'turn' ? actionEvents(actions.get(row.native_turn), row.before, row.frame) : [];
       const opened = new Set(acts.filter(event => event.door).map(event => event.door));

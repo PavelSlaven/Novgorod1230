@@ -37,7 +37,7 @@ async function gameData(dirs) {
         for (const definition of Array.isArray(data) ? data : [data]) {
           const text = definition.description;
           const value = typeof text === 'string' ? text : text?.str ?? text?.str_sp;
-          if (typeof value === 'string') for (const id of Array.isArray(definition.id) ? definition.id : [definition.id]) if (typeof id === 'string') descriptions.set(id, clean(value));
+          if (typeof value === 'string') for (const id of Array.isArray(definition.id) ? definition.id : [definition.id]) if (typeof id === 'string') descriptions.set(id, value);
           if (definition.type !== 'ITEM' || typeof definition.id !== 'string') continue;
           const prior = items.get(definition.id);
           const rawName = typeof definition.name === 'string' ? definition.name : definition.name?.str || definition.name?.str_sp;
@@ -126,7 +126,7 @@ function itemSentence(item, prefix, descriptions) {
   const [name, ...contents] = itemName(item);
   let text = `${prefix} — ${name}.`;
   for (let index = 0; index < contents.length; index++) text += ` При предмете «${index ? contents[index - 1] : name}» находилось ${contents[index]}.`;
-  if (descriptions.has(item.type)) text += ` ${descriptions.get(item.type)}`;
+  if (descriptions.has(item.type)) text += ` ${clean(descriptions.get(item.type))}`;
   return text;
 }
 
@@ -172,7 +172,7 @@ function project(frame, data, knownDoors) {
     const key = object.kind === 'ground_item' ? `ground:${object.item.uid}` : `${object.kind}:${pos}:${object.kind === 'field' ? object.type : ''}`;
     const label = object.item ? itemName(object.item)[0] : clean(object.name ?? object.vehicle_name);
     const type = object.item?.type ?? object.type;
-    let text = object.item ? itemSentence(object.item, sentence(location(object.direction)), descriptions) : `${sentence(location(object.direction))} — ${label}.${descriptions.has(type) ? ` ${descriptions.get(type)}` : ''}`;
+    let text = object.item ? itemSentence(object.item, sentence(location(object.direction)), descriptions) : `${sentence(location(object.direction))} — ${label}.${descriptions.has(type) ? ` ${clean(descriptions.get(type))}` : ''}`;
     const opening = object.kind === 'door' ? 'Дверь' : object.kind === 'window' ? 'Окно' : null;
     if (opening && object.state === 'open') text += ` ${opening} ${object.kind === 'window' ? 'было открыто' : 'была открыта'}.`;
     if (opening && object.state === 'closed') text += ` ${opening} ${object.kind === 'window' ? 'было закрыто' : 'была закрыта'}.`;
@@ -202,7 +202,7 @@ function project(frame, data, knownDoors) {
     const pos = positionKey(position);
     if (!inPlace(position, frame) || occupied.has(pos)) continue;
     const label = clean(group.name);
-    add(`furniture:${pos}:`, 'Вещи вокруг', `${sentence(location(directionAt(position, frame.position)))} — ${label}.${descriptions.has(group.type) ? ` ${descriptions.get(group.type)}` : ''}`, { label, position: pos, state: [group.type, label], physical: true });
+    add(`furniture:${pos}:`, 'Вещи вокруг', `${sentence(location(directionAt(position, frame.position)))} — ${label}.${descriptions.has(group.type) ? ` ${clean(descriptions.get(group.type))}` : ''}`, { label, position: pos, state: [group.type, label], physical: true });
   }
   const kinds = new Map();
   for (const [pos, tile] of terrain) {
@@ -212,7 +212,7 @@ function project(frame, data, knownDoors) {
   }
   for (const [type, tile] of kinds) {
     const prefix = tile.distance === 0 ? 'Под ногами героя' : sentence(location(directionAt(tile.position, frame.position)));
-    add(`terrain:${type}`, 'Видимая местность', `${prefix} — ${clean(tile.name)}.${descriptions.has(type) ? ` ${descriptions.get(type)}` : ''}`, { terrain: true });
+    add(`terrain:${type}`, 'Видимая местность', `${prefix} — ${clean(tile.name)}.${descriptions.has(type) ? ` ${clean(descriptions.get(type))}` : ''}`, { terrain: true });
   }
   const occurrences = new Map();
   for (const creature of frame.creatures ?? []) {

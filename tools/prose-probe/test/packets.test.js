@@ -36,6 +36,21 @@ async function source(name) {
   return readJson(fixture(`${name}.json`));
 }
 
+test('unused game-data descriptions do not prevent packets for recorded objects', async t => {
+  const row = await source('door-before');
+  const object = row.frame.objects.find(entry => entry.kind === 'ground_item' && entry.item.name.includes('бревно'));
+  assert.ok(object);
+  const data = await setup(t, 'unused-description-');
+  await writeJson(join(data, 'descriptions.json'), [
+    { id: 'unrecorded_item', description: 'На предмете было 1000 делений.' },
+    { id: object.item.type, description: 'На поверхности было 12 следов.' }
+  ]);
+  const ctx = await packets(t, [row], [moment('M1', row.native_turn)], undefined, [data]);
+  const text = textsInMoments(ctx.values).join('\n');
+  assert.match(text, /На поверхности было двенадцать следов\./u);
+  assert.doesNotMatch(text, /делений/u);
+});
+
 async function packets(t, rows, moments, actions, gameData = []) {
   const dir = await setup(t, 'packets-');
   const recording = join(dir, 'recording.jsonl');

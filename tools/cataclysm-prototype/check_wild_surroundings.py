@@ -1438,12 +1438,14 @@ def check_frames(context):
                         semantic_issue("человек", number, "creatures", "npc", semantic_id, "npc")
                     npc_types = (context.master_types if context.args.mode == "task30" or
                                  identifier == "novgorod_dev_master" else context.watchman_types)
+                    gear_rule = ("снаряжение мастера" if context.args.mode == "task30" or
+                                 identifier == "novgorod_dev_master" else "снаряжение сторожа")
                     check_item_list(creature.get("worn"), number, "creatures.worn", npc_types,
-                                    "снаряжение мастера", saved=True)
+                                    gear_rule, saved=True)
                     wielded = creature.get("wielded")
                     if wielded is not None:
                         check_item(wielded, number, "creatures.wielded", npc_types,
-                                   "снаряжение мастера", saved=True)
+                                   gear_rule, saved=True)
                     elif "wielded" not in creature:
                         form_issue(number, "creatures", "wielded")
                     if "worn" not in creature:

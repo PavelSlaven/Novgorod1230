@@ -197,6 +197,23 @@ class WildFixture(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
 
+    def original_states(self):
+        state = None
+        for packet in self.original_packets:
+            if packet["kind"] == "full":
+                state = copy.deepcopy(packet["frame"])
+            else:
+                state.update(copy.deepcopy(packet["changes"]))
+            yield copy.deepcopy(state)
+
+    def original_row(self, field, identifier=None, kind=None):
+        for state in self.original_states():
+            for row in state.get(field, []):
+                row_id = row.get("type") or row.get("item", {}).get("type") or row.get("description") or row.get("vehicle_name")
+                if (identifier is None or row_id == identifier) and (kind is None or row.get("kind") == kind):
+                    return copy.deepcopy(row)
+        self.fail(f"В настоящих кадрах не найден образец {field}: {identifier} ({kind})")
+
     def prepare_task31_capture(self):
         watchman_id = self.master["id"] + 1000000
         watchman = copy.deepcopy(self.master)
@@ -971,23 +988,6 @@ class SubmapTests(WildFixture):
 
 
 class FrameTests(WildFixture):
-    def original_states(self):
-        state = None
-        for packet in self.original_packets:
-            if packet["kind"] == "full":
-                state = copy.deepcopy(packet["frame"])
-            else:
-                state.update(copy.deepcopy(packet["changes"]))
-            yield copy.deepcopy(state)
-
-    def original_row(self, field, identifier=None, kind=None):
-        for state in self.original_states():
-            for row in state.get(field, []):
-                row_id = row.get("type") or row.get("item", {}).get("type") or row.get("description") or row.get("vehicle_name")
-                if (identifier is None or row_id == identifier) and (kind is None or row.get("kind") == kind):
-                    return copy.deepcopy(row)
-        self.fail(f"В настоящих кадрах не найден образец {field}: {identifier} ({kind})")
-
     def original_message(self):
         for state in self.original_states():
             messages = state["journal"]["player_messages"]["messages"]
@@ -2221,6 +2221,15 @@ class A22OvermapActorFormatTests(WildFixture):
 
 
 class Task31CaptureTests(WildFixture):
+    def test_watchman_forbidden_worn_item_uses_watchman_equipment_label(self):
+        self.prepare_task31_capture()
+        watchman = next(creature for creature in self.frame["creatures"]
+                        if creature.get("type") == "novgorod_dev_watchman")
+        watchman["worn"] = [self.original_row("objects", "syringe", "ground_item")["item"]]
+
+        result = self.assert_bad("снаряжение сторожа", extra=("--mode", "day"))
+        self.assertIn("creatures.worn", result.stdout)
+
     def test_day_mode_checks_format_and_world_without_task30_route_length(self):
         self.prepare_task31_capture()
         self.inputs = []

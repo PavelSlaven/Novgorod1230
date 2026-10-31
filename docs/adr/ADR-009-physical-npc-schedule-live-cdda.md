@@ -6,7 +6,7 @@
 
 ## Context
 
-The CDDA reuse-first rule in `AGENTS.md` and owner decisions D228/D253 select native CDDA mechanics for Part 2. The approved Part 2 plan assembles the schedule from `work_hours`, `guard_pos`, an hourly recurrent EOC, native ground travel, sleep and hunger. Owner decisions D338 and D339 add the native faction camp: the yard, its territory and its items belong to the household camp, its residents use them freely, and the household food is available to them even when they start hungry. Owner decision D266 approves the authored schedule data for the slice. This ADR records the owner boundary; implementation and activation are established by the slice code, mod data and tests.
+The CDDA reuse-first rule in `AGENTS.md` and owner decisions D266/D329 select native CDDA mechanics for Part 2: D266 sets the residents’ schedule with native hunger and sleep, and D329 requires real log-to-plank work and native CDDA responses governed by code without a model. The approved Part 2 plan assembles the schedule from `work_hours`, `guard_pos`, an hourly recurrent EOC, native ground travel, sleep and hunger. Owner decisions D338 and D339 add the native faction camp: the yard, its territory and its items belong to the household camp, its residents use them freely, and the household food is available to them even when they start hungry. Owner decision D266 approves the authored schedule data for the slice. This ADR records the owner boundary; implementation and activation are established by the slice code, mod data and tests.
 
 ## Decision
 

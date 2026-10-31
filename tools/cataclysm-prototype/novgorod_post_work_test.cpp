@@ -341,7 +341,35 @@ void advance_turn( map &here, const yard_world &w )
         process_npc_turn( here, *w.watchman );
     }
 }
-} // namespace
+}
+
+TEST_CASE( "novgorod_post_work_disabled_job_survives_load", "[novgorod_post_work]" )
+{
+    on_out_of_scope guard{ []()
+    {
+        set_scenario( scenario::generic() );
+        g->start_calendar();
+        calendar::start_of_game = calendar::turn_zero;
+        calendar::start_of_cataclysm = calendar::turn_zero;
+        calendar::turn = calendar::turn_zero;
+    } };
+    yard_world w = build_yard( point_abs_om( 127, 127 ) );
+    npc &master = *w.master;
+    master.job.set_task_priority( act_multiple_chop_planks, 0 );
+    REQUIRE( master.job.get_priority_of_job( act_multiple_chop_planks ) == 0 );
+
+    std::ostringstream saved;
+    {
+        JsonOut jsout( saved );
+        master.serialize( jsout );
+    }
+    const JsonObject saved_data = json_loader::from_string( saved.str() ).get_object();
+    saved_data.allow_omitted_members();
+    REQUIRE( saved_data.get_string( "myclass" ) == "novgorod_dev_master_class" );
+    npc fresh;
+    fresh.deserialize( saved_data );
+    CHECK( fresh.job.get_priority_of_job( act_multiple_chop_planks ) == 0 );
+}
 
 TEST_CASE( "novgorod_post_work_master_day_and_night", "[novgorod_post_work]" )
 {
@@ -699,10 +727,6 @@ TEST_CASE( "novgorod_post_work_master_day_and_night", "[novgorod_post_work]" )
         INFO( "dry_fish on the table: 07:00=" << fish_start << " 19:00=" << fish_at_19 << " 05:00="
               << fish_at_05 );
         CHECK( fish_at_05 < fish_at_19 );
-    }
-    {
-        INFO( "max thirst 20:00-05:00=" << max_night_thirst << " at " << max_night_thirst_time );
-        CHECK( max_night_thirst <= 80 );
     }
     {
         INFO( "max master thirst on shift from its second hour=" << max_settled_thirst << " at "

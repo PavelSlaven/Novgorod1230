@@ -419,17 +419,6 @@ diff --git a/src/npcmove.cpp b/src/npcmove.cpp
          }
          if( !backlog.empty() ) {
              activity = backlog.front();
-diff --git a/src/savegame_json.cpp b/src/savegame_json.cpp
---- a/src/savegame_json.cpp
-+++ b/src/savegame_json.cpp
-@@ -2065,6 +2065,7 @@
-
-     data.read( "assigned_camp", assigned_camp );
-     data.read( "job", job );
-+    apply_class_job_priorities();
-
-     // remove migration in 0.K
-     if( data.read( "mission", misstmp ) ) {
 diff --git a/src/activity_actor_definitions.h b/src/activity_actor_definitions.h
 --- a/src/activity_actor_definitions.h
 +++ b/src/activity_actor_definitions.h

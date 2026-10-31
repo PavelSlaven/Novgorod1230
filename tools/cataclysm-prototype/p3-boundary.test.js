@@ -701,8 +701,6 @@ test('sealed package shares one attempt budget and evidence root across all rese
         if (envelope.primitive === 'npc_move') nativeNpcOperations++;
         return { schema: 'p3_native_operation_readback_v1',
         operation_id: envelope.operation_id, status: 'applied', effect_status: 'achieved',
-        ...(envelope.primitive === 'npc_move' ? { goal_result: 'in_progress',
-          native_effect: { effect_status: 'progressing' } } : {}),
         before: { turn: 3 }, after: { turn: 3 }, native_trace: { operation: envelope.primitive } }; } };
   } });
   assert.equal(result.provider_calls, 21);
@@ -821,14 +819,8 @@ test('T09 NPC request_movement is rejected with a parse reason and no native ope
   const evidence = { async record(event) { evidenceEvents.push(event); } };
   const nativeAdapter = {
     async refreshObservation() { return observation; },
-    async execute(envelope) {
+    async execute() {
       nativeCalls++;
-      assert.equal(envelope.primitive, 'npc_move');
-      assert.deepEqual(envelope.args, { direction: [1, 0], assignment_id: 'duty-2',
-        intent: 'walk to the observed patch' });
-      return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
-        status: 'applied', goal_result: 'in_progress', native_effect: {
-          effect_status: 'progressing' }, before: {}, after: {} };
     }
   };
   const replay = new Map();

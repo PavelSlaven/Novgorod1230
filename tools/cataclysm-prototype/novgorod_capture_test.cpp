@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <locale>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -14,6 +15,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "cata_scope_helpers.h"
 #include "creature.h"
 #include "effect.h"
 #include "game.h"
@@ -94,11 +96,12 @@ class capture_output
         }
 
         // The capture keeps the highest request it has answered for the whole process.
-        void input_poll()
+        int input_poll()
         {
             static int request = 1000000;
-            std::ofstream( directory / "input-request" ) << ++request;
+            std::ofstream( directory / "input-request" ) << std::to_string( ++request );
             novgorod_capture::input_boundary();
+            return request;
         }
 
     private:
@@ -195,6 +198,85 @@ void refresh_capture_test_visibility()
     here.build_map_cache( get_avatar().posz() );
     here.update_visibility_cache( get_avatar().posz() );
 }
+}
+
+TEST_CASE( "Native capture records the native player identity and fat BMI", "[novgorod_capture]" )
+{
+    reset_capture_test_world();
+    avatar &you = get_avatar();
+    you.name = "Capture Test Hero";
+    you.play_name.reset();
+    you.male = true;
+    you.set_stored_kcal( you.get_healthy_kcal() * 2 );
+    capture_output output;
+    output.start_with_empty_visibility();
+
+    std::ifstream input( output.path() / "perception.jsonl" );
+    std::string line;
+    std::getline( input, line );
+    REQUIRE_FALSE( line.empty() );
+    JsonValue record_value = json_loader::from_string( line );
+    JsonObject record = record_value.get_object();
+    record.allow_omitted_members();
+    REQUIRE( record.get_string( "kind" ) == "full" );
+    JsonObject frame = record.get_object( "frame" );
+    frame.allow_omitted_members();
+    JsonObject state = frame.get_object( "player_state" );
+    state.allow_omitted_members();
+    for( const char *key : {
+             "name", "male", "bmi_fat", "pain_label", "hunger_label", "thirst_label",
+             "sleepiness_label", "weariness_label", "warmth_label", "activity_label",
+             "weight_label", "pain", "carried_weight_grams", "carry_capacity_grams",
+             "stamina", "wetness_label", "body_parts", "wielded", "activity_id"
+         } ) {
+        INFO( key );
+        REQUIRE( state.has_member( key ) );
+    }
+    CHECK( state.get_string( "name" ) == you.get_name() );
+    CHECK( state.get_bool( "male" ) == you.male );
+    CHECK( state.get_float( "bmi_fat" ) == Approx( you.get_bmi_fat() ) );
+}
+
+TEST_CASE( "Native capture numbers do not depend on the global locale", "[novgorod_capture]" )
+{
+    reset_capture_test_world();
+    const std::locale previous_locale;
+    on_out_of_scope restore_locale( [previous_locale]() {
+        std::locale::global( previous_locale );
+    } );
+    REQUIRE_NOTHROW( std::locale::global( std::locale( "en_US.UTF-8" ) ) );
+    REQUIRE( to_turn<int>( calendar::turn ) >= 1000 );
+    capture_output output;
+    output.start_with_empty_visibility();
+    const int request = output.input_poll();
+    REQUIRE( request >= 1000 );
+
+    std::ifstream input( output.path() / "perception.jsonl" );
+    std::string line;
+    std::string last_line;
+    while( std::getline( input, line ) ) {
+        last_line = line;
+    }
+    REQUIRE_FALSE( last_line.empty() );
+    JsonValue record_value = json_loader::from_string( last_line );
+    JsonObject record = record_value.get_object();
+    record.allow_omitted_members();
+    CHECK( record.get_int( "native_turn" ) == to_turn<int>( calendar::turn ) );
+    CHECK( record.get_int( "sequence" ) > 0 );
+    CHECK( record.get_int( "input_number" ) == request );
+
+    std::ifstream ack( output.path() / "input-ack" );
+    ack.imbue( std::locale::classic() );
+    int acknowledged_request = 0;
+    int acknowledged_sequence = 0;
+    int acknowledged_turn = 0;
+    ack >> acknowledged_request >> acknowledged_sequence >> acknowledged_turn;
+    REQUIRE_FALSE( ack.fail() );
+    ack >> std::ws;
+    CHECK( ack.eof() );
+    CHECK( acknowledged_request == request );
+    CHECK( acknowledged_sequence == record.get_int( "sequence" ) );
+    CHECK( acknowledged_turn == record.get_int( "native_turn" ) );
 }
 
 TEST_CASE( "Native capture fields use native NPC state without a model", "[novgorod_capture]" )

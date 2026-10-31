@@ -229,7 +229,9 @@ std::map<std::string,std::string> frame() {
         } else {o.member("kind","other_creature");}
         o.end_object();}o.end_array();});
     f["inventory"]=json([&](JsonOut &o){o.start_array();for(const item *it:you.items_with([](const item &){return true;}))item_data(o,*it,false);o.end_array();});
-    f["player_state"]=json([&](JsonOut &o){o.start_object();o.member("pain_label",display::pain_text_color(you).first);
+    f["player_state"]=json([&](JsonOut &o){o.start_object();
+        o.member("name",you.get_name());o.member("male",you.male);o.member("bmi_fat",you.get_bmi_fat());
+        o.member("pain_label",display::pain_text_color(you).first);
         o.member("hunger_label",display::hunger_text_color(you).first);o.member("thirst_label",display::thirst_text_color(you).first);
         o.member("sleepiness_label",display::sleepiness_text_color(you).first);o.member("weariness_label",display::weariness_text_color(you).first);
         o.member("warmth_label",display::temp_text_color(you).first);o.member("activity_label",display::activity_text_color(you).first);
@@ -247,7 +249,7 @@ void write( const std::string &reason, bool full, int input_number=0 ) {
     if(!directory())return;
     const auto current=frame();++sequence;
     full=full||previous.empty()||to_turn<int>(calendar::turn)%60==0;
-    std::ofstream file(std::string(directory())+"/perception.jsonl",std::ios::app);
+    std::ofstream file(std::string(directory())+"/perception.jsonl",std::ios::app);file.imbue(std::locale::classic());
     file<<"{\"sequence\":"<<sequence<<",\"native_turn\":"<<to_turn<int>(calendar::turn)
         <<",\"reason\":"<<json([&](JsonOut &o){o.write(reason);})<<",\"input_number\":"<<input_number
         <<",\"kind\":\""<<(full?"full":"delta")<<"\",\""<<(full?"frame":"changes")<<"\":{";
@@ -339,9 +341,9 @@ void capture_turn(){
 void finish(){if(started){write("exit",true);started=false;}}
 void input_boundary(){
     if(!started||!directory())return;
-    int request=0;std::ifstream file(std::string(directory())+"/input-request");file>>request;
+    int request=0;std::ifstream file(std::string(directory())+"/input-request");file.imbue(std::locale::classic());file>>request;
     if(request<=last_request)return;last_request=request;write("input",true,request);
-    std::ofstream ack(std::string(directory())+"/input-ack");ack<<request<<" "<<sequence<<" "<<to_turn<int>(calendar::turn);
+    std::ofstream ack(std::string(directory())+"/input-ack");ack.imbue(std::locale::classic());ack<<request<<" "<<sequence<<" "<<to_turn<int>(calendar::turn);
 }
 void npc_moved( const npc &who ) {
     if( started && directory() && movement_probe_depth == 0 )

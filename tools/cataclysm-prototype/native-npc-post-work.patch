@@ -542,7 +542,7 @@ diff --git a/src/iuse.cpp b/src/iuse.cpp
      }
      const int moves = to_moves<int>( 20_minutes );
      p.add_msg_if_player( _( "You cut the log into planks." ) );
- 
+
 -    p.assign_activity( chop_planks_activity_actor( moves ) );
 +    p.assign_activity( chop_planks_activity_actor( moves, selected_tool_type,
 +                          input_material_type ) );

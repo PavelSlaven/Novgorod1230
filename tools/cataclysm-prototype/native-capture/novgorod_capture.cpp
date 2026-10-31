@@ -132,7 +132,9 @@ std::string attention( const npc &who, const avatar &you ) {
     if( attending_ids.count(who.getID().get_value())>0 ) return "attends";
     const bool sleeping=who.in_sleep_state()&&!who.has_flag(json_flag_SEESLEEP);
     const bool sees_player=who.sees(get_map(),you);
-    if( !sleeping && who.get_attitude()==NPCATT_TALK && sees_player ) return "attends";
+    if( !sleeping &&
+        ( who.get_attitude()==NPCATT_TALK || who.get_attitude()==NPCATT_RECOVER_GOODS ) &&
+        sees_player && !you.in_sleep_state() && rl_dist(who.pos_abs(),you.pos_abs())<=6 ) return "attends";
     if( sleeping || !sees_player ) return "unaware";
     return "notices";
 }

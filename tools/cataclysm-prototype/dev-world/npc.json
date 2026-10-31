@@ -78,7 +78,7 @@
     "eoc_type": "ACTIVATION",
     "global": true,
     "run_for_npcs": true,
-    "condition": { "and": [ "u_is_npc", { "math": [ "u_novgorod_start_body == 0" ] } ] },
+    "condition": { "and": [ "u_is_npc", { "math": [ "u_novgorod_start_body_set == 0" ] } ] },
     "effect": [
       {
         "if": { "math": [ "u_calories( 'format': 'percent' ) < 100" ] },
@@ -86,7 +86,7 @@
           { "math": [ "u_calories( 'dont_affect_weariness': 1 ) = round( u_calories() * 100 / u_calories( 'format': 'percent' ) )" ] }
         ]
       },
-      { "math": [ "u_novgorod_start_body = 1" ] }
+      { "math": [ "u_novgorod_start_body_set = 1" ] }
     ]
   }
 ]

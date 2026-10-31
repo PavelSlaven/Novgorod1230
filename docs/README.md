@@ -17,11 +17,13 @@
 | `docs/governance/` | `GOVERNING` (корпус `AGENTS.md` §1.3) | правила | разделы, назначенные строкой маршрутизации роутера; целиком — governance-задачи и Contract Auditor: [карта §N](governance/README.md) |
 | `data/knowledge-source/corpus/DOCUMENTS/` | по CONTRACT_INDEX | нормативный корпус | строка scope matrix CONTRACT_INDEX §8.1 для области задачи; поиск — `npm run knowledge:query` |
 | `docs/context/` | `REFERENCE / DOMAIN GUIDE` | context | когда задаче нужен факт о стеке, структуре, БД, ошибках, UI, тестах: [STACK](context/STACK.md), [ARCHITECTURE](context/ARCHITECTURE.md), [DB_SCHEMA](context/DB_SCHEMA.md), [EDGE_CASES](context/EDGE_CASES.md), [UI_KIT](context/UI_KIT.md), [LINKS](context/LINKS.md), [TESTING](context/TESTING.md); карта родных механизмов CDDA (навигация, не норма) — [INDEX](context/cdda-native-map/INDEX.md) |
+| `docs/design/` | `REFERENCE / DOMAIN GUIDE` | context | итоговый игровой замысел, системы и прогресс: [GDD](design/GDD.md), [видение](design/vision.md), [анкета](design/questionnaire.md), [журнал решений](design/decision-log.md), [открытые вопросы](design/open-questions.md), [идеи](design/ideas.md), [текущее состояние](design/STATE.md), страницы систем 01–20 в `design/systems/` ([первая страница](design/systems/01-free-action-llm.md)) и [реестр источников](design/SOURCES.md) |
 | `docs/process/` | `REFERENCE / DOMAIN GUIDE` | procedure | обзор системы и её принципов: [HOW_WE_WORK](process/HOW_WE_WORK.md); рабочий цикл и процедуры: [WORKFLOW](process/WORKFLOW.md), [CHANGE_REQUEST](process/CHANGE_REQUEST.md), [CONTEXT_DUMP](process/CONTEXT_DUMP.md), [CORPUS_EDIT](process/CORPUS_EDIT.md) |
 | `docs/work/CURRENT_SPRINT.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | выбор следующей задачи: [CURRENT_SPRINT](work/CURRENT_SPRINT.md) |
 | `docs/work/LEGACY_WARNINGS.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | до правки — `rg` по затрагиваемым путям: [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) |
 | `docs/work/audits/` | `UNDECLARED` | evidence | снимки аудитов процесса, входные данные для исправлений; норм не создают: [аудит 2026-10-05](work/audits/process-audit-2026-10-05.md) |
 | `docs/work/temporal-world-v4/` | `UNDECLARED` | evidence | только задачи temporal v4; файлы читают tools (LW-010) — не переносить |
+| `docs/work/art-generator-data-needs.*` | `UNDECLARED` | evidence | перенос генератора картинок в игру (CR #908): какие данные нужны каждому виду картинок и где они лежат — [анализ](work/art-generator-data-needs.md), таблица `.tsv` рядом |
 | `docs/playtests/` | `UNDECLARED` | evidence | отчёты реальных gameplay runs по WR §24.1: [README](playtests/README.md); текущее поведение не описывают, читать только нужный run |
 | `docs/architecture/` | `UNDECLARED` | правила модулей и knowledge-source | код в apps/packages, границы зависимостей, правка корпуса |
 | `docs/domain/` | `UNDECLARED` | context (OWNERSHIP_MAP) | поиск владельца; точный owner и public contract — `MODULE.md` |
@@ -58,4 +60,4 @@
 
 Что не является источником истины и куда переносить решения — WR §2.
 
-Skills лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`: процедуры проекта — заглушки с каноном в `docs/process/` или governance; обязательные навыки `caveman` и `ponytail` (AGENTS.md §18.1) — полные копии upstream с указанием источника.
+Skills лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`: процедуры проекта — заглушки с каноном в `docs/process/` или governance; обязательный навык `ponytail` (AGENTS.md §18.1) — копия upstream с указанием источника, без фразы о парном навыке.

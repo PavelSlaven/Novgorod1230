@@ -98,7 +98,7 @@ const itemName = item => {
 const changingState = new Set(['Пора суток', 'Погода', 'Свет', 'Самочувствие']);
 const distanceAt = (position, hero) => Math.trunc(Math.hypot(...position.map((value, index) => value - hero[index])));
 const postureWords = { standing: 'стоит', sitting: 'сидит', crouching: 'держится пригнувшись', prone: 'лежит' };
-const attentionWords = { attends: 'внимательно слушает героя', unaware: 'не видит героя', notices: 'видит героя' };
+const attentionWords = { attends: 'смотрит на героя, будто хочет заговорить', unaware: 'не смотрит в сторону героя', notices: 'смотрит в сторону героя' };
 
 function creatureStateText(creature, data) {
   const lines = [];

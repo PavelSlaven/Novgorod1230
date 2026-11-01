@@ -112,15 +112,32 @@ test('activity uses ITEM names through copy-from and changes only once for a kno
   assert.deepEqual(textsInPart(ctx.values[2].parts[0]), []);
 });
 
+test('NPC attention uses visible cues for all three captured values', async t => {
+  const cases = [
+    ['notices', 'смотрит в сторону героя'],
+    ['unaware', 'не смотрит в сторону героя'],
+    ['attends', 'смотрит на героя, будто хочет заговорить']
+  ];
+  for (const [attention, expected] of cases) {
+    await t.test(attention, async t => {
+      const row = changeNpc(await source('inside-before-step'), { attention });
+      const ctx = await packets(t, [row], [moment('M1', row.native_turn)]);
+      const text = textsInPart(ctx.values[0].parts[0]).join('\n');
+      assert.ok(text.includes(`Жирко ${expected}.`));
+      assert.doesNotMatch(text, /внимательно слушает героя|не видит героя|видит героя/u);
+    });
+  }
+});
+
 test('posture and attention changes for a known NPC are rendered once', async t => {
   const cases = [
     ['posture', 'standing', 'стоит'],
     ['posture', 'sitting', 'сидит'],
     ['posture', 'crouching', 'держится пригнувшись'],
     ['posture', 'prone', 'лежит'],
-    ['attention', 'attends', 'внимательно слушает героя'],
-    ['attention', 'unaware', 'не видит героя'],
-    ['attention', 'notices', 'видит героя']
+    ['attention', 'attends', 'смотрит на героя, будто хочет заговорить'],
+    ['attention', 'unaware', 'не смотрит в сторону героя'],
+    ['attention', 'notices', 'смотрит в сторону героя']
   ];
   for (const [field, value, expected] of cases) {
     const initial = await source('inside-before-step');

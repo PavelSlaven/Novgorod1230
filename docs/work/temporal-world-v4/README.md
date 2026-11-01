@@ -158,6 +158,8 @@ dependency injection дополнительно подтверждён прям�
 | Weather/light | новый minimal pure `@rus/environment-state` | exact clock приходит готовым; package владеет только domain effects |
 | Remote catch-up/propagation | новый minimal pure `@rus/world-processes` | bounded proposal batch; no hidden persistence/clock |
 
+В живом пути CDDA физический распорядок NPC (место по часу суток, путь, пост, сон, голод и еда, бегство от огня и возврат на пост) исполняет CDDA через `work_hours`, `guard_pos`, рекуррентный EOC и родные механизмы движения и потребностей. Строка `NPC schedule/perception` выше сохраняет назначение `@rus/npc-runtime` для пути spatial-v3; данные распорядка живого пути задаются модом среза.
+
 Caller/contract inventory:
 
 - public exact-time owner: `packages/time-events-history/src/index.js`;

@@ -5,8 +5,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { createP3AttemptBudget, createP3RoleRuntime,
-  loadP3QwenSettingsOwner, runP3NativeNpcFlow, runP3TurnStep,
-  selectP3NativeNpcFixture,
+  loadP3QwenSettingsOwner, runP3TurnStep,
   validateP3RoleConfigs } from './p3-boundary.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -20,7 +19,7 @@ export function matchesP3WireModelId(responseId, requestedId) {
 const expectedWindow = 65_536;
 const runtimeMetadataContext = null;
 const liveCallLimit = 5;
-const liveCallTarget = 3;
+const liveCallTarget = 2;
 const outputTokenBudget = 20_000;
 const intents = [
   'Осмотреть ближайшее окружение.',
@@ -73,7 +72,7 @@ async function loadConfig() {
   const settingsOwner = await loadP3QwenSettingsOwner({ env: process.env });
   const safeRoles = validateP3RoleConfigs(process.env, settingsOwner);
   const contextBudgets = safeRoles.filter(({ role_id }) =>
-    ['turn_step_planner', 'npc_autonomous_decider'].includes(role_id)).map((role) => ({
+    role_id === 'turn_step_planner').map((role) => ({
     role_id: role.role_id, request_max_tokens: role.max_tokens,
     context_window_tokens: role.context_window_tokens,
     input_limit_tokens: role.input_limit_tokens
@@ -134,14 +133,6 @@ async function dryCapture() {
         scenarioErrors.push({ scenario: `planner_${index + 1}`, error: safeError(error) });
       }
     }
-    const actorId = selectP3NativeNpcFixture(observation);
-    if (!actorId) throw new Error('P3_WIRE_NPC_DECISION_FIXTURE_REQUIRED');
-    try {
-      await runP3NativeNpcFlow({ nativeAdapter: {}, actorId,
-        nativeObservation: observation, semanticModel: runtime.npcAutonomousModel });
-    } catch (error) {
-      scenarioErrors.push({ scenario: 'npc_autonomous_decider', error: safeError(error) });
-    }
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -189,7 +180,7 @@ async function dryCapture() {
     'No HTTP request, model generation, or native write occurred during capture.',
     'The exact local settings path must be supplied through `RUS_LLM_SETTINGS_PATH`.',
     'The local settings record does not establish the server context window; live mode first checks only `GET /models` and stops unless the expected model reports `max_model_len: 65536`.',
-    'Live mode sends the saved three role inputs directly through `runtime.roleRunner.run`, with a hard cap of five total attempts and no repair loop.', ''
+    'Live mode sends the saved two planner inputs directly through `runtime.roleRunner.run`, with a hard cap of five total attempts and no repair loop.', ''
   ].join('\n'), 'utf8');
   return { observation, settingsOwner, safeRoles, contextBudgets, budget, calls,
     attemptEvents, scenarioErrors };
@@ -224,7 +215,7 @@ async function liveCalls() {
   const saved = JSON.parse(await readFile(path.join(evidenceDir, 'requests.json'), 'utf8'));
   if (!Array.isArray(saved) || saved.length !== liveCallTarget
       || saved.map(({ role_id }) => role_id).join(',')
-        !== 'turn_step_planner,turn_step_planner,npc_autonomous_decider') {
+        !== 'turn_step_planner,turn_step_planner') {
     throw new Error('P3_WIRE_SAVED_INPUTS_INVALID');
   }
   const { settingsOwner, safeRoles, contextBudgets } = await loadConfig();
@@ -355,7 +346,7 @@ async function liveCalls() {
   await writeJson('live-attempt-events.json', attemptEvents);
   await writeJson('live-summary.json', {
     status: modelMismatch ? 'stopped_unexpected_response_model'
-      : successfulCalls ? 'completed_three_role_calls' : 'completed_with_errors',
+      : successfulCalls ? 'completed_two_role_calls' : 'completed_with_errors',
     settings: { provider: 'openai_compatible', model: expectedModel, host_class: 'private-lan' },
     model_metadata: metadata, role_configs: safeRoles, context_budgets: contextBudgets,
     configured_context_window_tokens: expectedWindow,

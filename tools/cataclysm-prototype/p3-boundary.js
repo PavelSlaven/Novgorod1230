@@ -1324,50 +1324,6 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
         let npcSemanticProviderCalls = 0;
         let npcNativeOperationCount = 0;
         let npcReplayNativeOperationCount = 0;
-        if (isT09) {
-          if (typeof runtime.npcAutonomousModel !== 'function') {
-            throw new Error('P3_SEALED_NPC_MODEL_REQUIRED');
-          }
-          const npcObservation = await native.refreshObservation();
-          const actorId = selectP3NativeNpcFixture(npcObservation);
-          if (!actorId) throw new Error('P3_NATIVE_NPC_FIXTURE_ACTOR_UNAVAILABLE');
-          const replay = new Map();
-          let decisions = 0;
-          let operations = 0;
-          const measuredModel = input => {
-            decisions++;
-            return runtime.npcAutonomousModel(input);
-          };
-          const measuredNative = { ...native,
-            ...(typeof native.execute === 'function' ? { async execute(...args) {
-              operations++;
-              return native.execute(...args);
-            } } : { async writeOperationRequest(...args) {
-              operations++;
-              return native.writeOperationRequest(...args);
-            } }) };
-          const runNpcFlow = () => runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
-            nativeObservation: npcObservation, semanticModel: measuredModel,
-            replay, evidence }).catch(error => {
-            const refused = error?.details?.checkpoint;
-            if (refused?.decision?.status !== 'rejected') throw error;
-            return refused;
-          });
-          const callsBeforeNpc = budget.calls;
-          const decisionsBeforeNpc = decisions;
-          const operationsBeforeNpc = operations;
-          npcBoundary = await runNpcFlow();
-          npcSemanticDecisionCount = decisions - decisionsBeforeNpc;
-          npcNativeOperationCount = operations - operationsBeforeNpc;
-          const replayDecisionsBefore = decisions;
-          const replayOperationsBefore = operations;
-          npcReplay = await runNpcFlow();
-          npcReplayDecisionCount = decisions - replayDecisionsBefore;
-          npcReplayNativeOperationCount = operations - replayOperationsBefore;
-          npcSemanticProviderCalls = budget.calls - callsBeforeNpc;
-          await evidence.record({ event: 'native_npc_boundary_replay', case_id,
-            variant_id, reset_id, checkpoint: npcReplay });
-        }
         if (result) await evidence.record({ event: 'native_turn_result', case_id,
           variant_id, reset_id, result });
         resetResults.push({ case_id, variant_id, reset_id,

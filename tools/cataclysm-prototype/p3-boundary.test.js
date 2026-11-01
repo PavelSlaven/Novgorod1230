@@ -703,9 +703,9 @@ test('sealed package shares one attempt budget and evidence root across all rese
         operation_id: envelope.operation_id, status: 'applied', effect_status: 'achieved',
         before: { turn: 3 }, after: { turn: 3 }, native_trace: { operation: envelope.primitive } }; } };
   } });
-  assert.equal(result.provider_calls, 21);
+  assert.equal(result.provider_calls, 15);
   assert.equal(providerCalls, 15);
-  assert.equal(npcProviderCalls, 6);
+  assert.equal(npcProviderCalls, 0);
   assert.equal(nativeNpcOperations, 0);
   assert.equal(roleRunnerCreations, 1);
   assert.deepEqual([...rolesUsed].sort(), ['planner', 'repair']);
@@ -723,17 +723,15 @@ test('sealed package shares one attempt budget and evidence root across all rese
       && native_goal_result === 'unknown'));
   assert.ok(t09.every(({ npc_semantic_decision_count, npc_replay_decision_count,
     npc_semantic_provider_calls, npc_native_operation_count, npc_replay_native_operation_count,
-    npc_boundary, npc_replay }) => npc_semantic_decision_count === 2
-      && npc_replay_decision_count === 0 && npc_semantic_provider_calls === 2
+    npc_boundary, npc_replay }) => npc_semantic_decision_count === 0
+      && npc_replay_decision_count === 0 && npc_semantic_provider_calls === 0
       && npc_native_operation_count === 0 && npc_replay_native_operation_count === 0
-      && npc_boundary.decision.reason_code === 'P3_NPC_OPERATION_UNAVAILABLE'
-      && !Object.hasOwn(npc_boundary, 'native_operation')
-      && npc_boundary.boundary_id === npc_replay.boundary_id));
+      && npc_boundary === null && npc_replay === null));
   const events = (await readFile(path.join(result.evidence_directory, 'run.jsonl'), 'utf8'))
     .trim().split('\n').map(line => JSON.parse(line));
   assert.equal(events.filter(({ event }) => event === 'native_preflight').length, 18);
   assert.equal(events.filter(({ event }) => event === 'native_turn_result').length, 15);
-  assert.equal(events.filter(({ event }) => event === 'native_npc_boundary_replay').length, 3);
+  assert.equal(events.filter(({ event }) => event === 'native_npc_boundary_replay').length, 0);
   assert.equal(events.find(({ event }) => event === 'native_turn_result').result
     .working_projection.native_readback.native_trace.operation, 'wait');
   await assert.rejects(runP3SealedPackage({ casePack, roleConfigs, nativeConfig: {

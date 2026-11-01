@@ -316,8 +316,8 @@ test('a later time-of-day fact is an event with a gender-neutral sentence', asyn
   await stateOnset(t, 'clock.time_of_day', null, 'Ночь', 'Пора суток', /^Пора суток описывалась словами «ночь»\.$/u);
 });
 
-test('a later calm-wind fact is an event with a gender-neutral sentence', async t => {
-  await stateOnset(t, 'weather.wind_label', null, 'Штиль', 'Погода', /^Ветер описывался словом «штиль»\.$/u);
+test('a later calm-wind fact is a perceived change for the hero', async t => {
+  await stateOnset(t, 'weather.wind_label', null, 'Штиль', 'Погода', /^Ремша ощутил перемену ветра: «штиль»\.$/u);
 });
 
 test('a later light fact is an event rather than a new state field', async t => {
@@ -343,7 +343,7 @@ test('time, weather, light and body-state events retain frame order while initia
   assert.ok((packet.Самочувствие ?? []).some(text => text.includes('Нагрузка героя')));
   const ordered = events(ctx.values[0].parts[0]);
   const timeIndex = ordered.findIndex(text => text === 'Пора суток описывалась словами «ночь».');
-  const windIndex = ordered.findIndex(text => text === 'Ветер описывался словом «штиль».');
+  const windIndex = ordered.findIndex(text => text === 'Ремша ощутил перемену ветра: «штиль».');
   const lightIndex = ordered.findIndex(text => /темно/iu.test(text));
   const bodyIndex = ordered.findIndex(text => /боль|болит/iu.test(text));
   assert.ok(timeIndex >= 0 && windIndex > timeIndex && lightIndex > windIndex && bodyIndex > lightIndex);

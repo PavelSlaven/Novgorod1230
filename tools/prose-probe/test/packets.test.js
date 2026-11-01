@@ -232,7 +232,11 @@ test('R3: a new scene starts with the complete packet for that frame', async t =
 test('world events separate movement step groups', async t => {
   const ctx = await packets(t, [await source('door-before'), await source('door-after'), await source('roof-entry'), await source('inside')], [moment('M1', 5227219, 5227221)], fixture('actions.jsonl'));
   const movements = textsInMoments(ctx.values).filter(value => value.startsWith('Ремша прошёл '));
-  assert.deepEqual(movements, ['Ремша прошёл один шаг на север.', 'Ремша прошёл один шаг на север.']);
+  assert.equal(movements.length, 2);
+  for (const path of movements) {
+    assert.match(path, /^Ремша прошёл на север, (?:к|прочь от|мимо) ориентир[ау] «[^»]+»\.$/u);
+    assert.doesNotMatch(path, /шаг|рядом/u);
+  }
   const events = ctx.values.flatMap(value => value.parts.flatMap(part => part.packet.События ?? []));
   const disappearance = events.findIndex(value => value.includes('дикий хитрец') && value.includes('больше не видно'));
   assert.ok(events.indexOf(movements[0]) < disappearance && disappearance < events.lastIndexOf(movements[1]));

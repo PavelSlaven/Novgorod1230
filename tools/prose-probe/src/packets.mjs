@@ -99,6 +99,44 @@ const changingState = new Set(['Пора суток', 'Погода', 'Свет'
 const distanceAt = (position, hero) => Math.trunc(Math.hypot(...position.map((value, index) => value - hero[index])));
 const postureWords = { standing: 'стоит', sitting: 'сидит', crouching: 'держится пригнувшись', prone: 'лежит' };
 const attentionWords = { attends: 'смотрит на героя, будто хочет заговорить', unaware: 'не смотрит в сторону героя', notices: 'смотрит в сторону героя' };
+const bodyLabels = {
+  pain_label: ['Боль ощущалась как', 'перемену боли', 'Боль прошла.'],
+  hunger_label: ['Голод ощущался как', 'перемену голода', 'Голод прошёл.'],
+  thirst_label: ['Жажда ощущалась как', 'перемену жажды', 'Жажда прошла.'],
+  sleepiness_label: ['Сонливость ощущалась как', 'перемену сонливости', 'Сонливость прошла.'],
+  weariness_label: ['Усталость ощущалась как', 'перемену усталости', 'Усталость прошла.'],
+  warmth_label: ['Тепловое ощущение героя описывалось словом', 'перемену тепла', 'Прежнее ощущение тепла или холода прошло.'],
+  weight_label: ['Телосложение героя описывалось словом', 'своё тело иначе', 'Прежнее ощущение собственного тела прошло.'],
+  activity_label: ['Нагрузка героя описывалась словом', 'перемену нагрузки', 'Ощущение прежней нагрузки прошло.'],
+  wetness_label: ['Влажность тела ощущалась как', 'перемену влажности тела', 'Прежняя влажность тела больше не ощущалась.']
+};
+const weatherLabels = {
+  name: ['перемену погоды', 'Прежнее ощущение погоды прошло.'],
+  wind_label: ['перемену ветра', 'Прежний ветер больше не ощущался.'],
+  wind_direction_label: [null, 'Ощущение прежнего направления ветра прошло.']
+};
+
+function labelEvents(before, after) {
+  const events = [];
+  const name = clean(after.player_state.name);
+  for (const [section, labels] of [['player_state', bodyLabels], ['weather', weatherLabels]]) {
+    for (const key of new Set([...Object.keys(before?.[section] ?? {}), ...Object.keys(after[section] ?? {})])) {
+      if (!Object.hasOwn(labels, key)) continue;
+      const prior = before?.[section]?.[key];
+      const value = after[section]?.[key];
+      if (prior === value || (neutral(prior) && neutral(value))) continue;
+      const [sensation, removal] = section === 'player_state' ? labels[key].slice(1) : labels[key];
+      if (neutral(value)) events.push({ text: removal });
+      else {
+        const prefix = sensation === null
+          ? `${name} ${after.player_state.male ? 'почувствовал' : 'почувствовала'}, откуда дул ветер`
+          : `${name} ${after.player_state.male ? 'ощутил' : 'ощутила'} ${sensation}`;
+        events.push({ text: `${prefix}: «${clean(value).toLowerCase()}».` });
+      }
+    }
+  }
+  return events;
+}
 
 function creatureStateText(creature, data) {
   const lines = [];
@@ -141,18 +179,7 @@ function project(frame, data, knownDoors) {
   if (frame.weather?.wind_label) add('weather:wind', 'Погода', `Ветер описывался словом «${clean(frame.weather.wind_label).toLowerCase()}».`);
   if (frame.weather?.wind_direction_label) add('weather:direction', 'Погода', `Ветер дул с направления «${clean(frame.weather.wind_direction_label).toLowerCase()}».`);
   if (frame.light?.label) add('light', 'Свет', `На месте героя было ${clean(frame.light.label)}.`);
-  const body = {
-    pain_label: ['Боль ощущалась как', 'Боль прошла.'],
-    hunger_label: ['Голод ощущался как', 'Голод прошёл.'],
-    thirst_label: ['Жажда ощущалась как', 'Жажда прошла.'],
-    sleepiness_label: ['Сонливость ощущалась как', 'Сонливость прошла.'],
-    weariness_label: ['Усталость ощущалась как', 'Усталость прошла.'],
-    warmth_label: ['Тепловое ощущение героя описывалось словом', 'Прежнее тепловое ощущение прошло.'],
-    weight_label: ['Телосложение героя описывалось словом', 'Прежнее ощущение телосложения больше не отмечалось.'],
-    activity_label: ['Нагрузка героя описывалась словом', 'Прежняя нагрузка закончилась.'],
-    wetness_label: ['Влажность тела ощущалась как', 'Прежняя влажность тела больше не ощущалась.']
-  };
-  for (const [key, [prefix, removal]] of Object.entries(body)) if (!neutral(frame.player_state[key])) add(`body:${key}`, 'Самочувствие', `${prefix} «${clean(frame.player_state[key]).toLowerCase()}».`, { removal });
+  for (const [key, [prefix]] of Object.entries(bodyLabels)) if (!neutral(frame.player_state[key])) add(`body:${key}`, 'Самочувствие', `${prefix} «${clean(frame.player_state[key]).toLowerCase()}».`);
   const carried = (item, held) => {
     const [label] = itemName(item);
     add(`item:${item.uid}`, 'При себе', itemSentence(item, held ? 'В руках у героя' : 'При герое', data), { label, state: [clean(item.name), held], removal: `При герое больше не видно предмета «${label}».` });
@@ -213,7 +240,7 @@ function project(frame, data, knownDoors) {
   }
   for (const [type, tile] of kinds) {
     const prefix = tile.distance === 0 ? 'Под ногами героя' : sentence(location(directionAt(tile.position, frame.position)));
-    add(`terrain:${type}`, 'Видимая местность', `${prefix} — ${clean(tile.name)}.${data.description('terrain', type)}`, { terrain: true });
+    add(`terrain:${type}`, 'Видимая местность', `${prefix} — ${clean(tile.name)}.${data.description('terrain', type)}`, { terrain: true, state: [type, clean(tile.name)] });
   }
   const occurrences = new Map();
   for (const creature of frame.creatures ?? []) {
@@ -244,6 +271,49 @@ function project(frame, data, knownDoors) {
 
 const movement = { UP: [0, -1, 'на север'], DOWN: [0, 1, 'на юг'], LEFT: [-1, 0, 'на запад'], RIGHT: [1, 0, 'на восток'], RIGHTUP: [1, -1, 'на северо-восток'], RIGHTDOWN: [1, 1, 'на юго-восток'], LEFTUP: [-1, -1, 'на северо-запад'], LEFTDOWN: [-1, 1, 'на юго-запад'] };
 const ignored = new Set(['debug', 'safemode', 'player_data']);
+const terrainAt = (frame, position) => (frame.visible_terrain ?? []).find(group => group.positions.some(point => same(point, position)))?.type;
+const mapDistance = (a, b) => a[2] === b[2] ? Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1])) : Infinity;
+
+function pathLandmark(frame, position, crossed) {
+  const candidates = [];
+  const add = (label, point, rank, type, identity) => {
+    if (rank === 3 && crossed.has(type)) return;
+    const distance = mapDistance(point, position);
+    if (distance <= 8 && (rank === 0 || inPlace(point, frame))) candidates.push({ label, position: point, rank, distance, identity });
+  };
+  for (const person of frame.creatures ?? []) if (person.kind === 'npc') add(clean(person.name), person.position, 0, undefined, person.id);
+  for (const group of frame.visible_furniture ?? []) for (const point of group.positions) add(clean(group.name), point, 1);
+  for (const object of frame.objects ?? []) {
+    if (object.kind === 'ground_item') add(itemName(object.item)[0], object.position, 2, undefined, object.item.uid);
+    else if (object.kind === 'furniture') add(clean(object.name), object.position, 1);
+    else if (['terrain', 'door', 'window'].includes(object.kind)) add(clean(object.name), object.position, 3, object.type);
+  }
+  for (const group of frame.visible_terrain ?? []) for (const point of group.positions) add(clean(group.name), point, 3, group.type);
+  return candidates.sort((a, b) => a.distance - b.distance || a.rank - b.rank
+    || a.position[0] - b.position[0] || a.position[1] - b.position[1] || a.position[2] - b.position[2]
+    || a.label.localeCompare(b.label, 'ru'))[0];
+}
+
+function pathText(event) {
+  const { before, after, crossed } = event;
+  const direction = same(before.position, after.position) ? '' : ` на ${directionAt(after.position, before.position)}`;
+  const landmark = pathLandmark(after, after.position, crossed) ?? pathLandmark(before, before.position, crossed);
+  let anchor = '';
+  if (landmark) {
+    const pointIn = frame => {
+      if (landmark.identity !== undefined) {
+        if (landmark.rank === 0) return frame.creatures?.find(person => person.id === landmark.identity)?.position ?? landmark.position;
+        if (landmark.rank === 2) return frame.objects?.find(object => object.item?.uid === landmark.identity)?.position ?? landmark.position;
+      }
+      return landmark.position;
+    };
+    const startDistance = Math.hypot(...pointIn(before).map((value, i) => value - before.position[i]));
+    const endDistance = Math.hypot(...pointIn(after).map((value, i) => value - after.position[i]));
+    const preposition = endDistance < startDistance ? 'к ориентиру' : endDistance > startDistance ? 'прочь от ориентира' : 'мимо ориентира';
+    anchor = `${direction ? ', ' : ' '}${preposition} «${landmark.label}»`;
+  }
+  return `${event.name} ${event.male ? 'прошёл' : 'прошла'}${direction}${anchor}.`;
+}
 
 function actionEvents(actions, before, after, until) {
   if (!actions || !before) return [];
@@ -251,9 +321,10 @@ function actionEvents(actions, before, after, until) {
   const action = input.action;
   const actor = { name: clean(after.player_state.name), male: after.player_state.male };
   if (movement[action]) {
-    const [x, y, direction] = movement[action];
+    const [x, y] = movement[action];
     const delta = after.position.map((value, i) => value - before.position[i]);
-    if (Math.sign(delta[0]) === x && Math.sign(delta[1]) === y && delta[2] === 0 && (delta[0] || delta[1])) return [{ action: 'step', direction, count: 1, ...actor }];
+    if (Math.sign(delta[0]) === x && Math.sign(delta[1]) === y && delta[2] === 0 && (delta[0] || delta[1])) return [{ action: 'step', before, after,
+      crossed: new Set([terrainAt(before, before.position), terrainAt(after, after.position)].filter(Boolean)), ...actor }];
   }
   if (action === 'wait' && same(before.position, after.position)) {
     if (!Number.isSafeInteger(input.duration) || input.duration < 0) throw new Error(`Некорректная длительность wait, native_turn ${input.native_turn}`);
@@ -297,14 +368,18 @@ function finishPart(part) {
   let lastAction;
   for (const event of part.events) {
     if (event.action && lastAction?.action === event.action && lastAction.name === event.name && lastAction.male === event.male) {
-      if (event.action === 'step' && lastAction.direction === event.direction) { lastAction.count += event.count; continue; }
+      if (event.action === 'step') {
+        lastAction.after = event.after;
+        for (const type of event.crossed) lastAction.crossed.add(type);
+        continue;
+      }
       if (event.action === 'wait' && lastAction.position === event.position) { lastAction.duration += event.duration; continue; }
     }
     events.push(event);
     lastAction = event.action ? event : undefined;
   }
   if (events.length) part.packet.События = events.map(event => {
-    if (event.action === 'step') return `${event.name} ${event.male ? 'прошёл' : 'прошла'} ${quantity(event.count, ['шаг', 'шага', 'шагов'])} ${event.direction}.`;
+    if (event.action === 'step') return pathText(event);
     if (event.action === 'wait') return `${event.name} ${event.male ? 'ждал' : 'ждала'} на месте ${durationText(event.duration)}.`;
     if (event.action === 'open') return `${event.name} ${event.male ? 'открыл' : 'открыла'} дверь.`;
     return event.text;
@@ -420,7 +495,7 @@ export async function packets(options) {
         }
       }
       const memory = delivered.get(row.scene);
-      const current = project({ ...row.frame, player_state: { ...row.frame.player_state, activity_label: row.turnFrame.player_state.activity_label } }, data, memory.doors);
+      const current = project(row.frame, data, memory.doors);
       const initial = memory.facts.size === 0;
       const acts = actionEvents(actions.get(row.native_turn), row.turnBefore, row.turnFrame, rows.at(-1).native_turn);
       const opened = new Set(acts.filter(event => event.door).map(event => event.door));
@@ -430,7 +505,7 @@ export async function packets(options) {
       }
       for (const [key, fact] of current.facts) {
         const prior = memory.facts.get(key);
-        if (key === 'body:activity_label') { memory.facts.set(key, fact); continue; }
+        if (key.startsWith('body:') || key.startsWith('weather:')) continue;
         if (!prior) {
           if (row.native_turn === memory.initialTurn) {
             const snapshot = memory.initialFacts.get(key);
@@ -447,7 +522,6 @@ export async function packets(options) {
         if (fact.vehicle) memory.vehicles.add(key);
       }
       for (const [key, fact] of memory.facts) if (!current.facts.has(key) && !fact.terrain) {
-        if (key === 'body:activity_label') continue;
         if (current.presentItems.has(key)) continue;
         if (fact.vehicle || (fact.physical && current.visible.has(fact.position)) || fact.removal) {
           part.events.push({ text: fact.removal ?? (fact.vehicle ? `Транспорт «${fact.label}» больше не виден.` : `Предмет «${fact.label}» больше не видно.`) });
@@ -460,13 +534,7 @@ export async function packets(options) {
         memory.terrain.set(pos, tile);
       }
       if (row.turnEnd) {
-        const before = beforeTurn.get(row.native_turn)?.player_state.activity_label;
-        const after = row.turnFrame.player_state.activity_label;
-        if (row.native_turn !== memory.initialTurn && before !== undefined && before !== after) {
-          if (!neutral(after)) part.events.push({ text: `Нагрузка героя описывалась словом «${clean(after).toLowerCase()}».` });
-          else if (!neutral(before)) part.events.push({ text: 'Прежняя нагрузка закончилась.' });
-        }
-        if (neutral(after)) memory.facts.delete('body:activity_label');
+        if (row.native_turn !== memory.initialTurn) part.events.push(...labelEvents(beforeTurn.get(row.native_turn), row.turnFrame));
         part.events.push(...acts);
       }
       const occurrence = new Map();

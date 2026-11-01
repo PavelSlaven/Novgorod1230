@@ -67,6 +67,7 @@ test('delta replaces arrays and null fields without retaining the old state', as
   const events = packet.События ?? [];
   assert.ok(events.some(text => text.includes('Появилось существо «Прокша»')));
   assert.ok(events.some(text => text.includes('Прокша') && text.includes('больше не видно')));
+  assert.ok(events.every(text => !/погод|ветер|ветр/iu.test(text)));
 });
 
 test('invalid live records fail before writing packets', async t => {
@@ -141,7 +142,11 @@ test('all eight step directions use recorded movement and hero gender', async t 
     const input = { ...source, native_turn: after.native_turn, inputs: [{ ...source.inputs[0], action }] };
     const ctx = await capture(child, [before, after], { actions: [input] });
     passed(ctx);
-    assert.ok(texts(ctx.values).includes(`Гостья прошла один шаг ${direction}.`));
+    const paths = ctx.values.flatMap(moment => moment.parts.flatMap(part => part.packet.События ?? [])).filter(text => text.startsWith('Гостья прошла '));
+    assert.equal(paths.length, 1);
+    assert.ok(paths[0].startsWith(`Гостья прошла ${direction}, `));
+    assert.match(paths[0], /(?:к|прочь от|мимо) ориентир[ау] «[^»]+»\.$/u);
+    assert.doesNotMatch(paths[0], /шаг|рядом/u);
     assert.doesNotMatch(ctx.result.stderr, /поступок исключён/u);
   });
 });
@@ -166,7 +171,7 @@ test('hero steps keep an intervening NPC disappearance in order', async t => {
   const ctx = await capture(t, rows, { actions });
   passed(ctx);
   const events = ctx.values.flatMap(moment => moment.parts.flatMap(part => part.packet.События ?? []));
-  const steps = events.flatMap((text, index) => text === 'Гость прошёл один шаг на северо-запад.' ? [index] : []);
+  const steps = events.flatMap((text, index) => text.startsWith('Гость прошёл на северо-запад, ') ? [index] : []);
   assert.equal(steps.length, 2);
   const disappearance = events.findIndex(text => text.includes('Жирко') && text.includes('больше не видно'));
   assert.ok(steps[0] < disappearance && disappearance < steps[1]);
@@ -186,7 +191,113 @@ test('two adjacent hero steps combine without an intervening event', async t => 
   const actions = [first, second].map(row => ({ native_turn: row.native_turn, inputs: [{ action: 'UP' }] }));
   const ctx = await capture(t, [before, first, second], { actions });
   passed(ctx);
-  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), ['Гость прошёл два шага на север.']);
+  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), ['Гость прошёл на север, мимо ориентира «бревно».']);
+});
+
+test('path landmarks rank people, furniture, ground items and untraversed terrain at equal distance', async t => {
+  const source = (await rowsFrom('visit-31c.jsonl')).find(row => row.sequence === 30);
+  const item = source.frame.objects.find(object => object.kind === 'ground_item');
+  const furniture = source.frame.visible_furniture[0];
+  const person = source.frame.creatures.find(creature => creature.kind === 'npc');
+  for (const rank of [0, 1, 2, 3]) await t.test(String(rank), async child => {
+    const before = structuredClone(source);
+    before.frame.position = [2458, 1696, 0];
+    before.frame.creatures = rank === 0 ? [{ ...person, position: [2460, 1696, 0] }] : [];
+    before.frame.visible_furniture = rank <= 1 ? [{ ...furniture, positions: [[2460, 1695, 0]] }] : [];
+    before.frame.objects = rank <= 2 ? [{ ...item, position: [2460, 1697, 0] }] : [];
+    before.frame.visible_terrain = [
+      { type: 't_dirt', name: 'земля', positions: [[2458, 1696, 0], [2459, 1696, 0]] },
+      { type: 't_wall_wood', name: 'деревянная стена', positions: [[2459, 1695, 0]] }
+    ];
+    const after = structuredClone(before);
+    after.sequence++;
+    after.native_turn++;
+    after.reason = 'turn';
+    after.frame.position = [2459, 1696, 0];
+    const ctx = await capture(child, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
+    passed(ctx);
+    const label = [person.name, furniture.name, item.item.name, 'деревянная стена'][rank];
+    assert.deepEqual(ctx.values[0].parts[0].packet.События, [`Гость прошёл на восток, к ориентиру «${label}».`]);
+  });
+});
+
+test('a closed route has one event without a compass direction', async t => {
+  const before = structuredClone((await rowsFrom('visit-31c.jsonl')).find(row => row.sequence === 30));
+  const rows = [before];
+  const actions = [];
+  for (const [action, x, y] of [['DOWN', 0, 1], ['LEFT', -1, 0], ['UP', 0, -1], ['RIGHT', 1, 0]]) {
+    const row = structuredClone(rows.at(-1));
+    row.sequence++;
+    row.native_turn++;
+    row.reason = 'turn';
+    row.frame.position[0] += x;
+    row.frame.position[1] += y;
+    rows.push(row);
+    actions.push({ native_turn: row.native_turn, inputs: [{ action }] });
+  }
+  const ctx = await capture(t, rows, { actions });
+  passed(ctx);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл мимо ориентира «бревно».']);
+});
+
+test('a path uses its initial frame when no final landmark is visible', async t => {
+  const before = structuredClone((await rowsFrom('visit-31c.jsonl')).find(row => row.sequence === 30));
+  const item = before.frame.objects.find(object => object.kind === 'ground_item' && object.item.type === 'log');
+  before.frame.position = [2458, 1696, 0];
+  before.frame.creatures = [];
+  before.frame.visible_furniture = [];
+  before.frame.objects = [{ ...item, position: [2458, 1697, 0] }];
+  before.frame.visible_terrain = [{ type: 't_dirt', name: 'земля', positions: [[2458, 1696, 0], [2459, 1696, 0]] }];
+  const after = structuredClone(before);
+  after.sequence++;
+  after.native_turn++;
+  after.reason = 'turn';
+  after.frame.position = [2459, 1696, 0];
+  after.frame.objects = [];
+  const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
+  passed(ctx);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, прочь от ориентира «бревно».']);
+});
+
+test('a moving person uses the recorded position in each endpoint frame for the path preposition', async t => {
+  const before = structuredClone((await rowsFrom('visit-31c.jsonl')).find(row => row.sequence === 30));
+  const person = before.frame.creatures.find(creature => creature.kind === 'npc');
+  before.frame.position = [2458, 1696, 0];
+  before.frame.creatures = [{ ...person, position: [2459, 1696, 0] }];
+  before.frame.visible_furniture = [];
+  before.frame.objects = [];
+  before.frame.visible_terrain = [{ type: 't_dirt', name: 'земля', positions: [[2458, 1696, 0], [2459, 1696, 0], [2462, 1696, 0]] }];
+  const after = structuredClone(before);
+  after.sequence++;
+  after.native_turn++;
+  after.reason = 'turn';
+  after.frame.position = [2459, 1696, 0];
+  after.frame.creatures[0].position = [2462, 1696, 0];
+  const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
+  passed(ctx);
+  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), [`Гость прошёл на восток, прочь от ориентира «${person.name}».`]);
+  assert.ok(ctx.values[0].parts[0].packet.События[0].includes(`Положение существа «${person.name}» изменилось.`));
+});
+
+test('initial terrain bearings do not add an event during the first recorded step', async t => {
+  const before = structuredClone((await rowsFrom('visit-31c.jsonl')).find(row => row.sequence === 30));
+  const wall = before.frame.visible_terrain.find(group => group.name === 'деревянная стена');
+  before.reason = 'input';
+  before.frame.position = [2458, 1696, 0];
+  before.frame.creatures = [];
+  before.frame.visible_furniture = [];
+  before.frame.objects = [];
+  before.frame.visible_terrain = [
+    { type: 't_dirt', name: 'земля', positions: [[2458, 1696, 0], [2459, 1696, 0]] },
+    { ...wall, positions: [[2458, 1697, 0], [2460, 1696, 0]] }
+  ];
+  const after = structuredClone(before);
+  after.sequence++;
+  after.reason = 'turn';
+  after.frame.position = [2459, 1696, 0];
+  const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
+  passed(ctx);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, прочь от ориентира «деревянная стена».']);
 });
 
 test('a day of waiting uses calendar seconds rather than the number of frames', async t => {
@@ -238,7 +349,44 @@ test('activity events compare only the final states of adjacent native turns', a
     state(base.sequence + 3, base.native_turn + 1, 'Умеренная'),
     state(base.sequence + 4, base.native_turn + 2, 'Умеренная')]);
   passed(ctx);
-  assert.deepEqual(texts(ctx.values).filter(text => /[Нн]агрузка|нагрузка/u.test(text)), ['Нагрузка героя описывалась словом «умеренная».']);
+  assert.deepEqual(texts(ctx.values).filter(text => /нагруз/iu.test(text)), ['Гость ощутил перемену нагрузки: «умеренная».']);
+});
+
+test('body and weather labels use final turn states and report each sensation once', async t => {
+  const source = (await rowsFrom('visit-31c.jsonl')).find(row => row.kind === 'full');
+  for (const [section, key, initial, changed, expected, removal] of [
+    ['player_state', 'pain_label', 'Нет', 'Больно', 'Гость ощутил перемену боли: «больно».', 'Боль прошла.'],
+    ['player_state', 'hunger_label', 'Нет', 'Голоден', 'Гость ощутил перемену голода: «голоден».', 'Голод прошёл.'],
+    ['player_state', 'thirst_label', 'Нет', 'Жажда', 'Гость ощутил перемену жажды: «жажда».', 'Жажда прошла.'],
+    ['player_state', 'sleepiness_label', 'Нет', 'Сонный', 'Гость ощутил перемену сонливости: «сонный».', 'Сонливость прошла.'],
+    ['player_state', 'weariness_label', 'Нет', 'Устал', 'Гость ощутил перемену усталости: «устал».', 'Усталость прошла.'],
+    ['player_state', 'warmth_label', 'Комфортно', 'Зябко', 'Гость ощутил перемену тепла: «зябко».', 'Прежнее ощущение тепла или холода прошло.'],
+    ['player_state', 'weight_label', 'Обычный', 'Худой', 'Гость ощутил своё тело иначе: «худой».', 'Прежнее ощущение собственного тела прошло.'],
+    ['player_state', 'activity_label', 'Нет', 'Напряжённая', 'Гость ощутил перемену нагрузки: «напряжённая».', 'Ощущение прежней нагрузки прошло.'],
+    ['player_state', 'wetness_label', 'Нет', 'Влажно', 'Гость ощутил перемену влажности тела: «влажно».', 'Прежняя влажность тела больше не ощущалась.'],
+    ['weather', 'name', 'Ясно', 'Пасмурно', 'Гость ощутил перемену погоды: «пасмурно».', 'Прежнее ощущение погоды прошло.'],
+    ['weather', 'wind_label', 'Тихий ветер', 'Штиль', 'Гость ощутил перемену ветра: «штиль».', 'Прежний ветер больше не ощущался.'],
+    ['weather', 'wind_direction_label', 'Юго-запад', 'Север', 'Гость почувствовал, откуда дул ветер: «север».', 'Ощущение прежнего направления ветра прошло.']
+  ]) await t.test(`${section}.${key}`, async child => {
+    const state = (sequence, turn, value) => {
+      const row = structuredClone(source);
+      row.sequence = sequence;
+      row.native_turn = turn;
+      row.frame[section][key] = value;
+      return row;
+    };
+    const turn = source.native_turn;
+    const ctx = await capture(child, [
+      state(1, turn, 'Мимолётная подпись'), state(2, turn, initial),
+      state(3, turn + 1, 'Мимолётная подпись'), state(4, turn + 1, changed),
+      state(5, turn + 2, changed), state(6, turn + 3, null)
+    ]);
+    passed(ctx);
+    const packet = ctx.values[0].parts[0].packet;
+    assert.deepEqual(packet.События, [expected, removal]);
+    assert.ok(texts(ctx.values).every(text => !/мимолётная/iu.test(text)));
+    if (initial !== 'Нет') assert.ok((packet[section === 'weather' ? 'Погода' : 'Самочувствие'] ?? []).some(text => text.includes(initial.toLowerCase())));
+  });
 });
 
 test('recorded clothing keeps one item and names its associated contents once', async t => {

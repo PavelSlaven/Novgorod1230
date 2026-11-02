@@ -46,6 +46,7 @@ Release: `0.23.0-migration.24`
 
 | Tool | Path | Purpose |
 |---|---|---|
+| `tools/art-pilot` | `tools/art-pilot` | Прототип генератора картинок игры в едином стиле: плоский цвет, жёсткая граница тени, тёмная обводка. Детерминированный код получает параметры и возвращает SVG: человек и лицо, броня и оружие, карточка вещи, пейзаж лесной дороги, карта местности. В игру не подключён; перенос в игру идёт частями по CR [#908](https://github.com/PavelSlaven/Novgorod1230/issues/908). |
 | `@rus/audit-tools` | `tools/audit-tools` | Безопасная инвентаризация release/audit trees и проверка запрещённых путей. Пакет создаёт manifests, но не помещает ZIP или `dist` внутрь source tree. |
 | `tools/cataclysm-prototype` | `tools/cataclysm-prototype` | Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и живая dev-проба. Стенд использует отдельную копию upstream; dev launcher — отдельный постоянный userdir. Фактические проверки и границы: [результат задания 03](TASK03-LIVE-RESULT.md). |
 | `@rus/cutover` | `tools/cutover` | Автономный migration-tool для управляемого 13-шагового переключения с legacy route на modular runtime. Инструмент применяет только versioned feature-flag profiles, запускает обязательные gates и выпускает доказуемый cutover report. |

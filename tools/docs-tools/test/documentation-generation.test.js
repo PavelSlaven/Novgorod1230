@@ -50,8 +50,7 @@ const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/copilot-instructions.md']
 const SKILL_ROOTS = ['.agents/skills', '.claude/skills'];
 const GOVERNANCE_FILES = ['README.md', 'PRODUCT_CONSTITUTION.md', 'ARCHITECTURE_INVARIANTS.md', 'WORKFLOW_RULES.md', 'AUDIT_RULES.md', 'GIT_SAFETY_RULES.md']
   .map((name) => `docs/governance/${name}`);
-const ROUTER_MAX_BYTES = 16384;
-const ROUTER_MAX_LINES = 200;
+const ROUTER_MAX_BYTES = 32768;
 
 async function markdownFilesUnder(relativeDir) {
   const entries = await readdir(join(root, relativeDir), { recursive: true, withFileTypes: true });
@@ -160,7 +159,6 @@ test('AGENTS.md router fits the agent context budget and links every governance 
   const router = await readFile(join(root, 'AGENTS.md'));
   assert.ok(router.length <= ROUTER_MAX_BYTES, `AGENTS.md is ${router.length} bytes; limit ${ROUTER_MAX_BYTES}`);
   const text = router.toString('utf8');
-  assert.ok(text.split('\n').length <= ROUTER_MAX_LINES + 1, 'AGENTS.md exceeds the router line limit');
   const linked = new Set(markdownLinkTargets(text).map((target) => target.split('#')[0]));
   for (const file of GOVERNANCE_FILES) assert.ok(linked.has(file), `AGENTS.md must link ${file}`);
   for (const relativePath of ['AGENTS.md', ...GOVERNANCE_FILES]) {

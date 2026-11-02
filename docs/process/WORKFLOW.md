@@ -61,7 +61,7 @@
 
 ## Взять следующую задачу
 
-1. Открыть [CURRENT_SPRINT](../work/CURRENT_SPRINT.md) — упорядоченная выжимка; истина — issues/milestone и
+1. Открыть [CURRENT_SPRINT](../work/CURRENT_SPRINT.md) — отсылка на issue текущего спринта (#906) с порядком задач; истина — issues/milestone и
    описание PR #98.
 2. Проверить живой статус:
 

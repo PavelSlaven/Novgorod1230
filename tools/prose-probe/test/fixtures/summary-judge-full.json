@@ -1,0 +1,31 @@
+{
+  "texts": [
+    {
+      "blind_id": "MOMENT",
+      "criteria": [
+        {"n": 1, "mark": "да", "place": ""}, {"n": 2, "mark": "да", "place": ""}, {"n": 3, "mark": "да", "place": ""}, {"n": 4, "mark": "да", "place": ""}, {"n": 5, "mark": "да", "place": ""},
+        {"n": 6, "mark": "да", "place": ""}, {"n": 7, "mark": "да", "place": ""}, {"n": 8, "mark": "да", "place": ""}, {"n": 9, "mark": "да", "place": ""}, {"n": 10, "mark": "да", "place": ""},
+        {"n": 11, "mark": "да", "place": ""}, {"n": 12, "mark": "да", "place": ""}, {"n": 13, "mark": "да", "place": ""}, {"n": 14, "mark": "да", "place": ""}, {"n": 15, "mark": "да", "place": ""}
+      ],
+      "liveliness": 9,
+      "inventions": [],
+      "dislike": [{"what": "Сделать фразу короче.", "quote": "Мстислав подошёл к воротам."}],
+      "improve": ["Сохранить фокус сцены."],
+      "missing_facts": []
+    },
+    {
+      "blind_id": "ANCHOR",
+      "criteria": [
+        {"n": 1, "mark": "да", "place": ""}, {"n": 2, "mark": "да", "place": ""}, {"n": 3, "mark": "да", "place": ""}, {"n": 4, "mark": "да", "place": ""}, {"n": 5, "mark": "да", "place": ""},
+        {"n": 6, "mark": "да", "place": ""}, {"n": 7, "mark": "да", "place": ""}, {"n": 8, "mark": "да", "place": ""}, {"n": 9, "mark": "да", "place": ""}, {"n": 10, "mark": "да", "place": ""},
+        {"n": 11, "mark": "да", "place": ""}, {"n": 12, "mark": "да", "place": ""}, {"n": 13, "mark": "да", "place": ""}, {"n": 14, "mark": "да", "place": ""}, {"n": 15, "mark": "да", "place": ""}
+      ],
+      "liveliness": 9,
+      "inventions": [],
+      "dislike": [{"what": "Уточнить образ.", "quote": "Под серой крышей"}],
+      "improve": ["Оставить короткую формулировку."],
+      "missing_facts": []
+    }
+  ],
+  "improve_general": ["Сохранять ясный фокус.", "Опирайтесь на переданные сведения.", "Проверять причинный порядок."]
+}

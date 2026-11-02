@@ -1,11 +1,11 @@
 # Knowledge graph materialization report
 
 - Mode: `structural_document_nodes_only`
-- Corpus documents: 18
-- Structural-only documents: 18
-- Nodes: 18
+- Corpus documents: 17
+- Structural-only documents: 17
+- Nodes: 17
 - Links: 0
 - Hyperedges: 0
-- Graph SHA-256: `8873eb68707e927ccabdf8d887b2e09d9be93f9774c3cfd72198cfd31222a93f`
+- Graph SHA-256: `e7e08574e72dda71022350686e23fa6bcf3d4ee161a776a4970d4fab2734ff64`
 
 Graph is structural document nodes only. The generator does not invent semantic relations or embeddings.

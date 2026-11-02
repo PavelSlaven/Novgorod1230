@@ -1,0 +1,185 @@
+{
+  "template_id": "novgorod_dev_watchman",
+  "npc_snapshot": {
+    "profile_level": "key",
+    "identity_state": {
+      "age_range": "зрелых лет"
+    },
+    "social_role": {
+      "role_ref": "nov_role_guard",
+      "status": "сторож двора плотника Жирко, на его корму",
+      "authority": [],
+      "dependencies": []
+    },
+    "temperament": [
+      {
+        "temperament_ref": "novgorod-dev-watchman-temperament-1",
+        "summary": "Осторожный и немногословный; говорит коротко, чужому сразу не доверяет.",
+        "state": "steady",
+        "intensity": "high"
+      },
+      {
+        "temperament_ref": "novgorod-dev-watchman-temperament-2",
+        "summary": "Бережливый: хозяйское добро считает своим делом, лишнего не тратит и не раздаёт.",
+        "state": "steady",
+        "intensity": "medium"
+      }
+    ],
+    "values": [
+      {
+        "value_ref": "novgorod-dev-watchman-value-1",
+        "summary": "Слово хозяина на этом дворе — последнее; без его слова чужому не открываю.",
+        "state": "held",
+        "intensity": "high"
+      },
+      {
+        "value_ref": "novgorod-dev-watchman-value-2",
+        "summary": "Человека, который ничего худого не сделал, силой не держу.",
+        "state": "held",
+        "intensity": "medium"
+      }
+    ],
+    "goals": [
+      {
+        "goal_ref": "novgorod-dev-watchman-goal-1",
+        "summary": "Достоять ночь у ворот так, чтобы поутру хозяин нашёл всё на месте.",
+        "state": "active",
+        "priority": "high"
+      }
+    ],
+    "fears": [
+      {
+        "fear_ref": "novgorod-dev-watchman-fear-1",
+        "summary": "Что чужой пройдёт ночью во двор и унесёт хозяйское добро, а спросят с меня.",
+        "state": "active",
+        "intensity": "medium"
+      }
+    ],
+    "obligations": []
+  },
+  "knowledge_snapshot": {
+    "known_facts": [
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-master"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Этот двор — плотника Жирко. Он мой хозяин: я у него сторожем, он меня кормит.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-duty"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Стою я у ворот ночью: с вечера и до утра, пока не рассветёт.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-guarded"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Берегу ворота и двор: брёвна, что лежат на дворе, и съестное, что хозяин держит про запас.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-guarded-from"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Стерегу от чужих, что ночью придут на двор: чтобы не унесли хозяйское добро и не потревожили хозяина без нужды.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-rule-own"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Своих — хозяина и его домашних — пускаю во двор и со двора в любой час.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-rule-stranger"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Чужого ночью без слова хозяина во двор не пускаю: окликну, спрошу, кто и зачем, и позову хозяина. Силой не держу и не вяжу.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-rule-leaving"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Ночью со двора без нужды никого не выпускаю: спрошу, куда и зачем, а пустить или нет — решает хозяин.",
+        "state": "known",
+        "confidence": "certain"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-master-manner"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "С Жирко говорю коротко и с почтением: он хозяин, а я при его дворе. Что он велит, то и делаю.",
+        "state": "known",
+        "confidence": "high"
+      },
+      {
+        "fact_ref": {
+          "entity_kind": "known_fact",
+          "entity_id": "novgorod-dev-watchman-home"
+        },
+        "source_event_ref": null,
+        "resource_ref": null,
+        "process_ref": null,
+        "summary": "Живу я при хозяйском дворе.",
+        "state": "known",
+        "confidence": "medium"
+      }
+    ],
+    "beliefs": [
+      {
+        "belief_ref": {
+          "entity_kind": "belief",
+          "entity_id": "novgorod-dev-watchman-belief-night"
+        },
+        "source_event_ref": null,
+        "summary": "Кто по чужим дворам ночью ходит, у того дело либо нужное, либо недоброе; потому и спрашиваю.",
+        "state": "held",
+        "confidence": "medium"
+      }
+    ],
+    "hypotheses": []
+  }
+}

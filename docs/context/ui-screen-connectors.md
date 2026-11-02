@@ -19,7 +19,7 @@
 
 ![Ночная тема, восемь состояний](assets/ui-screen/sheet-night.png)
 
-Отдельные кадры: [ход, день](assets/ui-screen/flat-turn.png), [ход, ночь](assets/ui-screen/night-turn.png), [раскрытое поле, день](assets/ui-screen/flat-field.png), [раскрытое поле, ночь](assets/ui-screen/night-field.png). Исходник макета (React и CSS, образец размещения и палитры, не код игры) — [assets/ui-screen/mockup](assets/ui-screen/mockup/).
+Отдельные кадры: [ход, день](assets/ui-screen/flat-turn.png), [ход, ночь](assets/ui-screen/night-turn.png), [раскрытое поле, день](assets/ui-screen/flat-field.png), [раскрытое поле, ночь](assets/ui-screen/night-field.png). Исходник макета (React и CSS, образец размещения и палитры, не код игры): [экран](assets/ui-screen/mockup/index.tsx), [стили и палитра](assets/ui-screen/mockup/screen.css), [поле](assets/ui-screen/mockup/field.ts), [проза](assets/ui-screen/mockup/prose.ts).
 
 ## Принцип
 

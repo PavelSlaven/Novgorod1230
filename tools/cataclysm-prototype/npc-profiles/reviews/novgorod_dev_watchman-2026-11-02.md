@@ -2,11 +2,11 @@
 
 - Профиль: `tools/cataclysm-prototype/npc-profiles/novgorod_dev_watchman.json`, весь файл (`npc_snapshot` и `knowledge_snapshot`).
 - Автор данных: Claude Sonnet 5.5 high, роль «14 Подключение данных», шаг 6 CR npc-talk.
-- Кто утвердил:
-- Когда (UTC):
+- Кто утвердил: Claude Opus 5.5, распорядитель — итоговое утверждение (решение владельца D383). Приёмку шага до этого провёл исполнитель npc-talk (Claude Sonnet 5.5): ПРИНЯТЬ.
+- Когда (UTC): 2026-11-02T20:27:15Z.
 - База проверки: `e878b86cc1e13cdf3ea77910c3346a62f8cff9e8`.
-- Коммит утверждённых данных:
-- Вердикт:
+- Коммит утверждённых данных: 0bc08d7b59209de9c4588f00337494617d86bad3.
+- Вердикт: APPROVE. Ссылки сверены с файлами базы: `novgorod_social_roles_v1.tsv:9`, `professions.csv:327` (PRO0326), `novgorod_occupations_v1.tsv:5`, `decision-log.md:131` и `:135` (D261, D266), `courtyard.json:66–70`, `time-calendar-church.csv:64`, WK-claim в `place-community-environments-v1.json`. Авторский выбор помечен как авторский и не выдан за источник; часов, колотушки, права задерживать и иных неподтверждённых обычаев в тексте нет. Любое изменение записей профиля снимает утверждение.
 
 Профиль новый: до него у сторожа Прокши была только запись NPC в `tools/cataclysm-prototype/dev-world/npc.json`. Форма — как у `novgorod_dev_master.json`. Значения `state`, `intensity`, `priority`, `confidence` взяты по аналогии с профилем Жирко (читатель `p3-npc-profile.js` схему значений не проверяет).
 

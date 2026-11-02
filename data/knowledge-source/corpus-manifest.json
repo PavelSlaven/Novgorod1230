@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "741ec313691db2758cb4b739a33b04c8e128e3525d59c2fdfd39b98e0b94f54b",
-      "bytes": 29600,
+      "sha256": "1f267c39c4aa84b8e91ab3841f15bc3da4a213d8b5c741b0671b8e3a5a3cbd82",
+      "bytes": 29996,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -268,6 +268,16 @@
       "bytes": 138979,
       "status": "active",
       "provenance_mode": "native",
+      "priority_tier": "technical_contract"
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "canonical_path": "corpus/DOCUMENTS/npc_family_household_contract.md",
+      "file_name": "npc_family_household_contract.md",
+      "provenance_mode": "native",
+      "sha256": "de47a22b732670f396b79750fa7385b417f15df3db1cde5098a3c07c04e4a9b9",
+      "bytes": 28309,
+      "status": "active",
       "priority_tier": "technical_contract"
     },
     {

@@ -1,9 +1,12 @@
+import ast
 import fcntl
+import gettext
 import hashlib
 import io
 import json
 import os
 from pathlib import Path
+import struct
 import subprocess
 import tarfile
 import tempfile
@@ -183,6 +186,48 @@ class PrepareRuntimeTest(unittest.TestCase):
     def assert_no_leftovers(self):
         self.assertEqual(sorted(self.runtime_root.glob("runtime.new-*")), [])
         self.assertEqual(sorted(self.runtime_root.glob("runtime.old-*")), [])
+
+    def test_installs_npc_speech_translation_before_core(self):
+        self.run_prepare(self.write_archive(), "--fixture", str(self.fixture))
+        locale = self.runtime_root / "runtime/lang/mo/ru/LC_MESSAGES"
+        overlay = locale / "0-novgorod-cataclysm-dda.mo"
+        data = overlay.read_bytes()
+        with overlay.open("rb") as stream:
+            catalog = gettext.GNUTranslations(stream)
+        self.assertEqual(catalog.gettext('%1$s saying "%2$s"'), '%1$s: «%2$s»')
+
+        entries = []
+        field = None
+        po = Path(__file__).with_name("translations") / "ru.po"
+        for line in po.read_text(encoding="utf-8").splitlines():
+            if line.startswith(("msgid ", "msgstr ")):
+                field, literal = line.split(" ", 1)
+                if field == "msgid":
+                    entries.append({})
+                entries[-1][field] = ast.literal_eval(literal)
+            elif line.startswith('"'):
+                entries[-1][field] += ast.literal_eval(line)
+        self.assertTrue(entries)
+        for entry in entries:
+            with self.subTest(msgid=entry["msgid"]):
+                self.assertEqual(catalog.gettext(entry["msgid"]), entry["msgstr"])
+        self.assertEqual(catalog.info()["content-type"], "text/plain; charset=UTF-8")
+
+        magic, revision, count, originals, _, _, _ = struct.unpack_from("<7I", data)
+        self.assertEqual(magic, 0x950412DE)
+        self.assertEqual(revision, 0)
+        self.assertEqual(count, len(entries))
+        self.assertEqual(struct.unpack_from("<I", data, originals)[0], 0)
+        keys = []
+        for index in range(count):
+            length, offset = struct.unpack_from("<2I", data, originals + 8 * index)
+            keys.append(data[offset:offset + length])
+        self.assertEqual(keys[0], b"")
+        self.assertEqual(keys, sorted(keys))
+        self.assertEqual(sorted(path.name for path in locale.glob("*cataclysm-dda.mo")),
+                         [overlay.name, "cataclysm-dda.mo"])
+        self.assertEqual((locale / "cataclysm-dda.mo").read_bytes(), b"ru-mo")
+        self.assertFalse((self.runtime_root / "userdir").exists())
 
     def test_installs_translation_tileset_binaries_mod_and_options(self):
         self.run_prepare(self.write_archive(), "--fixture", str(self.fixture))

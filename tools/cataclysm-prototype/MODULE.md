@@ -60,6 +60,11 @@ Dev launcher читает только собственный постоянны
 новую физику или LLM fallback. Native test readback
 предназначен исследователю, не является разрешённой player-safe проекцией.
 
+`prepare_p3_runtime.py` собирает `translations/ru.po` в
+`runtime/lang/mo/ru/LC_MESSAGES/0-novgorod-cataclysm-dda.mo`. Родной поиск CDDA
+находит этот каталог раньше перевода ядра: `%1$s saying "%2$s"` переводится
+как `%1$s: «%2$s»`. Официальный каталог перевода ядра сохраняется без изменений.
+
 projectP3NpcWire формирует private model-facing view полного NPC request для P3.
 Он удаляет только code-owned service keys и вложенную копию
 npc.available_resources; остальные domain fields, refs и их порядок сохраняются,

@@ -1,10 +1,12 @@
 import argparse
+import ast
 import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
+import struct
 import subprocess
 import tarfile
 import tempfile
@@ -97,6 +99,34 @@ def take_session_lock(root):
     return lock
 
 
+def compile_mo(source, destination):
+    messages = {}
+    for block in source.read_text(encoding="utf-8").strip().split("\n\n"):
+        original, translated = block.split("\nmsgstr ", 1)
+        msgid = ast.literal_eval("(" + original.removeprefix("msgid ") + ")")
+        messages[msgid] = ast.literal_eval("(" + translated + ")")
+    if "Content-Type: text/plain; charset=UTF-8" not in messages.get("", ""):
+        raise ValueError(f"В {source} нужен заголовок PO с Content-Type UTF-8 и пустым msgid.")
+    entries = sorted((key.encode("utf-8"), value.encode("utf-8"))
+                     for key, value in messages.items())
+    count = len(entries)
+    originals = b"\0".join(key for key, _ in entries) + b"\0"
+    translations = b"\0".join(value for _, value in entries) + b"\0"
+    original_offset = 28 + 16 * count
+    translated_offset = original_offset + len(originals)
+    offsets = []
+    for key, value in entries:
+        offsets.append((len(key), original_offset, len(value), translated_offset))
+        original_offset += len(key) + 1
+        translated_offset += len(value) + 1
+    header = struct.pack("<7I", 0x950412DE, 0, count, 28, 28 + 8 * count, 0, 0)
+    original_table = b"".join(struct.pack("<2I", length, offset)
+                              for length, offset, _, _ in offsets)
+    translated_table = b"".join(struct.pack("<2I", length, offset)
+                                for _, _, length, offset in offsets)
+    destination.write_bytes(header + original_table + translated_table + originals + translations)
+
+
 def build_runtime(staging, args, archive, prefix, members):
     for build in filter(None, (args.text_build, args.tiles_build)):
         subprocess.run(["cmake", "--install", str(build), "--prefix", str(staging)], check=True)
@@ -108,6 +138,8 @@ def build_runtime(staging, args, archive, prefix, members):
         archive.extractall(extracted, members=members, filter="data")
         (staging / TRANSLATION).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(Path(extracted, prefix, TRANSLATION), staging / TRANSLATION)
+        compile_mo(Path(__file__).with_name("translations") / "ru.po",
+                   (staging / TRANSLATION).with_name("0-novgorod-cataclysm-dda.mo"))
         shutil.copytree(MOD, staging / "data/mods/novgorod_dev_world")
         shutil.copy2(CROSSWALK, staging / "data/mods/novgorod_dev_world/mtype_taxon_crosswalk.csv")
         shutil.copytree(Path(extracted, prefix, TILESET), staging / TILESET, dirs_exist_ok=True)

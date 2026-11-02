@@ -981,14 +981,16 @@
         "npc-autonomous-decision-contract",
         "npc-conversation-mode-contract",
         "items-and-property",
-        "code-driven-world-materialization-architecture"
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities"
       ],
       "related_module_paths": [
         "packages/actors",
         "packages/materialization",
         "packages/items-property",
         "packages/npc-runtime",
-        "packages/visibility-knowledge-memory"
+        "packages/visibility-knowledge-memory",
+        "tools/cataclysm-prototype"
       ],
       "related_contracts": [
         "Состав двора и именованные семейные и социальные связи NPC",
@@ -1004,7 +1006,11 @@
         "место сна",
         "общая трапеза",
         "еда на посту",
-        "смена караульных"
+        "смена караульных",
+        "household",
+        "kinship",
+        "household membership",
+        "NPC relationships"
       ],
       "conflicts_with_document_ids": []
     },

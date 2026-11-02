@@ -11,5 +11,69 @@
   { "type": "effect_on_condition", "id": "EOC_BANDIT_ASSASSIN_3", "eoc_type": "ACTIVATION", "effect": [] },
   { "type": "effect_on_condition", "id": "EOC_OLD_GUARD_ASSASSIN", "eoc_type": "ACTIVATION", "effect": [] },
   { "type": "effect_on_condition", "id": "EOC_PORTAL_NPC", "eoc_type": "ACTIVATION", "effect": [] },
-  { "type": "effect_on_condition", "id": "EOC_PORTAL_STORM_WARN_OR_CAUSE_RECURRING", "eoc_type": "ACTIVATION", "effect": [] }
+  { "type": "effect_on_condition", "id": "EOC_PORTAL_STORM_WARN_OR_CAUSE_RECURRING", "eoc_type": "ACTIVATION", "effect": [] },
+  {
+    "type": "effect_on_condition",
+    "id": "EOC_NOVGOROD_YARD_ROUTINE",
+    "global": true,
+    "recurrence": "1 hours",
+    "effect": [
+      {
+        "switch": { "math": [ "time_since('midnight', 'unit': 'hour')" ] },
+        "cases": [
+          {
+            "case": 5,
+            "effect": [
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_MASTER_WORK", "effect": { "u_set_guard_pos": { "global_val": "_Work" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_master" ]
+              },
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_WATCHMAN_GATE_05", "effect": { "u_set_guard_pos": { "global_val": "_Gate" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_watchman" ]
+              }
+            ]
+          },
+          {
+            "case": 19,
+            "effect": [
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_MASTER_HOME", "effect": { "u_set_guard_pos": { "global_val": "_Home" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_master" ]
+              },
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_WATCHMAN_GATE_19", "effect": { "u_set_guard_pos": { "global_val": "_Gate" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_watchman" ]
+              }
+            ]
+          },
+          {
+            "case": 20,
+            "effect": [
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_MASTER_HOME_20", "effect": { "u_set_guard_pos": { "global_val": "_Home" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_master" ]
+              },
+              {
+                "u_run_npc_eocs": [
+                  { "id": "EOC_NOVGOROD_YARD_WATCHMAN_GATE", "effect": { "u_set_guard_pos": { "global_val": "_Gate" }, "unique_id": true } }
+                ],
+                "unique_ids": [ "novgorod_dev_watchman" ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]

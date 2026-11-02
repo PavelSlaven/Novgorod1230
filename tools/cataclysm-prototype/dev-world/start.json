@@ -19,7 +19,7 @@
     "type": "overmap_special",
     "id": "novgorod_dev_courtyard_special",
     "overmaps": [
-      { "point": [ 0, 0, 0 ], "overmap": "novgorod_dev_courtyard_north" },
+      { "point": [ 0, 0, 0 ], "overmap": "novgorod_dev_courtyard_north", "camp": "novgorod_dev_master_household", "camp_name": "Двор плотника" },
       { "point": [ 0, 0, 1 ], "overmap": "novgorod_dev_courtyard_roof_north" }
     ],
     "locations": [ "land" ],
@@ -65,7 +65,9 @@
     "start_name": "Двор плотника",
     "allowed_locs": [ "novgorod_dev_courtyard_start" ],
     "professions": [ "novgorod_dev_visitor" ],
-    "eoc": [ "EOC_NOVGOROD_DEV_AVATAR_NORMAL_WEIGHT" ],
-    "flags": [ "LONE_START", "STANDARD" ]
+    "eoc": [ "EOC_NOVGOROD_DEV_AVATAR_NORMAL_WEIGHT", "EOC_NOVGOROD_DEV_NPC_START_BODY", "EOC_NOVGOROD_YARD_ROUTINE" ],
+    "flags": [ "LONE_START", "STANDARD" ],
+    "start_of_game": { "hour": 7, "day": 61, "season": "summer", "year": 1 },
+    "start_of_cataclysm": { "hour": 7, "day": 61, "season": "summer", "year": 1 }
   }
 ]

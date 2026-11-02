@@ -28,6 +28,10 @@ class ApplyOverlaysTest(unittest.TestCase):
             (self.tool / f"{name}.patch").write_text(name)
         for name in ["novgorod_semantic.cpp", "novgorod_semantic.h"]:
             (self.tool / name).write_text(name)
+        capture = self.tool / "native-capture"
+        capture.mkdir()
+        for name in ["novgorod_capture.cpp", "novgorod_capture.h"]:
+            (capture / name).write_text(name)
         self.source = self.root / "cdda"
         (self.source / "src").mkdir(parents=True)
         bin_dir = self.root / "bin"
@@ -53,6 +57,8 @@ class ApplyOverlaysTest(unittest.TestCase):
                                               "c.patch check", "c.patch"])
         for name in ["novgorod_semantic.cpp", "novgorod_semantic.h"]:
             self.assertEqual((self.source / "src" / name).read_text(), name)
+        for name in ["novgorod_capture.cpp", "novgorod_capture.h"]:
+            self.assertEqual((self.source / "src" / name).read_text(), name)
 
     def test_reordering_the_file_reorders_application(self):
         result = self.run_script("c\nb\na\n")
@@ -65,13 +71,16 @@ class ApplyOverlaysTest(unittest.TestCase):
         self.assertIn("a.patch", result.stderr)
         self.assertEqual(self.patch_calls(), ["b.patch check", "b.patch", "a.patch check"])
         self.assertFalse((self.source / "src" / "novgorod_semantic.cpp").exists())
+        for name in ["novgorod_capture.cpp", "novgorod_capture.h"]:
+            self.assertFalse((self.source / "src" / name).exists())
 
     def test_shipped_list_names_every_native_patch_in_module_order(self):
         names = (HERE / "native-overlays.txt").read_text().split()
         self.assertEqual(names, ["native-input", "native-persistence", "native-item-identity", "native-rng-state",
                                  "native-preload", "native-semantic-input", "native-control-tests",
                                  "native-live-input", "native-autosave-options",
-                                 "native-camp-exact-lookup"])
+                                 "native-camp-exact-lookup", "native-npc-post-work",
+                                 "native-perception-capture"])
         self.assertEqual(sorted(names), sorted(path.stem for path in HERE.glob("native-*.patch")))
 
 

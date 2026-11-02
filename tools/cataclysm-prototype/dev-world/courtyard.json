@@ -15,17 +15,17 @@
         "........................",
         "........WWWWWWWW........",
         "........W_____OW........",
-        "........W_T____W........",
+        "........W_T_B__W........",
         "........W______W........",
         "........W______W........",
         "........W______W........",
         "........WWW+WWWW........",
+        "..............w.........",
         "........................",
         "........................",
         "........................",
         "........................",
-        "........................",
-        "........................",
+        "........PPPGPPPP........",
         "........................",
         "........................",
         "........................"
@@ -36,20 +36,43 @@
         "_": "t_floor",
         "T": "t_floor",
         "O": "t_floor",
-        "+": "t_door_c"
+        "B": "t_floor",
+        "+": "t_door_c",
+        "P": "t_palisade",
+        "G": "t_palisade_gate_o",
+        "w": "t_wooden_well"
       },
-      "furniture": { "T": "f_table", "O": "f_clay_oven" },
-      "place_zones": [ { "type": "ZONE_START_POINT", "faction": "your_followers", "x": [ 0, 0 ], "y": [ 7, 7 ] } ],
+      "furniture": { "T": "f_table", "O": "f_clay_oven", "B": "f_straw_bed" },
+      "place_zones": [
+        { "type": "ZONE_START_POINT", "faction": "your_followers", "x": [ 0, 0 ], "y": [ 7, 7 ] },
+        { "type": "LOOT_WOOD", "faction": "novgorod_dev_master_household", "x": [ 12, 14 ], "y": [ 15, 16 ] }
+      ],
+      "place_variables": [
+        { "name": "novgorod_dev_master_Work", "x": 13, "y": 15 },
+        { "name": "novgorod_dev_master_Home", "x": 11, "y": 10 },
+        { "name": "novgorod_dev_watchman_Gate", "x": 12, "y": 19 },
+        { "name": "novgorod_dev_izba_min", "x": 9, "y": 9 },
+        { "name": "novgorod_dev_izba_max", "x": 14, "y": 13 }
+      ],
       "place_loot": [
         { "item": "flint_steel", "x": 11, "y": 10, "chance": 100 },
         { "item": "tinder", "x": 11, "y": 10, "chance": 100 },
         { "item": "firewood", "x": 10, "y": 12, "chance": 100 },
         { "item": "stick", "x": 10, "y": 12, "chance": 100 },
         { "item": "straw_basket", "x": 9, "y": 12, "chance": 100 },
-        { "item": "stick_common", "x": 13, "y": 12, "chance": 100 },
-        { "item": "log", "x": 12, "y": 15, "chance": 100 }
+        { "item": "stick_common", "x": 13, "y": 12, "chance": 100 }
       ],
-      "place_npcs": [ { "class": "novgorod_dev_master", "x": 13, "y": 11, "unique_id": "novgorod_dev_master" } ],
+      "place_item": [
+        { "item": "dry_fish", "x": 10, "y": 10, "amount": 42, "chance": 100, "faction": "novgorod_dev_master_household" },
+        { "item": "log", "x": 12, "y": 15, "amount": 16, "chance": 100, "faction": "novgorod_dev_master_household" },
+        { "item": "log", "x": 12, "y": 16, "amount": 16, "chance": 100, "faction": "novgorod_dev_master_household" },
+        { "item": "log", "x": 13, "y": 16, "amount": 16, "chance": 100, "faction": "novgorod_dev_master_household" },
+        { "item": "log", "x": 14, "y": 16, "amount": 16, "chance": 100, "faction": "novgorod_dev_master_household" }
+      ],
+      "place_npcs": [
+        { "class": "novgorod_dev_master", "x": 13, "y": 15, "unique_id": "novgorod_dev_master" },
+        { "class": "novgorod_dev_watchman", "x": 12, "y": 19, "unique_id": "novgorod_dev_watchman" }
+      ],
       "faction_owner": [ { "id": "novgorod_dev_master_household", "x": [ 0, 23 ], "y": [ 0, 23 ] } ]
     }
   },

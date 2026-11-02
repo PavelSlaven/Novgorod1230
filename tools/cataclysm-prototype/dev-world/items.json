@@ -37,6 +37,12 @@
     "description": "Палка в руку толщиной, чуть кривая: для поделок почти не годится, и бить ею неудобно."
   },
   {
+    "id": "log",
+    "copy-from": "log",
+    "type": "ITEM",
+    "name": { "str": "бревно", "str_pl": "бревна" }
+  },
+  {
     "id": "tunic",
     "copy-from": "tunic",
     "type": "ITEM",

@@ -5,6 +5,7 @@
 - Decision scope: production architecture. Historical P28 acceptance did not
   activate production; the later `versioned production activation cutover`
   release `spatial-v3-production-v1` did.
+- Narrowed by [ADR-009](ADR-009-physical-npc-schedule-live-cdda.md) for the live CDDA path.
 
 ## Decision
 

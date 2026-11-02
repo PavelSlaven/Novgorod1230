@@ -26,6 +26,7 @@ OPTIONS = {"USE_LANG": "ru", "USE_TILES": "true", "TILES": "UltimateCataclysm",
            "VOLUME_UNITS": "l", "USE_METRIC_SPEEDS": "km/h",
            "DISTANCE_UNITS": "metric", "USE_CELSIUS": "celsius", "24_HOUR": "24h"}
 MOD = Path(__file__).with_name("dev-world")
+CROSSWALK = Path(__file__).resolve().parents[2] / "data/world-catalogs/novgorod/game-base-v1/mtype_taxon_crosswalk.csv"
 
 
 def verified_archive(assets):
@@ -77,6 +78,13 @@ def check_build(build):
             raise SystemExit(f"Сборка {build}: в {cache} нет строки {required}.")
 
 
+def check_make_build(build):
+    if (build / "CMakeCache.txt").exists():
+        raise SystemExit(f"Сборка {build}: для --text-make-build нужен каталог GNU Make.")
+    if not (build / "cataclysm").is_file():
+        raise SystemExit(f"Сборка {build}: нет бинаря cataclysm.")
+
+
 def take_session_lock(root):
     root.mkdir(parents=True, exist_ok=True)
     (root / "run").mkdir(exist_ok=True)
@@ -92,11 +100,16 @@ def take_session_lock(root):
 def build_runtime(staging, args, archive, prefix, members):
     for build in filter(None, (args.text_build, args.tiles_build)):
         subprocess.run(["cmake", "--install", str(build), "--prefix", str(staging)], check=True)
+    if args.text_make_build:
+        build = args.text_make_build.resolve()
+        shutil.copy2(build / "cataclysm", staging / "cataclysm")
+        shutil.copytree(args.source.resolve() / "data", staging / "data", dirs_exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="novgorod-assets-") as extracted:
         archive.extractall(extracted, members=members, filter="data")
         (staging / TRANSLATION).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(Path(extracted, prefix, TRANSLATION), staging / TRANSLATION)
         shutil.copytree(MOD, staging / "data/mods/novgorod_dev_world")
+        shutil.copy2(CROSSWALK, staging / "data/mods/novgorod_dev_world/mtype_taxon_crosswalk.csv")
         shutil.copytree(Path(extracted, prefix, TILESET), staging / TILESET, dirs_exist_ok=True)
     shutil.copytree(staging / "gfx", staging / "data/gfx", dirs_exist_ok=True)
 
@@ -120,16 +133,21 @@ def swap_runtime(root, staging):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Готовит runtime root для run-p3-dev: "
-                                     "cmake --install, мод, официальный перевод и тайлсет, опции fixture.")
+                                     "установка сборки, мод, официальный перевод и тайлсет, опции fixture.")
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--source", type=Path, required=True, help="исходник CDDA с патчами прототипа")
     parser.add_argument("--assets-dir", type=Path, default=Path.home() / "cdda-assets")
     parser.add_argument("--text-build", type=Path, help="каталог сборки CMake текстовой версии")
+    parser.add_argument("--text-make-build", type=Path,
+                        help="каталог сборки GNU Make текстовой версии")
     parser.add_argument("--tiles-build", type=Path, help="каталог сборки CMake версии с тайлами")
     parser.add_argument("--fixture", type=Path, help="каталог с save/ и config/ для нового runtime root")
     args = parser.parse_args(argv)
-    if not (args.text_build or args.tiles_build):
-        raise SystemExit("Нужен хотя бы один из ключей --text-build и --tiles-build.")
+    if not (args.text_build or args.text_make_build or args.tiles_build):
+        raise SystemExit("Нужен хотя бы один из ключей --text-build, --text-make-build и --tiles-build.")
+    if args.text_build and args.text_make_build:
+        raise SystemExit("Для текстовой версии укажите только один из ключей --text-build и "
+                         "--text-make-build.")
     root = args.runtime_root
     fixture = root / "fixture"
     if args.fixture and fixture.exists():
@@ -142,12 +160,14 @@ def main(argv=None):
             raise SystemExit(f"Нет каталога исходника {directory}")
     for build in filter(None, (args.text_build, args.tiles_build)):
         check_build(build)
+    if args.text_make_build:
+        check_make_build(args.text_make_build)
     with tarfile.open(verified_archive(args.assets_dir)) as archive:
         prefix, members = wanted_members(archive)
         lock = take_session_lock(root)
         try:
             help_dir = args.source / "data/help"
-            if not help_dir.exists():
+            if not help_dir.exists() and (args.text_build or args.tiles_build):
                 help_dir.mkdir()
                 print(f"Создан пустой {help_dir}: его перечисляет data/CMakeLists.txt CDDA, "
                       "без него cmake --install падает.")

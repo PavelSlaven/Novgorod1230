@@ -3,12 +3,12 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "structural_document_nodes_only",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "0dc16052868b67713c210a55634de68f22e1701304d9ce5c3184e48a7528c3b2",
+  "corpus_manifest_sha256": "3961c9636e2d35af8094e1d72796f7c9be740a877979ff359ebeb9f9a682e3a1",
   "registered_document_count": 44,
   "source_document_count": 17,
   "structural_only_document_count": 17,
   "node_count": 17,
   "link_count": 0,
   "hyperedge_count": 0,
-  "graph_sha256": "ba41ff7325efbdc512b5e8818aba07934cc0fc3cf1bb01439f62108c92fd8913"
+  "graph_sha256": "2b974a22407b636438140aff7be7db166bddff14fdca41bed763362a66f69edb"
 }

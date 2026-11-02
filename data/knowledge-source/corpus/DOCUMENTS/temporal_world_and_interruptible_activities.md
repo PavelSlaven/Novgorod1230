@@ -203,6 +203,8 @@ Narration:
 - давать provider скрытый доступ к БД;
 - создавать новый package только ради удобства, если существующий owner уже есть.
 
+В живом пути CDDA физический распорядок NPC — выбор места по часу суток, путь к нему, пост, сон, голод и еда, бегство от огня и возврат на пост — исполняют родные механизмы CDDA: `work_hours` класса NPC, `guard_pos`, рекуррентный EOC по часу суток, родной путь по земле, сон и голод, а также лагерь фракции-владельца из поля `camp` особого объекта: член этой фракции, размещённый mapgen на территории лагеря, становится его жителем (`add_assignee`), вне смены живёт родными ветками жителя (`camp_work` — только в часы работы класса, `free_time`, `return_to_camp`), а ест и пьёт родными путями `address_needs`. Класс, окно, посты, EOC и лагерь задаются утверждёнными данными мода среза. Назначения `@rus/npc-runtime` (ADR-003) и `@rus/movement-routes` в таблице выше сохраняются для пути spatial-v3 и не владеют этим физическим исполнением CDDA.
+
 ## 5. Exact temporal contracts
 
 ### 5.1. Boundary-safe сериализация
@@ -948,6 +950,8 @@ movement handoff к уже существующему route owner. Consumer пр
 после terminal completion. Заблокированный или частичный переход сохраняет
 фактическую исходную/промежуточную позицию и не телепортирует NPC.
 
+В живом пути CDDA описанный здесь `schedule transition` и declarative `movement handoff` не используются для физического распорядка NPC: смену поста по часу запускают данные рекуррентного EOC, а путь и возвращение после бегства от огня исполняет CDDA. Для пути spatial-v3 правила этого раздела сохраняются.
+
 ### 15.3. Perception pipeline
 
 ```text
@@ -1392,6 +1396,8 @@ visible_package_persistence_gap
 Каждая ошибка имеет severity, subject ref, dependency pins, retryability, remediation class и player-safe message key.
 
 Expected outcomes `blocked`, `paused`, `decision_required`, `stranded`, stale-candidate `cancel` и narration pending не являются generic exceptions.
+
+В живом пути CDDA `npc_schedule_gap` из этого реестра не применяется к физическому распорядку NPC; область hard block определена в приложении B ниже и сохраняется для пути spatial-v3.
 
 ## 22. Readiness данных
 
@@ -3024,6 +3030,8 @@ invariants:
 Expected `blocked`, `paused`, `decision_required`, `stranded`, policy-authorized
 stale `cancel` and `committed_presentation_pending` остаются control/delivery
 outcomes и не превращаются в generic exceptions.
+
+В живом пути CDDA `npc_schedule_gap` не поднимается: отдельного перехода расписания из этой таблицы там нет. NPC без данных распорядка живёт по поведению CDDA по умолчанию; отсутствие утверждённых данных распорядка, обязательных для конкретного сценария, выявляют приёмочные тесты данных мода. Требование §1 к утверждённому источнику данных сохраняется, а hard block строки `npc_schedule_gap` продолжает действовать в пути spatial-v3.
 
 ---
 

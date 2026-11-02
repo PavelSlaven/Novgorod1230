@@ -17,3 +17,4 @@ while read -r name || [[ -n $name ]]; do
     git -C "$source_dir" apply "$patch"
 done < "$here/native-overlays.txt"
 cp -- "$here/novgorod_semantic.cpp" "$here/novgorod_semantic.h" "$source_dir/src/"
+cp -- "$here/native-capture/novgorod_capture.cpp" "$here/native-capture/novgorod_capture.h" "$source_dir/src/"

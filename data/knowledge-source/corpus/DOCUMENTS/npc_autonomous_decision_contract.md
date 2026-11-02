@@ -64,6 +64,8 @@ LLM возвращает одно односоставное действие в
 - остановка temporal batch через `stop_after_current_batch`;
 - детерминированное упорядочивание NPC decision requests.
 
+Перечисленные `schedule` API и фаза `npc_schedule` относятся к пути spatial-v3. В живом пути CDDA физический распорядок NPC исполняется родными механизмами CDDA по утверждённым данным мода; `@rus/npc-runtime` не выбирает для него место или переход расписания. Границы смысловых решений NPC, разговора, речи и знания этим не меняются (см. `npc_conversation_mode_contract.md`).
+
 Historical bounded-модель строит закрытый набор утверждённых вариантов и
 разрешает LLM выбрать только `option_id` и `command_token`. Она сохраняется
 только для genuinely closed choices и явно pinned historical revisions.
@@ -1297,6 +1299,8 @@ Movement/temporal owner определяет:
 - итоговую позицию;
 - interruption.
 
+В живом пути CDDA `request_movement` и `move_entity` не предоставляются модели для перемещения NPC; модель также не предлагает переход распорядка и не меняет `guard_pos` или место NPC. Физический путь к посту и возврат после бегства от огня исполняет CDDA. Описанный выше domain request остаётся нормой пути spatial-v3.
+
 ### 19.4. `request_item_use`
 
 ```json
@@ -2126,6 +2130,8 @@ NPC_ACTION_DECISION_REQUEST:
 - policy snapshots;
 - deterministic decision ordering;
 - replay/idempotency.
+
+Пункт `schedule transition` в этом списке сохраняется для пути spatial-v3. В живом пути CDDA он не создаёт обязанности `@rus/npc-runtime` управлять физическим распорядком; его исполняет CDDA по ADR-009. Остальные обязанности списка этой оговоркой не меняются.
 
 Добавить:
 

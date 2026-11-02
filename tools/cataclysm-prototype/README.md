@@ -59,8 +59,10 @@ bash tools/cataclysm-prototype/build-tiles.sh --source "$CDDA"
 
 `apply-overlays.sh` накладывает на свежий checkout закреплённого SHA overlays
 из [`native-overlays.txt`](native-overlays.txt) — единственного списка порядка —
-и копирует `novgorod_semantic.cpp/.h` в `src/`; на первом патче, который не
-ложится, он останавливается. Тест — `python3 -m unittest test_apply_overlays`
+и копирует `novgorod_semantic.cpp/.h` и `native-capture/novgorod_capture.cpp/.h`
+в `src/`; на первом патче, который не ложится, он останавливается.
+Запись кадра, её поля и дополнения post-work overlay описаны в [MODULE.md](MODULE.md#запись-кадра-и-физический-распорядок-npc).
+Тест — `python3 -m unittest test_apply_overlays`
 в этом каталоге.
 
 ## Windows-сборка в GitHub Actions

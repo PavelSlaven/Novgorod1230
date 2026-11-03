@@ -100,18 +100,18 @@ const distanceAt = (position, hero) => Math.trunc(Math.hypot(...position.map((va
 const postureWords = { standing: 'стоит', sitting: 'сидит', crouching: 'держится пригнувшись', prone: 'лежит' };
 const attentionWords = { attends: 'смотрит на героя, будто хочет заговорить', unaware: 'не смотрит в сторону героя', notices: 'смотрит в сторону героя' };
 const stateLabels = {
-  pain_label: { section: 'player_state', nominative: 'боль', genitive: 'боли', initial: 'Боль ощущалась как', number: 'pain' },
-  hunger_label: { section: 'player_state', nominative: 'голод', genitive: 'голода', initial: 'Голод ощущался как', scale: ['Объелись', 'Full', 'Наелись', 'Лёгкий', 'Небольшой', 'Сильный', 'Истощение!', 'Изморение'] },
-  thirst_label: { section: 'player_state', nominative: 'жажда', genitive: 'жажды', initial: 'Жажда ощущалась как', scale: ['Упились', 'Напились', 'Утолена', 'Небольшая', 'Сильная', 'Обезвоживание', 'Иссушение'] },
-  sleepiness_label: { section: 'player_state', nominative: 'сонливость', genitive: 'сонливости', initial: 'Сонливость ощущалась как', scale: ['Усталость', 'Измотанность', 'Изнеможение'] },
+  pain_label: { section: 'player_state', nominative: 'боль', genitive: 'боли', initial: 'Боль ощущалась как', number: 'pain', scale: ['', 'Минимальная', 'Слабая', 'Небольшая', 'Беспокоящая', 'Тревожащая', 'Нестерпимая', 'Существенная', 'Зверская'] },
+  hunger_label: { section: 'player_state', nominative: 'голод', genitive: 'голода', initial: 'Голод ощущался как', scale: ['Объелись', 'Full', 'Наелись', '', 'Лёгкий', 'Небольшой', 'Сильный', 'Истощение!', 'Изморение'] },
+  thirst_label: { section: 'player_state', nominative: 'жажда', genitive: 'жажды', initial: 'Жажда ощущалась как', scale: ['Упились', 'Напились', 'Утолена', '', 'Небольшая', 'Сильная', 'Обезвоживание', 'Иссушение'] },
+  sleepiness_label: { section: 'player_state', nominative: 'сонливость', genitive: 'сонливости', initial: 'Сонливость ощущалась как', scale: ['', 'Усталость', 'Измотанность', 'Изнеможение'] },
   weariness_label: { section: 'player_state', nominative: 'усталость', genitive: 'усталости', initial: 'Усталость ощущалась как', scale: ['Нет', 'Лёгкое', 'Умеренное', 'Среднее', 'Сильное', 'Экстрем.'] },
   warmth_label: { section: 'player_state', nominative: 'тепло тела', genitive: 'тепла тела', initial: 'Тепловое ощущение героя описывалось словом', scale: ['Замерзание!', 'Очень холодно!', 'Прохладно', 'Комфортно', 'Тепло', 'Очень жарко!', 'Обжигающе!'] },
   weight_label: { section: 'player_state', nominative: 'телосложение', genitive: 'телосложения', initial: 'Телосложение героя описывалось словом', number: 'bmi_fat', scale: ['Скелетообразный', 'Тощий', 'Недостаточный вес', 'Обычный', 'Избыточный', 'Ожирение', 'Сильное ожирение', 'Крайнее ожирение'] },
   activity_label: { section: 'player_state', nominative: 'нагрузка', genitive: 'нагрузки', initial: 'Нагрузка героя описывалась словом', scale: ['Нет', 'Лёгкая', 'Умеренная', 'Средняя', 'Высокая', 'Экстрем.'] },
   wetness_label: { section: 'player_state', nominative: 'влажность тела', genitive: 'влажности тела', initial: 'Влажность тела ощущалась как' },
-  name: { section: 'weather', nominative: 'погода', genitive: 'погоды', unordered: true, removal: 'Прежнее ощущение погоды прошло.' },
+  name: { section: 'weather', nominative: 'погода', genitive: 'погоды', unordered: true },
   wind_label: { section: 'weather', nominative: 'ветер', genitive: 'ветра', number: 'wind_speed_mph', scale: ['Штиль', 'Тихий ветер', 'Лёгкий ветер', 'Слабый ветер', 'Умеренный ветер', 'Свежий ветер', 'Сильный ветер', 'Небольшой шторм', 'Шторм', 'Сильный шторм', 'Мощный шторм', 'Жестокий шторм', 'Ураган'] },
-  wind_direction_label: { section: 'weather', nominative: 'направление ветра', genitive: 'направления ветра', unordered: true, removal: 'Ощущение прежнего направления ветра прошло.' }
+  wind_direction_label: { section: 'weather', nominative: 'направление ветра', genitive: 'направления ветра', unordered: true }
 };
 
 function labelDirection(label, before, after, prior, value) {
@@ -119,8 +119,8 @@ function labelDirection(label, before, after, prior, value) {
   const valueNumber = label.number && after?.[label.section]?.[label.number];
   if (Number.isFinite(priorNumber) && Number.isFinite(valueNumber)) return Math.sign(valueNumber - priorNumber);
   if (!label.scale) return undefined;
-  const priorRank = label.scale.indexOf(plain(prior));
-  const valueRank = label.scale.indexOf(plain(value));
+  const priorRank = label.scale.indexOf(prior == null ? '' : plain(prior));
+  const valueRank = label.scale.indexOf(value == null ? '' : plain(value));
   return priorRank < 0 || valueRank < 0 ? undefined : Math.sign(valueRank - priorRank);
 }
 
@@ -136,20 +136,15 @@ function labelEvents(before, after) {
       const priorEmpty = prior === null || prior === undefined || prior === '';
       const valueEmpty = value === null || value === undefined || value === '';
       if (prior === value || (priorEmpty && valueEmpty)) continue;
-      if (label.unordered) {
-        events.push({ text: valueEmpty
-          ? label.removal
-          : `Перемена ${place}: ${label.nominative} — теперь ${clean(value).toLowerCase()}.` });
+      if (label.unordered && !valueEmpty) {
+        events.push({ text: `Перемена ${place}: ${label.nominative} — теперь ${clean(value).toLowerCase()}.` });
         continue;
       }
-      if (valueEmpty) events.push({ text: `Перемена ${place}: ${label.genitive} больше нет.` });
-      else if (priorEmpty) events.push({ text: `Перемена ${place}: ${label.genitive} стало больше.` });
-      else {
-        const direction = labelDirection(label, before, after, prior, value);
-        if (direction > 0) events.push({ text: `Перемена ${place}: ${label.genitive} стало больше.` });
-        else if (direction < 0) events.push({ text: `Перемена ${place}: ${label.genitive} стало меньше.` });
-        else events.push({ text: `Перемена ${place}: ${label.nominative} — иначе, чем было.` });
-      }
+      const direction = labelDirection(label, before, after, prior, value);
+      if (valueEmpty && label.scale?.[0] === '') events.push({ text: `Перемена ${place}: ${label.genitive} больше нет.` });
+      else if (direction > 0) events.push({ text: `Перемена ${place}: ${label.genitive} стало больше.` });
+      else if (direction < 0) events.push({ text: `Перемена ${place}: ${label.genitive} стало меньше.` });
+      else events.push({ text: `Перемена ${place}: ${label.nominative} — иначе, чем было.` });
     }
   }
   return events;

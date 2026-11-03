@@ -62,7 +62,7 @@ test('a weather-name change is stated as a change in the surrounding weather', a
   assert.deepEqual(stateChanges(packets), ['Перемена вокруг героя: погода — теперь облачно.']);
 });
 
-test('a missing ordered body label uses its place and genitive noun', async t => {
+test('an empty body label without a native empty entry uses the unchanged-direction fallback', async t => {
   const base = (await sourceRows()).find(row => row.sequence === 26);
   for (const value of [null, '']) {
     const { packets } = await packetRun(t, [base, changedRow(base, 'player_state.activity_label', value)], {
@@ -71,7 +71,7 @@ test('a missing ordered body label uses its place and genitive noun', async t =>
       from_turn: base.native_turn,
       to_turn: base.native_turn + 1
     });
-    assert.deepEqual(stateChanges(packets), ['Перемена в теле героя: нагрузки больше нет.']);
+    assert.deepEqual(stateChanges(packets), ['Перемена в теле героя: нагрузка — иначе, чем было.']);
   }
 });
 
@@ -89,4 +89,83 @@ test('body labels without native selectors use their ordinal scales', async t =>
     });
     assert.deepEqual(stateChanges(packets), [expected]);
   }
+});
+
+for (const { name, field, before, after, expected } of [
+  {
+    name: 'hunger from empty to satisfied',
+    field: 'hunger_label',
+    before: '',
+    after: 'Наелись',
+    expected: 'Перемена в теле героя: голода стало меньше.'
+  },
+  {
+    name: 'hunger from satisfied to empty',
+    field: 'hunger_label',
+    before: 'Наелись',
+    after: '',
+    expected: 'Перемена в теле героя: голода стало больше.'
+  },
+  {
+    name: 'thirst from empty to quenched',
+    field: 'thirst_label',
+    before: '',
+    after: 'Утолена',
+    expected: 'Перемена в теле героя: жажды стало меньше.'
+  },
+  {
+    name: 'thirst from quenched to empty',
+    field: 'thirst_label',
+    before: 'Утолена',
+    after: '',
+    expected: 'Перемена в теле героя: жажды стало больше.'
+  },
+  {
+    name: 'thirst from empty to slight',
+    field: 'thirst_label',
+    before: '',
+    after: 'Небольшая',
+    expected: 'Перемена в теле героя: жажды стало больше.'
+  },
+  {
+    name: 'hunger from empty to light',
+    field: 'hunger_label',
+    before: '',
+    after: 'Лёгкий',
+    expected: 'Перемена в теле героя: голода стало больше.'
+  }
+]) {
+  test(`${name} follows the native state scale`, async t => {
+    const base = (await sourceRows()).find(row => row.sequence === 26);
+    const path = `player_state.${field}`;
+    const beforeRow = base.frame.player_state[field] === before
+      ? structuredClone(base)
+      : changeFrame(base, path, before);
+    const afterRow = changedRow(beforeRow, path, after);
+    const { packets } = await packetRun(t, [beforeRow, afterRow], {
+      id: 'empty-state',
+      title: name,
+      from_turn: base.native_turn,
+      to_turn: base.native_turn + 1
+    });
+    assert.deepEqual(stateChanges(packets), [expected]);
+  });
+}
+
+test('native empty pain and sleepiness states are reported as no longer present', async t => {
+  const base = (await sourceRows()).find(row => row.sequence === 26);
+  const sleepinessBefore = changeFrame(base, 'player_state.sleepiness_label', 'Усталость');
+  const before = changeFrame(changeFrame(sleepinessBefore, 'player_state.pain_label', 'Минимальная'), 'player_state.pain', 1);
+  const sleepinessAfter = changedRow(before, 'player_state.sleepiness_label', '');
+  const after = changeFrame(changeFrame(sleepinessAfter, 'player_state.pain_label', ''), 'player_state.pain', 0);
+  const { packets } = await packetRun(t, [before, after], {
+    id: 'native-empty-removal',
+    title: 'native empty removal',
+    from_turn: base.native_turn,
+    to_turn: base.native_turn + 1
+  });
+  assert.deepEqual(stateChanges(packets).sort(), [
+    'Перемена в теле героя: боли больше нет.',
+    'Перемена в теле героя: сонливости больше нет.'
+  ].sort());
 });

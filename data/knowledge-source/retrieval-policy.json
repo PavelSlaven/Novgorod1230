@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "9d60d7139062fc3417de5c7e395c42b0af6ef415598c3b0da884dceae8be6c85",
+  "baseline_manifest_sha256": "1a6159d729d01d155f73eed9682780d3eb334f0e422c99c6f69ef18aeab82749",
   "default_statuses": [
     "active",
     "reference"
@@ -967,6 +967,52 @@
         "npc-generation-profiles",
         "llm-agent-prompt-templates"
       ]
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "document_type": "canonical_normative",
+      "subsystems": [
+        "npc",
+        "social",
+        "conversation"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "npc-autonomous-decision-contract",
+        "npc-conversation-mode-contract",
+        "items-and-property",
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities"
+      ],
+      "related_module_paths": [
+        "packages/actors",
+        "packages/materialization",
+        "packages/items-property",
+        "packages/npc-runtime",
+        "packages/visibility-knowledge-memory",
+        "tools/cataclysm-prototype"
+      ],
+      "related_contracts": [
+        "Состав двора и именованные семейные и социальные связи NPC",
+        "Знания NPC о семье и дворе в разговоре"
+      ],
+      "search_terms": [
+        "семья",
+        "двор",
+        "старшинство",
+        "именованные связи",
+        "родство",
+        "служба",
+        "место сна",
+        "общая трапеза",
+        "еда на посту",
+        "смена караульных",
+        "household",
+        "kinship",
+        "household membership",
+        "NPC relationships"
+      ],
+      "conflicts_with_document_ids": []
     },
     {
       "document_id": "turn-step-llm-contract",

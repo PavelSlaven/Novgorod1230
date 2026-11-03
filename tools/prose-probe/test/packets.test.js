@@ -310,14 +310,14 @@ test('R7: removal of a pain label is reported', async t => {
   await red('R7', async () => {
     const artifact = await readJson(join(ctx.output, 'packets.json'));
     for (const values of Object.values(artifact[1].parts[0].packet)) {
-      const index = values.indexOf('Боль прошла.');
+      const index = values.indexOf('Перемена в теле героя: боли больше нет.');
       if (index >= 0) { values.splice(index, 1); break; }
     }
     await writeJson(join(ctx.output, 'packets.json'), artifact);
   });
   const artifact = await readJson(join(ctx.output, 'packets.json'));
   assert.ok(textsInMoments([artifact[0]]).some(value => /боль/iu.test(value)));
-  assert.ok(textsInMoments([artifact[1]]).includes('Боль прошла.'));
+  assert.ok(textsInMoments([artifact[1]]).includes('Перемена в теле героя: боли больше нет.'));
 });
 
 async function writerHistory(t) {

@@ -177,12 +177,12 @@
       {
         "fact_ref": {
           "entity_kind": "known_fact",
-          "entity_id": "novgorod-dev-master-work-now"
+          "entity_id": "novgorod-dev-master-habit-hewing"
         },
         "source_event_ref": null,
         "resource_ref": null,
         "process_ref": null,
-        "summary": "У двери бревно лежит — его и тешу.",
+        "summary": "Брёвна на дворе обтёсываю — дело у меня привычное.",
         "state": "known",
         "confidence": "medium"
       }

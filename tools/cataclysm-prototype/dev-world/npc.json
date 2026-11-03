@@ -38,13 +38,38 @@
     "skills": [ { "skill": "fabrication", "bonus": { "rng": [ 5, 7 ] } } ]
   },
   {
+    "type": "item_group",
+    "id": "novgorod_dev_watchman_worn",
+    "subtype": "collection",
+    "entries": [
+      { "item": "tunic" },
+      { "item": "pants" },
+      { "item": "leather_belt" },
+      { "item": "footrags_wool" },
+      { "item": "mocassins" }
+    ]
+  },
+  {
+    "type": "item_group",
+    "id": "novgorod_dev_watchman_carried",
+    "subtype": "collection",
+    "entries": [ { "item": "bread" }, { "item": "dry_fish" }, { "item": "waterskin" } ]
+  },
+  {
+    "type": "item_group",
+    "id": "novgorod_dev_watchman_weapon",
+    "subtype": "collection",
+    "entries": [ { "item": "club_wooden" } ]
+  },
+  {
     "type": "npc_class",
     "id": "novgorod_dev_watchman_class",
     "name": { "str": "сторож" },
-    "job_description": "Держу ночной пост у ворот.",
+    "job_description": "Ночью сторожу двор у ворот.",
     "common": false,
-    "worn_override": "novgorod_dev_master_worn",
-    "weapon_override": "novgorod_dev_master_weapon",
+    "worn_override": "novgorod_dev_watchman_worn",
+    "carry_override": "novgorod_dev_watchman_carried",
+    "weapon_override": "novgorod_dev_watchman_weapon",
     "work_hours": [ 20, 5 ],
     "traits": [ { "trait": "RETURN_TO_START_POS" } ]
   },

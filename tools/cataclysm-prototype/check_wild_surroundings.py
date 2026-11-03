@@ -366,7 +366,8 @@ def check_permissions(context):
     npc_item_groups = {
         "novgorod_dev_master": {"novgorod_dev_master_worn", "novgorod_dev_master_carried",
                                  "novgorod_dev_master_weapon"},
-        "novgorod_dev_watchman": {"novgorod_dev_master_worn", "novgorod_dev_master_weapon"},
+        "novgorod_dev_watchman": {"novgorod_dev_watchman_worn", "novgorod_dev_watchman_carried",
+                                  "novgorod_dev_watchman_weapon"},
     }
     crosswalk_path = context.args.mod / "mtype_taxon_crosswalk.csv"
     try:

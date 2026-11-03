@@ -3,7 +3,7 @@ import { parseArgs } from 'node:util';
 try {
   const command = process.argv[2];
   const options = {
-    packets: { recording: {}, moments: {}, actions: {}, 'game-data': { multiple: true } },
+    packets: { recording: {}, descriptions: {}, moments: {}, actions: {}, 'game-data': { multiple: true } },
     writer: { moment: {} },
     judges: { anchors: {}, judges: {}, seed: {} },
     summary: { confirmations: {}, baseline: {} }

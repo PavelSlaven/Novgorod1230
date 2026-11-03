@@ -24,8 +24,9 @@ test('a moved known item reports its new position without repeating its descript
   assert.ok(object);
   const data = await setup(t, 'moved-description-');
   const description = 'Древесина была сырой и потемневшей.';
-  await writeJson(join(data, 'log.json'), { id: object.item.type, description });
-  const ctx = await packets(t, [before, after], [moment('M1', before.native_turn), moment('M2', after.native_turn)], undefined, [data]);
+  const descriptions = join(data, 'descriptions.jsonl');
+  await writeRecording(descriptions, [{ kind: 'item', type: object.item.type, text: description }]);
+  const ctx = await packets(t, [before, after], [moment('M1', before.native_turn), moment('M2', after.native_turn)], undefined, [], descriptions);
   assert.ok(textsInPart(ctx.values[0].parts[0]).some(text => text.includes(description)));
   const changed = textsInPart(ctx.values[1].parts[0]);
   assert.ok(changed.some(text => text.includes('Положение') && text.includes('бревно')));
@@ -36,7 +37,23 @@ async function source(name) {
   return readJson(fixture(`${name}.json`));
 }
 
-async function packets(t, rows, moments, actions, gameData = []) {
+test('unused game-data descriptions do not prevent packets for recorded objects', async t => {
+  const row = await source('door-before');
+  const object = row.frame.objects.find(entry => entry.kind === 'ground_item' && entry.item.name.includes('бревно'));
+  assert.ok(object);
+  const data = await setup(t, 'unused-description-');
+  const descriptions = join(data, 'descriptions.jsonl');
+  await writeRecording(descriptions, [
+    { kind: 'item', type: 'unrecorded_item', text: 'На предмете было 1000 делений.' },
+    { kind: 'item', type: object.item.type, text: 'На поверхности было 12 следов.' }
+  ]);
+  const ctx = await packets(t, [row], [moment('M1', row.native_turn)], undefined, [], descriptions);
+  const text = textsInMoments(ctx.values).join('\n');
+  assert.match(text, /На поверхности было двенадцать следов\./u);
+  assert.doesNotMatch(text, /делений/u);
+});
+
+async function packets(t, rows, moments, actions, gameData = [], descriptions) {
   const dir = await setup(t, 'packets-');
   const recording = join(dir, 'recording.jsonl');
   const momentsPath = join(dir, 'moments.json');
@@ -45,11 +62,95 @@ async function packets(t, rows, moments, actions, gameData = []) {
   await writeJson(momentsPath, moments);
   const args = ['packets', '--dir', output, '--recording', recording, '--moments', momentsPath];
   if (actions) args.push('--actions', actions);
+  if (descriptions) args.push('--descriptions', descriptions);
   for (const path of gameData) args.push('--game-data', path);
   const result = run(args);
   assert.equal(result.status, 0, result.stderr || result.stdout);
   return { dir, output, result, values: await readJson(join(output, 'packets.json')) };
 }
+
+function changeNpc(row, changes) {
+  const index = row.frame.creatures.findIndex(creature => creature.id === '2');
+  assert.notEqual(index, -1);
+  return changeFrame(row, `creatures.${index}`, { ...row.frame.creatures[index], ...changes });
+}
+
+function nextFrame(row) {
+  return { ...row, sequence: row.sequence + 1, native_turn: row.native_turn + 1 };
+}
+
+test('a null activity leaves the captured NPC packet unchanged', async t => {
+  const row = await source('inside-before-step');
+  const original = await packets(t, [row], [moment('M1', row.native_turn)]);
+  const withNullActivity = changeNpc(row, { activity: null });
+  const explicitNull = await packets(t, [withNullActivity], [moment('M1', row.native_turn)]);
+  assert.deepEqual(explicitNull.values[0].parts[0].packet, original.values[0].parts[0].packet);
+  assert.ok(textsInPart(explicitNull.values[0].parts[0]).every(text => !text.includes('Текущее занятие существа')));
+});
+
+test('activity uses ITEM names through copy-from and changes only once for a known NPC', async t => {
+  const row = await source('inside-before-step');
+  const gameData = await setup(t, 'npc-item-names-');
+  await writeJson(join(gameData, 'items.json'), [
+    { type: 'ITEM', id: 'ax', name: { str: 'топор' } },
+    { type: 'ITEM', id: 'ax', 'copy-from': 'ax', name: { str: 'плотницкий топор' } },
+    { type: 'ITEM', id: 'wood', name: { str_sp: 'бревно' } },
+    { type: 'ITEM', id: 'log', 'copy-from': 'wood' }
+  ]);
+  const activity = { id: 'ACT_MULTIPLE_CHOP_PLANKS', verb: 'Рубит', tool: 'ax', material: 'log' };
+  const changed = nextFrame(changeNpc(row, { activity }));
+  const repeated = nextFrame(changed);
+  const rows = [row, changed, repeated];
+  const ctx = await packets(t, rows, rows.map((entry, i) => moment(`M${i + 1}`, entry.native_turn)), undefined, [gameData]);
+  const change = textsInPart(ctx.values[1].parts[0]).find(text => text.startsWith('Изменилось состояние существа «Жирко».'));
+  assert.ok(change);
+  assert.ok(change.includes('Текущее занятие существа «Жирко» — «Рубит».'));
+  assert.ok(change.includes('плотницкий топор'));
+  assert.ok(change.includes('бревно'));
+  assert.ok(!/\b(?:ax|log)\b/u.test(change));
+  assert.ok(!change.includes('ACT_MULTIPLE_CHOP_PLANKS'));
+  assert.deepEqual(textsInPart(ctx.values[2].parts[0]), []);
+});
+
+test('NPC attention uses visible cues for all three captured values', async t => {
+  const cases = [
+    ['notices', 'смотрит в сторону героя'],
+    ['unaware', 'не смотрит в сторону героя'],
+    ['attends', 'смотрит на героя, будто хочет заговорить']
+  ];
+  for (const [attention, expected] of cases) {
+    await t.test(attention, async t => {
+      const row = changeNpc(await source('inside-before-step'), { attention });
+      const ctx = await packets(t, [row], [moment('M1', row.native_turn)]);
+      const text = textsInPart(ctx.values[0].parts[0]).join('\n');
+      assert.ok(text.includes(`Жирко ${expected}.`));
+      assert.doesNotMatch(text, /внимательно слушает героя|не видит героя|видит героя/u);
+    });
+  }
+});
+
+test('posture and attention changes for a known NPC are rendered once', async t => {
+  const cases = [
+    ['posture', 'standing', 'стоит'],
+    ['posture', 'sitting', 'сидит'],
+    ['posture', 'crouching', 'держится пригнувшись'],
+    ['posture', 'prone', 'лежит'],
+    ['attention', 'attends', 'смотрит на героя, будто хочет заговорить'],
+    ['attention', 'unaware', 'не смотрит в сторону героя'],
+    ['attention', 'notices', 'смотрит в сторону героя']
+  ];
+  for (const [field, value, expected] of cases) {
+    const initial = await source('inside-before-step');
+    const changed = nextFrame(changeNpc(initial, { [field]: value }));
+    const repeated = nextFrame(changed);
+    const rows = [initial, changed, repeated];
+    const ctx = await packets(t, rows, rows.map((entry, i) => moment(`M${i + 1}`, entry.native_turn)));
+    const change = textsInPart(ctx.values[1].parts[0]).find(text => text.startsWith('Изменилось состояние существа «Жирко».'));
+    assert.ok(change);
+    assert.ok(change.includes(expected));
+    assert.deepEqual(textsInPart(ctx.values[2].parts[0]), []);
+  }
+});
 
 test('R1: packet text writes numbers as words', async t => {
   const frame = await source('courtyard');
@@ -128,11 +229,17 @@ test('R3: a new scene starts with the complete packet for that frame', async t =
   assert.deepEqual(parts[1].packet, reference.values[0].parts[0].packet);
 });
 
-test('consecutive movement steps are combined', async t => {
+test('world events separate movement step groups', async t => {
   const ctx = await packets(t, [await source('door-before'), await source('door-after'), await source('roof-entry'), await source('inside')], [moment('M1', 5227219, 5227221)], fixture('actions.jsonl'));
-  const movements = textsInMoments(ctx.values).filter(value => value.startsWith('Герой прошёл '));
-  assert.equal(movements.length, 1);
-  assert.match(movements[0], /к северу/u);
+  const movements = textsInMoments(ctx.values).filter(value => value.startsWith('Ремша прошёл '));
+  assert.equal(movements.length, 2);
+  for (const path of movements) {
+    assert.match(path, /^Ремша прошёл на север, (?:к|прочь от|мимо) ориентир[ау] «[^»]+»\.$/u);
+    assert.doesNotMatch(path, /шаг|рядом/u);
+  }
+  const events = ctx.values.flatMap(value => value.parts.flatMap(part => part.packet.События ?? []));
+  const disappearance = events.findIndex(value => value.includes('дикий хитрец') && value.includes('больше не видно'));
+  assert.ok(events.indexOf(movements[0]) < disappearance && disappearance < events.lastIndexOf(movements[1]));
 });
 
 test('R4: an observed open door stays an observation', async t => {
@@ -203,20 +310,21 @@ test('R7: removal of a pain label is reported', async t => {
   await red('R7', async () => {
     const artifact = await readJson(join(ctx.output, 'packets.json'));
     for (const values of Object.values(artifact[1].parts[0].packet)) {
-      const index = values.indexOf('Боль прошла.');
+      const index = values.indexOf('Перемена в теле героя: боли больше нет.');
       if (index >= 0) { values.splice(index, 1); break; }
     }
     await writeJson(join(ctx.output, 'packets.json'), artifact);
   });
   const artifact = await readJson(join(ctx.output, 'packets.json'));
   assert.ok(textsInMoments([artifact[0]]).some(value => /боль/iu.test(value)));
-  assert.ok(textsInMoments([artifact[1]]).includes('Боль прошла.'));
+  assert.ok(textsInMoments([artifact[1]]).includes('Перемена в теле героя: боли больше нет.'));
 });
 
 async function writerHistory(t) {
   const gameData = await setup(t, 'game-data-');
   const itemCharacteristic = 'Рубаха прошита синей нитью.';
-  await writeJson(join(gameData, 'tunic.json'), { id: 'tunic', description: itemCharacteristic });
+  const descriptions = join(gameData, 'descriptions.jsonl');
+  await writeRecording(descriptions, [{ kind: 'item', type: 'tunic', text: itemCharacteristic }]);
   const first = await source('door-before');
   const secondBase = await source('door-after');
   const secondSound = { ...secondBase.frame.sounds[0], category: 5, description: '«Не бойся, путник», — произнесли рядом.' };
@@ -230,7 +338,7 @@ async function writerHistory(t) {
     moment('M1', 5227219),
     moment('M2', 5227220),
     moment('M3', 5227221)
-  ], undefined, [gameData]);
+  ], undefined, [], descriptions);
   assert.ok(textsInMoments([ctx.values[0]]).some(value => value.includes(itemCharacteristic)));
   assert.ok(textsInMoments([ctx.values[1], ctx.values[2]]).every(value => !value.includes(itemCharacteristic)));
   await writeJson(join(ctx.output, 'M1.out.json'), { prose: 'Первый отрывок уже написан.' });
@@ -296,7 +404,8 @@ test('writer creates a request for an empty delta when the previous response exi
 test('G4: the second request preserves the known door description after only an opening action', async t => {
   const gameData = await setup(t, 'g4-game-data-');
   const characteristic = 'Дверь укреплена железными полосами.';
-  await writeJson(join(gameData, 'door.json'), { id: 't_door_c', description: characteristic });
+  const descriptions = join(gameData, 'descriptions.jsonl');
+  await writeRecording(descriptions, [{ kind: 'terrain', type: 't_door_c', text: characteristic }]);
   const before = await source('door-before');
   const doorIndex = before.frame.objects.findIndex(object => object.kind === 'door');
   const after = changeFrame(before, `objects.${doorIndex}.state`, 'open');
@@ -305,11 +414,11 @@ test('G4: the second request preserves the known door description after only an 
   const dir = await setup(t, 'g4-action-');
   const actions = join(dir, 'actions.jsonl');
   await writeRecording(actions, [{ native_turn: 5227220, inputs: [{ action: 'open' }] }]);
-  const ctx = await packets(t, [before, after], [moment('M1', 5227219), moment('M2', 5227220)], actions, [gameData]);
+  const ctx = await packets(t, [before, after], [moment('M1', 5227219), moment('M2', 5227220)], actions, [], descriptions);
   const first = textsInMoments([ctx.values[0]]);
   const second = textsInMoments([ctx.values[1]]);
   assert.ok(first.some(value => value.includes(characteristic)));
-  assert.deepEqual(second, ['Герой открыл дверь.']);
+  assert.deepEqual(second, ['Ремша открыл дверь.']);
   await writeJson(join(ctx.output, 'M1.out.json'), { prose: 'Первый отрывок уже написан.' });
   const result = run(['writer', '--dir', ctx.output, '--moment', 'M2']);
   assert.equal(result.status, 0, result.stderr || result.stdout);

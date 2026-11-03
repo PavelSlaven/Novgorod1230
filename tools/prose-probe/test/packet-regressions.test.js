@@ -316,8 +316,8 @@ test('a later time-of-day fact is an event with a gender-neutral sentence', asyn
   await stateOnset(t, 'clock.time_of_day', null, 'Ночь', 'Пора суток', /^Пора суток описывалась словами «ночь»\.$/u);
 });
 
-test('a later calm-wind fact is an event with a gender-neutral sentence', async t => {
-  await stateOnset(t, 'weather.wind_label', null, 'Штиль', 'Погода', /^Ветер описывался словом «штиль»\.$/u);
+test('a later calm-wind fact is a perceived change for the hero', async t => {
+  await stateOnset(t, 'weather.wind_label', null, 'Штиль', 'Погода', /^Перемена вокруг героя: ветер — иначе, чем было\.$/u);
 });
 
 test('a later light fact is an event rather than a new state field', async t => {
@@ -325,7 +325,7 @@ test('a later light fact is an event rather than a new state field', async t => 
 });
 
 test('a later body-state fact is an event rather than a new state field', async t => {
-  await stateOnset(t, 'player_state.pain_label', '', 'Сильно болит', 'Самочувствие', /боль|болит/iu);
+  await stateOnset(t, 'player_state.pain_label', '', 'Сильно болит', 'Самочувствие', /^Перемена в теле героя: боль — иначе, чем было\.$/u);
 });
 
 test('time, weather, light and body-state events retain frame order while initial values stay in fields', async t => {
@@ -343,9 +343,9 @@ test('time, weather, light and body-state events retain frame order while initia
   assert.ok((packet.Самочувствие ?? []).some(text => text.includes('Нагрузка героя')));
   const ordered = events(ctx.values[0].parts[0]);
   const timeIndex = ordered.findIndex(text => text === 'Пора суток описывалась словами «ночь».');
-  const windIndex = ordered.findIndex(text => text === 'Ветер описывался словом «штиль».');
+  const windIndex = ordered.findIndex(text => text === 'Перемена вокруг героя: ветер — иначе, чем было.');
   const lightIndex = ordered.findIndex(text => /темно/iu.test(text));
-  const bodyIndex = ordered.findIndex(text => /боль|болит/iu.test(text));
+  const bodyIndex = ordered.findIndex(text => text === 'Перемена в теле героя: боль — иначе, чем было.');
   assert.ok(timeIndex >= 0 && windIndex > timeIndex && lightIndex > windIndex && bodyIndex > lightIndex);
   assert.ok((packet['Пора суток'] ?? []).every(text => !/ночь/iu.test(text)));
   assert.ok((packet.Погода ?? []).every(text => !/штиль/iu.test(text)));

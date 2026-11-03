@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "12d2fc8b3dcf2b41602fb633daa74d2260e0b72ea637e0cfc10b166477fa3543",
-      "bytes": 30601,
+      "sha256": "4c2241821f80b50630a8ebc3bdb27191a7d7b1ca23034c2803501c28d823fc34",
+      "bytes": 33403,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -264,8 +264,8 @@
       "document_id": "npc-conversation-mode-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "file_name": "npc_conversation_mode_contract.md",
-      "sha256": "51d4af9f527db9b0bc2b744b2791a1095706637b8d3afe7d0ec8f9cf4d8a547b",
-      "bytes": 138979,
+      "sha256": "9eebd0a34e5a5e18a41904122d54b31783661ff97bea5a5ac69417ba3d95cc11",
+      "bytes": 174992,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -416,8 +416,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "19bbfec5087a18b931b7d401b11b96cedb0eed514fb9aa4d9cde21b8301753b8",
-      "bytes": 121516,
+      "sha256": "aaee29331784bca615732a09aab641b221eee705f196724697f4ce2aeee038d7",
+      "bytes": 122126,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

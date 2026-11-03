@@ -82,7 +82,7 @@
       "source_location": {
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
-        "line_end": 3314
+        "line_end": 3583
       }
     },
     {
@@ -178,7 +178,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1938
+        "line_end": 1944
       }
     },
     {

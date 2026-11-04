@@ -232,14 +232,14 @@ test('R3: a new scene starts with the complete packet for that frame', async t =
 test('world events separate movement step groups', async t => {
   const ctx = await packets(t, [await source('door-before'), await source('door-after'), await source('roof-entry'), await source('inside')], [moment('M1', 5227219, 5227221)], fixture('actions.jsonl'));
   const movements = textsInMoments(ctx.values).filter(value => value.startsWith('Ремша прошёл '));
-  assert.equal(movements.length, 2);
+  assert.equal(movements.length, 1);
   for (const path of movements) {
-    assert.match(path, /^Ремша прошёл на север, (?:к|прочь от|мимо) ориентир[ау] «[^»]+»\.$/u);
+    assert.equal(path, 'Ремша прошёл на север, от места у ориентира «бревно» к месту у ориентира «палка».');
     assert.doesNotMatch(path, /шаг|рядом/u);
   }
   const events = ctx.values.flatMap(value => value.parts.flatMap(part => part.packet.События ?? []));
   const disappearance = events.findIndex(value => value.includes('дикий хитрец') && value.includes('больше не видно'));
-  assert.ok(events.indexOf(movements[0]) < disappearance && disappearance < events.lastIndexOf(movements[1]));
+  assert.deepEqual(events.slice(disappearance - 1, disappearance + 1), [movements[0], 'По ходу пути: Существо «дикий хитрец» больше не видно вдали.']);
 });
 
 test('R4: an observed open door stays an observation', async t => {

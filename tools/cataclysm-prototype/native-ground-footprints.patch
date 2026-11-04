@@ -25,7 +25,7 @@ diff --git a/src/creature.cpp b/src/creature.cpp
 +static int footprint_direction_index( const tripoint_abs_ms &old_pos,
 +                                      const tripoint_abs_ms &new_pos )
 +{
-+    switch( direction_from( old_pos, new_pos ) ) {
++    switch( direction_from( old_pos.xy(), new_pos.xy() ) ) {
 +        case direction::NORTH:
 +            return 0;
 +        case direction::NORTHWEST:

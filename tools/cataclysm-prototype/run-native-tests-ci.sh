@@ -38,7 +38,7 @@ du -sb "$native/.git" "$native" > "$log_dir/checkout-size.txt"
 
 bash "$repo_root/tools/cataclysm-prototype/apply-overlays.sh" --source "$native" > "$log_dir/overlays.log" 2>&1
 
-for stem in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test novgorod_autosave_test novgorod_epoch_names_test novgorod_capture_test novgorod_post_work_test novgorod_tracks_test; do
+for stem in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test novgorod_autosave_test novgorod_epoch_names_test novgorod_capture_test novgorod_post_work_test novgorod_tracks_test novgorod_tracks_level_test; do
   cp "$repo_root/tools/cataclysm-prototype/$stem.cpp" "$native/tests/$stem.cpp"
   cmp "$repo_root/tools/cataclysm-prototype/$stem.cpp" "$native/tests/$stem.cpp"
 done

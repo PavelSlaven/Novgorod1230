@@ -275,7 +275,7 @@ function project(frame, data, knownDoors) {
       creature.posture ?? null,
       creature.attention ?? null
     ];
-    add(`${base}:${ordinal}`, 'Люди и звери', text, { label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, seenFrom: frame.position, state, creature: true });
+    add(`${base}:${ordinal}`, 'Люди и звери', text, { id: creature.id, label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, seenFrom: frame.position, state, creature: true });
   }
   const presentItems = new Set((frame.objects ?? []).filter(object => object.item).map(object => `ground:${object.item.uid}`));
   return { facts, visible, terrain, occupied, presentItems };
@@ -311,11 +311,15 @@ function pathText(event) {
   const direction = same(before.position, after.position) ? '' : ` на ${directionAt(after.position, before.position)}`;
   const start = pathLandmark(before, before.position, crossed);
   const end = pathLandmark(after, after.position, crossed);
+  const distanceChange = landmark => mapDistance(after.position, landmark.position) - mapDistance(before.position, landmark.position);
   let anchor = '';
-  if (start && end && start.label === end.label && same(start.position, end.position)) anchor = ` возле ориентира «${start.label}»`;
-  else if (start && end) anchor = `, от места у ориентира «${start.label}» к месту у ориентира «${end.label}»`;
-  else if (start) anchor = `, от места у ориентира «${start.label}»`;
-  else if (end) anchor = `, к месту у ориентира «${end.label}»`;
+  if (start && (!end || start.label !== end.label) && distanceChange(start) > 0) anchor = `, от места у ориентира «${start.label}»`;
+  if (end) {
+    const change = distanceChange(end);
+    if (change < 0) anchor += `${anchor ? ' ' : ', '}к месту у ориентира «${end.label}»`;
+    else if (change > 0) anchor += `, прочь от ориентира «${end.label}»`;
+    else anchor += `${anchor ? ', ' : ' '}возле ориентира «${end.label}»`;
+  }
   return `${event.name} ${event.male ? 'прошёл' : 'прошла'}${direction}${anchor}.`;
 }
 
@@ -409,15 +413,19 @@ function finishPart(part) {
     if (group) {
       if (!event.action || emitted.has(group)) continue;
       emitted.add(group);
-      const behind = [];
-      const changes = group.events.filter(change => {
-        const creature = change.disappeared;
-        if (group.action !== 'step' || !creature?.position) return true;
+      const lastDisappearances = new Map();
+      if (group.action === 'step') for (const change of group.events) {
+        const creature = change.disappeared ?? change.appeared;
+        if (creature?.id === undefined) continue;
+        lastDisappearances.delete(creature.id);
+        if (change.disappeared) lastDisappearances.set(creature.id, creature);
+      }
+      for (const [id, creature] of lastDisappearances) {
         const position = JSON.parse(creature.position);
-        if (mapDistance(group.after.position, position) <= mapDistance(creature.seenFrom, position)) return true;
-        behind.push(`«${creature.label}»`);
-        return false;
-      });
+        if (mapDistance(group.after.position, position) <= mapDistance(creature.seenFrom, position)) lastDisappearances.delete(id);
+      }
+      const behind = [...new Set([...lastDisappearances.values()].map(creature => `«${creature.label}»`))];
+      const changes = group.events.filter(change => !lastDisappearances.has(change.disappeared?.id));
       let text = group.action === 'step' ? pathText(group) : `${group.name} ${group.male ? 'ждал' : 'ждала'} на месте ${durationText(group.duration)}.`;
       if (behind.length) text += behind.length === 1 ? ` Позади осталось существо ${behind[0]}.` : ` Позади остались существа: ${behind.join(', ')}.`;
       groupLines.add(events.length);
@@ -554,8 +562,8 @@ export async function packets(options) {
         if (!prior) {
           if (row.native_turn === memory.initialTurn) {
             const snapshot = memory.initialFacts.get(key);
-            if (!snapshot || !same([snapshot.state, snapshot.position], [fact.state, fact.position])) part.events.push({ text: fact.creature && !snapshot ? `Появилось существо «${fact.label}». ${fact.text}` : fact.text });
-          } else if (fact.creature && !initial) part.events.push({ text: `Появилось существо «${fact.label}». ${fact.text}` });
+            if (!snapshot || !same([snapshot.state, snapshot.position], [fact.state, fact.position])) part.events.push({ text: fact.creature && !snapshot ? `Появилось существо «${fact.label}». ${fact.text}` : fact.text, appeared: fact.creature ? fact : undefined });
+          } else if (fact.creature && !initial) part.events.push({ text: `Появилось существо «${fact.label}». ${fact.text}`, appeared: fact });
           else if (changingState.has(fact.section) && !initial) part.events.push({ text: fact.text });
           else if (fact.vehicle && memory.vehicles.has(key)) part.events.push({ text: `Вновь виден транспорт «${fact.label}». ${fact.text}` });
           else addText(part.packet, fact.section, fact.text);

@@ -145,7 +145,7 @@ test('all eight step directions use recorded movement and hero gender', async t 
     const paths = ctx.values.flatMap(moment => moment.parts.flatMap(part => part.packet.События ?? [])).filter(text => text.startsWith('Гостья прошла '));
     assert.equal(paths.length, 1);
     assert.ok(paths[0].startsWith(`Гостья прошла ${direction}, `) || paths[0].startsWith(`Гостья прошла ${direction} возле `));
-    assert.match(paths[0].slice(`Гостья прошла ${direction}`.length), /^(?:, от места у ориентира «[^»]+» к месту у ориентира «[^»]+»| возле ориентира «[^»]+»)\.$/u);
+    assert.equal(paths[0], {UP: 'Гостья прошла на север возле ориентира «бревно».', DOWN: 'Гостья прошла на юг возле ориентира «бревно».', LEFT: 'Гостья прошла на запад, прочь от ориентира «бревно».', RIGHT: 'Гостья прошла на восток, к месту у ориентира «бревно».', RIGHTUP: 'Гостья прошла на северо-восток, к месту у ориентира «бревно».', RIGHTDOWN: 'Гостья прошла на юго-восток возле ориентира «бревно».', LEFTUP: 'Гостья прошла на северо-запад, от места у ориентира «бревно» к месту у ориентира «деревянная стена».', LEFTDOWN: 'Гостья прошла на юго-запад, от места у ориентира «бревно» к месту у ориентира «Прокша».'}[action]);
     assert.doesNotMatch(paths[0], /шаг|рядом/u);
     assert.doesNotMatch(ctx.result.stderr, /поступок исключён/u);
   });
@@ -174,7 +174,7 @@ test('hero steps keep an intervening NPC disappearance in order', async t => {
   const steps = events.flatMap((text, index) => text.startsWith('Гость прошёл на северо-запад') ? [index] : []);
   assert.equal(steps.length, 1);
   const disappearance = events.findIndex(text => text.includes('Жирко') && text.includes('больше не видно'));
-  assert.deepEqual([events[steps[0]], disappearance], ['Гость прошёл на северо-запад, от места у ориентира «деревянная стена» к месту у ориентира «деревянная стена». Позади осталось существо «Жирко».', -1]);
+  assert.deepEqual([events[steps[0]], disappearance], ['Гость прошёл на северо-запад, к месту у ориентира «деревянная стена». Позади осталось существо «Жирко».', -1]);
 });
 
 test('two adjacent hero steps combine without an intervening event', async t => {
@@ -217,7 +217,7 @@ test('path landmarks rank people, furniture, ground items and untraversed terrai
     const ctx = await capture(child, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
     passed(ctx);
     const label = [person.name, furniture.name, item.item.name, 'деревянная стена'][rank];
-    assert.deepEqual(ctx.values[0].parts[0].packet.События, [rank === 3 ? 'Гость прошёл на восток возле ориентира «деревянная стена».' : `Гость прошёл на восток, от места у ориентира «деревянная стена» к месту у ориентира «${label}».`]);
+    assert.deepEqual(ctx.values[0].parts[0].packet.События, [rank === 3 ? 'Гость прошёл на восток возле ориентира «деревянная стена».' : `Гость прошёл на восток, к месту у ориентира «${label}».`]);
   });
 });
 
@@ -256,7 +256,7 @@ test('a path uses its initial frame when no final landmark is visible', async t 
   after.frame.objects = [];
   const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
   passed(ctx);
-  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, от места у ориентира «бревно».']);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток.']);
 });
 
 test('a moving person uses the recorded position in each endpoint frame for the path preposition', async t => {
@@ -275,8 +275,8 @@ test('a moving person uses the recorded position in each endpoint frame for the 
   after.frame.creatures[0].position = [2462, 1696, 0];
   const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
   passed(ctx);
-  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), [`Гость прошёл на восток, от места у ориентира «${person.name}» к месту у ориентира «${person.name}».`]);
-  assert.deepEqual(ctx.values[0].parts[0].packet.События, [`Гость прошёл на восток, от места у ориентира «${person.name}» к месту у ориентира «${person.name}».`, `По ходу пути: Положение существа «${person.name}» изменилось. Теперь существо находилось к востоку от героя, в месте сцены.`]);
+  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), [`Гость прошёл на восток, к месту у ориентира «${person.name}».`]);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, [`Гость прошёл на восток, к месту у ориентира «${person.name}».`, `По ходу пути: Положение существа «${person.name}» изменилось. Теперь существо находилось к востоку от героя, в месте сцены.`]);
 });
 
 test('initial terrain bearings do not add an event during the first recorded step', async t => {

@@ -29,13 +29,13 @@ async function capture961(t, input) {
 }
 
 const expectedV32961 = [
-  'Гость прошёл на юго-восток, от места у ориентира «деревянная стена» к месту у ориентира «бревно».',
+  'Гость прошёл на юго-восток, к месту у ориентира «бревно».',
   'По ходу пути: Появилось существо «Жирко». К востоку от героя — Жирко. Видимая одежда существа «Жирко» — онучи. Полосы ткани, которые мотают вокруг стопы и голени. Видимая одежда существа «Жирко» — рубаха. Простая длинная рубаха до колен. Видимая одежда существа «Жирко» — порты. Простые порты, собранные по ноге. Видимая одежда существа «Жирко» — поршни. Мягкая кожаная обувь из цельного куска. Видимая одежда существа «Жирко» — кожаный пояс. При вещи «кожаный пояс» было долото. Кожаный ремень с пряжкой. В руках у существа «Жирко» — плотницкий топор. Плотницкий топор на деревянном топорище. Текущее занятие существа «Жирко» — «нарезание досок». Орудие — «плотницкий топор». Материалом служит «бревно». Жирко стоит. Жирко смотрит в сторону героя.',
   'Гость ждал на месте десять минут.',
   'За время ожидания: Перемена в теле героя: нагрузки стало меньше.',
   'За время ожидания: Перемена вокруг героя: ветра стало больше.',
   'За время ожидания: Перемена вокруг героя: ветра стало меньше.',
-  'Гость прошёл на северо-запад, от места у ориентира «бревно» к месту у ориентира «деревянная стена». Позади остались существа: «Жирко», «Прокша».',
+  'Гость прошёл на северо-запад, от места у ориентира «бревно», возле ориентира «деревянная стена». Позади остались существа: «Жирко», «Прокша».',
   'По ходу пути: Перемена в теле героя: нагрузки стало больше.'
 ];
 
@@ -73,7 +73,7 @@ function registerV32961() {
       return 'другое событие';
     }), ['путь', 'событие пути', 'ожидание', 'событие ожидания', 'событие ожидания', 'событие ожидания', 'путь', 'событие пути'], 'Пути, ожидание и события должны идти в утверждённом порядке.');
     assert.deepEqual([ctx.events[1], ctx.events[3], ctx.events[4], ctx.events[5], ctx.events[7]], [expectedV32961[1], expectedV32961[3], expectedV32961[4], expectedV32961[5], expectedV32961[7]], 'Пометки должны сопровождать точный исходный текст событий.');
-    assert.deepEqual(paths.map(text => text.split(' Позади')[0]), [expectedV32961[0], expectedV32961[6].split(' Позади')[0]], 'Оба пути должны называть точные опоры и направления.');
+    assert.deepEqual(paths.map(text => text.split(' Позади')[0]), [expectedV32961[0], expectedV32961[6].split(' Позади')[0]], 'P1, §3.4 и §3.7: оба пути передают отношение к опорам по утверждённой таблице.');
     assert.equal(paths[1].slice(paths[1].indexOf('Позади')), expectedV32961[6].slice(expectedV32961[6].indexOf('Позади')), 'В конце пути должны стоять существа позади в порядке исчезновения.');
     assert.equal(ctx.events.some(text => text.includes('Существо «Жирко» больше не видно')), false, 'Для Жирко не должно оставаться отдельного события исчезновения.');
     assert.equal(ctx.events.some(text => text.includes('Существо «Прокша» больше не видно')), false, 'Для Прокши не должно оставаться отдельного события исчезновения.');
@@ -413,6 +413,167 @@ function h17Input961() {
   return input961([[0, [10, 10, 0]], [1, [10, 10, 0]]], [{ turn: 1, action: 'RIGHT' }]);
 }
 
+const r3ServiceValues961 = /[0-9]|miron|luka|human|f_bench|f_chest|\b(?:id|uid|type)\b|отрезок/iu;
+
+function r3f01Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[9, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[13, 11, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f02Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[9, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[9, 10, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f03Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[9, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[11, 13, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f04Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[13, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[13, 11, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f05Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[13, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[9, 11, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f06Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[11, 12, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[11, 13, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f07Input961() {
+  const furniture = [{ name: 'скамья', type: 'f_bench', positions: [[13, 11, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: furniture }], [1, [11, 10, 0], { visible_furniture: furniture }], [2, [12, 10, 0], { visible_furniture: furniture }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f08Input961() {
+  const furniture = [{ name: 'скамья', type: 'f_bench', positions: [[9, 11, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: furniture }], [1, [11, 10, 0], { visible_furniture: furniture }], [2, [12, 10, 0], { visible_furniture: furniture }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f09Input961() {
+  const furniture = [{ name: 'скамья', type: 'f_bench', positions: [[11, 13, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: furniture }], [1, [11, 10, 0], { visible_furniture: furniture }], [2, [12, 10, 0], { visible_furniture: furniture }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f10Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[9, 10, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f11Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[13, 10, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0], { visible_furniture: start }], [2, [12, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f12Input961() {
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[13, 11, 0]] }];
+  return input961([[0, [10, 10, 0]], [1, [11, 10, 0]], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f13Input961() {
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[9, 11, 0]] }];
+  return input961([[0, [10, 10, 0]], [1, [11, 10, 0]], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f14Input961() {
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[11, 13, 0]] }];
+  return input961([[0, [10, 10, 0]], [1, [11, 10, 0]], [2, [12, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3f15Input961() {
+  return input961([[0, [10, 10, 0]], [1, [11, 10, 0]], [2, [12, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3b01Input961() {
+  const miron = { kind: 'npc', type: 'human', id: 'miron', name: 'Мирон', position: [10, 10, 0], direction: 'запад' };
+  return input961([[0, [13, 10, 0], { creatures: [miron] }], [1, [14, 10, 0]], [2, [15, 10, 0], { creatures: [miron] }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3b02Input961() {
+  const miron = { kind: 'npc', type: 'human', id: 'miron', name: 'Мирон', position: [10, 10, 0], direction: 'запад' };
+  return input961([[0, [13, 10, 0], { creatures: [miron] }], [1, [14, 10, 0]], [2, [15, 10, 0], { creatures: [miron] }], [3, [16, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }, { turn: 3, action: 'RIGHT' }
+  ]);
+}
+
+function r3b03Input961() {
+  const miron = { kind: 'npc', type: 'human', id: 'miron', name: 'Мирон', position: [10, 10, 0], direction: 'запад' };
+  const luka = { kind: 'npc', type: 'human', id: 'luka', name: 'Лука', position: [10, 10, 0], direction: 'запад' };
+  return input961([[0, [13, 10, 0], { creatures: [miron, luka] }], [1, [14, 10, 0], { creatures: [luka] }], [2, [15, 10, 0], { creatures: [miron, luka] }], [3, [16, 10, 0], { creatures: [miron] }], [4, [17, 10, 0], { creatures: [miron] }], [5, [18, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }, { turn: 3, action: 'RIGHT' }, { turn: 4, action: 'RIGHT' }, { turn: 5, action: 'RIGHT' }
+  ]);
+}
+
+function r3b04Input961() {
+  const miron = { kind: 'npc', type: 'human', id: 'miron', name: 'Мирон', position: [10, 10, 0], direction: 'запад' };
+  return input961([[0, [13, 10, 0], { creatures: [miron] }], [1, [14, 10, 0]], [2, [15, 10, 0], { creatures: [miron] }], [3, [14, 10, 0]]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }, { turn: 3, action: 'LEFT' }
+  ]);
+}
+
+function r3a01Input961() {
+  return input961([[0, [10, 10, 0]], [1, [10, 10, 0], activityChange961], [2, [11, 10, 0], activityChange961]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'RIGHT' }
+  ]);
+}
+
+function r3a02Input961() {
+  return input961([[0, [10, 10, 0]], [1, [11, 10, 0]], [2, [11, 10, 0], activityChange961], [3, [12, 10, 0], activityChange961]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'open' }, { turn: 3, action: 'RIGHT' }
+  ]);
+}
+
+function r3z01Input961() {
+  const start = [{ name: 'скамья', type: 'f_bench', positions: [[9, 10, 0]] }];
+  const end = [{ name: 'сундук', type: 'f_chest', positions: [[11, 10, 0]] }];
+  return input961([[0, [10, 10, 0], { visible_furniture: start }], [1, [11, 10, 0]], [2, [10, 10, 0], { visible_furniture: end }]], [
+    { turn: 1, action: 'RIGHT' }, { turn: 2, action: 'LEFT' }
+  ]);
+}
+
 function registerSynthetic961() {
   const cases = [
     ['P2', p2Input961], ['P3', p3Input961], ['P4', p4Input961], ['P5', p5Input961], ['P6', p6Input961], ['P7', p7Input961], ['P8', p8Input961], ['P9', p9Input961], ['P10', p10Input961], ['P11', p11Input961], ['P12', p12Input961], ['P13a', p13aInput961], ['P13b', p13bInput961], ['P13c', p13cInput961], ['P14', p14Input961], ['P15', p15Input961], ['P16a', p16aInput961], ['P16b', p16bInput961], ['P17', p17Input961], ['P18', p18Input961], ['P19', p19Input961],
@@ -485,21 +646,21 @@ function registerSynthetic961() {
     assert.equal(ctx.events.length, 1, 'P10, §1.2: служебные вводы не добавляют событий.');
   });
 
-  test('P11 — совпадающие опоры дают форму возле ориентира', async t => {
+  test('P11 guard — равные расстояния до одной опоры дают форму возле ориентира', async t => {
     const ctx = await capture961(t, p11Input961());
-    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток возле ориентира «бревно».', 'P11, §3.3–§3.4: одинаковые label и position дают форму возле одной опоры.');
+    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток возле ориентира «бревно».', 'P11, §3.4 и §3.7: равные расстояния до одной опоры дают форму возле.');
     assert.equal(paths961(ctx).length, 1, 'P11, §3.4: подтверждённый шаг передан одним путём.');
   });
 
-  test('P12 — одинаковые названия разных опор сохраняют обе опоры', async t => {
+  test('P12 — одинаковый label объединяет опоры разных позиций', async t => {
     const ctx = await capture961(t, p12Input961());
-    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, от места у ориентира «бревно» к месту у ориентира «бревно».', 'P12, §3.3–§3.4: одинаковый label при разных position сохраняет обе опоры.');
+    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, к месту у ориентира «бревно».', 'P12, §3.3 и §3.4 строка 7, §3.7: одинаковый label даёт один ориентир с отношением к позиции конечной опоры.');
     assert.equal(paths961(ctx).length, 1, 'P12, §3.4: подтверждённый шаг передан одним путём.');
   });
 
-  test('P13a — путь называет только начальную опору', async t => {
+  test('P13a — начальная опора без удаления опускается', async t => {
     const ctx = await capture961(t, p13aInput961());
-    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, от места у ориентира «скамья».', 'P13a, §3.4: при отсутствии конечной опоры названа только начальная.');
+    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток.', 'P13a, §3.4 и §3.7: начальная опора без удаления при отсутствии конечной опускается.');
     assert.equal(paths961(ctx).length, 1, 'P13a, §3.4: подтверждённый шаг передан одним путём.');
   });
 
@@ -652,9 +813,9 @@ function registerSynthetic961() {
     assert.equal(ctx.events.indexOf(paths961(ctx)[0]), 0, 'H4, §2.2: путь предшествует событию своего отрезка.');
   });
 
-  test('H5 — разные названия опор одной позиции сохраняют обе опоры', async t => {
+  test('H5 — разные названия опор одной позиции учитываются по расстоянию', async t => {
     const ctx = await capture961(t, h5Input961());
-    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, от места у ориентира «скамья» к месту у ориентира «сундук».', 'H5, §3.3: одна позиция с разными label образует две разные опоры.');
+    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, к месту у ориентира «сундук».', 'H5, §3.3 и §3.4 строка 4, §3.7: разные label не объединяются, но без удаления от начала текст называет только конечную опору.');
     assert.equal(ctx.events[1]?.startsWith('По ходу пути: '), true, 'H5, §2.3: перемена мебели следует после пути с его пометкой.');
   });
 
@@ -698,6 +859,7 @@ function registerSynthetic961() {
     assert.equal(paths961(ctx).length, 2, 'H11, §6: сдвинутая V32 сохраняет два пути.');
     assert.equal(waits961(ctx).length, 1, 'H11, §6: сдвинутая V32 сохраняет одно ожидание.');
     const expected = expectedV32961.map(text => text.replaceAll('Жирко', 'Савва').replaceAll('Прокша', 'Ратмир'));
+    assert.deepEqual(paths961(ctx).map(text => text.split(' Позади')[0]), [expected[0], expected[6].split(' Позади')[0]], 'H11, §3.4 и §3.7: пути сохраняют утверждённые отношения к опорам после сдвига.');
     assert.deepEqual(ctx.events, expected, 'H11, §6: буквальная структура утверждённых событий сохраняется после изменения координат и имён.');
     assert.equal(paths961(ctx)[1]?.endsWith('Позади остались существа: «Савва», «Ратмир».') ?? false, true, 'H11, §4.1 и §4.2: новые имена сохранены в предложении о существах позади.');
     assert.equal(ctx.events.some(text => text.includes('Жирко') || text.includes('Прокша')), false, 'H11, §6: в преобразованном результате нет прежних имён.');
@@ -705,7 +867,7 @@ function registerSynthetic961() {
 
   test('H12 — разные id при одинаковых названии и позиции сохраняют одну опору', async t => {
     const ctx = await capture961(t, h12Input961());
-    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток возле ориентира «Проводник».', 'H12, §3.3: совпадение label и position важнее разных id опоры.');
+    assert.equal(paths961(ctx)[0], 'Гость прошёл на восток, к месту у ориентира «Проводник».', 'H12, §3.3 и §3.4 строка 7, §3.7: при одинаковом label отношение к конечной опоре определяется расстояниями, независимо от id.');
     assert.equal(ctx.events[1], 'По ходу пути: Существо «Проводник» больше не видно в месте сцены.', 'H12, §2.3: исходный текст исчезновения прежнего id сохранён после пути с пометкой.');
     assert.equal(ctx.events[2], 'По ходу пути: Появилось существо «Проводник». К востоку от героя — Проводник.', 'H12, §2.3: исходный текст появления нового id сохранён после пути с пометкой.');
     assert.ok(ctx.events.indexOf(ctx.events[1]) < ctx.events.indexOf(ctx.events[2]), 'H12, §2.2: исчезновение и появление сохраняют исходный порядок событий.');
@@ -745,6 +907,266 @@ function registerSynthetic961() {
     const ctx = await capture961(t, h17Input961());
     assert.equal(paths961(ctx).length, 0, 'H17, §1.9: неподтверждённая попытка не создаёт успешный путь.');
     assert.equal(ctx.events.length, 0, 'H17, §1.9: неподтверждённая попытка не создаёт события.');
+  });
+
+  test('R3-F01 guard — две разные опоры, удаление от начала и приближение к концу', async t => {
+    const ctx = await capture961(t, r3f01Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, от места у ориентира «скамья» к месту у ориентира «сундук».', 'R3-F01, §3.4 строка 1 и §3.7: текст пути точно передаёт отношение к обеим опорам.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F01, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F01, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F01, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F01, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F01, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F02 — две разные опоры с удалением от обеих', async t => {
+    const ctx = await capture961(t, r3f02Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, от места у ориентира «скамья», прочь от ориентира «сундук».', 'R3-F02, §3.3, §3.4 строка 2 и §3.7: текст пути точно передаёт удаление от обеих опор.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F02, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F02, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F02, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 2, 'R3-F02, §3.3: поток содержит один путь и одно событие смены мебели.');
+    assert.equal(ctx.events[1].startsWith('По ходу пути: '), true, 'R3-F02, §2.3: событие мебели следует после пути с пометкой.');
+    assert.equal(ctx.events[1].slice('По ходу пути: '.length), 'Изменилось состояние предмета «сундук». К западу от героя — сундук.', 'R3-F02, §2.3: исходный текст события мебели сохранён после пометки.');
+    assert.deepEqual(ctx.events, [paths[0], 'По ходу пути: Изменилось состояние предмета «сундук». К западу от героя — сундук.'], 'R3-F02, §2.2: путь и единственное событие идут в исходном порядке.');
+  });
+
+  test('R3-F03 — две разные опоры, удаление от начала и без перемены у конца', async t => {
+    const ctx = await capture961(t, r3f03Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, от места у ориентира «скамья», возле ориентира «сундук».', 'R3-F03, §3.4 строка 3 и §3.7: текст пути точно передаёт отношение к обеим опорам.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F03, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F03, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F03, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F03, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F03, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F04 — две разные опоры с приближением к обеим', async t => {
+    const ctx = await capture961(t, r3f04Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, к месту у ориентира «сундук».', 'R3-F04, §3.4 строка 4 и §3.7: при приближении к обеим опорам текст называет конечную.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F04, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F04, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F04, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F04, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F04, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F05 — две разные опоры, приближение к началу и удаление от конца', async t => {
+    const ctx = await capture961(t, r3f05Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, прочь от ориентира «сундук».', 'R3-F05, §3.4 строка 5 и §3.7: удаление от конечной опоры определяет текст пути.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F05, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F05, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F05, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F05, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F05, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F06 — две разные опоры без перемены расстояния', async t => {
+    const ctx = await capture961(t, r3f06Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток возле ориентира «сундук».', 'R3-F06, §3.4 строка 6 и §3.7: без перемены расстояния текст называет конечную опору возле героя.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F06, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F06, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F06, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F06, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F06, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F07 — один ориентир с приближением', async t => {
+    const ctx = await capture961(t, r3f07Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, к месту у ориентира «скамья».', 'R3-F07, §3.4 строка 7 и §3.7: приближение к одной опоре задаёт текст пути.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F07, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F07, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F07, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F07, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F07, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F08 — один ориентир с удалением', async t => {
+    const ctx = await capture961(t, r3f08Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, прочь от ориентира «скамья».', 'R3-F08, §3.4 строка 8 и §3.7: удаление от одной опоры задаёт текст пути.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F08, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F08, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F08, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F08, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F08, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F09 guard — один ориентир без перемены расстояния', async t => {
+    const ctx = await capture961(t, r3f09Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток возле ориентира «скамья».', 'R3-F09, §3.4 строка 9 и §3.7: равные расстояния до одной опоры дают форму возле.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F09, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F09, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F09, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F09, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F09, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F10 guard — только начальная опора с удалением', async t => {
+    const ctx = await capture961(t, r3f10Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, от места у ориентира «скамья».', 'R3-F10, §3.4 строка 10 и §3.7: единственная начальная опора названа при удалении.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F10, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F10, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F10, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F10, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F10, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F11 — только начальная опора без удаления', async t => {
+    const ctx = await capture961(t, r3f11Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток.', 'R3-F11, §3.4 строка 11 и §3.7: начальная опора без удаления опускается при отсутствии конечной.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F11, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F11, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F11, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F11, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F11, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F12 guard — только конечная опора с приближением', async t => {
+    const ctx = await capture961(t, r3f12Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, к месту у ориентира «сундук».', 'R3-F12, §3.4 строка 12 и §3.7: конечная опора названа при приближении.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F12, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F12, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F12, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F12, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F12, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F13 — только конечная опора с удалением', async t => {
+    const ctx = await capture961(t, r3f13Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток, прочь от ориентира «сундук».', 'R3-F13, §3.4 строка 13 и §3.7: конечная опора названа при удалении.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F13, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F13, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F13, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F13, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F13, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F14 — только конечная опора без перемены расстояния', async t => {
+    const ctx = await capture961(t, r3f14Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток возле ориентира «сундук».', 'R3-F14, §3.4 строка 14 и §3.7: конечная опора без перемены расстояния названа возле героя.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F14, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F14, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F14, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F14, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F14, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-F15 guard — путь без опор', async t => {
+    const ctx = await capture961(t, r3f15Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл на восток.', 'R3-F15, §3.4 строка 15 и §3.7: путь без опор сохраняет простую форму.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-F15, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-F15, §3.4: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-F15, §3.4: вход не создаёт ожидания.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 0, 'R3-F15, §3.7: без событий мира нет пометок пути.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-F15, §3.7: единственный путь сохраняет порядок событий без посторонних событий.');
+  });
+
+  test('R3-B01 — вернувшийся Мирон не остаётся позади', async t => {
+    const ctx = await capture961(t, r3b01Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0].includes('Позади'), false, 'R3-B01, §4.1.4 и §4.3: снова видимый в конце пути Мирон не называется позади.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-B01, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-B01, §4.1: два подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-B01, §4.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 3, 'R3-B01, §4.3: путь сопровождают отдельные исчезновение и появление.');
+    assert.deepEqual(ctx.events.slice(1), ['По ходу пути: Существо «Мирон» больше не видно в месте сцены.', 'По ходу пути: Появилось существо «Мирон». К западу от героя — Мирон.'], 'R3-B01, §2.2–§2.3 и §4.3: исходные исчезновение и появление сохранены с пометками и в порядке событий.');
+    assert.equal(ctx.events.filter(text => text.startsWith('По ходу пути: ')).length, 2, 'R3-B01, §2.3: оба события пути имеют пометку.');
+    assert.equal(ctx.events[0], paths[0], 'R3-B01, §2.2: путь следует перед событиями своего отрезка.');
+  });
+
+  test('R3-B02 — два исчезновения оставляют одно имя позади', async t => {
+    const ctx = await capture961(t, r3b02Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0].slice(paths[0].indexOf('Позади')), 'Позади осталось существо «Мирон».', 'R3-B02, §3.5 и §4.1.3: два исчезновения дают одно точное предложение позади.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-B02, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths[0].slice(paths[0].indexOf('Позади')).match(/Мирон/gu)?.length, 1, 'R3-B02, §3.5: имя существа указано в предложении позади один раз.');
+    assert.equal(paths.length, 1, 'R3-B02, §4.1: три подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-B02, §4.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 2, 'R3-B02, §4.2: исчезновения поглощены, а появление и путь сохранены.');
+    assert.equal(ctx.events.filter(text => text.includes('Существо «Мирон» больше не видно')).length, 0, 'R3-B02, §4.2: оба исчезновения названного позади существа поглощены.');
+    assert.equal(ctx.events[1], 'По ходу пути: Появилось существо «Мирон». К западу от героя — Мирон.', 'R3-B02, §4.2: появление существа остаётся отдельным событием с исходным текстом и пометкой.');
+    assert.equal(ctx.events[1].startsWith('По ходу пути: '), true, 'R3-B02, §2.3 и §4.2: появление помечено путём.');
+    assert.ok(ctx.events.indexOf(ctx.events[1]) > ctx.events.indexOf(paths[0]), 'R3-B02, §2.2: появление следует после пути.');
+  });
+
+  test('R3-B03 — имена позади идут по последним исчезновениям', async t => {
+    const ctx = await capture961(t, r3b03Input961());
+    const paths = paths961(ctx);
+    const names = paths[0].slice(paths[0].indexOf('Позади')).match(/«([^»]+)»/gu)?.map(name => name.slice(1, -1)) ?? [];
+    assert.deepEqual(names, ['Лука', 'Мирон'], 'R3-B03, §3.5 и §4.2: имена позади идут по последним исчезновениям.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-B03, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths[0].slice(paths[0].indexOf('Позади')), 'Позади остались существа: «Лука», «Мирон».', 'R3-B03, §3.5: предложение позади сохраняет утверждённый порядок имён.');
+    assert.equal(paths.length, 1, 'R3-B03, §4.1: пять подтверждённых шагов переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-B03, §4.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 2, 'R3-B03, §4.2: три исчезновения поглощены, появление и путь сохранены.');
+    assert.equal(ctx.events.filter(text => text.includes('больше не видно')).length, 0, 'R3-B03, §4.2: все исчезновения названных позади существ поглощены.');
+    assert.equal(ctx.events[1], 'По ходу пути: Появилось существо «Мирон». К западу от героя — Мирон.', 'R3-B03, §4.2: появление Мирона сохраняет исходный текст и пометку.');
+    assert.equal(ctx.events[1].startsWith('По ходу пути: '), true, 'R3-B03, §2.3 и §4.2: появление помечено путём.');
+    assert.equal(ctx.events[0], paths[0], 'R3-B03, §2.2: путь предшествует сохранённому появлению.');
+  });
+
+  test('R3-B04 — последнее расстояние исключает Мирона из позади', async t => {
+    const ctx = await capture961(t, r3b04Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0].includes('Позади'), false, 'R3-B04, §4.1.3: меньшее расстояние при последнем исчезновении исключает Мирона из позади.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-B04, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths.length, 1, 'R3-B04, §4.1: три подтверждённых шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-B04, §4.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 4, 'R3-B04, §4.3: путь сопровождают два исчезновения и появление.');
+    assert.equal(ctx.events.slice(1).filter(text => text.includes('Существо «Мирон» больше не видно')).length, 2, 'R3-B04, §4.3: оба исчезновения остаются отдельными событиями.');
+    assert.deepEqual(ctx.events.slice(1).map(text => text.slice('По ходу пути: '.length)), ['Существо «Мирон» больше не видно в месте сцены.', 'Появилось существо «Мирон». К западу от героя — Мирон.', 'Существо «Мирон» больше не видно в месте сцены.'], 'R3-B04, §4.3: исходные тексты двух исчезновений и появления сохранены в исходном порядке.');
+    assert.equal(ctx.events.slice(1).filter(text => text.startsWith('По ходу пути: ')).length, 3, 'R3-B04, §2.3 и §4.3: все три события пути имеют пометку.');
+    assert.equal(ctx.events[0], paths[0], 'R3-B04, §2.2: путь следует перед событиями своего отрезка.');
+  });
+
+  test('R3-A01 guard — событие попытки до первого пути остаётся без пометки', async t => {
+    const ctx = await capture961(t, r3a01Input961());
+    const paths = paths961(ctx);
+    assert.equal(ctx.events[0], 'Перемена в теле героя: нагрузки стало больше.', 'R3-A01, §2.1 и §2.4: исходное событие попытки остаётся первым и без пометки.');
+    assert.equal(paths.length, 1, 'R3-A01, §2.1: подтверждённый шаг создаёт один путь.');
+    assert.equal(waits961(ctx).length, 0, 'R3-A01, §2.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events[1], paths[0], 'R3-A01, §2.4: путь следует за событием неподтверждённой попытки.');
+    assert.deepEqual(ctx.events, ['Перемена в теле героя: нагрузки стало больше.', paths[0]], 'R3-A01, §2.4: событие попытки и подтверждённый путь идут в ожидаемом порядке без лишних событий.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-A01, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+  });
+
+  test('R3-A02 guard — событие неподтверждённого открытия остаётся между путями', async t => {
+    const ctx = await capture961(t, r3a02Input961());
+    const paths = paths961(ctx);
+    assert.equal(ctx.events[1], 'Перемена в теле героя: нагрузки стало больше.', 'R3-A02, §1.6 и §2.5: исходное событие неподтверждённой попытки остаётся между путями без пометки.');
+    assert.equal(paths.length, 2, 'R3-A02, §1.6: неподтверждённое открытие разделяет два пути.');
+    assert.equal(waits961(ctx).length, 0, 'R3-A02, §1.6: вход не создаёт ожидания.');
+    assert.deepEqual(ctx.events.map(text => text.startsWith('Гость прошёл') ? 'путь' : text), ['путь', 'Перемена в теле героя: нагрузки стало больше.', 'путь'], 'R3-A02, §2.5: событие без пометки сохраняет место между двумя путями.');
+    assert.equal(ctx.events.some(text => text === 'Гость открыл дверь.'), false, 'R3-A02, §2.5: неподтверждённая попытка не создаёт событие открытия.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-A02, §3.6: первый путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.doesNotMatch(paths[1], r3ServiceValues961, 'R3-A02, §3.6: второй путь не содержит цифр, служебных значений или слова «отрезок».');
+  });
+
+  test('R3-Z01 — нулевое смещение с разными опорами не называет сторону света', async t => {
+    const ctx = await capture961(t, r3z01Input961());
+    const paths = paths961(ctx);
+    assert.equal(paths[0], 'Гость прошёл возле ориентира «сундук».', 'R3-Z01, §3.1, §3.4 строка 6 и §3.7: замкнутый путь сохраняет точную форму конечной опоры без направления.');
+    assert.doesNotMatch(paths[0], r3ServiceValues961, 'R3-Z01, §3.6: путь не содержит цифр, служебных значений или слова «отрезок».');
+    assert.equal(paths[0].includes('на восток'), false, 'R3-Z01, §3.1: при нулевом смещении сторона света опущена.');
+    assert.equal(paths.length, 1, 'R3-Z01, §3.1: два шага переданы одним путём.');
+    assert.equal(waits961(ctx).length, 0, 'R3-Z01, §3.1: вход не создаёт ожидания.');
+    assert.equal(ctx.events.length, 1, 'R3-Z01, §3.7: в потоке нет пометок или событий мира.');
+    assert.deepEqual(ctx.events, [paths[0]], 'R3-Z01, §2.2: единственный путь сохраняет порядок событий.');
   });
 }
 

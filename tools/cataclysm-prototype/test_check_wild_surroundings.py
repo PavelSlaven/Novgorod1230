@@ -80,6 +80,8 @@ class WildFixture(unittest.TestCase):
         data = self.source_mod.parent.parent
         for name in ("core", "json"):
             (self.mod.parent.parent / name).symlink_to(data / name, target_is_directory=True)
+        if (data.parent / "lang").is_dir():
+            (self.mod.parent.parent.parent / "lang").symlink_to(data.parent / "lang", target_is_directory=True)
         self.allowlist = self.root / "allowlist.tsv"
         shutil.copyfile(os.environ["NOVGOROD_WILD_ALLOWLIST"], self.allowlist)
         originals = [json.loads(line) for line in (self.reference_run / "perception.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -196,6 +198,13 @@ class WildFixture(unittest.TestCase):
         result = self.invoke(extra=extra, reference_inputs=reference_inputs)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
+
+    def remove_allowance(self, kind, identifier):
+        with self.allowlist.open(encoding="utf-8", newline="") as stream:
+            rows = list(csv.reader(stream, delimiter="\t"))
+        with self.allowlist.open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.writer(stream, delimiter="\t")
+            writer.writerows(row for row in rows if len(row) < 2 or row[:2] != [kind, identifier])
 
     def original_states(self):
         state = None
@@ -860,6 +869,7 @@ class SubmapTests(WildFixture):
         self.assert_submap_bad("вложение", "syringe")
 
     def test_forbidden_saved_field_is_rejected(self):
+        self.remove_allowance("field", "fd_blood")
         self.submaps[0]["fields"] = [3, 2, ["fd_blood", 3, 35, {"character_id": None, "faction_id": None}]]
         self.assert_submap_bad("поле", "fd_blood")
 
@@ -965,7 +975,6 @@ class SubmapTests(WildFixture):
             ("traps", [[0, 0, "tr_nailboard", None]]),
             ("cosmetics", [[10, 1, "GRAFFITI", "ПНХ"]]),
             ("computers", [[2, 9], {"name": "Терминал с логами", "location": [362, 2769, -4]}]),
-            ("spawns", [["mon_zombie_labsecurity", 1, 0, 0, -1, -1, False, None]]),
             ("partial_constructions", [0, 0, 0, 1, 1, []]),
             ("camp", {"name": "camp"}),
             ("future_payload", [{"content": "unknown"}]),
@@ -981,6 +990,45 @@ class SubmapTests(WildFixture):
                         self.submaps[0][category] = []
                     else:
                         del self.submaps[0][category]
+
+    def test_saved_submap_spawn_accepts_crosswalk_allowed_fauna(self):
+        with (self.mod / "mtype_taxon_crosswalk.csv").open(encoding="utf-8-sig", newline="") as stream:
+            allowed = {
+                row["mtype_id"] for row in csv.DictReader(stream)
+                if row.get("decision") == "allow"
+            }
+        self.assertIn("mon_bat", allowed)
+        self.submaps[0]["spawns"] = [["mon_bat", 1, 0, 0, -1, -1, False, None]]
+        self.assert_clean()
+
+    def test_saved_submap_spawn_rejects_fauna_without_crosswalk_allow(self):
+        with (self.mod / "mtype_taxon_crosswalk.csv").open(encoding="utf-8-sig", newline="") as stream:
+            allowed = {
+                row["mtype_id"] for row in csv.DictReader(stream)
+                if row.get("decision") == "allow"
+            }
+        self.assertNotIn("mon_zombie", allowed)
+        self.submaps[0]["spawns"] = [["mon_zombie", 1, 0, 0, -1, -1, False, None]]
+        result = self.invoke()
+        self.assert_diagnostic(
+            result,
+            "существо",
+            f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}",
+            "creature",
+            "mon_zombie",
+        )
+
+    def test_saved_submap_spawn_rejects_malformed_records_as_unknown_input(self):
+        self.submaps[0]["spawns"] = [
+            ["mon_bat", 1, 0, 0, -1, -1, False],
+            ["mon_bat", 0, 0, 0, -1, -1, False, None],
+            ["mon_bat", 1, 12, 0, -1, -1, False, None],
+        ]
+        result = self.invoke()
+        location = f"{self.world / self.map_relative}:{','.join(map(str, self.submaps[0]['coordinates']))}"
+        unknown = f"неизвестный вход — {location} — spawns — spawns —"
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertEqual(sum(line.startswith(unknown) for line in result.stdout.splitlines()), 3, result.stdout)
 
     def test_nonzero_saved_submap_radiation_is_rejected(self):
         self.submaps[0]["radiation"] = [1, 144]
@@ -998,18 +1046,24 @@ class FrameTests(WildFixture):
     def assert_frames_checked(self, result):
         self.assertIn(f"кадров проверено — {len(self.packets)}", result.stdout)
 
-    def remove_allowance(self, kind, identifier):
-        with self.allowlist.open(encoding="utf-8", newline="") as stream:
-            rows = list(csv.reader(stream, delimiter="\t"))
-        with self.allowlist.open("w", encoding="utf-8", newline="") as stream:
-            writer = csv.writer(stream, delimiter="\t")
-            writer.writerows(row for row in rows if len(row) < 2 or row[:2] != [kind, identifier])
-
     def ensure_allowance(self, kind, identifier):
         with self.allowlist.open(encoding="utf-8-sig", newline="") as stream:
             rows = list(csv.DictReader(stream, delimiter="\t"))
         if not any(row["list"] == kind and row["id"] == identifier and row["decision"] in ("keep", "keep_rename") for row in rows):
             self.add_allowance(kind, identifier)
+
+    def add_template_item(self, identifier, singular, plural):
+        self.add_allowance("item", identifier, name=singular)
+        write_json(self.mod / "template-name-forms.json", [{
+            "type": "ITEM",
+            "id": identifier,
+            "name": {"str": singular, "str_pl": plural},
+        }])
+
+    def append_message(self, text):
+        message = self.original_message()
+        message["message"] = text
+        self.frame["journal"]["player_messages"]["messages"].append(message)
 
     def test_second_nonmaster_npc_is_rejected(self):
         npc = copy.deepcopy(self.frame["creatures"][0])
@@ -1093,6 +1147,103 @@ class FrameTests(WildFixture):
         self.assert_frames_checked(result)
         self.assertIn(f"{sound['description']} — {sound['category']} — 1", result.stdout)
         self.assertIn(f"{message['message']} — 1", result.stdout)
+
+    def test_message_template_allows_name_of_allowed_terrain(self):
+        self.add_allowance("terrain", "t_template_reed", name="Вейник")
+        self.add_allowance("message", "Передвижение по {ter_furn} замедляет вас!")
+        self.append_message("Передвижение по Вейник замедляет вас!")
+        self.assert_clean()
+
+    def test_message_template_rejects_name_of_unallowed_terrain(self):
+        self.add_allowance("message", "Передвижение по {ter_furn} замедляет вас!")
+        self.append_message("Передвижение по Вейник замедляет вас!")
+        self.assert_bad("сообщение")
+
+    def test_item_template_rejects_unallowed_item(self):
+        self.add_allowance("message", "Под ногами {item}.")
+        self.append_message("Под ногами 1 рыбный сэндвич.")
+        self.assert_bad("сообщение")
+
+    def test_item_template_does_not_allow_trailing_message_text(self):
+        self.add_template_item("template_cone", "шишка", "шишки")
+        self.add_allowance("message", "Под ногами {item}.")
+        self.append_message("Под ногами шишка. Вы слышите стон зомби!.")
+        self.assert_bad("сообщение")
+
+    def test_item_template_accepts_plural_form_and_parenthetical_qualifier(self):
+        self.add_template_item("template_leaves", "горсть листьев", "горсти листьев")
+        self.add_allowance("message", "Под ногами {item}.")
+        self.append_message("Под ногами 4 горсти листьев.")
+        self.append_message("Под ногами 4 горсти листьев (свежие).")
+        self.assert_clean()
+
+    def test_item_template_accepts_native_russian_plural_from_catalog(self):
+        self.ensure_allowance("item", "pinecone")
+        self.add_allowance("message", "Под ногами {item}.")
+        self.append_message("Под ногами 4 сосновые шишки.")
+        self.assert_clean()
+
+    def test_monster_and_item_template_accepts_allowed_names(self):
+        self.add_template_item("template_food", "мясо", "куски мяса")
+        self.add_allowance("message", "{mon} пожирает {item}.")
+        write_json(self.mod / "template-monster.json", [{
+            "type": "MONSTER",
+            "id": "mon_template_wolf",
+            "name": {"str": "волк"},
+        }])
+        crosswalk_path = self.mod / "mtype_taxon_crosswalk.csv"
+        with crosswalk_path.open(encoding="utf-8-sig", newline="") as stream:
+            reader = csv.DictReader(stream)
+            columns = reader.fieldnames
+            rows = list(reader)
+        rows.append({"mtype_id": "mon_template_wolf", "decision": "allow"})
+        with crosswalk_path.open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=columns)
+            writer.writeheader()
+            writer.writerows(rows)
+        self.append_message("волк пожирает мясо.")
+        self.append_message("волкs пожирает мясо.")
+        self.assert_clean()
+
+    def test_message_template_accepts_contextual_native_monster_plural_forms(self):
+        self.add_allowance("message", "{mon} плывут.")
+        self.append_message("северная щука плывут.")
+        self.append_message("северные щуки плывут.")
+        self.assert_clean()
+
+    def test_message_template_escapes_parentheses_question_mark_and_period(self):
+        self.add_template_item("template_cone", "шишка", "шишки")
+        self.add_allowance("message", "На земле ({item})?.")
+        self.append_message("На земле (шишка)?.")
+        self.assert_clean()
+        messages = self.frame["journal"]["player_messages"]["messages"]
+        for invalid in ("На земле шишка?.", "На земле (шишка).", "На земле (шишка)?!"):
+            messages[-1]["message"] = invalid
+            self.assert_bad("сообщение")
+        messages[-1]["message"] = "На земле (шишка)?."
+
+    def test_message_template_requires_letters_outside_markers(self):
+        self.add_allowance("message", "{item}")
+        self.append_message("Любой текст")
+        result = self.assert_bad("сообщение")
+        self.assert_diagnostic(result, "сообщение", self.allowlist, "message", "{item}")
+
+    def test_unmatched_message_template_does_not_allow_message(self):
+        self.add_allowance("message", "Передвижение по {ter_furn} замедляет вас!")
+        self.append_message("Текст, который не совпадает с шаблоном.")
+        self.assert_bad("сообщение")
+
+    def test_message_template_matches_integer_placeholder_only(self):
+        self.add_allowance("message", "Сытость {num}%.")
+        self.append_message("Сытость -2%.")
+        self.assert_clean()
+        self.frame["journal"]["player_messages"]["messages"][-1]["message"] = "Сытость два%."
+        self.assert_bad("сообщение")
+
+    def test_exact_message_allowance_still_matches(self):
+        self.add_allowance("message", "Точное сообщение.")
+        self.append_message("Точное сообщение.")
+        self.assert_clean()
 
     def test_saved_uid_mismatch_for_allowed_player_item_is_rejected(self):
         item = copy.deepcopy(self.frame["inventory"][0])
@@ -1395,6 +1546,112 @@ class FrameTests(WildFixture):
             1,
             f"exit={result.returncode}; stdout chars={len(result.stdout)}; stderr chars={len(result.stderr)}",
         )
+
+    def test_native_skin_message_accepts_allowed_species_skin(self):
+        self.add_allowance("message", "{mon} бьёт {mon}, но {skin} блокирует удар.")
+        self.append_message("дикий кабан бьёт волк, но толстая шкура блокирует удар.")
+        self.assert_clean()
+
+    def test_native_skin_message_rejects_skin_from_disallowed_species(self):
+        self.add_allowance("message", "{mon} бьёт {mon}, но {skin} блокирует удар.")
+        self.append_message("дикий кабан бьёт волк, но толстая кора блокирует удар.")
+        self.assert_bad("сообщение")
+
+    def test_native_skin_message_rejects_disallowed_monster(self):
+        self.add_allowance("message", "{mon} бьёт {mon}, но {skin} блокирует удар.")
+        self.append_message("зомби бьёт волк, но толстая шкура блокирует удар.")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_accepts_damage_species_and_freshness(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает побитый труп — волк (свежее).")
+        self.assert_clean()
+
+    def test_native_corpse_display_name_accepts_frozen_temperature(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает побитый труп — волк (свежее) (заморожено).")
+        self.assert_clean()
+
+    def test_native_corpse_display_name_rejects_non_native_temperature(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает побитый труп — волк (свежее) (NOT_NATIVE_TEMP).")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_rejects_unallowed_item(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает шприц.")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_rejects_disallowed_attacker(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("зомби сгрызает побитый труп — волк (свежее).")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_rejects_disallowed_corpse_species(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает побитый труп — зомби (свежее).")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_rejects_non_native_damage_prefix(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает NOT_NATIVE труп — волк (свежее).")
+        self.assert_bad("сообщение")
+
+    def test_native_corpse_display_name_rejects_non_native_freshness(self):
+        self.add_allowance("message", "{mon} сгрызает {item}.")
+        self.append_message("дикий кабан сгрызает побитый труп — волк (NOT_NATIVE).")
+        self.assert_bad("сообщение")
+
+    def test_native_grazed_terrain_allowance_is_accepted(self):
+        row = copy.deepcopy(next(
+            row for row in self.frame["visible_terrain"] if row["type"] == "t_dirt"
+        ))
+        row["type"] = "t_grass_grazed"
+        row["name"] = "выщипанная трава"
+        row["positions"] = [row["positions"][0]]
+        row["count"] = 1
+        self.frame["visible_terrain"].append(row)
+        self.assert_clean()
+
+    def test_unallowed_native_terrain_is_rejected(self):
+        row = copy.deepcopy(next(
+            row for row in self.frame["visible_terrain"] if row["type"] == "t_dirt"
+        ))
+        row["type"] = "t_pavement"
+        row["name"] = "асфальт"
+        row["positions"] = [row["positions"][0]]
+        row["count"] = 1
+        self.frame["visible_terrain"].append(row)
+        self.assert_bad("местность")
+
+    def test_native_blood_footprints_in_all_four_directions_are_accepted(self):
+        fields = []
+        for index, direction in enumerate(("n", "e", "s", "w"), 2):
+            field = self.original_row("objects", "fd_blood", "field")
+            field.update({
+                "type": f"fd_blood_footprint_{direction}",
+                "name": "bloody footprint",
+                "position": [self.court[0] * 24 + index, self.court[1] * 24 + 2, self.court[2]],
+                "intensity": 1,
+            })
+            fields.append(field)
+        self.frame["objects"].extend(fields)
+        result = self.assert_clean()
+        for field in fields:
+            self.assertIn(f"{field['type']} — 1", result.stdout)
+
+    def test_native_blood_footprint_with_disallowed_creature_is_rejected(self):
+        field = self.original_row("objects", "fd_blood", "field")
+        field.update({
+            "type": "fd_blood_footprint_e",
+            "name": "bloody footprint",
+            "position": [self.court[0] * 24 + 2, self.court[1] * 24 + 2, self.court[2]],
+            "intensity": 1,
+        })
+        self.frame["objects"].append(field)
+        self.frame["creatures"].append(self.original_row("creatures", "mon_zombie", "creature"))
+        result = self.assert_bad("существо")
+        self.assertIn("mon_zombie", result.stdout)
 
 
 class CompletenessTests(WildFixture):

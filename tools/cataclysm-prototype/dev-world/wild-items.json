@@ -415,5 +415,2570 @@
         ]
       }
     ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0019",
+    "name": {
+      "str_sp": "Слой опавшей хвои"
+    },
+    "copy-from": "leaves",
+    "description": "Между корнями лежит пружинящий бурый слой сухих иголок и мелких веточек; в сырости он темнеет и слипается."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0029",
+    "name": {
+      "str_sp": "берёзовая губка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На сухом берёзовом стволе белеют округлые плодовые тела гриба с бархатистой верхней стороной; старые полки сереют и крошатся по краю.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0039",
+    "name": {
+      "str_sp": "галерина окаймлённая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На гнилой древесине стоят мелкие медово-бурые грибы с тонкими ножками; узкое кольцо быстро темнеет от спор.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0047",
+    "name": {
+      "str_sp": "груздь чёрный (чернушка)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под еловой подстилкой показывается гриб с оливково-бурой липкой шляпкой; частые светлые пластинки видны по краю воронки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0052",
+    "name": {
+      "str_sp": "дождевик шиповатый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Белые шаровидные плодовые тела дождевика густо покрыты короткими шипиками; зрелые грибы темнеют снизу и крошатся при касании.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0057",
+    "name": {
+      "str_sp": "желчный гриб (горчак)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под берёзой растёт гриб со светлой выпуклой шляпкой и розовеющими трубочками; на бледной ножке резко проступает тёмная сеточка.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0085",
+    "name": {
+      "str_sp": "лисичка обыкновенная"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Группами среди мха растут жёлтые ворончатые грибы; складки на нижней стороне шляпки переходят в ножку без резкой границы.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0086",
+    "name": {
+      "str_sp": "ложноопёнок серно-жёлтый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На старом пне тесными пучками растут грибы с серно-жёлтыми шляпками; пластинки под ними зеленовато-серые и темнеют к зрелости.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0091",
+    "name": {
+      "str_sp": "мухомор вонючий (белая поганка)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Белая шляпка гриба остаётся гладкой и почти без пятен; на ножке заметно тонкое кольцо, а у земли из почвы выходит широкая вольва.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0092",
+    "name": {
+      "str_sp": "мухомор красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На красной шляпке гриба выделяются белые хлопья покрывала; под нею на белой ножке висит кольцо, у основания заметны чешуйки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0098",
+    "name": {
+      "str_sp": "опёнок летний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На пне и мёртвых ветвях растут рыхлые группы летнего опёнка; его медовые шляпки темнеют в середине.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0099",
+    "name": {
+      "str_sp": "опёнок осенний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На пнях смыкаются плотные пучки медово-бурых грибных шляпок; на ножках молодых опят ещё заметно светлое кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0107",
+    "name": {
+      "str_sp": "Отпавшая ветвь с лишайниками"
+    },
+    "copy-from": "stick_common",
+    "description": "Под еловой подстилкой лежит ветвь с обломанным концом; на шершавой коре серые лишайниковые лопасти держатся плотными пятнами."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0108",
+    "name": {
+      "str_sp": "Отставшая кора у основания ствола"
+    },
+    "copy-from": "splinter",
+    "description": "Изогнутая пластина коры лежит рядом с деревом; её наружная сторона шероховата, а внутренняя светлее и покрыта ходами мелких личинок."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0109",
+    "name": {
+      "str_sp": "паутинник красивейший"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Рыжевато-бурая шляпка гриба выпукла с тупым бугорком; ржавые пластинки скрыты до края, а ножку охватывают тонкие паутинистые полоски.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0113",
+    "name": {
+      "str_sp": "подосиновик жёлто-бурый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под берёзой растёт гриб с оранжево-бурой шляпкой и бахромчатым краем; ножка толще к основанию и покрыта тёмными чешуйками.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0114",
+    "name": {
+      "str_sp": "польский гриб (моховик каштановый)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Каштановая шляпка гриба блестит после дождя; жёлтые трубочки и мякоть на свежем срезе быстро синеют.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0117",
+    "name": {
+      "str_sp": "рыжик еловый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Оранжевые шляпки елового гриба темнеют зелёными пятнами после касания; на сломе выступает морковно-оранжевое молочко.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0120",
+    "name": {
+      "str_sp": "свинушка тонкая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Бурая шляпка гриба раскинута с глубоко подвёрнутым краем над широкими пластинками; в местах касания пластинки темнеют.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0130",
+    "name": {
+      "str_sp": "сыроежка жгучеедкая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Красная грибная шляпка раскрылась над частыми белыми пластинками; край местами растрескался, а мокрая поверхность блестит.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0131",
+    "name": {
+      "str_sp": "сыроежка пищевая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Розовато-бурая шляпка съедобной сыроежки раскрыта и местами оголяет белый ободок; пластинки ломкие и белые.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0133",
+    "name": {
+      "str_sp": "трутовик настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На берёзовом стволе тяжелеют серые копытообразные плодовые тела трутового гриба; на старых полках заметны концентрические полосы.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0137",
+    "name": {
+      "str_sp": "чага (трутовик скошенный)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На живом берёзовом стволе выпирает чёрный растрескавшийся грибной нарост; в его трещинах просвечивает рыжеватая сердцевина.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0148",
+    "name": {
+      "str_sp": "Клок звериной шерсти на сучке"
+    },
+    "copy-from": "fur",
+    "description": "На шероховатой коре или сухом сучке зацепились тонкие волоски и небольшой клочок подшёрстка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0149",
+    "name": {
+      "str_sp": "Кости мелкого зверя среди листьев"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке белеют несколько небольших костей; рядом могут оставаться потемневшие клочки шерсти."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0152",
+    "name": {
+      "str_sp": "Обглоданные шишки под деревом"
+    },
+    "copy-from": "pinecone",
+    "description": "В небольшом скоплении лежат оголённые стержни шишек и оторванные чешуйки; свежие светлые обломки выделяются на тёмной подстилке."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0154",
+    "name": {
+      "str_sp": "Перья линьки на лесной подстилке"
+    },
+    "copy-from": "feather",
+    "description": "Одно или несколько перьев лежат между листьями и хвоей; по краям опахала видны отдельные тонкие бородки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0155",
+    "name": {
+      "str_sp": "Погадка под старым насестом"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "Под ветвью лежит плотный серовато-бурый комочек шерсти; из него выступают мелкие косточки. Это остаток пищи птицы, а не помёт."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0156",
+    "name": {
+      "str_sp": "Помёт лесного хищника на заметном месте"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На камне, поваленном стволе или краю звериного прохода лежит тёмный вытянутый помёт; в старых остатках бывают видны шерсть и мелкие косточки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0157",
+    "name": {
+      "str_sp": "Старая падаль мелкого зверя"
+    },
+    "copy-from": "corpse",
+    "description": "В траве лежат остатки небольшого зверя; шерсть сбилась, а в тёплую пору рядом кружатся мухи. Вид и причина гибели по одному взгляду не устанавливаются."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0251",
+    "name": {
+      "str_sp": "Слой опавшей хвои"
+    },
+    "copy-from": "leaves",
+    "description": "Между корнями лежит пружинящий бурый слой сухих иголок и мелких веточек; в сырости он темнеет и слипается."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0258",
+    "name": {
+      "str_sp": "белый гриб (боровик)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Из сухой хвои выступает плотная бурая шляпка белого гриба; толстая светлая ножка с тонкой сеточкой держит её над мхом, на краю блестят капли влаги.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0277",
+    "name": {
+      "str_sp": "горькушка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Из мха поднимается красно-бурая вдавленная шляпка с заметным бугорком в центре; у надломленного края выступила белая капля горького молочка.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0292",
+    "name": {
+      "str_sp": "козляк"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Рыжеватая шляпка козляка выпирает из хвои, её край чуть завернулся вниз; снизу видны крупные угловатые жёлтые поры.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0293",
+    "name": {
+      "str_sp": "колпак кольчатый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На тонкой светлой ножке держится соломенная шляпка колпака; плёнчатое кольцо охватывает ножку, а песок прилип к влажному краю.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0296",
+    "name": {
+      "str_sp": "ложнодождевик обыкновенный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Жёлтоватые твёрдые клубни ложнодождевика выступают из мха; на разломанной оболочке заметна плотная тёмная мякоть с мраморными прожилками.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0301",
+    "name": {
+      "str_sp": "маслёнок поздний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под соснами блестят слизистые коричневые шляпки позднего маслёнка; на светлых ножках хорошо видны плёнчатые кольца.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0306",
+    "name": {
+      "str_sp": "моховик пёстрый (маслёнок пёстрый)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под мхом лежит оливково-жёлтая бархатистая шляпка моховика; на срезе светлая мякоть медленно проступает синеватым пятном.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0307",
+    "name": {
+      "str_sp": "мухомор пантерный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Бурая шляпка пантерного мухомора усыпана белыми хлопьевидными бородавками; по краю видны тонкие полосы, а на ножке под шляпкой осталось кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0309",
+    "name": {
+      "str_sp": "Отпавшая ветвь с лишайниками"
+    },
+    "copy-from": "stick_common",
+    "description": "На песчаной земле лежит сухая сосновая ветка; её тёмную кору островками закрывают бледно-серые лишайники."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0310",
+    "name": {
+      "str_sp": "Отставшая кора у основания ствола"
+    },
+    "copy-from": "splinter",
+    "description": "Изогнутая пластина коры лежит рядом с деревом; её наружная сторона шероховата, а внутренняя светлее и покрыта ходами мелких личинок."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0352",
+    "name": {
+      "str_sp": "Клок звериной шерсти на сучке"
+    },
+    "copy-from": "fur",
+    "description": "На шероховатой коре или сухом сучке зацепились тонкие волоски и небольшой клочок подшёрстка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0353",
+    "name": {
+      "str_sp": "Кости мелкого зверя среди листьев"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке белеют несколько небольших костей; рядом могут оставаться потемневшие клочки шерсти."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0356",
+    "name": {
+      "str_sp": "Обглоданные шишки под деревом"
+    },
+    "copy-from": "pinecone",
+    "description": "В небольшом скоплении лежат оголённые стержни шишек и оторванные чешуйки; свежие светлые обломки выделяются на тёмной подстилке."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0358",
+    "name": {
+      "str_sp": "Перья линьки на лесной подстилке"
+    },
+    "copy-from": "feather",
+    "description": "Одно или несколько перьев лежат между листьями и хвоей; по краям опахала видны отдельные тонкие бородки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0359",
+    "name": {
+      "str_sp": "Погадка под старым насестом"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "Под ветвью лежит плотный серовато-бурый комочек шерсти; из него выступают мелкие косточки. Это остаток пищи птицы, а не помёт."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0360",
+    "name": {
+      "str_sp": "Помёт лесного хищника на заметном месте"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На камне, поваленном стволе или краю звериного прохода лежит тёмный вытянутый помёт; в старых остатках бывают видны шерсть и мелкие косточки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0361",
+    "name": {
+      "str_sp": "Старая падаль мелкого зверя"
+    },
+    "copy-from": "corpse",
+    "description": "В траве лежат остатки небольшого зверя; шерсть сбилась, а в тёплую пору рядом кружатся мухи. Вид и причина гибели по одному взгляду не устанавливаются."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0465",
+    "name": {
+      "str_sp": "белый гриб (боровик)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Бурая шляпка гриба держится на толстой бочковидной ножке с мелкой белой сеткой; плотная мякоть на срезе остаётся белой.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0472",
+    "name": {
+      "str_sp": "берёзовая губка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На сухом берёзовом стволе белеют округлые плодовые тела гриба с бархатистой верхней стороной; старые полки сереют и крошатся по краю.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0474",
+    "name": {
+      "str_sp": "бледная поганка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Гладкая оливковая шляпка гриба светлеет по краю; под ней видны белые пластинки, на ножке висит кольцо, у основания выступает мешковидная вольва.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0500",
+    "name": {
+      "str_sp": "галерина окаймлённая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На гнилой древесине стоят мелкие медово-бурые грибы с тонкими ножками; узкое кольцо быстро темнеет от спор.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0504",
+    "name": {
+      "str_sp": "груздь настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Белая ворончатая шляпка гриба с подвёрнутым мохнатым краем выступает из мха; на сломе проступает густая капля белого сока.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0551",
+    "name": {
+      "str_sp": "ложноопёнок серно-жёлтый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На старом пне тесными пучками растут грибы с серно-жёлтыми шляпками; пластинки под ними зеленовато-серые и темнеют к зрелости.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0560",
+    "name": {
+      "str_sp": "моховик зелёный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Оливковая бархатистая шляпка гриба раскрыта над жёлтыми крупными порами; на мокрой поверхности прилипают иглы и мелкие листья.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0561",
+    "name": {
+      "str_sp": "мухомор красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На красной шляпке гриба выделяются белые хлопья покрывала; под нею на белой ножке висит кольцо, у основания заметны чешуйки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0567",
+    "name": {
+      "str_sp": "опёнок летний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Пучок летних опят вышел из щели на влажном лиственном стволе; у молодых грибов края шляпок светлые.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0568",
+    "name": {
+      "str_sp": "опёнок осенний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На пнях смыкаются плотные пучки медово-бурых грибных шляпок; на ножках молодых опят ещё заметно светлое кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0574",
+    "name": {
+      "str_sp": "Отпавшая ветвь с лишайниками"
+    },
+    "copy-from": "stick_common",
+    "description": "Среди листового опада лежит берёзовая ветка, на которой зеленовато-серые лишайники обросли трещины коры."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0575",
+    "name": {
+      "str_sp": "Отставшая кора у основания ствола"
+    },
+    "copy-from": "splinter",
+    "description": "Изогнутая пластина коры лежит рядом с деревом; её наружная сторона шероховата, а внутренняя светлее и покрыта ходами мелких личинок."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0583",
+    "name": {
+      "str_sp": "подберёзовик обыкновенный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Серо-бурая шляпка гриба поднята на светлой ножке с тёмными чешуйками; мелкие трубочки под ней светлые, мякоть не синеет на срезе.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0584",
+    "name": {
+      "str_sp": "подосиновик красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Яркая оранжево-красная шляпка гриба выступает из травы; ножка покрыта тёмными чешуйками, а мякоть на срезе синеет и темнеет.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0601",
+    "name": {
+      "str_sp": "сыроежка пищевая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Розовато-бурая шляпка съедобной сыроежки раскрыта и местами оголяет белый ободок; пластинки ломкие и белые.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0603",
+    "name": {
+      "str_sp": "трутовик настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На берёзовом стволе тяжелеют серые копытообразные плодовые тела трутового гриба; на старых полках заметны концентрические полосы.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0605",
+    "name": {
+      "str_sp": "трутовик серно-жёлтый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На старой иве ярусами вырастают сочные оранжевые плодовые тела гриба с жёлтыми краями; молодые полки влажные и мягкие.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0607",
+    "name": {
+      "str_sp": "чага (трутовик скошенный)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На живом берёзовом стволе выпирает чёрный растрескавшийся грибной нарост; в его трещинах просвечивает рыжеватая сердцевина.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0618",
+    "name": {
+      "str_sp": "энтолома ядовитая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Крупная серая шляпка раскрыта над желтоватыми пластинками, которые у зрелого гриба розовеют; от гриба идёт мучной запах.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0631",
+    "name": {
+      "str_sp": "Клок звериной шерсти на сучке"
+    },
+    "copy-from": "fur",
+    "description": "На шероховатой коре или сухом сучке зацепились тонкие волоски и небольшой клочок подшёрстка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0632",
+    "name": {
+      "str_sp": "Кости мелкого зверя среди листьев"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке белеют несколько небольших костей; рядом могут оставаться потемневшие клочки шерсти."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0636",
+    "name": {
+      "str_sp": "Обглоданные шишки под деревом"
+    },
+    "copy-from": "pinecone",
+    "description": "В небольшом скоплении лежат оголённые стержни шишек и оторванные чешуйки; свежие светлые обломки выделяются на тёмной подстилке."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0637",
+    "name": {
+      "str_sp": "Перья линьки на лесной подстилке"
+    },
+    "copy-from": "feather",
+    "description": "Одно или несколько перьев лежат между листьями и хвоей; по краям опахала видны отдельные тонкие бородки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0638",
+    "name": {
+      "str_sp": "Погадка под старым насестом"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "Под ветвью лежит плотный серовато-бурый комочек шерсти; из него выступают мелкие косточки. Это остаток пищи птицы, а не помёт."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0639",
+    "name": {
+      "str_sp": "Помёт лесного хищника на заметном месте"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На камне, поваленном стволе или краю звериного прохода лежит тёмный вытянутый помёт; в старых остатках бывают видны шерсть и мелкие косточки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0640",
+    "name": {
+      "str_sp": "Пустая скорлупа орехов у куста"
+    },
+    "copy-from": "pinecone",
+    "description": "Под кустом лежат половинки и мелкие обломки твёрдой скорлупы; часть краёв обточена мелкими зубами."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0641",
+    "name": {
+      "str_sp": "Старая падаль мелкого зверя"
+    },
+    "copy-from": "corpse",
+    "description": "В траве лежат остатки небольшого зверя; шерсть сбилась, а в тёплую пору рядом кружатся мухи. Вид и причина гибели по одному взгляду не устанавливаются."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0760",
+    "name": {
+      "str_sp": "Первые жёлтые листья на тёмной лесной подстилке"
+    },
+    "copy-from": "leaves",
+    "description": "На прошлогоднем опаде лежат первые жёлтые берёзовые листья; зелёный полог ещё плотен, а сухие края листьев тихо шуршат при ветре."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0761",
+    "name": {
+      "str_sp": "Слой опавшей хвои"
+    },
+    "copy-from": "leaves",
+    "description": "Между корнями лежит пружинящий бурый слой сухих иголок и мелких веточек; в сырости он темнеет и слипается."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0777",
+    "name": {
+      "str_sp": "белый гриб (боровик)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В мшистой подстилке виден белый гриб: бурая шляпка поднимается над толстой бочковидной ножкой с белой сеточкой.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0784",
+    "name": {
+      "str_sp": "берёзовая губка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На мёртвой берёзе видны белые округлые грибные подушки; молодые наросты гладкие, старые темнеют и растрескиваются.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0786",
+    "name": {
+      "str_sp": "бледная поганка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На лесной земле видна ядовитая поганка: зеленовато-оливковая шляпка раскрывается над белыми пластинками, а у основания ножки заметна вольва.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0798",
+    "name": {
+      "str_sp": "волнушка розовая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В сыром мху поднимаются розовые шляпки с концентрическими кругами и густой бахромой по краю.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0811",
+    "name": {
+      "str_sp": "галерина окаймлённая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На гнилой древесине тесно стоят медово-бурые шляпки; у тонких ножек заметно узкое кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0818",
+    "name": {
+      "str_sp": "груздь настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В мху видна широкая белая воронка с мохнатым краем, загнутым внутрь; на сломе выступает белый сок.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0819",
+    "name": {
+      "str_sp": "груздь чёрный (чернушка)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Из влажной подстилки поднимается тёмная оливково-чёрная шляпка; липкая поверхность собирает сухие иголки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0824",
+    "name": {
+      "str_sp": "дождевик шиповатый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В лесном мху лежат белые шарики, густо покрытые короткими мягкими шипиками.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0832",
+    "name": {
+      "str_sp": "желчный гриб (горчак)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На мшистой земле виден гриб со светлой шляпкой и крепкой ножкой; трубчатый слой розовеет, а ножку покрывает тёмная сетка.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0880",
+    "name": {
+      "str_sp": "лисичка обыкновенная"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Из мха поднимаются жёлтые воронки; вместо отдельных пластинок снизу расходятся толстые складки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0881",
+    "name": {
+      "str_sp": "ложнодождевик обыкновенный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке показался твёрдый желтоватый клубень; трещина на оболочке открывает тёмную мраморную мякоть.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0882",
+    "name": {
+      "str_sp": "ложноопёнок серно-жёлтый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На пне сбились яркие серно-жёлтые шляпки; зрелые пластинки отливают зеленоватым цветом.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0903",
+    "name": {
+      "str_sp": "моховик зелёный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В мху видна оливковая бархатистая шляпка; она приподнимается над короткой ножкой, а снизу заметны крупные жёлтые поры.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0904",
+    "name": {
+      "str_sp": "мухомор вонючий (белая поганка)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Среди листового опада видна белая шляпка; ножка с кольцом поднимается над мешковидной вольвой.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0905",
+    "name": {
+      "str_sp": "мухомор красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Ярко-красная шляпка усыпана белыми хлопьями; под краем видны светлые пластинки, на ножке свисает кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0906",
+    "name": {
+      "str_sp": "мухомор пантерный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В лесной подстилке выделяется бурая шляпка, покрытая белыми бородавками; её край заметно исчерчен.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0919",
+    "name": {
+      "str_sp": "опёнок летний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На гниющей древесине тесно стоят тонконогие летние опята с охристыми шляпками и тёмной серединой.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0920",
+    "name": {
+      "str_sp": "опёнок осенний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "У основания старого пня сбились в плотные гроздья медово-бурые шляпки; на ножках различимо светлое плёнчатое кольцо.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0929",
+    "name": {
+      "str_sp": "Отпавшая ветвь с лишайниками"
+    },
+    "copy-from": "stick_common",
+    "description": "В смешанной подстилке валяется сучок с неровным изломом; мох и тонкие серые лишайники покрывают его нижнюю сторону."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0930",
+    "name": {
+      "str_sp": "Отставшая кора у основания ствола"
+    },
+    "copy-from": "splinter",
+    "description": "Изогнутая пластина коры лежит рядом с деревом; её наружная сторона шероховата, а внутренняя светлее и покрыта ходами мелких личинок."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0943",
+    "name": {
+      "str_sp": "подберёзовик обыкновенный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под берёзами поднимаются серо-бурые шляпки; белые ножки густо покрыты тёмными чешуйками.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0944",
+    "name": {
+      "str_sp": "подосиновик жёлто-бурый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под берёзами заметна оранжево-бурая шляпка; ножка покрыта чёрными чешуйками, а край шляпки опушён.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0945",
+    "name": {
+      "str_sp": "подосиновик красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Над лесным мхом поднимается яркая красная шляпка; на повреждённой мякоти проступают синие, затем почти чёрные пятна.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0946",
+    "name": {
+      "str_sp": "польский гриб (моховик каштановый)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В еловом мху заметна гладкая каштановая шляпка; снизу желтеют трубочки, а на срезе они быстро синеют.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0949",
+    "name": {
+      "str_sp": "свинушка тонкая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке лежит бурая шляпка с сильно подвёрнутым краем; частые пластинки темнеют при малейшем повреждении.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0960",
+    "name": {
+      "str_sp": "сыроежка пищевая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В мху различима розовато-бурая шляпка; её кожица заканчивается до края, а под ней видны хрупкие белые пластинки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0962",
+    "name": {
+      "str_sp": "трутовик настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На берёзовом стволе выступают серые копытообразные полки; их слоистая верхушка растрескалась и потемнела по краю.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0968",
+    "name": {
+      "str_sp": "чага (трутовик скошенный)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На берёзовом стволе чернеет неровный угольный нарост; трещина открывает рыжевато-бурую сердцевину.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0994",
+    "name": {
+      "str_sp": "Клок звериной шерсти на сучке"
+    },
+    "copy-from": "fur",
+    "description": "На шероховатой коре или сухом сучке зацепились тонкие волоски и небольшой клочок подшёрстка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0995",
+    "name": {
+      "str_sp": "Кости мелкого зверя среди листьев"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке белеют несколько небольших костей; рядом могут оставаться потемневшие клочки шерсти."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n0998",
+    "name": {
+      "str_sp": "Обглоданные шишки под деревом"
+    },
+    "copy-from": "pinecone",
+    "description": "В небольшом скоплении лежат оголённые стержни шишек и оторванные чешуйки; свежие светлые обломки выделяются на тёмной подстилке."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1000",
+    "name": {
+      "str_sp": "Перья линьки на лесной подстилке"
+    },
+    "copy-from": "feather",
+    "description": "Одно или несколько перьев лежат между листьями и хвоей; по краям опахала видны отдельные тонкие бородки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1001",
+    "name": {
+      "str_sp": "Погадка под старым насестом"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "Под ветвью лежит плотный серовато-бурый комочек шерсти; из него выступают мелкие косточки. Это остаток пищи птицы, а не помёт."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1002",
+    "name": {
+      "str_sp": "Помёт лесного хищника на заметном месте"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На камне, поваленном стволе или краю звериного прохода лежит тёмный вытянутый помёт; в старых остатках бывают видны шерсть и мелкие косточки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1003",
+    "name": {
+      "str_sp": "Пустая скорлупа орехов у куста"
+    },
+    "copy-from": "pinecone",
+    "description": "Под кустом лежат половинки и мелкие обломки твёрдой скорлупы; часть краёв обточена мелкими зубами."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1004",
+    "name": {
+      "str_sp": "Старая падаль мелкого зверя"
+    },
+    "copy-from": "corpse",
+    "description": "В траве лежат остатки небольшого зверя; шерсть сбилась, а в тёплую пору рядом кружатся мухи. Вид и причина гибели по одному взгляду не устанавливаются."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1180",
+    "name": {
+      "str_sp": "берёзовая губка"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На мёртвой берёзе выступают белые округлые полки гриба; верхняя сторона матовая и бугристая, а молодой край тоньше и светлее.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1201",
+    "name": {
+      "str_sp": "волнушка розовая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Розовая шляпка волнушки поднимается из мха концентрическими кругами; густая бахрома по загнутому краю потемнела от влаги, на пластинках выступил белый сок.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1204",
+    "name": {
+      "str_sp": "галерина окаймлённая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На влажной гнилой ветке тесно стоят маленькие медово-бурые шляпки галерины; тонкое кольцо охватывает каждую ножку, а край шляпки светлее середины.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1211",
+    "name": {
+      "str_sp": "груздь чёрный (чернушка)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Оливково-чёрная липкая шляпка груздя прячется под листьями; у надрезанного края выступает белый едкий сок, а пластинки быстро темнеют от прикосновения.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1212",
+    "name": {
+      "str_sp": "дождевик шиповатый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В траве лежат круглые белые дождевики, густо покрытые короткими шипиками; у зрелого гриба верх уже буреет и осыпается мягкой пылью.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1270",
+    "name": {
+      "str_sp": "Кострищная зола в месте лагеря"
+    },
+    "copy-from": "ash",
+    "description": "На участке старого лагеря лежит небольшое светло-серое скопление золы, смешанной с почвой; края размыты ветром и дождём."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1285",
+    "name": {
+      "str_sp": "ложноопёнок серно-жёлтый"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На старом пне тесно сгрудились серно-жёлтые шляпки ложноопёнка; пластинки под ними зеленоваты, а тонкие ножки темнее у основания.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1291",
+    "name": {
+      "str_sp": "маслёнок поздний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Под соснами блестят слизистые коричневые шляпки позднего маслёнка; на светлых ножках хорошо видны плёнчатые кольца.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1296",
+    "name": {
+      "str_sp": "моховик зелёный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Бархатистая оливковая шляпка моховика выглядывает из зелёного мха; под ней желтеют крупные поры, а ножка книзу темнеет.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1301",
+    "name": {
+      "str_sp": "опёнок летний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Летние опята группами покрывают старую ветвь; шляпки у них медово-жёлтые, а ножки тонкие и светлые.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1302",
+    "name": {
+      "str_sp": "опёнок осенний"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Осенью медово-бурые шляпки опёнка тесными гроздьями покрывают пень и основание ствола; на светлых ножках заметны плёнчатые кольца.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1304",
+    "name": {
+      "str_sp": "Отпавшая ветвь с лишайниками"
+    },
+    "copy-from": "stick_common",
+    "description": "У светлого края леса лежит ветвь с отслаивающейся корой, а её открытые участки покрыты светлыми лишайниковыми корочками."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1305",
+    "name": {
+      "str_sp": "Отставшая кора у основания ствола"
+    },
+    "copy-from": "splinter",
+    "description": "Изогнутая пластина коры лежит рядом с деревом; её наружная сторона шероховата, а внутренняя светлее и покрыта ходами мелких личинок."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1306",
+    "name": {
+      "str_sp": "подберёзовик обыкновенный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Серо-бурая шляпка подберёзовика поднялась над берёзовыми листьями; светлая ножка покрыта тёмными чешуйками и утолщена у земли.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1310",
+    "name": {
+      "str_sp": "подосиновик красный"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Яркая оранжево-красная шляпка подосиновика видна среди листьев осины; на сломе светлая мякоть сначала розовеет, затем синеет и темнеет.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1316",
+    "name": {
+      "str_sp": "свинушка тонкая"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Бурая шляпка свинушки вдавлена в середине, её толстый край подвёрнут; при касании пластинки быстро буреют вдоль короткой ножки.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "use_action": [
+      "POISON"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1328",
+    "name": {
+      "str_sp": "трутовик настоящий"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На берёзе выступают серые копытообразные полки трутовика; верх покрыт твёрдыми концентрическими валиками, а снизу виден светлый пористый слой.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1331",
+    "name": {
+      "str_sp": "чага (трутовик скошенный)"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На живом берёзовом стволе вспучен чёрный растрескавшийся нарост чаги; в глубоких трещинах видна ржаво-бурая внутренняя ткань.",
+    "delete": {
+      "flags": [
+        "FORAGE_HALLU",
+        "FORAGE_POISON"
+      ]
+    },
+    "extend": {
+      "flags": [
+        "INEDIBLE"
+      ]
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1357",
+    "name": {
+      "str_sp": "Клок звериной шерсти на сучке"
+    },
+    "copy-from": "fur",
+    "description": "На шероховатой коре или сухом сучке зацепились тонкие волоски и небольшой клочок подшёрстка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1358",
+    "name": {
+      "str_sp": "Кости мелкого зверя среди листьев"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "В подстилке белеют несколько небольших костей; рядом могут оставаться потемневшие клочки шерсти."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1361",
+    "name": {
+      "str_sp": "Обглоданные шишки под деревом"
+    },
+    "copy-from": "pinecone",
+    "description": "В небольшом скоплении лежат оголённые стержни шишек и оторванные чешуйки; свежие светлые обломки выделяются на тёмной подстилке."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1362",
+    "name": {
+      "str_sp": "Перья линьки на лесной подстилке"
+    },
+    "copy-from": "feather",
+    "description": "Одно или несколько перьев лежат между листьями и хвоей; по краям опахала видны отдельные тонкие бородки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1363",
+    "name": {
+      "str_sp": "Погадка под старым насестом"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "Под ветвью лежит плотный серовато-бурый комочек шерсти; из него выступают мелкие косточки. Это остаток пищи птицы, а не помёт."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1364",
+    "name": {
+      "str_sp": "Помёт лесного хищника на заметном месте"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На камне, поваленном стволе или краю звериного прохода лежит тёмный вытянутый помёт; в старых остатках бывают видны шерсть и мелкие косточки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1365",
+    "name": {
+      "str_sp": "Пустая скорлупа орехов у куста"
+    },
+    "copy-from": "pinecone",
+    "description": "Под кустом лежат половинки и мелкие обломки твёрдой скорлупы; часть краёв обточена мелкими зубами."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1366",
+    "name": {
+      "str_sp": "Старая падаль мелкого зверя"
+    },
+    "copy-from": "corpse",
+    "description": "В траве лежат остатки небольшого зверя; шерсть сбилась, а в тёплую пору рядом кружатся мухи. Вид и причина гибели по одному взгляду не устанавливаются."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1553",
+    "name": {
+      "str_sp": "Кольцо луговых грибов"
+    },
+    "copy-from": "mushroom",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На открытом дёрне небольшие грибы образуют дугу или неполное кольцо; рядом трава отличается высотой и оттенком."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1554",
+    "name": {
+      "str_sp": "Коровий навоз"
+    },
+    "copy-from": "feces_cow",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Среди вытоптанной травы темнеет коровий навоз; рядом может пахнуть мокрой землёй и кормом."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1558",
+    "name": {
+      "str_sp": "Овечьи катышки и примятая трава"
+    },
+    "copy-from": "feces_manure",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "У края покоса остаются свежие овечьи катышки и примятая трава."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1560",
+    "name": {
+      "str_sp": "Помёт лося"
+    },
+    "copy-from": "feces_manure",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В высокой траве лежат отдельные тёмные катышки лосиного помёта; вокруг могут быть обгрызенные верхушки растений."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1681",
+    "name": {
+      "str_sp": "Накренившийся деревянный колышек"
+    },
+    "copy-from": "stick_long",
+    "description": "У мокрой травяной кромки стоит наклонённый колышек; у основания видна размягчённая земля. Назначение колышка по одному виду не определяется."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1698",
+    "name": {
+      "str_sp": "Коровий навоз"
+    },
+    "copy-from": "feces_cow",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "Среди вытоптанной травы темнеет коровий навоз; рядом может пахнуть мокрой землёй и кормом."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1699",
+    "name": {
+      "str_sp": "Овечьи катышки и примятая трава"
+    },
+    "copy-from": "feces_manure",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "У межи остаются свежие овечьи катышки и примятая трава."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1841",
+    "name": {
+      "str_sp": "Лежка лося на сухой кочке"
+    },
+    "copy-from": "feces_manure",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В примятой осоке видна неглубокая сухая ямка; рядом остаются обкусанные ветви и крупные кучки помёта."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1938",
+    "name": {
+      "str_sp": "Галечная отмель"
+    },
+    "copy-from": "pebble",
+    "subtypes": [
+      "AMMO"
+    ],
+    "description": "На мелкой косе лежат гладкие серые и розоватые камешки, мокрые и скользкие у самой кромки."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1955",
+    "name": {
+      "str_sp": "Кострищная зола в месте лагеря"
+    },
+    "copy-from": "ash",
+    "description": "На участке старого лагеря лежит небольшое светло-серое скопление золы, смешанной с почвой; края размыты ветром и дождём."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n1976",
+    "name": {
+      "str_sp": "Пустые раковины пресноводных моллюсков"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "У уреза воды лежат половинки раковин и небольшие спиральные раковины; внутренняя поверхность крупных створок отливает перламутром."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2001",
+    "name": {
+      "str_sp": "Домики личинок ручейников"
+    },
+    "copy-from": "stick_common",
+    "description": "На погружённой веточке или камне держатся небольшие трубочки из песчинок, кусочков листьев и тонких палочек; из конца жилого домика может показаться личинка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2003",
+    "name": {
+      "str_sp": "Остатки добычи выдры"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "На берегу у корней лежат рыбьи кости и чешуя; характерный рыбный запах сильнее у тихого места отдыха."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2004",
+    "name": {
+      "str_sp": "Перо у кромки воды"
+    },
+    "copy-from": "feather",
+    "description": "На влажном песке прилипло серое перо водоплавающей птицы; неподалёку слышно кряканье уток."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2084",
+    "name": {
+      "str_sp": "Каменистое русло малого потока"
+    },
+    "copy-from": "pebble",
+    "subtypes": [
+      "AMMO"
+    ],
+    "description": "Мелкие окатанные камни видны под прозрачной струёй, а гладкие выступы блестят там, где вода обтекает их."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2168",
+    "name": {
+      "str_sp": "Домики личинок ручейников"
+    },
+    "copy-from": "stick_common",
+    "description": "На погружённой веточке или камне держатся небольшие трубочки из песчинок, кусочков листьев и тонких палочек; из конца жилого домика может показаться личинка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2171",
+    "name": {
+      "str_sp": "Шерсть на ветке над водой"
+    },
+    "copy-from": "fur",
+    "description": "На низкой колючей ветке зацепился пучок грубой тёмно-бурой шерсти; кусты вокруг слегка примяты крупным зверем."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2308",
+    "name": {
+      "str_sp": "Пустые раковины пресноводных моллюсков"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "У уреза воды лежат половинки раковин и небольшие спиральные раковины; внутренняя поверхность крупных створок отливает перламутром."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2330",
+    "name": {
+      "str_sp": "Домики личинок ручейников"
+    },
+    "copy-from": "stick_common",
+    "description": "На погружённой веточке или камне держатся небольшие трубочки из песчинок, кусочков листьев и тонких палочек; из конца жилого домика может показаться личинка."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2331",
+    "name": {
+      "str_sp": "Кости у выдрового лежбища"
+    },
+    "copy-from": "bone",
+    "subtypes": [
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "У корней на берегу видны светлые рыбьи косточки и чешуя; в мутной глубокой воде подводную добычу не различить."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2332",
+    "name": {
+      "str_sp": "Перо и пух у камышовой кромки"
+    },
+    "copy-from": "down_feather",
+    "description": "Между стеблями камыша застряли белый пух и серые перья водоплавающих птиц; рядом видны тихие окна воды."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2436",
+    "name": {
+      "str_sp": "Галька и гравий"
+    },
+    "copy-from": "pebble",
+    "subtypes": [
+      "AMMO"
+    ],
+    "description": "На склоне или в промоине попадаются мелкие гладкие камни между песчинками и более крупными обломками."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2517",
+    "name": {
+      "str_sp": "Заячий помёт у межи"
+    },
+    "copy-from": "feces_manure",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "В примятой траве лежат сухие округлые катышки заячьего помёта; над ними низко и наискось срезаны молодые побеги."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2518",
+    "name": {
+      "str_sp": "Объеденные побеги у межи"
+    },
+    "copy-from": "stick_common",
+    "description": "На кустарнике вдоль поля тонкие концы побегов объедены, а кора содрана на высоте, до которой достаёт косуля; свежие срезы ещё светлые."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2519",
+    "name": {
+      "str_sp": "Запас семян у мышиной норы"
+    },
+    "copy-from": "seed_wheat",
+    "subtypes": [
+      "SEED",
+      "MILLING",
+      "COMESTIBLE"
+    ],
+    "description": "У отверстия в дерновом комке лежат шелуха и разжёванные зёрна; небольшая кучка семян скрыта под сухими листьями межи."
+  },
+  {
+    "type": "ITEM",
+    "id": "item_nature_n2520",
+    "name": {
+      "str_sp": "Помёт лисицы с семенами"
+    },
+    "copy-from": "feces_dog",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "description": "На кочке межи лежит лисий помёт с семенами и остатками ягод; на солнце он подсох и стал сероватым."
   }
 ]

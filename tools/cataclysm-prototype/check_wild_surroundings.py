@@ -1,6 +1,7 @@
 import argparse
 import copy
 import csv
+import gettext
 import json
 import re
 from collections import Counter, defaultdict
@@ -25,6 +26,143 @@ def item_nodes(value):
             yield from item_nodes(child)
 
 
+MESSAGE_MARKER = re.compile(r"\{(ter_furn|item|mon|skin|num)\}")
+_NATIVE_NAME_SLOT = re.compile(r"\{(item|corpse_name|mon)\}")
+
+
+def parse_message_template(template):
+    parts = []
+    groups = []
+    position = 0
+    outside_letters = 0
+    for marker in MESSAGE_MARKER.finditer(template):
+        literal = template[position:marker.start()]
+        outside_letters += sum(character.isalpha() for character in literal)
+        parts.append(re.escape(literal))
+        group = f"value{len(groups)}"
+        kind = marker.group(1)
+        expression = r"-?\d+" if kind == "num" else r".+?"
+        parts.append(f"(?P<{group}>{expression})")
+        groups.append((group, kind))
+        position = marker.end()
+    literal = template[position:]
+    outside_letters += sum(character.isalpha() for character in literal)
+    parts.append(re.escape(literal))
+    if not groups or outside_letters < 5:
+        return None
+    return re.compile("".join(parts)), groups
+
+
+def _native_item_formatter_matches(value, template, item_form, monster_forms):
+    parts = []
+    groups = []
+    slots = set()
+    position = 0
+    for marker in _NATIVE_NAME_SLOT.finditer(template):
+        parts.append(re.escape(template[position:marker.start()]))
+        slot = marker.group(1)
+        slots.add(slot)
+        if slot == "item":
+            parts.append(re.escape(item_form))
+        else:
+            group = f"name{len(groups)}"
+            parts.append(f"(?P<{group}>.+?)")
+            groups.append(group)
+        position = marker.end()
+    parts.append(re.escape(template[position:]))
+    if not {"item", "mon"} <= slots:
+        return False
+    match = re.fullmatch("".join(parts), value)
+    return match is not None and all(
+        match.group(group).casefold() in monster_forms for group in groups
+    )
+
+
+def _item_template_name_matches(value, forms, message_forms=None):
+    quantity = re.match(r"\d+ ", value)
+    if quantity:
+        value = value[quantity.end():]
+    value = value.casefold()
+    rules = message_forms.get("_native_item", {}) if isinstance(message_forms, dict) else {}
+    corpse_forms = set(rules.get("corpse_forms", ())) & set(forms)
+    for form in forms:
+        if value == form:
+            return True
+        if form in corpse_forms:
+            continue
+        if value.startswith(form) and re.fullmatch(r"(?: \([^()]*\))*", value[len(form):]):
+            return True
+    monster_forms = set(message_forms.get("mon", ())) if isinstance(message_forms, dict) else set()
+    if not corpse_forms or not monster_forms:
+        return False
+
+    prefixes = {""} | set(rules.get("damage_prefixes", ()))
+    suffixes = set(rules.get("display_suffixes", ()))
+    for prefix in prefixes:
+        if prefix and not value.startswith(prefix):
+            continue
+        name = value[len(prefix):]
+        for suffix in suffixes:
+            if suffix and not name.endswith(suffix):
+                continue
+            owned_name = name[:-len(suffix)] if suffix else name
+            if owned_name in corpse_forms:
+                return True
+            for item_form in corpse_forms:
+                for template in rules.get("ownership_formats", ()):
+                    if _native_item_formatter_matches(
+                        owned_name, template, item_form, monster_forms
+                    ):
+                        return True
+    return False
+
+
+def _compiled_message_template_matches(compiled, text, forms):
+    if not isinstance(text, str):
+        return False
+    expression, groups = compiled
+    match = expression.fullmatch(text)
+    if not match:
+        return False
+    for group, kind in groups:
+        if kind == "num":
+            continue
+        allowed_forms = forms.get(kind, set())
+        value = match.group(group)
+        if kind == "item":
+            if not _item_template_name_matches(value, allowed_forms, forms):
+                return False
+        elif value.casefold() not in allowed_forms:
+            return False
+    return True
+
+
+def message_template_matches(template, text, forms):
+    compiled = parse_message_template(template)
+    return compiled is not None and _compiled_message_template_matches(compiled, text, forms)
+
+
+def _native_name_catalog(context):
+    translations = context.args.mod.parent.parent.parent / "lang/mo/ru/LC_MESSAGES"
+    for filename in ("cdda-ru.mo", "cataclysm-dda.mo"):
+        path = translations / filename
+        if not path.is_file():
+            continue
+        try:
+            with path.open("rb") as stream:
+                catalog = gettext.GNUTranslations(stream)._catalog
+        except (OSError, EOFError, UnicodeError, ValueError):
+            continue
+        result = defaultdict(lambda: {"singular": set(), "plural": set()})
+        for key, value in catalog.items():
+            source = key[0] if isinstance(key, tuple) and key else key
+            if isinstance(source, str) and isinstance(value, str) and value:
+                form = "plural" if isinstance(key, tuple) else "singular"
+                result[source][form].add(value.casefold())
+        return result
+    return {}
+
+
 class Context:
     def __init__(self, args):
         self.args = args
@@ -41,6 +179,9 @@ class Context:
         self.mod_objects = []
         self.allowed = defaultdict(set)
         self.names = defaultdict(dict)
+        self.name_forms = defaultdict(lambda: defaultdict(set))
+        self.message_templates = []
+        self.message_name_forms = {}
         self.court_allowed = defaultdict(set)
         self.court_levels = defaultdict(set)
         self.court_oters = set()
@@ -205,12 +346,22 @@ def check_permissions(context):
         kind = row.get("list")
         identifier = row.get("id")
         name = row.get("new_name_ru") or row.get("name_ru")
+        admitted = row.get("decision") in ("keep", "keep_rename")
+        is_template = kind == "message" and isinstance(identifier, str) and MESSAGE_MARKER.search(identifier)
         if isinstance(kind, str) and isinstance(identifier, str):
             if isinstance(name, str) and name:
                 context.names[kind][identifier] = name
-            if (kind in typed_lists and
-                    row.get("decision") in ("keep", "keep_rename")):
-                context.allowed[kind].add(identifier)
+            if kind in typed_lists and admitted:
+                if is_template:
+                    compiled = parse_message_template(identifier)
+                    if compiled is None:
+                        context.issue("сообщение", context.args.allowlist, "message", identifier, identifier)
+                    else:
+                        context.message_templates.append(compiled)
+                else:
+                    context.allowed[kind].add(identifier)
+                if kind in ("terrain", "furniture", "item") and isinstance(name, str) and name:
+                    context.name_forms[kind][identifier].add(name.casefold())
     context.summary.append(f"строк допусков проверено — {processed_rows}")
 
     def json_name(entry):
@@ -406,6 +557,123 @@ def check_permissions(context):
                 identifier for identifier in raw_monsters
             }
             context.whitelisted_types.update(monsters)
+
+    catalog = _native_name_catalog(context)
+
+    def native_forms(source, gettext_context=""):
+        key = f"{gettext_context}\x04{source}" if gettext_context else source
+        return {source.casefold()} | catalog.get(key, {}).get("singular", set())
+
+    def native_pair(source):
+        translations = catalog.get(source, {}).get("singular", set())
+        return source.casefold(), (next(iter(translations)) if len(translations) == 1 else source.casefold())
+
+    form_sources = (
+        ("terrain", "terrain", context.allowed["terrain"] | context.court_allowed["terrain"]),
+        ("furniture", "furniture", context.allowed["furniture"] | context.court_allowed["furniture"]),
+        ("item", "ITEM", context.allowed["item"] | context.court_allowed["item"]),
+        ("fauna", "MONSTER", context.fauna),
+    )
+    for kind, definition_type, identifiers in form_sources:
+        for identifier in identifiers:
+            display_name = context.names[kind].get(identifier)
+            if isinstance(display_name, str) and display_name:
+                context.name_forms[kind][identifier].add(display_name.casefold())
+            definition = context.definition(definition_type, identifier)
+            name = definition.get("name")
+            if isinstance(name, str):
+                name = {"str": name}
+            if not isinstance(name, dict):
+                continue
+            translation_context = name.get("ctxt")
+            if not isinstance(translation_context, str):
+                translation_context = ""
+            singular = name.get("str")
+            plural_defined = isinstance(name.get("str_sp"), str) or isinstance(name.get("str_pl"), str)
+            for key in ("str", "str_sp", "str_pl"):
+                source = name.get(key)
+                if not isinstance(source, str) or not source:
+                    continue
+                context.name_forms[kind][identifier].add(source.casefold())
+                catalog_key = f"{translation_context}\x04{source}" if translation_context else source
+                translations = catalog.get(catalog_key, {})
+                context.name_forms[kind][identifier].update(translations.get("singular", ()))
+                if kind in ("item", "fauna"):
+                    context.name_forms[kind][identifier].update(translations.get("plural", ()))
+            if isinstance(singular, str) and not plural_defined and kind in ("item", "fauna"):
+                context.name_forms[kind][identifier].add((singular + "s").casefold())
+
+    def matching_forms(kind, identifiers):
+        return set().union(*(context.name_forms[kind][identifier] for identifier in identifiers)) if identifiers else set()
+
+    terrain_forms = matching_forms("terrain", context.allowed["terrain"] | context.court_allowed["terrain"])
+    furniture_forms = matching_forms("furniture", context.allowed["furniture"] | context.court_allowed["furniture"])
+    context.message_name_forms = {
+        "ter_furn": terrain_forms | furniture_forms,
+        "item": matching_forms("item", context.allowed["item"] | context.court_allowed["item"]),
+        "mon": matching_forms("fauna", context.fauna),
+    }
+
+    skin_forms = set()
+    for identifier in context.fauna:
+        definition = context.definition("MONSTER", identifier)
+        raw_materials = definition.get("material", ["flesh"])
+        materials = set(raw_materials if isinstance(raw_materials, list) else [raw_materials])
+        if "iflesh" in materials:
+            skin_name = "carapace"
+        elif "veggy" in materials:
+            skin_name = "thick bark"
+        elif "bone" in materials:
+            skin_name = "exoskeleton"
+        elif "flesh" in materials or "hflesh" in materials:
+            skin_name = "thick hide"
+        elif "iron" in materials or "steel" in materials:
+            skin_name = "armor plating"
+        elif definition.get("phase", "SOLID") == "LIQUID":
+            skin_name = "dense jelly mass"
+        else:
+            skin_name = "armor"
+        skin_forms.update(native_forms(skin_name))
+    context.message_name_forms["skin"] = skin_forms
+
+    admitted_items = context.allowed["item"] | context.court_allowed["item"]
+    corpse_forms = (
+        context.name_forms["item"].get("corpse", set()) & context.message_name_forms["item"]
+        if "corpse" in admitted_items else set()
+    )
+    damage_prefixes = set().union(*(
+        native_forms(source, "damage adjective")
+        for source in ("bruised ", "damaged ", "mangled ", "pulped ")
+    ))
+    freshness_pairs = [("", "")] + [
+        native_pair(source)
+        for source in (" (dirty)", " (rotten)", " (mushy)", " (old)", " (fresh)")
+    ]
+    hot, cold, frozen = (native_pair(source) for source in (" (hot)", " (cold)", " (frozen)"))
+    temperature_pairs = {
+        ("", ""), hot, cold, frozen,
+        (hot[0] + frozen[0], hot[1] + frozen[1]),
+        (cold[0] + frozen[0], cold[1] + frozen[1]),
+    }
+    display_suffixes = {""}
+    for freshness in freshness_pairs:
+        for temperature in temperature_pairs:
+            display_suffixes.update((freshness[0] + temperature[0], freshness[1] + temperature[1]))
+    ownership_formats = set()
+    for source, slots in (
+        ("%1$s of a %2$s", (("%1$s", "{item}"), ("%2$s", "{mon}"))),
+        ("%1$s of %2$s, %3$s", (("%1$s", "{item}"), ("%2$s", "{corpse_name}"), ("%3$s", "{mon}"))),
+    ):
+        for template in native_forms(source, "corpse ownership qualifier"):
+            for marker, slot in slots:
+                template = template.replace(marker, slot)
+            ownership_formats.add(template)
+    context.message_name_forms["_native_item"] = {
+        "corpse_forms": corpse_forms,
+        "damage_prefixes": damage_prefixes,
+        "display_suffixes": display_suffixes,
+        "ownership_formats": ownership_formats,
+    }
 
 
 def check_overmaps(context):
@@ -693,7 +961,7 @@ def check_submaps(context):
     }
     required_fields = submap_fields - {"computers", "camp"}
     native_elided_fields = submap_fields - {"version", "coordinates", "turn_last_touched", "temperature", "terrain"}
-    unsupported_fields = {"traps", "cosmetics", "spawns", "partial_constructions", "computers", "camp"}
+    unsupported_fields = {"traps", "cosmetics", "partial_constructions", "computers", "camp"}
     checked = 0
     coordinates_seen = []
     overmaps = {(x, y): value for _, (x, y), value in context.overmaps}
@@ -909,6 +1177,22 @@ def check_submaps(context):
         for field in unsupported_fields:
             if submap.get(field):
                 unknown(location, field, field)
+        spawns = submap.get("spawns")
+        if spawns:
+            if not isinstance(spawns, list):
+                unknown(location, "spawns", "spawns")
+            else:
+                for spawn in spawns:
+                    if (not isinstance(spawn, list) or len(spawn) != 8 or
+                            not isinstance(spawn[0], str) or type(spawn[1]) is not int or spawn[1] < 1 or
+                            type(spawn[2]) is not int or not 0 <= spawn[2] <= 11 or
+                            type(spawn[3]) is not int or not 0 <= spawn[3] <= 11):
+                        unknown(location, "spawns", "spawns")
+                        continue
+                    monster_id = spawn[0]
+                    if monster_id not in context.fauna:
+                        context.issue("существо", location, "creature", monster_id,
+                                      context.names["fauna"].get(monster_id, ""))
         for field, value in submap.items():
             if field not in submap_fields and value:
                 unknown(location, field, field)
@@ -1252,7 +1536,9 @@ def check_frames(context):
                         amount = message.get("count")
                         if valid_message and isinstance(text, str):
                             context.message_counts[text] += amount if type(amount) is int and amount > 0 else 1
-                            if text not in context.allowed["message"]:
+                            if (text not in context.allowed["message"] and
+                                    not any(_compiled_message_template_matches(template, text, context.message_name_forms)
+                                            for template in context.message_templates)):
                                 context.issue("сообщение", f"кадр {number}", "journal.player_messages.messages", text, text)
 
         sounds = frame.get("sounds")

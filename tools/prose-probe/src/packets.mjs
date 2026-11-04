@@ -91,6 +91,8 @@ function location(direction, far = false) {
 
 const sentence = text => text[0].toUpperCase() + text.slice(1);
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const fieldOrientations = { n: 'север', w: 'запад', s: 'юг', e: 'восток' };
+const fieldOrientation = type => fieldOrientations[typeof type === 'string' ? /_([nwse])$/u.exec(type)?.[1] : undefined];
 const itemName = item => {
   const [name, ...contents] = plain(item.name).split(/\s*>\s*/u);
   return [clean(name), ...contents];
@@ -212,7 +214,8 @@ function project(frame, data, knownDoors) {
     const label = object.item ? itemName(object.item)[0] : clean(object.name ?? object.vehicle_name);
     const type = object.item?.type ?? object.type;
     const kind = ['door', 'window', 'terrain'].includes(object.kind) ? 'terrain' : object.kind;
-    let text = object.item ? itemSentence(object.item, sentence(location(object.direction)), data) : `${sentence(location(object.direction))} — ${label}.${data.description(kind, type)}`;
+    const orientation = object.kind === 'field' ? fieldOrientation(object.type) : undefined;
+    let text = object.item ? itemSentence(object.item, sentence(location(object.direction)), data) : `${sentence(location(object.direction))} — ${label}${orientation ? `; направление поля — на ${orientation}` : ''}.${data.description(kind, type)}`;
     const opening = object.kind === 'door' ? 'Дверь' : object.kind === 'window' ? 'Окно' : null;
     if (opening && object.state === 'open') text += ` ${opening} ${object.kind === 'window' ? 'было открыто' : 'была открыта'}.`;
     if (opening && object.state === 'closed') text += ` ${opening} ${object.kind === 'window' ? 'было закрыто' : 'была закрыта'}.`;

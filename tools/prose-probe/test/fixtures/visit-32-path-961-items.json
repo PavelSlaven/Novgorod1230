@@ -1,0 +1,1192 @@
+[
+  {
+    "type": "ITEM",
+    "subtypes": [
+      "AMMO"
+    ],
+    "id": "rock",
+    "symbol": "*",
+    "color": "light_gray",
+    "name": {
+      "str": "rock",
+      "ctxt": "stone"
+    },
+    "description": "A rock the size of a baseball.  Makes a decent melee weapon, and is also good for throwing at enemies.",
+    "category": "spare_parts",
+    "material": [
+      "stone"
+    ],
+    "ammo_type": "rock",
+    "flags": [
+      "TRADER_AVOID",
+      "NPC_THROWN",
+      "ALLOWS_BODY_BLOCK"
+    ],
+    "weight": "657 g",
+    "volume": "250 ml",
+    "damage": {
+      "damage_type": "bash",
+      "amount": 7
+    },
+    "range": 10,
+    "dispersion": 14,
+    "loudness": 0,
+    "to_hit": {
+      "grip": "solid",
+      "length": "hand",
+      "surface": "any",
+      "balance": "neutral"
+    },
+    "recovery_chance": 99,
+    "effects": [
+      "NON_FOULING"
+    ],
+    "qualities": [
+      [
+        "HAMMER",
+        1
+      ]
+    ],
+    "melee_damage": {
+      "bash": 7
+    },
+    "thrown_damage": {
+      "damage_type": "bash",
+      "amount": 7
+    }
+  },
+  {
+    "id": "leather_belt",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "leather belt"
+    },
+    "description": "A leather belt.  Designed to look good and hold up a pair of pants, but you should be able to attach a small tool or weapon to one of the belt loops.",
+    "weight": "150 g",
+    "volume": "350 ml",
+    "price": "20 USD",
+    "price_postapoc": "1 USD",
+    "repairs_like": "leather",
+    "material": [
+      {
+        "type": "leather",
+        "portion": 75
+      },
+      {
+        "type": "steel",
+        "portion": 25
+      }
+    ],
+    "symbol": "[",
+    "color": "brown",
+    "material_thickness": 2,
+    "pocket_data": [
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 60,
+        "description": "Clipped directly to side of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      },
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 60,
+        "description": "Clipped directly to side of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      },
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 60,
+        "description": "Clipped directly to side of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      },
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 60,
+        "description": "Clipped directly to side of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      },
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 110,
+        "description": "Clipped directly to back of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      },
+      {
+        "holster": true,
+        "max_contains_volume": "2000 ml",
+        "max_contains_weight": "1750 g",
+        "max_item_length": "70 cm",
+        "moves": 110,
+        "description": "Clipped directly to back of the belt.",
+        "flag_restriction": [
+          "BELT_CLIP"
+        ],
+        "transparent": true
+      }
+    ],
+    "use_action": {
+      "type": "holster",
+      "holster_prompt": "Stick what into your belt",
+      "holster_msg": "You tuck your %s into your %s"
+    },
+    "flags": [
+      "BELTED",
+      "OVERSIZE",
+      "WATER_FRIENDLY"
+    ],
+    "armor": [
+      {
+        "covers": [
+          "torso"
+        ],
+        "coverage": 50,
+        "specifically_covers": [
+          "torso_waist"
+        ],
+        "volume_encumber_modifier": 0.5,
+        "material": [
+          {
+            "type": "leather",
+            "covered_by_mat": 100,
+            "thickness": 2
+          },
+          {
+            "type": "steel",
+            "covered_by_mat": 10,
+            "thickness": 0.5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "footrags_wool",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "wool foot wraps (pair)"
+    },
+    "description": "Felt patches tied around your feet.  Not much of an improvement over being barefoot, but still better than nothing.",
+    "weight": "56 g",
+    "volume": "250 ml",
+    "price": "5 USD",
+    "price_postapoc": "50 cent",
+    "material": [
+      "wool"
+    ],
+    "symbol": "[",
+    "looks_like": "socks_wool",
+    "color": "blue",
+    "warmth": 15,
+    "material_thickness": 1.5,
+    "flags": [
+      "SKINTIGHT",
+      "OVERSIZE",
+      "ALLOWS_NATURAL_ATTACKS"
+    ],
+    "armor": [
+      {
+        "encumbrance": 5,
+        "coverage": 65,
+        "covers": [
+          "foot_l",
+          "foot_r",
+          "hoof_r",
+          "hoof_l",
+          "avian_talon_l",
+          "avian_talon_r",
+          "animal_paw_l",
+          "animal_paw_r",
+          "animal_paw_rabbit_l",
+          "animal_paw_rabbit_r"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mocassins",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "moccasins (pair)"
+    },
+    "description": "A type of traditional Native American footwear sewn out of prepared leather or pelts.",
+    "weight": "230 g",
+    "volume": "500 ml",
+    "price": "50 USD",
+    "price_postapoc": "2 USD 50 cent",
+    "material": [
+      "fur",
+      "leather"
+    ],
+    "symbol": "[",
+    "looks_like": "leathersandals",
+    "color": "brown",
+    "warmth": 20,
+    "material_thickness": 1,
+    "flags": [
+      "VARSIZE",
+      "WATERPROOF"
+    ],
+    "armor": [
+      {
+        "covers": [
+          "foot_l",
+          "foot_r"
+        ],
+        "specifically_covers": [
+          "foot_toes_r",
+          "foot_toes_l"
+        ],
+        "material": [
+          {
+            "type": "leather",
+            "covered_by_mat": 100,
+            "thickness": 1
+          }
+        ],
+        "encumbrance": 2,
+        "coverage": 100
+      },
+      {
+        "covers": [
+          "foot_l",
+          "foot_r"
+        ],
+        "specifically_covers": [
+          "foot_heel_r",
+          "foot_heel_l",
+          "foot_arch_r",
+          "foot_arch_l"
+        ],
+        "material": [
+          {
+            "type": "leather",
+            "covered_by_mat": 100,
+            "thickness": 1
+          }
+        ],
+        "coverage": 80
+      },
+      {
+        "covers": [
+          "foot_l",
+          "foot_r"
+        ],
+        "specifically_covers": [
+          "foot_sole_r",
+          "foot_sole_l"
+        ],
+        "material": [
+          {
+            "type": "leather",
+            "covered_by_mat": 100,
+            "thickness": 4
+          }
+        ],
+        "coverage": 100
+      }
+    ]
+  },
+  {
+    "id": "tunic",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "tunic"
+    },
+    "description": "A simple garment long enough to cover down to the knees.",
+    "weight": "250 g",
+    "volume": "1250 ml",
+    "price": "42 USD",
+    "price_postapoc": "1 USD",
+    "material": [
+      "cotton"
+    ],
+    "symbol": "[",
+    "looks_like": "sweatshirt",
+    "color": "dark_gray",
+    "warmth": 2,
+    "material_thickness": 0.3,
+    "flags": [
+      "VARSIZE",
+      "ALLOWS_GASTROPOD_FOOT",
+      "ALLOWS_LEG_TENTACLES"
+    ],
+    "armor": [
+      {
+        "covers": [
+          "torso"
+        ],
+        "specifically_covers": [
+          "torso_lower"
+        ],
+        "coverage": 100,
+        "encumbrance": 3
+      },
+      {
+        "covers": [
+          "torso"
+        ],
+        "specifically_covers": [
+          "torso_upper"
+        ],
+        "coverage": 95
+      },
+      {
+        "covers": [
+          "arm_l",
+          "arm_r"
+        ],
+        "coverage": 100,
+        "encumbrance": 3
+      },
+      {
+        "covers": [
+          "leg_l",
+          "leg_r"
+        ],
+        "specifically_covers": [
+          "leg_hip_l",
+          "leg_hip_r"
+        ],
+        "coverage": 100,
+        "encumbrance": 3
+      },
+      {
+        "covers": [
+          "leg_l",
+          "leg_r"
+        ],
+        "specifically_covers": [
+          "leg_upper_l",
+          "leg_upper_r"
+        ],
+        "coverage": 80
+      },
+      {
+        "covers": [
+          "gastropod_foot"
+        ],
+        "coverage": 100,
+        "encumbrance": 5,
+        "specifically_covers": [
+          "leg_hip_gastropod_l",
+          "leg_hip_gastropod_r"
+        ]
+      },
+      {
+        "covers": [
+          "gastropod_foot"
+        ],
+        "coverage": 50,
+        "specifically_covers": [
+          "leg_upper_gastropod"
+        ]
+      },
+      {
+        "covers": [
+          "tentacle_lower_front_l",
+          "tentacle_lower_middle_l",
+          "tentacle_lower_rear_l",
+          "tentacle_lower_front_r",
+          "tentacle_lower_middle_r",
+          "tentacle_lower_rear_r"
+        ],
+        "coverage": 75,
+        "encumbrance": [
+          3,
+          5
+        ],
+        "specifically_covers": [
+          "tentacle_lower_front_base_l",
+          "tentacle_lower_front_middle_l",
+          "tentacle_lower_middle_base_l",
+          "tentacle_lower_middle_middle_l",
+          "tentacle_lower_rear_base_l",
+          "tentacle_lower_rear_middle_l",
+          "tentacle_lower_middle_base_r",
+          "tentacle_lower_middle_middle_r",
+          "tentacle_lower_middle_base_r",
+          "tentacle_lower_middle_middle_r",
+          "tentacle_lower_rear_base_r",
+          "tentacle_lower_rear_middle_r"
+        ]
+      },
+      {
+        "covers": [
+          "tail_long",
+          "tail_fluffy",
+          "tail_bovine",
+          "tail_rat"
+        ],
+        "material": [
+          {
+            "type": "cotton",
+            "covered_by_mat": 100,
+            "thickness": 0.5
+          }
+        ],
+        "coverage": 50
+      },
+      {
+        "covers": [
+          "tail_thick",
+          "tail_club"
+        ],
+        "material": [
+          {
+            "type": "cotton",
+            "covered_by_mat": 100,
+            "thickness": 0.5
+          }
+        ],
+        "coverage": 40
+      }
+    ]
+  },
+  {
+    "id": "pants",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "pants"
+    },
+    "description": "A pair of khaki pants.  Slightly warmer than jeans.",
+    "weight": "560 g",
+    "volume": "2 L",
+    "price": "49 USD",
+    "price_postapoc": "1 USD",
+    "material": [
+      "cotton"
+    ],
+    "symbol": "[",
+    "looks_like": "jeans",
+    "color": "brown",
+    "faults": [
+      {
+        "fault_group": "fabric_cotton"
+      }
+    ],
+    "pocket_data": [
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1250 ml",
+        "max_contains_weight": "4 kg",
+        "max_item_length": "19 cm",
+        "moves": 80
+      },
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1250 ml",
+        "max_contains_weight": "4 kg",
+        "max_item_length": "19 cm",
+        "moves": 80
+      },
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1080 ml",
+        "max_contains_weight": "4 kg",
+        "max_item_length": "165 mm",
+        "moves": 100
+      },
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1080 ml",
+        "max_contains_weight": "4 kg",
+        "max_item_length": "165 mm",
+        "moves": 100
+      }
+    ],
+    "warmth": 15,
+    "material_thickness": 0.2,
+    "flags": [
+      "VARSIZE",
+      "POCKETS"
+    ],
+    "armor": [
+      {
+        "encumbrance": [
+          7,
+          11
+        ],
+        "coverage": 100,
+        "covers": [
+          "leg_l",
+          "leg_r"
+        ]
+      }
+    ],
+    "variant_type": "generic",
+    "variants": [
+      {
+        "id": "generic_pants",
+        "name": {
+          "str_sp": "khaki pants"
+        },
+        "description": "A pair of khaki pants.  Slightly warmer than jeans.",
+        "weight": 10
+      },
+      {
+        "id": "pants_blue",
+        "name": {
+          "str_sp": "navy-blue khaki pants"
+        },
+        "description": "A comfortable set of navy blue pants with large pockets, slightly thicker and warmer than regular jeans.",
+        "color": "blue",
+        "weight": 10
+      },
+      {
+        "id": "pants_black",
+        "name": {
+          "str_sp": "black khaki pants"
+        },
+        "description": "A snappy set of black, neatly pressed trousers, perfect for formal events or looking professional.",
+        "color": "dark_gray",
+        "weight": 10
+      },
+      {
+        "id": "pants_grey",
+        "name": {
+          "str_sp": "gray khaki pants"
+        },
+        "description": "A set of storm gray pants speckled with dark stains so deeply assimilated into the fabric that they're nigh-irremovable.  You vehemently hope that they're just the mortal remains of some spilled beverage.",
+        "color": "dark_gray",
+        "weight": 10
+      },
+      {
+        "id": "pants_red",
+        "name": {
+          "str_sp": "burgundy khaki pants"
+        },
+        "description": "A pair of soft, comfortable burgundy trousers with a button-up fly and spacious pockets.",
+        "color": "red",
+        "weight": 10
+      },
+      {
+        "id": "pants_purple",
+        "name": {
+          "str_sp": "purple khaki pants"
+        },
+        "description": "A set of rugged and comfortable trousers dyed a soft shade of violet.",
+        "color": "blue",
+        "weight": 10
+      },
+      {
+        "id": "pants_brown",
+        "name": {
+          "str_sp": "brown khaki pants"
+        },
+        "description": "This pair of corduroy pants is a pleasant but dull hue of brown.",
+        "color": "brown",
+        "weight": 10
+      },
+      {
+        "id": "pants_cream",
+        "name": {
+          "str_sp": "cream khaki pants"
+        },
+        "description": "A pair of milky, off-white pants dyed a shade of soft cream.",
+        "color": "white",
+        "weight": 10
+      },
+      {
+        "id": "pants_gray",
+        "name": {
+          "str_sp": "gray khaki pants"
+        },
+        "description": "A business-like set of stone-gray trousers for business-like people, these pants are the same hue as concrete.",
+        "color": "light_gray",
+        "weight": 10
+      },
+      {
+        "id": "pants_british_khaki",
+        "name": {
+          "str_sp": "British khaki pants"
+        },
+        "description": "While these pants might not be English, their color certainly is.  More specifically, these comfortable trousers are a shade of British-khaki, a type of brownish-yellow hue developed by the empire's military for use in service uniforms.",
+        "color": "brown",
+        "weight": 8
+      },
+      {
+        "id": "pants_tan",
+        "name": {
+          "str_sp": "tan-khaki pants"
+        },
+        "description": "A pair of casual, tan-hued pants with a slight yellowish overtone, intended to contrast with one's skin color.",
+        "color": "brown",
+        "weight": 8
+      },
+      {
+        "id": "pants_hot_pink",
+        "name": {
+          "str_sp": "hot-pink khaki pants"
+        },
+        "description": "Flaunting an almost aggressively vibrant shade of bright pink, this pair of soft, plush pants that make a bold statement to any onlookers: human, zombie, or otherwise.  Though, perhaps dressing up like an anthropomorphic Easter egg isn't, in retrospect, the wisest way to prolong your time on this earth.",
+        "color": "pink",
+        "weight": 8
+      },
+      {
+        "id": "pants_maroon",
+        "name": {
+          "str_sp": "maroon khaki pants"
+        },
+        "description": "A visually appealing and subtle blend of browns and deep reds characterizes this pair of pants.  An energetic and sporting set of pants for high-energy situations.",
+        "color": "red",
+        "weight": 8
+      },
+      {
+        "id": "pants_od",
+        "name": {
+          "str_sp": "olive-drab khaki pants"
+        },
+        "description": "While these aren't US-issued military trousers or even civilian tactical pants, this article of clothing possesses a blend of dark greens, browns, and blacks identical to the camouflage pattern of Vietnam-era army uniforms.",
+        "color": "green",
+        "weight": 8
+      },
+      {
+        "id": "pants_woodland",
+        "name": {
+          "str_sp": "woodland-camo khaki pants"
+        },
+        "description": "Not too dissimilar from the pattern adopted by older US Marine uniforms, this pair of otherwise conventional civilian khaki pants is printed with a green, brown, and black woodland camouflage pattern.",
+        "color": "green",
+        "weight": 6
+      },
+      {
+        "id": "pants_jungle",
+        "name": {
+          "str_sp": "jungle-camo khaki pants"
+        },
+        "description": "Similar in color to the old frog skin uniforms issued to Marine Raiders during the Second World War, comfortable khaki trousers is dyed a greenish gray hue.  Completely conventional in every other respect, the patterning would be incredibly helpful if you were planning to take a trip down to the Amazon any time soon.",
+        "color": "green",
+        "weight": 6
+      },
+      {
+        "id": "pants_grassland",
+        "name": {
+          "str_sp": "grassland-camo khaki pants"
+        },
+        "description": "This set of khaki trousers is resplendent in a camouflage pattern of mixed light greens, browns, and beige tones.",
+        "color": "green",
+        "weight": 6
+      },
+      {
+        "id": "pants_marshland",
+        "name": {
+          "str_sp": "marshland-camo khaki pants"
+        },
+        "description": "The faithful friend of waterfowl hunters, these khaki trousers are printed with a brown, gray, tan, and green camouflage pattern designed to blend in with the vegetation and reeds present in swamps and marshlands.",
+        "color": "brown",
+        "weight": 6
+      },
+      {
+        "id": "pants_desert",
+        "name": {
+          "str_sp": "desert-camo khaki pants"
+        },
+        "description": "Dyed a mix of brown, tan, and yellowish beige hues, this pair of trousers is designed to seamlessly blend into arid environments.  That being said, the fact that New England is famously devoid of deserts means that the pattern's only utility is in looking cool.",
+        "color": "brown",
+        "weight": 6
+      },
+      {
+        "id": "pants_alpine",
+        "name": {
+          "str_sp": "alpine-camo khaki pants"
+        },
+        "description": "The companion of aspiring mountaineers and alpine hunters, these brown, gray, and white dyed khaki pants possess a network of jagged shapes and mottled lines, designed to break up the wearer's profile and better conceal them against the background landscape of mountains.",
+        "color": "light_gray",
+        "weight": 6
+      },
+      {
+        "id": "pants_urban",
+        "name": {
+          "str_sp": "urban-camo khaki pants"
+        },
+        "description": "A set of comfortable pants dyed in various scales of gray, black, and dirty white, printed with squares and irregular polygons to disrupt a wearer's silhouette within man-made environments.  You would honestly not be surprised if you learned that this singular pair of trousers contains 50 shades of gray.",
+        "color": "dark_gray",
+        "weight": 6
+      },
+      {
+        "id": "pants_arctic",
+        "name": {
+          "str_sp": "arctic-camo khaki pants"
+        },
+        "description": "Featuring a camouflage pattern consisting of white, shades of gray, and a slight tinge of brown, this pair of pants is fit for snowy tundra and polar regions—or it would be, had the garment not been only moderately warmer than jeans.  You have yet to grasp their point for existing.",
+        "color": "white",
+        "weight": 6
+      },
+      {
+        "id": "pants_black_camo",
+        "name": {
+          "str_sp": "black-camo khaki pants"
+        },
+        "description": "Dyed a deep hue of urban black, this pair of pants is designed to assist a wearer in concealing themselves within nighttime environments and low-light conditions.  While they're simple civilian trousers given a stealth-black paint job and don't hold a candle to their more marshal brothers, they still look cool and are great at making you feel like you're Spetsnaz.",
+        "color": "dark_gray",
+        "weight": 6
+      },
+      {
+        "id": "pants_white",
+        "name": {
+          "str_sp": "white khaki pants"
+        },
+        "description": "Notorious for either looking fabulous or disastrous with little in between, this stylish pair of boot-cut white trousers will almost certainly gain a plethora of irremovable stains as soon as you set foot beyond the threshold of your abode.",
+        "color": "white",
+        "weight": 6
+      },
+      {
+        "id": "pants_orange",
+        "name": {
+          "str_sp": "orange khaki pants"
+        },
+        "description": "Reminiscent of the color of flames, this pair of cotton pants is, perhaps optimistically, dyed a muted shade of burned orange.",
+        "color": "red",
+        "weight": 4
+      },
+      {
+        "id": "pants_flag",
+        "name": {
+          "str_sp": "liberty's pants"
+        },
+        "description": "These pair of sky blue pants are resplendent with a pair of stitched American flags, their flag poles running down each leg, and a standard flanking the trousers' front and rear.  \"Freedom\" is boldly stitched across the fly and enclosed by a ring of golden stars, while the back bears the legend, \"Liberbooty!\"",
+        "color": "light_blue",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "leather_pouch",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "leather pouch",
+      "str_pl": "leather pouches"
+    },
+    "description": "A bag stitched together from leather scraps.  Doesn't hold an awful lot but is easy to wear.",
+    "weight": "250 g",
+    "volume": "500 ml",
+    "price": "10 USD",
+    "price_postapoc": "1 USD 50 cent",
+    "material": [
+      "leather"
+    ],
+    "symbol": "[",
+    "looks_like": "holster",
+    "color": "brown",
+    "pocket_data": [
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1500 ml",
+        "max_contains_weight": "5 kg",
+        "max_item_length": "20 cm",
+        "moves": 80
+      }
+    ],
+    "material_thickness": 0.1,
+    "flags": [
+      "BELTED",
+      "OVERSIZE",
+      "WATER_FRIENDLY"
+    ],
+    "armor": [
+      {
+        "encumbrance": 1,
+        "coverage": 100,
+        "volume_encumber_modifier": 0.35,
+        "covers": [
+          "torso"
+        ],
+        "specifically_covers": [
+          "torso_waist"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water_murky",
+    "type": "ITEM",
+    "subtypes": [
+      "COMESTIBLE"
+    ],
+    "copy-from": "water",
+    "name": {
+      "str_sp": "murky water"
+    },
+    "description": "Water, the stuff of life.  This water looks like it has quite a bit of life in it in fact, and not the good kind.  You should filter and sterilize it if you want to drink it.",
+    "display_type": "BY_VOLUME",
+    "quench": 30,
+    "parasites": 5,
+    "contamination": [
+      {
+        "disease": "highly_contaminated_food",
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "ITEM",
+    "id": "sharp_rock",
+    "symbol": "*",
+    "color": "light_gray",
+    "name": {
+      "str": "sharp rock"
+    },
+    "description": "A baseball-sized rock with a somewhat sharp edge that also chips in a semi-predictable way if struck.  With the right skills, you could give it a better edge.",
+    "material": [
+      "stone"
+    ],
+    "weight": "500 g",
+    "volume": "250 ml",
+    "longest_side": "8 cm",
+    "to_hit": {
+      "grip": "none",
+      "length": "hand",
+      "surface": "line",
+      "balance": "neutral"
+    },
+    "qualities": [
+      [
+        "CUT",
+        1
+      ],
+      [
+        "BUTCHER",
+        -50
+      ]
+    ],
+    "flags": [
+      "ALLOWS_BODY_BLOCK"
+    ],
+    "melee_damage": {
+      "bash": 5,
+      "cut": 3
+    },
+    "weapon_category": [
+      "SHIVS"
+    ]
+  },
+  {
+    "type": "ITEM",
+    "subtypes": [
+      "AMMO"
+    ],
+    "id": "rock_flaking",
+    "symbol": "*",
+    "color": "light_gray",
+    "name": {
+      "str": "flaking rock"
+    },
+    "description": "A rock the size of a baseball which chips in a semi-predictable way if struck, leaving a sharp edge.  Makes a decent melee weapon, and is also good for throwing at enemies.",
+    "category": "spare_parts",
+    "material": [
+      "stone"
+    ],
+    "ammo_type": "rock",
+    "flags": [
+      "TRADER_AVOID",
+      "NPC_THROWN"
+    ],
+    "weight": "657 g",
+    "volume": "250 ml",
+    "longest_side": "8 cm",
+    "damage": {
+      "damage_type": "stab",
+      "amount": 7
+    },
+    "range": 10,
+    "dispersion": 14,
+    "loudness": 0,
+    "to_hit": {
+      "grip": "none",
+      "length": "hand",
+      "surface": "any",
+      "balance": "neutral"
+    },
+    "recovery_chance": 98,
+    "effects": [
+      "NON_FOULING"
+    ],
+    "melee_damage": {
+      "bash": 7
+    }
+  },
+  {
+    "type": "ITEM",
+    "subtypes": [
+      "AMMO"
+    ],
+    "id": "flint",
+    "copy-from": "rock_flaking",
+    "name": {
+      "str": "flint"
+    },
+    "description": "A chunk of flint, the kind of rock that can make sparks if stuck against high-carbon steel.  It also chips in a semi-predictable way if struck, leaving a sharp edge."
+  },
+  {
+    "type": "ITEM",
+    "id": "rock_large",
+    "symbol": ";",
+    "color": "brown",
+    "name": {
+      "str": "large rock"
+    },
+    "description": "A large, heavy rock, big enough to be used as a primitive anvil or shaped into larger stone items.",
+    "category": "spare_parts",
+    "material": [
+      "stone"
+    ],
+    "weight": "15768 g",
+    "volume": "6 L",
+    "longest_side": "30 cm",
+    "qualities": [
+      [
+        "ANVIL",
+        1
+      ]
+    ],
+    "melee_damage": {
+      "bash": 28
+    }
+  },
+  {
+    "type": "ITEM",
+    "id": "log",
+    "symbol": "/",
+    "color": "brown",
+    "name": {
+      "str": "log"
+    },
+    "description": "A large log of wood, cut from a tree.  (a)ctivate a wood axe or wood saw to cut it into planks.",
+    "category": "other",
+    "price": "100 USD",
+    "price_postapoc": "10 cent",
+    "material": [
+      "wood"
+    ],
+    "weight": "30 kg",
+    "volume": "50 L",
+    "longest_side": "140 cm",
+    "to_hit": {
+      "grip": "none",
+      "length": "long",
+      "surface": "any",
+      "balance": "clumsy"
+    },
+    "flags": [
+      "FIREWOOD"
+    ],
+    "melee_damage": {
+      "bash": 10
+    }
+  },
+  {
+    "id": "ax",
+    "type": "ITEM",
+    "subtypes": [
+      "TOOL"
+    ],
+    "name": {
+      "str": "wood axe"
+    },
+    "description": "A large, two-handed wood axe.  It makes a good melee weapon, but is a bit slow to recover between swings.",
+    "weight": "2227 g",
+    "volume": "2000 ml",
+    "longest_side": "78 cm",
+    "price": "105 USD",
+    "price_postapoc": "7 USD 50 cent",
+    "to_hit": {
+      "grip": "weapon",
+      "length": "long",
+      "surface": "line",
+      "balance": "uneven"
+    },
+    "material": [
+      "wood",
+      "steel"
+    ],
+    "symbol": "/",
+    "color": "light_gray",
+    "qualities": [
+      [
+        "CUT",
+        1
+      ],
+      [
+        "AXE",
+        3
+      ],
+      [
+        "BUTCHER",
+        -36
+      ]
+    ],
+    "techniques": [
+      "WBLOCK_1",
+      "BRUTAL",
+      "SWEEP"
+    ],
+    "flags": [
+      "DURABLE_MELEE",
+      "NONCONDUCTIVE",
+      "SHEATH_AXE",
+      "NO_SALVAGE"
+    ],
+    "faults": [
+      {
+        "fault_group": "handle_long"
+      },
+      {
+        "fault_group": "blade_general_no_tip"
+      }
+    ],
+    "//": "Wood axes also lack the ability to hook appropriately in combat, for the same reason they work well against trees.  Straight axe head instead of curved.",
+    "weapon_category": [
+      "GREAT_AXES"
+    ],
+    "melee_damage": {
+      "bash": 14,
+      "cut": 28
+    }
+  },
+  {
+    "id": "log",
+    "copy-from": "log",
+    "type": "ITEM",
+    "name": {
+      "str": "бревно",
+      "str_pl": "бревна"
+    }
+  },
+  {
+    "id": "tunic",
+    "copy-from": "tunic",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "рубаха",
+      "str_pl": "рубахи"
+    },
+    "description": "Простая длинная рубаха до колен."
+  },
+  {
+    "id": "leather_pouch",
+    "copy-from": "leather_pouch",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "кожаный кошель",
+      "str_pl": "кожаные кошели"
+    },
+    "description": "Небольшой кошель из кожи, подвешенный к поясу; в него влезает мелочь вроде кресала и трута."
+  },
+  {
+    "id": "ax",
+    "copy-from": "ax",
+    "type": "ITEM",
+    "subtypes": [
+      "TOOL"
+    ],
+    "name": {
+      "str": "плотницкий топор",
+      "str_pl": "плотницкие топоры"
+    },
+    "description": "Плотницкий топор на деревянном топорище."
+  },
+  {
+    "id": "pants",
+    "copy-from": "pants",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "порты"
+    },
+    "description": "Простые порты, собранные по ноге.",
+    "variants": []
+  },
+  {
+    "id": "leather_belt",
+    "copy-from": "leather_belt",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str": "кожаный пояс",
+      "str_pl": "кожаные пояса"
+    },
+    "description": "Кожаный ремень с пряжкой."
+  },
+  {
+    "id": "footrags_wool",
+    "copy-from": "footrags_wool",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "онучи"
+    },
+    "description": "Полосы ткани, которые мотают вокруг стопы и голени."
+  },
+  {
+    "id": "mocassins",
+    "copy-from": "mocassins",
+    "type": "ITEM",
+    "subtypes": [
+      "ARMOR"
+    ],
+    "name": {
+      "str_sp": "поршни"
+    },
+    "description": "Мягкая кожаная обувь из цельного куска."
+  }
+]

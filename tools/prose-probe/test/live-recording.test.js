@@ -144,8 +144,8 @@ test('all eight step directions use recorded movement and hero gender', async t 
     passed(ctx);
     const paths = ctx.values.flatMap(moment => moment.parts.flatMap(part => part.packet.События ?? [])).filter(text => text.startsWith('Гостья прошла '));
     assert.equal(paths.length, 1);
-    assert.ok(paths[0].startsWith(`Гостья прошла ${direction}, `));
-    assert.match(paths[0], /(?:к|прочь от|мимо) ориентир[ау] «[^»]+»\.$/u);
+    assert.ok(paths[0].startsWith(`Гостья прошла ${direction}, `) || paths[0].startsWith(`Гостья прошла ${direction} возле `));
+    assert.match(paths[0].slice(`Гостья прошла ${direction}`.length), /^(?:, от места у ориентира «[^»]+» к месту у ориентира «[^»]+»| возле ориентира «[^»]+»)\.$/u);
     assert.doesNotMatch(paths[0], /шаг|рядом/u);
     assert.doesNotMatch(ctx.result.stderr, /поступок исключён/u);
   });
@@ -171,10 +171,10 @@ test('hero steps keep an intervening NPC disappearance in order', async t => {
   const ctx = await capture(t, rows, { actions });
   passed(ctx);
   const events = ctx.values.flatMap(moment => moment.parts.flatMap(part => part.packet.События ?? []));
-  const steps = events.flatMap((text, index) => text.startsWith('Гость прошёл на северо-запад, ') ? [index] : []);
-  assert.equal(steps.length, 2);
+  const steps = events.flatMap((text, index) => text.startsWith('Гость прошёл на северо-запад') ? [index] : []);
+  assert.equal(steps.length, 1);
   const disappearance = events.findIndex(text => text.includes('Жирко') && text.includes('больше не видно'));
-  assert.ok(steps[0] < disappearance && disappearance < steps[1]);
+  assert.deepEqual([events[steps[0]], disappearance], ['Гость прошёл на северо-запад, от места у ориентира «деревянная стена» к месту у ориентира «деревянная стена». Позади осталось существо «Жирко».', -1]);
 });
 
 test('two adjacent hero steps combine without an intervening event', async t => {
@@ -191,7 +191,7 @@ test('two adjacent hero steps combine without an intervening event', async t => 
   const actions = [first, second].map(row => ({ native_turn: row.native_turn, inputs: [{ action: 'UP' }] }));
   const ctx = await capture(t, [before, first, second], { actions });
   passed(ctx);
-  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), ['Гость прошёл на север, мимо ориентира «бревно».']);
+  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), ['Гость прошёл на север возле ориентира «бревно».']);
 });
 
 test('path landmarks rank people, furniture, ground items and untraversed terrain at equal distance', async t => {
@@ -217,7 +217,7 @@ test('path landmarks rank people, furniture, ground items and untraversed terrai
     const ctx = await capture(child, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
     passed(ctx);
     const label = [person.name, furniture.name, item.item.name, 'деревянная стена'][rank];
-    assert.deepEqual(ctx.values[0].parts[0].packet.События, [`Гость прошёл на восток, к ориентиру «${label}».`]);
+    assert.deepEqual(ctx.values[0].parts[0].packet.События, [rank === 3 ? 'Гость прошёл на восток возле ориентира «деревянная стена».' : `Гость прошёл на восток, от места у ориентира «деревянная стена» к месту у ориентира «${label}».`]);
   });
 });
 
@@ -237,7 +237,7 @@ test('a closed route has one event without a compass direction', async t => {
   }
   const ctx = await capture(t, rows, { actions });
   passed(ctx);
-  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл мимо ориентира «бревно».']);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл возле ориентира «бревно».']);
 });
 
 test('a path uses its initial frame when no final landmark is visible', async t => {
@@ -256,7 +256,7 @@ test('a path uses its initial frame when no final landmark is visible', async t 
   after.frame.objects = [];
   const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
   passed(ctx);
-  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, прочь от ориентира «бревно».']);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, от места у ориентира «бревно».']);
 });
 
 test('a moving person uses the recorded position in each endpoint frame for the path preposition', async t => {
@@ -275,8 +275,8 @@ test('a moving person uses the recorded position in each endpoint frame for the 
   after.frame.creatures[0].position = [2462, 1696, 0];
   const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
   passed(ctx);
-  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), [`Гость прошёл на восток, прочь от ориентира «${person.name}».`]);
-  assert.ok(ctx.values[0].parts[0].packet.События[0].includes(`Положение существа «${person.name}» изменилось.`));
+  assert.deepEqual(texts(ctx.values).filter(text => text.startsWith('Гость прошёл ')), [`Гость прошёл на восток, от места у ориентира «${person.name}» к месту у ориентира «${person.name}».`]);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, [`Гость прошёл на восток, от места у ориентира «${person.name}» к месту у ориентира «${person.name}».`, `По ходу пути: Положение существа «${person.name}» изменилось. Теперь существо находилось к востоку от героя, в месте сцены.`]);
 });
 
 test('initial terrain bearings do not add an event during the first recorded step', async t => {
@@ -297,7 +297,7 @@ test('initial terrain bearings do not add an event during the first recorded ste
   after.frame.position = [2459, 1696, 0];
   const ctx = await capture(t, [before, after], { actions: [{ native_turn: after.native_turn, inputs: [{ action: 'RIGHT' }] }] });
   passed(ctx);
-  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток, прочь от ориентира «деревянная стена».']);
+  assert.deepEqual(ctx.values[0].parts[0].packet.События, ['Гость прошёл на восток возле ориентира «деревянная стена».']);
 });
 
 test('a day of waiting uses calendar seconds rather than the number of frames', async t => {

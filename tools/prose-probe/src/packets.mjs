@@ -215,11 +215,12 @@ function project(frame, data, knownDoors) {
     const type = object.item?.type ?? object.type;
     const kind = ['door', 'window', 'terrain'].includes(object.kind) ? 'terrain' : object.kind;
     const orientation = object.kind === 'field' ? fieldOrientation(object.type) : undefined;
-    let text = object.item ? itemSentence(object.item, sentence(location(object.direction)), data) : `${sentence(location(object.direction))} — ${label}${orientation ? `; направление поля — на ${orientation}` : ''}.${data.description(kind, type)}`;
+    const where = sentence(location(directionAt(object.position, frame.position)));
+    let text = object.item ? itemSentence(object.item, where, data) : `${where} — ${label}${orientation ? `, ведёт на ${orientation}` : ''}.${data.description(kind, type)}`;
     const opening = object.kind === 'door' ? 'Дверь' : object.kind === 'window' ? 'Окно' : null;
     if (opening && object.state === 'open') text += ` ${opening} ${object.kind === 'window' ? 'было открыто' : 'была открыта'}.`;
     if (opening && object.state === 'closed') text += ` ${opening} ${object.kind === 'window' ? 'было закрыто' : 'была закрыта'}.`;
-    add(key, 'Вещи вокруг', text, { label, position: pos, state: [label, object.state, object.intensity], physical: true, object });
+    add(key, 'Вещи вокруг', text, { kind: object.kind === 'field' ? 'field' : undefined, label, position: pos, state: [label, object.state, object.intensity], physical: true, object });
     if (!['ground_item', 'field', 'known_trap', 'vehicle_part'].includes(object.kind)) occupied.add(pos);
     if (object.kind === 'door') knownDoors.set(pos, object);
   };
@@ -264,7 +265,7 @@ function project(frame, data, knownDoors) {
     const ordinal = (occurrences.get(base) ?? 0) + 1;
     occurrences.set(base, ordinal);
     const label = clean(creature.name);
-    const where = location(creature.direction, far);
+    const where = location(directionAt(creature.position, frame.position), far);
     let text = `${sentence(where)} — ${label}.${data.description(creature.kind, creature.type)}`;
     for (const item of creature.worn ?? []) text += ` ${itemSentence(item, `Видимая одежда существа «${label}»`, data)}`;
     if (creature.wielded) text += ` ${itemSentence(creature.wielded, `В руках у существа «${label}»`, data)}`;
@@ -357,7 +358,7 @@ function actionEvents(actions, before, after, until) {
   });
 }
 
-function addText(packet, section, text) { (packet[section] ??= []).push(text); }
+function addText(packet, section, text, kind) { (packet[section] ??= []).push({ text, kind }); }
 
 function quantity(number, forms, feminine = false) {
   const ending = number % 100 >= 11 && number % 100 <= 14 ? 2 : number % 10 === 1 ? 0 : number % 10 >= 2 && number % 10 <= 4 ? 1 : 2;
@@ -411,13 +412,18 @@ function finishPart(part) {
       }
     } else {
       const counts = new Map();
-      for (const text of values) counts.set(text, (counts.get(text) ?? 0) + 1);
-      countedLines = [...counts];
+      for (const { text, kind } of values) {
+        const key = JSON.stringify([kind ?? null, text]);
+        const counted = counts.get(key);
+        if (counted) counted[1]++;
+        else counts.set(key, [text, 1, kind]);
+      }
+      countedLines = [...counts.values()];
     }
-    part.packet[field] = countedLines.map(([text, count]) => {
+    part.packet[field] = countedLines.map(([text, count, kind]) => {
       if (count === 1) return text;
       const times = count % 100 >= 11 && count % 100 <= 14 ? 'раз' : count % 10 >= 2 && count % 10 <= 4 ? 'раза' : 'раз';
-      const counted = field === 'Люди и звери' ? `Таких существ было ${words(count)}` : field === 'Вещи вокруг' || field === 'При себе' ? `Таких предметов было ${words(count)}` : `${field === 'Звуки' || field === 'Речь' ? 'Это было слышно' : 'Это отмечалось'} ${words(count)} ${times}`;
+      const counted = kind === 'field' ? `Таких было ${words(count)}` : field === 'Люди и звери' ? `Таких существ было ${words(count)}` : field === 'Вещи вокруг' || field === 'При себе' ? `Таких предметов было ${words(count)}` : `${field === 'Звуки' || field === 'Речь' ? 'Это было слышно' : 'Это отмечалось'} ${words(count)} ${times}`;
       return `${text} ${counted}.`;
     });
     for (const text of part.packet[field]) if (/\d|\b[a-z]+_[a-z_]+\b|<color_|>/u.test(text)) throw new Error(`Текст пакета содержит цифру, идентификатор CDDA или разметку: ${field}: ${text}`);
@@ -505,7 +511,7 @@ export async function packets(options) {
         if (first) {
           const memory = { facts: new Map(), terrain: new Map(), doors: new Map(), vehicles: new Set(), initialTurn: row.native_turn };
           memory.initialFacts = project(row.turnFrame, data, memory.doors).facts;
-          for (const fact of memory.initialFacts.values()) addText(part.packet, fact.section, fact.text);
+          for (const fact of memory.initialFacts.values()) addText(part.packet, fact.section, fact.text, fact.kind);
           delivered.set(row.scene, memory);
         }
       }
@@ -528,9 +534,9 @@ export async function packets(options) {
           } else if (fact.creature && !initial) part.events.push({ text: `Появилось существо «${fact.label}». ${fact.text}` });
           else if (changingState.has(fact.section) && !initial) part.events.push({ text: fact.text });
           else if (fact.vehicle && memory.vehicles.has(key)) part.events.push({ text: `Вновь виден транспорт «${fact.label}». ${fact.text}` });
-          else addText(part.packet, fact.section, fact.text);
+          else addText(part.packet, fact.section, fact.text, fact.kind);
         } else if (!fact.terrain) {
-          if (prior.position !== fact.position) part.events.push({ text: `Положение ${fact.creature ? 'существа' : 'предмета'} «${fact.label}» изменилось. Теперь ${fact.creature ? 'существо находилось' : 'предмет находился'} ${location(fact.object?.direction ?? directionAt(JSON.parse(fact.position), row.frame.position))}${fact.creature ? fact.far ? ', вдали' : ', в месте сцены' : ''}.` });
+          if (prior.position !== fact.position) part.events.push({ text: `Положение ${fact.creature ? 'существа' : 'предмета'} «${fact.label}» изменилось. Теперь ${fact.creature ? 'существо находилось' : 'предмет находился'} ${location(directionAt(JSON.parse(fact.position), row.frame.position))}${fact.creature ? fact.far ? ', вдали' : ', в месте сцены' : ''}.` });
           if (!same(prior.state, fact.state) && !opened.has(fact.position)) part.events.push({ text: fact.label ? `Изменилось состояние ${fact.creature ? 'существа' : 'предмета'} «${fact.label}». ${fact.text}` : fact.text });
         }
         memory.facts.set(key, fact);

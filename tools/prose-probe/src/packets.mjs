@@ -279,7 +279,7 @@ function project(frame, data, knownDoors) {
       creature.posture ?? null,
       creature.attention ?? null
     ];
-    add(`${base}:${ordinal}`, 'Люди и звери', text, { label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, state, creature: true });
+    add(`${base}:${ordinal}`, 'Люди и звери', text, { id: creature.id, label, far, position: creature.id !== undefined ? positionKey(creature.position) : undefined, seenFrom: frame.position, state, creature: true });
   }
   const presentItems = new Set((frame.objects ?? []).filter(object => object.item).map(object => `ground:${object.item.uid}`));
   return { facts, visible, terrain, occupied, presentItems };
@@ -292,15 +292,15 @@ const mapDistance = (a, b) => a[2] === b[2] ? Math.max(Math.abs(a[0] - b[0]), Ma
 
 function pathLandmark(frame, position, crossed) {
   const candidates = [];
-  const add = (label, point, rank, type, identity) => {
+  const add = (label, point, rank, type) => {
     if (rank === 3 && crossed.has(type)) return;
     const distance = mapDistance(point, position);
-    if (distance <= 8 && (rank === 0 || inPlace(point, frame))) candidates.push({ label, position: point, rank, distance, identity });
+    if (distance <= 8 && (rank === 0 || inPlace(point, frame))) candidates.push({ label, position: point, rank, distance });
   };
-  for (const person of frame.creatures ?? []) if (person.kind === 'npc') add(clean(person.name), person.position, 0, undefined, person.id);
+  for (const person of frame.creatures ?? []) if (person.kind === 'npc') add(clean(person.name), person.position, 0);
   for (const group of frame.visible_furniture ?? []) for (const point of group.positions) add(clean(group.name), point, 1);
   for (const object of frame.objects ?? []) {
-    if (object.kind === 'ground_item') add(itemName(object.item)[0], object.position, 2, undefined, object.item.uid);
+    if (object.kind === 'ground_item') add(itemName(object.item)[0], object.position, 2);
     else if (object.kind === 'furniture') add(clean(object.name), object.position, 1);
     else if (['terrain', 'door', 'window'].includes(object.kind)) add(clean(object.name), object.position, 3, object.type);
   }
@@ -313,48 +313,50 @@ function pathLandmark(frame, position, crossed) {
 function pathText(event) {
   const { before, after, crossed } = event;
   const direction = same(before.position, after.position) ? '' : ` на ${directionAt(after.position, before.position)}`;
-  const landmark = pathLandmark(after, after.position, crossed) ?? pathLandmark(before, before.position, crossed);
+  const start = pathLandmark(before, before.position, crossed);
+  const end = pathLandmark(after, after.position, crossed);
+  const distanceChange = landmark => mapDistance(after.position, landmark.position) - mapDistance(before.position, landmark.position);
   let anchor = '';
-  if (landmark) {
-    const pointIn = frame => {
-      if (landmark.identity !== undefined) {
-        if (landmark.rank === 0) return frame.creatures?.find(person => person.id === landmark.identity)?.position ?? landmark.position;
-        if (landmark.rank === 2) return frame.objects?.find(object => object.item?.uid === landmark.identity)?.position ?? landmark.position;
-      }
-      return landmark.position;
-    };
-    const startDistance = Math.hypot(...pointIn(before).map((value, i) => value - before.position[i]));
-    const endDistance = Math.hypot(...pointIn(after).map((value, i) => value - after.position[i]));
-    const preposition = endDistance < startDistance ? 'к ориентиру' : endDistance > startDistance ? 'прочь от ориентира' : 'мимо ориентира';
-    anchor = `${direction ? ', ' : ' '}${preposition} «${landmark.label}»`;
+  if (start && (!end || start.label !== end.label) && distanceChange(start) > 0) anchor = `, от места у ориентира «${start.label}»`;
+  if (end) {
+    const change = distanceChange(end);
+    if (change < 0) anchor += `${anchor ? ' ' : ', '}к месту у ориентира «${end.label}»`;
+    else if (change > 0) anchor += `, прочь от ориентира «${end.label}»`;
+    else anchor += `${anchor ? ', ' : ' '}возле ориентира «${end.label}»`;
   }
   return `${event.name} ${event.male ? 'прошёл' : 'прошла'}${direction}${anchor}.`;
 }
 
 function actionEvents(actions, before, after, until) {
   if (!actions || !before) return [];
-  return actions.flatMap(input => {
-  const action = input.action;
-  const actor = { name: clean(after.player_state.name), male: after.player_state.male };
-  if (movement[action]) {
-    const [x, y] = movement[action];
-    const delta = after.position.map((value, i) => value - before.position[i]);
-    if (Math.sign(delta[0]) === x && Math.sign(delta[1]) === y && delta[2] === 0 && (delta[0] || delta[1])) return [{ action: 'step', before, after,
-      crossed: new Set([terrainAt(before, before.position), terrainAt(after, after.position)].filter(Boolean)), ...actor }];
-  }
-  if (action === 'wait' && same(before.position, after.position)) {
-    if (!Number.isSafeInteger(input.duration) || input.duration < 0) throw new Error(`Некорректная длительность wait, native_turn ${input.native_turn}`);
-    const duration = Math.min(input.duration, until - input.native_turn);
-    if (duration > 0) return [{ action: 'wait', position: positionKey(after.position), duration, ...actor }];
-  }
-  if (action === 'open') {
-    const changed = (before.objects ?? []).filter(door => door.kind === 'door' && door.state === 'closed' && inPlace(door.position, after) && (
-      (after.objects ?? []).some(object => object.kind === 'door' && object.state === 'open' && positionKey(object.position) === positionKey(door.position)) ||
-      (after.visible_terrain ?? []).some(group => group.type === door.open_to && group.positions.some(pos => positionKey(pos) === positionKey(door.position)))
-    ));
-    if (changed.length === 1) return [{ action: 'open', door: positionKey(changed[0].position), ...actor }];
-  }
-  return [];
+  return actions.map(input => {
+    const action = input.action;
+    const event = {
+      action: movement[action] ? 'step' : action === 'wait' || action === 'open' ? action : 'unknown',
+      confirmed: false, name: clean(after.player_state.name), male: after.player_state.male,
+      position: positionKey(after.position)
+    };
+    if (movement[action]) {
+      const [x, y] = movement[action];
+      const delta = after.position.map((value, i) => value - before.position[i]);
+      if (Math.sign(delta[0]) === x && Math.sign(delta[1]) === y && delta[2] === 0 && (delta[0] || delta[1])) return {
+        ...event, confirmed: true, before, after,
+        crossed: new Set([terrainAt(before, before.position), terrainAt(after, after.position)].filter(Boolean))
+      };
+    }
+    if (action === 'wait' && same(before.position, after.position)) {
+      if (!Number.isSafeInteger(input.duration) || input.duration < 0) throw new Error(`Некорректная длительность wait, native_turn ${input.native_turn}`);
+      const duration = Math.min(input.duration, until - input.native_turn);
+      if (duration > 0) return { ...event, confirmed: true, duration };
+    }
+    if (action === 'open') {
+      const changed = (before.objects ?? []).filter(door => door.kind === 'door' && door.state === 'closed' && inPlace(door.position, after) && (
+        (after.objects ?? []).some(object => object.kind === 'door' && object.state === 'open' && positionKey(object.position) === positionKey(door.position)) ||
+        (after.visible_terrain ?? []).some(group => group.type === door.open_to && group.positions.some(pos => positionKey(pos) === positionKey(door.position)))
+      ));
+      if (changed.length === 1) return { ...event, confirmed: true, door: positionKey(changed[0].position) };
+    }
+    return event;
   });
 }
 
@@ -380,34 +382,72 @@ function durationText(seconds) {
 }
 
 function finishPart(part) {
-  const events = [];
-  let lastAction;
-  for (const event of part.events) {
-    if (event.action && lastAction?.action === event.action && lastAction.name === event.name && lastAction.male === event.male) {
-      if (event.action === 'step') {
-        lastAction.after = event.after;
-        for (const type of event.crossed) lastAction.crossed.add(type);
-        continue;
-      }
-      if (event.action === 'wait' && lastAction.position === event.position) { lastAction.duration += event.duration; continue; }
+  const actions = part.events.filter(event => event.action);
+  const groups = new Map();
+  let current;
+  for (const action of actions) {
+    if (current && (current.action !== action.action || (action.action === 'wait' && current.position !== action.position))) current = undefined;
+    if (!action.confirmed) {
+      if (current) groups.set(action, current);
+      continue;
     }
-    events.push(event);
-    lastAction = event.action ? event : undefined;
+    if (action.action !== 'step' && action.action !== 'wait') continue;
+    if (!current) current = { ...action, events: [] };
+    else if (action.action === 'step') {
+      current.after = action.after;
+      for (const type of action.crossed) current.crossed.add(type);
+    } else current.duration += action.duration;
+    groups.set(action, current);
   }
-  if (events.length) part.packet.События = events.map(event => {
-    if (event.action === 'step') return pathText(event);
-    if (event.action === 'wait') return `${event.name} ${event.male ? 'ждал' : 'ждала'} на месте ${durationText(event.duration)}.`;
-    if (event.action === 'open') return `${event.name} ${event.male ? 'открыл' : 'открыла'} дверь.`;
-    return event.text;
-  });
+  let actionIndex = 0;
+  let lastAction;
+  for (const event of part.events) if (!event.action) {
+    while (actionIndex < actions.length && actions[actionIndex].turn <= event.turn) lastAction = actions[actionIndex++];
+    const group = groups.get(lastAction);
+    if (group) {
+      groups.set(event, group);
+      group.events.push(event);
+    }
+  }
+  const events = [];
+  const groupLines = new Set();
+  const emitted = new Set();
+  for (const event of part.events) {
+    const group = groups.get(event);
+    if (group) {
+      if (!event.action || emitted.has(group)) continue;
+      emitted.add(group);
+      const lastDisappearances = new Map();
+      if (group.action === 'step') for (const change of group.events) {
+        const creature = change.disappeared ?? change.appeared;
+        if (creature?.id === undefined) continue;
+        lastDisappearances.delete(creature.id);
+        if (change.disappeared) lastDisappearances.set(creature.id, creature);
+      }
+      for (const [id, creature] of lastDisappearances) {
+        const position = JSON.parse(creature.position);
+        if (mapDistance(group.after.position, position) <= mapDistance(creature.seenFrom, position)) lastDisappearances.delete(id);
+      }
+      const behind = [...new Set([...lastDisappearances.values()].map(creature => `«${creature.label}»`))];
+      const changes = group.events.filter(change => !lastDisappearances.has(change.disappeared?.id));
+      let text = group.action === 'step' ? pathText(group) : `${group.name} ${group.male ? 'ждал' : 'ждала'} на месте ${durationText(group.duration)}.`;
+      if (behind.length) text += behind.length === 1 ? ` Позади осталось существо ${behind[0]}.` : ` Позади остались существа: ${behind.join(', ')}.`;
+      groupLines.add(events.length);
+      events.push(text);
+      const prefix = group.action === 'step' ? 'По ходу пути: ' : 'За время ожидания: ';
+      for (const change of changes) events.push(prefix + change.text);
+    } else if (!event.action) events.push(event.text);
+    else if (event.confirmed && event.action === 'open') events.push(`${event.name} ${event.male ? 'открыл' : 'открыла'} дверь.`);
+  }
+  if (events.length) part.packet.События = events;
   delete part.events;
   for (const [field, values] of Object.entries(part.packet)) {
     let countedLines;
     if (field === 'События') {
       countedLines = [];
-      for (const text of values) {
+      for (const [index, text] of values.entries()) {
         const last = countedLines.at(-1);
-        if (last?.[0] === text) last[1]++;
+        if (last?.[0] === text && !groupLines.has(index) && !groupLines.has(index - 1)) last[1]++;
         else countedLines.push([text, 1]);
       }
     } else {
@@ -516,12 +556,13 @@ export async function packets(options) {
         }
       }
       const memory = delivered.get(row.scene);
+      const eventStart = part.events.length;
       const current = project(row.frame, data, memory.doors);
       const initial = memory.facts.size === 0;
       const acts = actionEvents(actions.get(row.native_turn), row.turnBefore, row.turnFrame, rows.at(-1).native_turn);
       const opened = new Set(acts.filter(event => event.door).map(event => event.door));
       for (const [key, fact] of memory.facts) if (fact.creature && !current.facts.has(key)) {
-        part.events.push({ text: `Существо «${fact.label}» больше не видно ${fact.far ? 'вдали' : 'в месте сцены'}.` });
+        part.events.push({ text: `Существо «${fact.label}» больше не видно ${fact.far ? 'вдали' : 'в месте сцены'}.`, disappeared: fact });
         memory.facts.delete(key);
       }
       for (const [key, fact] of current.facts) {
@@ -530,8 +571,8 @@ export async function packets(options) {
         if (!prior) {
           if (row.native_turn === memory.initialTurn) {
             const snapshot = memory.initialFacts.get(key);
-            if (!snapshot || !same([snapshot.state, snapshot.position], [fact.state, fact.position])) part.events.push({ text: fact.creature && !snapshot ? `Появилось существо «${fact.label}». ${fact.text}` : fact.text });
-          } else if (fact.creature && !initial) part.events.push({ text: `Появилось существо «${fact.label}». ${fact.text}` });
+            if (!snapshot || !same([snapshot.state, snapshot.position], [fact.state, fact.position])) part.events.push({ text: fact.creature && !snapshot ? `Появилось существо «${fact.label}». ${fact.text}` : fact.text, appeared: fact.creature ? fact : undefined });
+          } else if (fact.creature && !initial) part.events.push({ text: `Появилось существо «${fact.label}». ${fact.text}`, appeared: fact });
           else if (changingState.has(fact.section) && !initial) part.events.push({ text: fact.text });
           else if (fact.vehicle && memory.vehicles.has(key)) part.events.push({ text: `Вновь виден транспорт «${fact.label}». ${fact.text}` });
           else addText(part.packet, fact.section, fact.text, fact.kind);
@@ -558,6 +599,7 @@ export async function packets(options) {
         if (row.native_turn !== memory.initialTurn) part.events.push(...labelEvents(beforeTurn.get(row.native_turn), row.turnFrame));
         part.events.push(...acts);
       }
+      for (let index = eventStart; index < part.events.length; index++) part.events[index].turn = row.native_turn;
       const occurrence = new Map();
       for (const sound of row.frame.sounds ?? []) {
         const signature = JSON.stringify(sound);

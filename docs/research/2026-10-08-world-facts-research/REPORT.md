@@ -99,12 +99,12 @@
 | путь | размер в байтах | SHA-256 | что это |
 |---|---|---|---|
 | `/srv/novgorod-work/fleet/tasks` | размер не снят | каталог | Каталог задач; часть подпапок недоступна, число файлов не снято. |
-| `/srv/novgorod-work/scratch/research-archive/in/inventory.md` | 22998 | 1f03e86c95aaba14d1da4f14359ee6ba297a9a73482e505c46cc51ec393a9a7e | Источник прежних сведений об объёме; копия приложена как source-inventory.md. |
-| `/srv/novgorod-work/scratch/research-archive/tmp/catalog-world-facts.py` | 1278 | 3c39809f49ec1c64897187c6ce41bf19ab97b65a915648b5b39c277083c3990e | Каталогизатор имён папок; копия приложена как catalog-world-facts.py. |
-| `/srv/novgorod-work/scratch/research-archive/tmp/catalog-world-facts-final.tsv` | 2226 | f9b5e662aabb8aefc27dfc117d03718f7820d1c37f121e56b6d6c26210178c7b | Список доступных имён каталогов; копия приложена как catalog-world-facts.tsv. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-gaps-by-armies-1008.md` | 8556 | 1922043aae154072f5266486e30b93354c9fc2983a3b519d533023fdff79a297 | Память по заполнению пробелов армиями. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Индекс использован для поиска D156–D169; исходник больше 102400 байт, не копировался. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-d168.md` | 2300 | a10ce02244bfb426599286498704ea99deefba5ba8cdcd3bf82d84f3a785f560 | Тексты решений D168 и D169; копия приложена как owner-decisions-d168.md. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-d156.md` | 3183 | da673e0449de623f63f89284e91a8ea42d51a502fbc8a872de39330864dcf68b | Текст решения D156; копия приложена как owner-decisions-d156.md. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-d163.md` | 1517 | 3e3690f87c81b6e3d3b16bdca3df174cf5c47ae788c9eade4b700bbce8468a66 | Текст решения D163; копия приложена как owner-decisions-d163.md. |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-d164.md` | 2321 | 9aa83223d70f78452d394b9d3068cebfbcc52a253346fdad3cc021457fd389c5 | Текст решения D164; копия приложена как owner-decisions-d164.md. |
+| `source-inventory.md` | 22998 | 1f03e86c95aaba14d1da4f14359ee6ba297a9a73482e505c46cc51ec393a9a7e | Источник прежних сведений об объёме; копия приложена как source-inventory.md. |
+| `catalog-world-facts.py` | 1278 | 3c39809f49ec1c64897187c6ce41bf19ab97b65a915648b5b39c277083c3990e | Каталогизатор имён папок; копия приложена как catalog-world-facts.py. |
+| `catalog-world-facts.tsv` | 2226 | f9b5e662aabb8aefc27dfc117d03718f7820d1c37f121e56b6d6c26210178c7b | Список доступных имён каталогов; копия приложена как catalog-world-facts.tsv. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-gaps-by-armies-1008.md` | 8556 | 1922043aae154072f5266486e30b93354c9fc2983a3b519d533023fdff79a297 | Память по заполнению пробелов армиями. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Индекс использован для поиска D156–D169; исходник больше 102400 байт, не копировался. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d168.md` | 2300 | a10ce02244bfb426599286498704ea99deefba5ba8cdcd3bf82d84f3a785f560 | Тексты решений D168 и D169; копия приложена как owner-decisions-d168.md. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d156.md` | 3183 | da673e0449de623f63f89284e91a8ea42d51a502fbc8a872de39330864dcf68b | Текст решения D156; копия приложена как owner-decisions-d156.md. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d163.md` | 1517 | 3e3690f87c81b6e3d3b16bdca3df174cf5c47ae788c9eade4b700bbce8468a66 | Текст решения D163; копия приложена как owner-decisions-d163.md. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d164.md` | 2321 | 9aa83223d70f78452d394b9d3068cebfbcc52a253346fdad3cc021457fd389c5 | Текст решения D164; копия приложена как owner-decisions-d164.md. |

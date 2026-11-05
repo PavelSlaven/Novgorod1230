@@ -22,7 +22,7 @@
 Материал предлагает вставлять правила захвата в задания частей без правок и принимать часть по снимкам, прогону и числам пробы прогулки ([source-report.md](source-report.md):7, 62). Проверка части 1 показала читаемость страницы в заданной эмуляции, но также выявила неоднозначность глифов и дублирование подписей ([source-report.md](source-report.md):88, 101).
 
 ## Решения владельца
-D391: 2026-11-02 владелец ответил «Да, буди» и принял план `codex-direct/land1230/plan-d390.md`: разбудить «11 Заместитель ведущего» для черновика задания части «Поле в конце жатвы», а «7 Визуализация карты» — для снимков этой части (`/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md:229`).
+D391: 2026-11-02 владелец ответил «Да, буди» и принял план `codex-direct/land1230/plan-d390.md`: разбудить «11 Заместитель ведущего» для черновика задания части «Поле в конце жатвы», а «7 Визуализация карты» — для снимков этой части (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:229`).
 
 ## Ограничения
 В отчёте сказано, что проверялась эмуляция `375×812`, а не настоящий телефон или Remote Control; просмотр пар «до/после» на данных части 1 не состоялся, потому что этих пар не было. Файл `file://` встроенный браузер не открывал, поэтому проверка выполнялась через временный локальный HTTP-сервер, который остановили ([source-report.md](source-report.md):106, 110). Кадры части 1 были сняты на развилках и в конце сцен, а не по позднее введённому правилу пятого хода ([source-report.md](source-report.md):102, 103, 104).
@@ -34,4 +34,4 @@ D391: 2026-11-02 владелец ответил «Да, буди» и прин�
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/map-pilot-shots.md` | 15555 | 48df9613ace8e73e1873e2cdf508e3259873df0b6e7b5b66608a9d691d882b6c | описание захвата и показа, скопировано как `source-report.md` без изменений |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/map-shots` | 1138997 | каталог | файлов: 56; результаты снимков пилота |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/map-shots/pilot-p1/shots.tsv` | 987 | 8e39759d484a42852c7be18d7c4a0c1af7e90727aa692275d94007c4fde6638c | манифест части 1, скопирован как `shots.tsv` без изменений |
-| `/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | источник D391:229; превышает предел копирования малого артефакта |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | источник D391:229; превышает предел копирования малого артефакта |

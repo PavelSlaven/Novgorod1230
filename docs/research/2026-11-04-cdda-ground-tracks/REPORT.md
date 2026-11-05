@@ -40,4 +40,4 @@ FINAL-988 принял изменения механики для коммита
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/tracks988/final/final-988.md` | 33186 | 9b2626516075bdbce8754f8ca072dbc90082aa2ad7efd42989ea22632daf95cb | финальный аудит, скопирован как `source-report.md` без изменений |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/bench-988` | 3324340 | каталог | файлов: 180; архив отдельного стенда |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/bench-988/RESULT-988.md` | 5566 | 0260d99353cc429f7e56dced9ef91fbedb5e6c56fc190691f4bb685724d393d5 | итог отдельного стенда, скопирован как `result-988.md` без изменений |
-| `/srv/novgorod-work/scratch/research-archive/in/inventory.md` | 22998 | 1f03e86c95aaba14d1da4f14359ee6ba297a9a73482e505c46cc51ec393a9a7e | снимок описи на 2026-11-05; скопирован как `archive-inventory.md` без изменений |
+| `archive-inventory.md` | 22998 | 1f03e86c95aaba14d1da4f14359ee6ba297a9a73482e505c46cc51ec393a9a7e | снимок описи на 2026-11-05; скопирован как `archive-inventory.md` без изменений |

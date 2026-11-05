@@ -50,5 +50,5 @@ D216: развитие тёплого host заморожено, его врем
 | путь | размер в байтах | SHA-256 | что это |
 |---|---:|---|---|
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/cdda-map-pr-report.md | 4745 | 167c1c8e88d402b7198fcafdd76119aa6996c7d1363cdcbf0cfb82bfd7d0909d | Итоговый отчёт PR; скопирован без изменений как source-report.md. |
-| /srv/novgorod-work/scratch/research-archive/wt/docs/context/cdda-native-map/INDEX.md | 117597 | c478f9fb207144d4986a5a72e3fbac7ed4906db484154f905310a3d376de8c9c | Исходный индекс карты в репозитории; размер превышает лимит малого артефакта, поэтому он не копировался. |
+| docs/context/cdda-native-map/INDEX.md | 117597 | c478f9fb207144d4986a5a72e3fbac7ed4906db484154f905310a3d376de8c9c | Исходный индекс карты в репозитории; размер превышает лимит малого артефакта, поэтому он не копировался. |
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Реестр решений D14, D215 и D216; файл превышает лимит малого артефакта и не копировался. |

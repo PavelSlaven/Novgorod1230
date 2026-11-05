@@ -36,9 +36,9 @@
 - D159: проза проходит слепую оценку при среднем не ниже 8 из 10, а тексты с протокольным ощущением исключаются. ([owner-decisions-d159.md](owner-decisions-d159.md):11, 14, 16)
 - D161: реплики NPC в игровой прозе передаются внутри повествования от третьего лица; прозу оценивают целиком так, как её видит игрок. ([owner-decisions-d161.md](owner-decisions-d161.md):11, 13, 15)
 - D186: все судьи должны сообщать, что мешает тексту, что улучшить, каких фактов не хватает и что можно улучшить в целом. ([owner-decisions-d177.md](owner-decisions-d177.md):60)
-- D223: помощник Codex работает без caveman; менять правила, которые включают навык, можно только по прямому разрешению владельца. Внешний источник: /srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md:54.
-- D225: ревью, судейство и промежуточная приёмка поручаются только Opus; Sonnet и Haiku не ревьюят. Внешний источник: /srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md:52.
-- Позднее, в D289, владелец решил, что модельные тексты должны быть по-русски, где возможно; системный промпт должен называть роль и задачу, а парсируемые ключи и идентификаторы остаются без перевода с пояснением по-русски. Внешний источник: /srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md:126.
+- D223: помощник Codex работает без caveman; менять правила, которые включают навык, можно только по прямому разрешению владельца. Внешний источник: C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:54.
+- D225: ревью, судейство и промежуточная приёмка поручаются только Opus; Sonnet и Haiku не ревьюят. Внешний источник: C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:52.
+- Позднее, в D289, владелец решил, что модельные тексты должны быть по-русски, где возможно; системный промпт должен называть роль и задачу, а парсируемые ключи и идентификаторы остаются без перевода с пояснением по-русски. Внешний источник: C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:126.
 
 ## Ограничения
 

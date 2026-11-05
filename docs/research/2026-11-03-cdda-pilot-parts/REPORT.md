@@ -34,14 +34,14 @@
 - D38: записи включаются по существованию и не удаляются лишь потому, что объект сложно поставить; найдено в [owner-decisions-d51.md](owner-decisions-d51.md):17.
 - D39: Мастер-архив Novgorod1230_MASTER_ARCHIVE_v1 разрешено использовать как черновой источник для обоснования logical_necessity; цены из него следует считать модельными. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/inclusion-by-existence-not-usefulness.md:18`.
 - D40: Включать в игру всё, что существует в мире или должно существовать по логике реальности; предполагаемая полезность не является основанием для исключения. Исключать можно анахронизмы, физически невозможное и дубликаты; противоречия следует исправлять, а не удалять, и чужеземные вещи не исключать, поскольку их могли привезти. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/inclusion-by-existence-not-usefulness.md:11-14`.
-- D385: список природы r2 был принят, после чего владелец поручил подготовить карточку пилота (`in/local/memory/owner-decisions-index.md:223`).
-- D296: животное должно быть отдельным существом CDDA; «стайка» допустима только как экранное представление (`in/local/memory/owner-decisions-index.md:133`).
-- D372: признаки жизни и работы нужны, но следы зверей и людей вынесены в отдельное решение и до него не входят в часть (`in/local/memory/owner-decisions-index.md:210`).
-- D389: сначала детализируется текущий двор, а соседние дворы откладываются (`in/local/memory/owner-decisions-index.md:227`).
-- D390: порядок пилота — природный слой, поле, гумно и овин, сенокос и выгон, опушка, затем проза и диалоги (`in/local/memory/owner-decisions-index.md:228`).
-- D392: для работы по Novgorod предусмотрено распределение независимых задач между исполнителями с промежуточным и итоговым чтением (`in/local/memory/owner-decisions-index.md:230`).
-- D393: окончательную приёмку выполняет распорядитель, автор себя не утверждает (`in/local/memory/owner-decisions-index.md:231`).
-- D411: независимые задачи запускаются параллельно, задачи разбиваются между Codex и Cursor, а ресурсы servak используются для ускорения работы (`in/local/memory/owner-decisions-index.md:246`).
+- D385: список природы r2 был принят, после чего владелец поручил подготовить карточку пилота (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:223`).
+- D296: животное должно быть отдельным существом CDDA; «стайка» допустима только как экранное представление (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:133`).
+- D372: признаки жизни и работы нужны, но следы зверей и людей вынесены в отдельное решение и до него не входят в часть (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:210`).
+- D389: сначала детализируется текущий двор, а соседние дворы откладываются (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:227`).
+- D390: порядок пилота — природный слой, поле, гумно и овин, сенокос и выгон, опушка, затем проза и диалоги (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:228`).
+- D392: для работы по Novgorod предусмотрено распределение независимых задач между исполнителями с промежуточным и итоговым чтением (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:230`).
+- D393: окончательную приёмку выполняет распорядитель, автор себя не утверждает (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:231`).
+- D411: независимые задачи запускаются параллельно, задачи разбиваются между Codex и Cursor, а ресурсы servak используются для ускорения работы (`C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:246`).
 
 ## Ограничения
 

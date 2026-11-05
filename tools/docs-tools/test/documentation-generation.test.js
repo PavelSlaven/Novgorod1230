@@ -33,9 +33,11 @@ test('npm script catalog matches root scripts and current instructions reject da
     await mkdir(join(fixture, 'infra/world-base'), { recursive: true });
     await mkdir(join(fixture, 'docs/plans'), { recursive: true });
     await mkdir(join(fixture, 'docs/implementation/old'), { recursive: true });
+    await mkdir(join(fixture, 'docs/research/2026-11-05-history'), { recursive: true });
     await writeFile(join(fixture, 'infra/world-base/README.md'), 'npm run missing-infra\n');
     await writeFile(join(fixture, 'docs/plans/current.md'), 'npm run missing-plan\n');
     await writeFile(join(fixture, 'docs/implementation/old/README.md'), 'npm run historical-only\n');
+    await writeFile(join(fixture, 'docs/research/2026-11-05-history/REPORT.md'), 'npm run research-history-only\n');
     assert.deepEqual(await validateNpmScriptReferences(fixture), [
       'README.md:2: unknown npm script absent',
       'docs/plans/current.md:1: unknown npm script missing-plan',

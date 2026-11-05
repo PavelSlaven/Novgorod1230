@@ -25,6 +25,8 @@
 ## Решения владельца
 - D342: после сдачи первых суток записать отдельный визит героя; не проводить вторые сутки и не включать разговор с NPC в эту пробу, поскольку разговор должен проверяться отдельно. (`/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md`:179)
 
+D313: владелец разрешил запустить задачу инструмента пробы прозы, назначил писателем Sonnet 5.5 и сохранил те же три момента базовой пробы. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:150`.
+
 ## Ограничения
 Проверялся один визит в пределах записи первых суток; гостю предписывалось подойти, наблюдать за NPC и уйти. Разговор с NPC выделен в отдельную будущую пробу ([source-report.md](source-report.md):3; [owner-decisions-index.md](/srv/novgorod-work/scratch/research-archive/in/local/memory/owner-decisions-index.md):179).
 

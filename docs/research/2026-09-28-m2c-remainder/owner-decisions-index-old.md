@@ -1,0 +1,60 @@
+---
+name: owner-decisions-index-old
+description: Index of older owner decisions D47–D132 (09-28..10-06); each line points to its own file
+metadata:
+  type: project
+---
+
+- [Owner decisions D100–D132 (10-06)](owner-decisions-d100.md) — LD port, D102 tests by sol, starts/titles D105–D116, D117 issue per problem, NPC lifecycle/family D119–D128, society D127, categories D129, N1/speech wire D130, helper drafts tasks D131, D132 I READ THE WIRE BEFORE EVERY BENCH-OK (data/form/how/where)
+- [Owner decisions D99 (10-06)](owner-decisions-d99.md) — final item sections after RimWorld; literary names; 18 container names
+- [Owner decisions D98 (10-06)](owner-decisions-d98.md) — LD plot kept as v17 quest start; ld-harvest before deleting
+- [Owner decisions D97 (10-06)](owner-decisions-d97.md) — old LD playthrough unsupported; no rev36; v17 is the game
+- [Owner decisions D96 (10-06)](owner-decisions-d96.md) — container names; convert all old category records; RimWorld reference
+- [Owner decisions D95 (10-06)](owner-decisions-d95.md) — ~15–20 top item sections, kinds get parent, keep simple
+- [Owner decisions D94 (10-06)](owner-decisions-d94.md) — manner = temperament + standing, tested by real speech
+- [Owner decisions D93 (10-06)](owner-decisions-d93.md) — WK planner B accepted; precision follow-up
+- [Owner decisions D92 (10-06)](owner-decisions-d92.md) — no nameless items: approved name else category name
+- [Owner decisions D90 (10-05)](owner-decisions-d90.md) — review on Codex sol 6.1; main-session ceiling; Codex prepares, Opus approves
+- [Owner decisions D91 (10-05)](owner-decisions-d91.md) — no manner auditor; wrong manner → check writer input first
+- [Owner decisions D89 (10-05)](owner-decisions-d89.md) — red CI, no narrow fix in 2h → I revert the merge, tell owner after
+- [Owner decisions D88 (10-05)](owner-decisions-d88.md) — Opus only final/stuck, checks artifacts; interim CA/ap on gpt-6.1-sol
+- [Owner decisions D87 (10-05)](owner-decisions-d87.md) — D-1 day_type normal by default; special only if calendar names it
+- [Owner decisions D86 (10-05)](owner-decisions-d86.md) — CA on Codex sol, I review each report + dot (permanent via D88)
+- [Owner decisions D85 (10-05)](owner-decisions-d85.md) — armies only launched by me (FLEET_ARMY_SYNC=0)
+- [Owner decisions D84 (10-05)](owner-decisions-d84.md) — red CI blocks PR98 merges; PR98→main at playable slice; no branch deletion
+- [Owner decisions D83 (10-04)](owner-decisions-d83.md) — I personally approve every BENCH-PLAN before any bench
+- [Owner decisions D81 (10-04)](owner-decisions-d81.md) — I read every prompt change in full (prompt-review) before accepting
+- [Owner decisions D82 (10-04)](owner-decisions-d82.md) — keep ~5% weekly Claude for the last day
+- [Owner decisions D79/D80 (10-03/04)](owner-decisions-d79.md) — prompt revision top priority, blocks first playtest
+- [Owner decisions D78 (10-03)](owner-decisions-d78.md) — (partly superseded by D158) opening atmosphere from data; failures = bad input transmission
+- [Owner decisions D77 (10-03)](owner-decisions-d77.md) — audit qwen prompt/input first; 7 v17 starts activation confirmed
+- [Owner decisions D76 (10-03)](owner-decisions-d76.md) — remove dead WK context_text; I close proven issues myself
+- [Owner decisions D75 (10-02)](owner-decisions-d75.md) — owner playtest at opening ≥9/10; start params region/season/occupation/position
+- [Owner decisions D74 (10-02)](owner-decisions-d74.md) — never delete: archive to /srv/library/novgorod-archive
+- [Owner decisions D73 (10-02)](owner-decisions-d73.md) — spend Codex hard; armies on open issues; disk is the limit
+- [Owner decisions D72 (10-02)](owner-decisions-d72.md) — no service label of any kind on the player screen
+- [Owner decisions D71 (10-02)](owner-decisions-d71.md) — numbers = game calibration; label internal, never player/model-facing
+- [Owner decisions D70 (10-02)](owner-decisions-d70.md) — wk-gaps: single-factor max_facts experiment; prod via CR + CA
+- [Owner decisions D67 (10-01)](owner-decisions-d67.md) — no Opus subagents/workflows; CA/approvals on Codex sol
+- [Owner decisions D69 (10-01)](owner-decisions-d69.md) — #221 news first, #223 yard CR, #170/#222 after O1
+- [Owner decisions D68 (10-01)](owner-decisions-d68.md) — npc-talk #220 after npc-claims; wk-gaps hypotheses one at a time
+- [Owner decisions 09-28](m2c-owner-decisions-2026-09-28.md) — #159 merge, NPC character scale, start-territory types
+- [Owner decisions D66 (10-01)](owner-decisions-d66.md) — scenario = plot + NPCs; mechanics in general owners
+- [Owner decisions D65 (10-01)](owner-decisions-d65.md) — minimal combat after O1; durations per contracts
+- [Owner decisions D64 (10-01)](owner-decisions-d64.md) — free Codex capacity → luna research armies
+- [Owner decisions D63 (10-01)](owner-decisions-d63.md) — yard animals #223, 4 recommendations accepted
+- [Owner decisions D62 (10-01)](owner-decisions-d62.md) — NPC talk is live LLM; learning from NPCs #222
+- [Owner decisions D61 (10-01)](owner-decisions-d61.md) — Karelian names by calendar; German/Gotland guests male-only
+- [Owner decisions D60 (10-01)](owner-decisions-d60.md) — NPC epoch safety net stays
+- [Owner decisions D59 (10-01)](owner-decisions-d59.md) — anachronism only out of world stock; impossible fails by physics
+- [Owner decisions D58 (10-01)](owner-decisions-d58.md) — merge everything I judge needed; governance excluded
+- [Owner decisions D47 (09-29)](owner-decisions-d47.md) — 22 answers: B1+weapon schema, economy k=4, Cursor rule
+- [Owner decisions D48 (09-29)](owner-decisions-d48.md) — gpt-6-sol; compact at task end; limit rules
+- [Owner decisions D49 (09-29)](owner-decisions-d49.md) — runtime playable slice first; data not paused
+- [Owner decisions D51 (09-30)](owner-decisions-d51.md) — Giga WK encoder; separate name pools; needs_check blocks
+- [Owner decisions D57 (09-30)](owner-decisions-d57.md) — corpus write rule; PG via runner; docs-PR; evening actions → issue
+- [Owner decisions D56 (09-30)](owner-decisions-d56.md) — rt-lines minutes from place-geo; no hard 30-min cap
+- [Owner decisions D55 (09-30)](owner-decisions-d55.md) — ChatGPT dot advisory reviewer; dot pack is step 1 of every merge
+- [Owner decisions D54 (09-30)](owner-decisions-d54.md) — acct2 no credits, guard thresholds
+- [Owner decisions D53 (09-30)](owner-decisions-d53.md) — #215 merge; crossing guard removed from ferry landings
+- [Owner decisions D50 (09-29)](owner-decisions-d50.md) — five fleet process fixes; docs PR

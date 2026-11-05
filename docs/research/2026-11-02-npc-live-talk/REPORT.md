@@ -44,7 +44,7 @@
 В исходной живой записи речь Жирко работала лучше речи Прокши, но ошибки формы, памяти, полноты знаний и пустых ответов мешали разговору; связанная проза не достигла порога. Измерения исходной записи не соответствовали M6, а позднейший отдельный стенд привёл к выбору топологии А и предела входа 8000 знаков. В отчёте исправления перечислены как план, а не как уже выполненная реализация ([source-report.md](source-report.md):8; [source-report.md](source-report.md):9; [source-report.md](source-report.md):10; [source-report.md](source-report.md):13; `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:216`).
 
 ## Решения владельца
-D41: текст решения не найден.
+D41: До одобрения плана для решений, зависящих от поведения языковой модели, обязателен небольшой внеигровой стенд на реальной локальной модели. Это правило также действует при изменении промпта, формата, модели или её параметров, данных рассказчика или NPC, а также кода, который вычисляет результат по данным или ответу модели. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md:11-17`.
 
 D273: обещание или намерение NPC считается событием речи и не требует операции для подтверждения; аудитор проверяет фактические основания, а обязательство и исполнение относятся к отдельным правилам. Явная ложь получает `knowingly_false` только когда ложность видима, а правдивый отказ относится к `withheld` или молчанию; гипотеза NPC помечается как неопределённая и связывается с конкретной гипотезой владельца. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:110`.
 
@@ -78,3 +78,4 @@ D378: по итогам стенда владелец выбрал тополо�
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/npc-talk/research/latency.md` | 9802 | 0abee3dcdb7f5d76923d25ab8378c9c4b26bdf8377adb22c9d4c79eef811bbf9 | подробный разбор задержек по сценам и фразам |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/npc-talk/research/plan-field-readers.md` | 12408 | 201a3d76ef985b46a9c6e17133075949919f2cb2ab90a6724bac3687b6b41cd0 | поиск мест чтения полей плана разговора |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/npc-talk/research/topology-time.md` | 10793 | db0a1ca1231bf21a1379bd00f118b1be4f62b55dacfd9f3cccdaa396c29724d2 | модельное сравнение топологий и допущения для стенда |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md` | 4705 | f4afcb3e61e7b97e14d54c5c0007369450e02acd1cea6497c8d25272df61df59 | Текст решения владельца; неизменённая копия — bench-check-mandatory.md. |

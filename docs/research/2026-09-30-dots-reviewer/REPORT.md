@@ -39,7 +39,7 @@ Dot был доступен пользователям Pro любого уров
 
 ## Решения владельца
 
-D52: текст решения не найден. Сохранённая запись сообщает, что владелец запретил Codex review; полный текст решения в проверенных файлах не найден ([source-memory.md](source-memory.md):37).
+D52: Автопополнение остаётся отключённым; кредиты и лимиты учитываются на доске и в вечернем обзоре; сбросы используются на обоих аккаунтах; Codex GitHub review не применяется; маршрутизация моделей остаётся прежней, а около 10-07 следует повторно проверить, хватит ли кредитов после 10-30; acct2 никогда не тратит кредиты и использует только сбросы. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/codex-credits-grant-2026.md:34-40`.
 
 Решение о пробе dot в записи не зафиксировано: владелец ещё не ответил ([source-memory.md](source-memory.md):38).
 
@@ -52,3 +52,4 @@ D52: текст решения не найден. Сохранённая зап�
 | путь | размер в байтах | SHA-256 | что это |
 |---|---:|---|---|
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/chatgpt-dots-evaluation.md` | 5431 | 13ce6bdb9b25180289b834649873519122c7518e8aa3b65bfb46639c10db4e69 | Сохранённая запись об оценке dots, перепроверке Codex review и заметке о Notion AI. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/codex-credits-grant-2026.md` | 5344 | 7cd523df0e747dd6bca3cccf41ac400cfeb609784090aaa8f00e710da7951d61 | Текст решения владельца; неизменённая копия — codex-credits-grant-2026.md. |

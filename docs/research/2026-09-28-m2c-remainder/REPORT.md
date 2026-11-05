@@ -37,9 +37,9 @@
 
 D1 и D9 встречаются в записи M2c как ссылки на решения: D1 связан с отсутствием LLM-биографии и манеры речи при первом контакте, D9 — с отсутствующими подтипами предметов по весу ([source-memory.md](source-memory.md):14–15). В разрешённых файлах есть только краткие упоминания D1, без полного текста решения: текущий индекс связывает D1 с профилем темперамента через D29 (`in/local/memory/owner-decisions-index.md:113`), а в файле D136 сказано убрать «1–3» из D1 ([owner-decisions-d136.md](owner-decisions-d136.md):62). Индекс старых решений начинается с D47; отдельного файла D1 среди разрешённых материалов нет ([owner-decisions-index-old.md](owner-decisions-index-old.md):3).
 
-D1: текст решения не найден
+D1: Код задаёт NPC темперамент, ценности, 1–3 цели/страха и мотивы из утверждённых профилей занятия или роли при создании. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/novgorod-game-vision.md:16`.
 
-D9: текст решения не найден
+D9: Код назначает предметам отличительные признаки — клеймо, узор, следы ремонта и износ; языковая модель их не придумывает. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/novgorod-game-vision.md:17`.
 
 ## Ограничения
 
@@ -53,3 +53,4 @@ D9: текст решения не найден
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Индекс проверен для поиска текста D1 и D9; файл больше лимита копирования. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index-old.md` | 6674 | b4081c4fb55241150b7acfbab594e7d0b658ff5e4a2e09fc16e26a97cd9863b2 | Старый индекс проверен для поиска текста D1 и D9; его неизменённая копия приложена. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d136.md` | 12658 | b0557c28c5333d0414a4b9f97db408b7e5b83a75428dab40f6a506db8b3ef972 | Разрешённый файл решений; содержит косвенное упоминание D1, но не полный текст D1. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/novgorod-game-vision.md` | 11034 | b981ab93e413e5923f8befd68166923950a2625bf6ba1686952c183f2acf5f81 | Текст решения владельца; неизменённая копия — novgorod-game-vision.md. |

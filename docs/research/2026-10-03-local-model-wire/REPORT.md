@@ -67,7 +67,7 @@ Thinking был выключен во всех ролях. Температур�
 
 **D267 (21 октября).** Вход любой модели должен проверяться скриптом в пути запуска, а не отдельным ручным шагом. Для Qwen wire-аудит по захвату обязателен в разборе провода, а в BENCH-OK выводится строка о размере, дублях и порядке. Текст решения находится во внешнем файле `memory/owner-decisions-index.md:104`; индекс больше 102400 байт, поэтому его копия не включена.
 
-D41: текст решения не найден
+D41: До одобрения плана для решений, зависящих от поведения языковой модели, обязателен небольшой внеигровой стенд на реальной локальной модели. Это правило также действует при изменении промпта, формата, модели или её параметров, данных рассказчика или NPC, а также кода, который вычисляет результат по данным или ответу модели. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md:11-17`.
 
 ## Ограничения
 
@@ -85,3 +85,4 @@ D41: текст решения не найден
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d81.md` | 1115 | 827f1b3eb28f8234c56084d9f790c7f19193d5e75e84186c4f6b367578adece0 | Решение о личном полном чтении изменений промпта, payload и параметров до принятия. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d158.md` | 4359 | 880e7d8d7b9a58153d3c84ec2d7487d798edec1487439b40373a7daaf9e29199 | Позднее уточнение D158 о фактах мира и свободе повествования, частично изменившее D78 для писателя. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Внешний индекс решений; D267, строка 104. Файл больше предела малых копий, поэтому не копировался. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md` | 4705 | f4afcb3e61e7b97e14d54c5c0007369450e02acd1cea6497c8d25272df61df59 | Текст решения владельца; неизменённая копия — bench-check-mandatory.md. |

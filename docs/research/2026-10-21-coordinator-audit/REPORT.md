@@ -37,7 +37,7 @@
 
 ## Решения владельца
 
-D41: текст решения не найден.
+D41: До одобрения плана для решений, зависящих от поведения языковой модели, обязателен небольшой внеигровой стенд на реальной локальной модели. Это правило также действует при изменении промпта, формата, модели или её параметров, данных рассказчика или NPC, а также кода, который вычисляет результат по данным или ответу модели. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md:11-17`.
 
 D81: владелец лично читает каждый изменяемый промпт вместе с полным system, user payload и параметрами до принятия изменения; в сдаче требуется prompt-review с захватом запроса до и после. ([owner-decisions-d81.md](owner-decisions-d81.md):11,16-18)
 
@@ -82,3 +82,4 @@ D243: проверки частей 2–7 должны использовать 
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Реестр решений D41, D215, D227–D230, D232–D233, D236–D240 и D243; размер превышает лимит малого артефакта, поэтому не копировался. |
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d81.md | 1115 | 827f1b3eb28f8234c56084d9f790c7f19193d5e75e84186c4f6b367578adece0 | Текст решения D81; скопирован без изменений. |
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d83.md | 1907 | 3e90e098dacfcc26cfb893588d8633d8b26621c81850f3053d44efd37db4fc9a | Текст решения D83; скопирован без изменений. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/bench-check-mandatory.md` | 4705 | f4afcb3e61e7b97e14d54c5c0007369450e02acd1cea6497c8d25272df61df59 | Текст решения владельца; неизменённая копия — bench-check-mandatory.md. |

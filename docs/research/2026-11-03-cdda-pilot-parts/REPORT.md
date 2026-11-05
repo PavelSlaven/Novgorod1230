@@ -32,8 +32,8 @@
 ## Решения владельца
 
 - D38: записи включаются по существованию и не удаляются лишь потому, что объект сложно поставить; найдено в [owner-decisions-d51.md](owner-decisions-d51.md):17.
-- D39: текст решения не найден.
-- D40: текст решения не найден.
+- D39: Мастер-архив Novgorod1230_MASTER_ARCHIVE_v1 разрешено использовать как черновой источник для обоснования logical_necessity; цены из него следует считать модельными. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/inclusion-by-existence-not-usefulness.md:18`.
+- D40: Включать в игру всё, что существует в мире или должно существовать по логике реальности; предполагаемая полезность не является основанием для исключения. Исключать можно анахронизмы, физически невозможное и дубликаты; противоречия следует исправлять, а не удалять, и чужеземные вещи не исключать, поскольку их могли привезти. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/inclusion-by-existence-not-usefulness.md:11-14`.
 - D385: список природы r2 был принят, после чего владелец поручил подготовить карточку пилота (`in/local/memory/owner-decisions-index.md:223`).
 - D296: животное должно быть отдельным существом CDDA; «стайка» допустима только как экранное представление (`in/local/memory/owner-decisions-index.md:133`).
 - D372: признаки жизни и работы нужны, но следы зверей и людей вынесены в отдельное решение и до него не входят в часть (`in/local/memory/owner-decisions-index.md:210`).
@@ -57,3 +57,4 @@
 | `/srv/novgorod-work/worktrees/draft-parts/out/task-part5.md` | 710569 | a7dfe6f290e818fd7233408c49f8ea0be466dbdb67b2b309b6989df7cc0499f8 | Сохранённое задание и материалы разведки части 5; превышает лимит копирования. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md` | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Индекс решений владельца; превышает лимит копирования, приведены ссылки на строки. |
 | `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-d51.md` | 4272 | 41871203b850ad4a9365b3567a1965675439e018e4d79ef92ed67b043b28520d | Запись решения D38; копия без изменений. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/inclusion-by-existence-not-usefulness.md` | 2873 | 9888fbfb43be7d6b10ee63381355dd03f9a913e969ac84b34c30584cb8d9a1a8 | Текст решения владельца; неизменённая копия — inclusion-by-existence-not-usefulness.md. |

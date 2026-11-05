@@ -35,7 +35,7 @@
 
 ## Решения владельца
 
-D14: текст решения не найден.
+D14: Код назначает предмету владельца из соответствующей группы; находка в дикой местности остаётся бесхозной либо помечается как потерянная кем-то без выдуманного владельца. Владение сохраняется, владелец и знающие о предмете люди помнят о нём, а код определяет при восприятии, узнаёт ли персонаж предмет; реакция NPC и правовые последствия обрабатываются своими системами. Источник: `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/novgorod-game-vision.md:17`.
 
 D215: производственное сохранение выполняется по запросу игрока и автоматически каждый игровой час; сохранение каждого хода нужно только для отладки. Текст также утверждает режим тёплого preload host «А+Б» и задаёт для него время запуска и восстановления. (C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md:62)
 
@@ -52,3 +52,4 @@ D216: развитие тёплого host заморожено, его врем
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/codex-direct/cdda-map-pr-report.md | 4745 | 167c1c8e88d402b7198fcafdd76119aa6996c7d1363cdcbf0cfb82bfd7d0909d | Итоговый отчёт PR; скопирован без изменений как source-report.md. |
 | docs/context/cdda-native-map/INDEX.md | 117597 | c478f9fb207144d4986a5a72e3fbac7ed4906db484154f905310a3d376de8c9c | Исходный индекс карты в репозитории; размер превышает лимит малого артефакта, поэтому он не копировался. |
 | C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/owner-decisions-index.md | 158935 | 9a59e78410f86d25fbab77233f6fc78553b71944a9079d06c07772647cb2715e | Реестр решений D14, D215 и D216; файл превышает лимит малого артефакта и не копировался. |
+| `C:/Users/Slaven/.claude/projects/C--Users-Slaven-Documents-Novgorod/memory/novgorod-game-vision.md` | 11034 | b981ab93e413e5923f8befd68166923950a2625bf6ba1686952c183f2acf5f81 | Текст решения владельца; неизменённая копия — novgorod-game-vision.md. |

@@ -1,0 +1,3157 @@
+[
+  {
+    "id": "fd_nature_n0132",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Тонкая паутина между травинками",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0132",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Тонкая паутина между травинками",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0132",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0132",
+    "desc": [
+      "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+    ],
+    "apply_message": "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+  },
+  {
+    "id": "fd_nature_n0216",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "багульник болотный — смолистый запах листьев",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0216",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "багульник болотный — смолистый запах листьев",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0216",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "багульник болотный — смолистый запах листьев",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0216",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0216",
+    "desc": [
+      "Багульник почти отцвёл, но узкие листья при прикосновении всё ещё отдают резким смолистым запахом; сырой воздух удерживает его над кочками."
+    ],
+    "apply_message": "Багульник почти отцвёл, но узкие листья при прикосновении всё ещё отдают резким смолистым запахом; сырой воздух удерживает его над кочками."
+  },
+  {
+    "id": "fd_nature_n0217",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0217",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0217",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0217",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0217",
+    "desc": [
+      "На солнечной стороне сосновый ствол нагрелся, и от смоляных трещин пахнет тёплой хвоей и терпкой смолой."
+    ],
+    "apply_message": "На солнечной стороне сосновый ствол нагрелся, и от смоляных трещин пахнет тёплой хвоей и терпкой смолой."
+  },
+  {
+    "id": "fd_nature_n0221",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0221",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0221",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0221",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0221",
+    "desc": [
+      "При движении по ельнику нагретая хвоя отдаёт густым смолистым запахом; в августовском тепле он сильнее у нижних ветвей."
+    ],
+    "apply_message": "При движении по ельнику нагретая хвоя отдаёт густым смолистым запахом; в августовском тепле он сильнее у нижних ветвей."
+  },
+  {
+    "id": "fd_nature_n0222",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0222",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0222",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0222",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0222",
+    "desc": [
+      "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+    ],
+    "apply_message": "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+  },
+  {
+    "id": "fd_nature_n0228",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Слабый хвойный запах остаётся возле свежей царапины ели",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0228",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Слабый хвойный запах остаётся возле свежей царапины ели",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0228",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Слабый хвойный запах остаётся возле свежей царапины ели",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0228",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0228",
+    "desc": [
+      "У светлой свежей трещины на еловой коре выступила смола; возле неё воздух пахнет резче, чем в глубине леса."
+    ],
+    "apply_message": "У светлой свежей трещины на еловой коре выступила смола; возле неё воздух пахнет резче, чем в глубине леса."
+  },
+  {
+    "id": "fd_nature_n0334",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Тонкая паутина между травинками",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0334",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Тонкая паутина между травинками",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0334",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0334",
+    "desc": [
+      "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+    ],
+    "apply_message": "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+  },
+  {
+    "id": "fd_nature_n0408",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0408",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0408",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "В жару у сосны усиливается смолистый запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0408",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0408",
+    "desc": [
+      "В жаркий полдень нагретая сосновая кора отдаёт сухим смолистым запахом; он сильнее у разошедшейся трещины."
+    ],
+    "apply_message": "В жаркий полдень нагретая сосновая кора отдаёт сухим смолистым запахом; он сильнее у разошедшейся трещины."
+  },
+  {
+    "id": "fd_nature_n0410",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0410",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0410",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0410",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0410",
+    "desc": [
+      "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+    ],
+    "apply_message": "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+  },
+  {
+    "id": "fd_nature_n0412",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0412",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0412",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0412",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0412",
+    "desc": [
+      "В тёплом воздухе у колючих ветвей стоит терпкий смолистый запах можжевельника; сизые ягоды темнеют среди зелёных игл, а порыв разносит аромат по краю бора."
+    ],
+    "apply_message": "В тёплом воздухе у колючих ветвей стоит терпкий смолистый запах можжевельника; сизые ягоды темнеют среди зелёных игл, а порыв разносит аромат по краю бора."
+  },
+  {
+    "id": "fd_nature_n0415",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0415",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0415",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0415",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0415",
+    "desc": [
+      "Над сухой хвоей тянется чистый смолистый запах сосны; солнечный жар нагрел рыжую кору и длинные иглы, а лёгкий ветер несёт аромат к опушке."
+    ],
+    "apply_message": "Над сухой хвоей тянется чистый смолистый запах сосны; солнечный жар нагрел рыжую кору и длинные иглы, а лёгкий ветер несёт аромат к опушке."
+  },
+  {
+    "id": "fd_nature_n0602",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Тонкая паутина между травинками",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0602",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Тонкая паутина между травинками",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0602",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0602",
+    "desc": [
+      "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+    ],
+    "apply_message": "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+  },
+  {
+    "id": "fd_nature_n0706",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0706",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0706",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0706",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0706",
+    "desc": [
+      "При движении по ельнику нагретая хвоя отдаёт густым смолистым запахом; в августовском тепле он сильнее у нижних ветвей."
+    ],
+    "apply_message": "При движении по ельнику нагретая хвоя отдаёт густым смолистым запахом; в августовском тепле он сильнее у нижних ветвей."
+  },
+  {
+    "id": "fd_nature_n0707",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0707",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0707",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0707",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0707",
+    "desc": [
+      "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+    ],
+    "apply_message": "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+  },
+  {
+    "id": "fd_nature_n0708",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0708",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0708",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0708",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0708",
+    "desc": [
+      "В августе ягоды калины уже краснеют, но запах у них слабый; над кустом держится терпкий дух влажных плодов."
+    ],
+    "apply_message": "В августе ягоды калины уже краснеют, но запах у них слабый; над кустом держится терпкий дух влажных плодов."
+  },
+  {
+    "id": "fd_nature_n0961",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Тонкая паутина между травинками",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0961",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Тонкая паутина между травинками",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n0961",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n0961",
+    "desc": [
+      "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+    ],
+    "apply_message": "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+  },
+  {
+    "id": "fd_nature_n1115",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1115",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1115",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1115",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1115",
+    "desc": [
+      "От густой еловой хвои тянет свежей смолой; аромат заметен в тёплом воздухе под ветвями."
+    ],
+    "apply_message": "От густой еловой хвои тянет свежей смолой; аромат заметен в тёплом воздухе под ветвями."
+  },
+  {
+    "id": "fd_nature_n1116",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах сырого листового опада и хвои во влажном лесу",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1116",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах сырого листового опада и хвои во влажном лесу",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1116",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах сырого листового опада и хвои во влажном лесу",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1116",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1116",
+    "desc": [
+      "У влажной земли пахнет прелыми листьями и смолистой хвоей; запах усиливается возле рыхлых тёмных скоплений опада под елями."
+    ],
+    "apply_message": "У влажной земли пахнет прелыми листьями и смолистой хвоей; запах усиливается возле рыхлых тёмных скоплений опада под елями."
+  },
+  {
+    "id": "fd_nature_n1117",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1117",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1117",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1117",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1117",
+    "desc": [
+      "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+    ],
+    "apply_message": "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+  },
+  {
+    "id": "fd_nature_n1118",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1118",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1118",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1118",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1118",
+    "desc": [
+      "Вблизи спелых ягод чувствуется слабый терпкий запах; красные гроздья уже наливаются соком."
+    ],
+    "apply_message": "Вблизи спелых ягод чувствуется слабый терпкий запах; красные гроздья уже наливаются соком."
+  },
+  {
+    "id": "fd_nature_n1123",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1123",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1123",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1123",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1123",
+    "desc": [
+      "В тёплом воздухе возле можжевеловых ветвей ощущается сухой смолистый аромат хвои и сизых шишкоягод."
+    ],
+    "apply_message": "В тёплом воздухе возле можжевеловых ветвей ощущается сухой смолистый аромат хвои и сизых шишкоягод."
+  },
+  {
+    "id": "fd_nature_n1127",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1127",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1127",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1127",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1127",
+    "desc": [
+      "От сосен исходит тёплый смолистый дух; он особенно заметен возле нагретого солнцем ствола."
+    ],
+    "apply_message": "От сосен исходит тёплый смолистый дух; он особенно заметен возле нагретого солнцем ствола."
+  },
+  {
+    "id": "fd_nature_n1327",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Тонкая паутина между травинками",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1327",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Тонкая паутина между травинками",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1327",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1327",
+    "desc": [
+      "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+    ],
+    "apply_message": "Между стеблями натянуты почти невидимые нити; после росы на них блестят мелкие капли."
+  },
+  {
+    "id": "fd_nature_n1485",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1485",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1485",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "ель европейская — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1485",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1485",
+    "desc": [
+      "У еловой кромки стоит густой смолистый запах хвои; тёплый воздух смешивает его с запахом влажной коры и земли, и лёгкий ветер несёт аромат к вырубке."
+    ],
+    "apply_message": "У еловой кромки стоит густой смолистый запах хвои; тёплый воздух смешивает его с запахом влажной коры и земли, и лёгкий ветер несёт аромат к вырубке."
+  },
+  {
+    "id": "fd_nature_n1486",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах дёгтя остаётся у места действующей перегонки бересты",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1486",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах дёгтя остаётся у места действующей перегонки бересты",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1486",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах дёгтя остаётся у места действующей перегонки бересты",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1486",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1486",
+    "desc": [
+      "У места перегонки бересты в воздухе держится густой дымный запах дёгтя, который ветер приносит к опушке."
+    ],
+    "apply_message": "У места перегонки бересты в воздухе держится густой дымный запах дёгтя, который ветер приносит к опушке."
+  },
+  {
+    "id": "fd_nature_n1487",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1487",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1487",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах трухлявой древесины",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1487",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1487",
+    "desc": [
+      "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+    ],
+    "apply_message": "У сырой колоды чувствуется землистый грибной запах; он сильнее, если сдвинуть отставшую кору."
+  },
+  {
+    "id": "fd_nature_n1488",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1488",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1488",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "калина обыкновенная — запах цветения или плодов",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1488",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1488",
+    "desc": [
+      "В тёплом воздухе у калины держится слабый сладковато-терпкий запах зрелых ягод; красные грозди густо скрыты под широкими листьями."
+    ],
+    "apply_message": "В тёплом воздухе у калины держится слабый сладковато-терпкий запах зрелых ягод; красные грозди густо скрыты под широкими листьями."
+  },
+  {
+    "id": "fd_nature_n1491",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1491",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1491",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "можжевельник обыкновенный — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1491",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1491",
+    "desc": [
+      "В тёплом воздухе у колючих ветвей стоит терпкий смолистый запах можжевельника; сизые ягоды темнеют среди зелёных игл, а порыв разносит аромат по краю бора."
+    ],
+    "apply_message": "В тёплом воздухе у колючих ветвей стоит терпкий смолистый запах можжевельника; сизые ягоды темнеют среди зелёных игл, а порыв разносит аромат по краю бора."
+  },
+  {
+    "id": "fd_nature_n1495",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1495",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1495",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "сосна обыкновенная — запах",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1495",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1495",
+    "desc": [
+      "Над сухой хвоей тянется чистый смолистый запах сосны; солнечный жар нагрел рыжую кору и длинные иглы, а лёгкий ветер несёт аромат к опушке."
+    ],
+    "apply_message": "Над сухой хвоей тянется чистый смолистый запах сосны; солнечный жар нагрел рыжую кору и длинные иглы, а лёгкий ветер несёт аромат к опушке."
+  },
+  {
+    "id": "fd_nature_n1535",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Паутина с утренней росой",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1535",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Паутина с утренней росой",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1535",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1535",
+    "desc": [
+      "Между травинками висит тонкая сеть; капли росы обозначают её нити светлыми бусинами."
+    ],
+    "apply_message": "Между травинками висит тонкая сеть; капли росы обозначают её нити светлыми бусинами."
+  },
+  {
+    "id": "fd_nature_n1659",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1659",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1659",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1659",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1659",
+    "desc": [
+      "Над мокрым грунтом чувствуется свежий землистый запах; он особенно заметен сразу после первых капель на сухую почву."
+    ],
+    "apply_message": "Над мокрым грунтом чувствуется свежий землистый запах; он особенно заметен сразу после первых капель на сухую почву."
+  },
+  {
+    "id": "fd_nature_n1660",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах луговой травы и таволги",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1660",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах луговой травы и таволги",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1660",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах луговой травы и таволги",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1660",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1660",
+    "desc": [
+      "В тёплом воздухе ощущается медово-миндальный запах цветущей таволги, особенно над сырым участком луга."
+    ],
+    "apply_message": "В тёплом воздухе ощущается медово-миндальный запах цветущей таволги, особенно над сырым участком луга."
+  },
+  {
+    "id": "fd_nature_n1684",
+    "type": "field_type",
+    "looks_like": "fd_web",
+    "intensity_levels": [
+      {
+        "name": "Паутина с утренней росой",
+        "sym": "}",
+        "color": "white",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1684",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Паутина с утренней росой",
+        "transparent": false,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1684",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "description_affix": "covered_in",
+    "decrease_intensity_on_contact": true,
+    "priority": 2,
+    "phase": "solid",
+    "display_items": true,
+    "bash": {
+      "str_min": 1,
+      "str_max": 3,
+      "sound_vol": 2,
+      "sound_fail_vol": 2,
+      "sound": "hsh!",
+      "msg_success": "You brush aside some webs."
+    },
+    "display_field": true
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1684",
+    "desc": [
+      "Между травинками висит тонкая сеть; капли росы обозначают её нити светлыми бусинами."
+    ],
+    "apply_message": "Между травинками висит тонкая сеть; капли росы обозначают её нити светлыми бусинами."
+  },
+  {
+    "id": "fd_nature_n1751",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Горький запах полыни",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1751",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Горький запах полыни",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1751",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Горький запах полыни",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1751",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1751",
+    "desc": [
+      "На сухой межевой кромке от серебристых листьев тянет резкой горечью."
+    ],
+    "apply_message": "На сухой межевой кромке от серебристых листьев тянет резкой горечью."
+  },
+  {
+    "id": "fd_nature_n1752",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1752",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1752",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах влажной земли после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1752",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1752",
+    "desc": [
+      "Над мокрым грунтом чувствуется свежий землистый запах; он особенно заметен сразу после первых капель на сухую почву."
+    ],
+    "apply_message": "Над мокрым грунтом чувствуется свежий землистый запах; он особенно заметен сразу после первых капель на сухую почву."
+  },
+  {
+    "id": "fd_nature_n1914",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Кислый запах сфагна и торфа",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1914",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Кислый запах сфагна и торфа",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1914",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Кислый запах сфагна и торфа",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n1914",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n1914",
+    "desc": [
+      "В тёплом сыром воздухе чувствуется кислый мшистый запах, особенно там, где разорван верхний слой торфа."
+    ],
+    "apply_message": "В тёплом сыром воздухе чувствуется кислый мшистый запах, особенно там, где разорван верхний слой торфа."
+  },
+  {
+    "id": "fd_nature_n2464",
+    "type": "field_type",
+    "legacy_enum_id": 12,
+    "intensity_levels": [
+      {
+        "name": "Краткий дымок над дворами летом",
+        "sym": "8",
+        "dangerous": true,
+        "translucency": 1,
+        "concentration": 1,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2464",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "name": "Краткий дымок над дворами летом",
+        "color": "light_gray",
+        "transparent": false,
+        "translucency": 10,
+        "concentration": 2,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2464",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ],
+        "scent_neutralization": 1
+      },
+      {
+        "name": "Краткий дымок над дворами летом",
+        "color": "dark_gray",
+        "translucency": 0,
+        "concentration": 4,
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2464",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ],
+        "scent_neutralization": 5
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "100m",
+    "dirty_transparency_cache": true,
+    "percent_spread": 10,
+    "outdoor_age_speedup": "0 turns",
+    "priority": 8,
+    "half_life": "2 minutes",
+    "phase": "gas",
+    "has_fume": true,
+    "accelerated_decay": true,
+    "display_items": false,
+    "display_field": true,
+    "looks_like": "fd_fog"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2464",
+    "desc": [
+      "В тихое летнее утро над двором на короткое время может подняться тонкая струйка дыма от печи, а затем быстро растаять."
+    ],
+    "apply_message": "В тихое летнее утро над двором на короткое время может подняться тонкая струйка дыма от печи, а затем быстро растаять."
+  },
+  {
+    "id": "fd_nature_n2492",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах спелых ягод в смешанном подлеске",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2492",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах спелых ягод в смешанном подлеске",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2492",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах спелых ягод в смешанном подлеске",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2492",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2492",
+    "desc": [
+      "У самой земли от переспелых ягод черники и брусники, раздавленных среди листьев, тянет слабым кисло-сладким запахом."
+    ],
+    "apply_message": "У самой земли от переспелых ягод черники и брусники, раздавленных среди листьев, тянет слабым кисло-сладким запахом."
+  },
+  {
+    "id": "fd_nature_n2493",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Грибной дух влажной подстилки после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2493",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Грибной дух влажной подстилки после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2493",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Грибной дух влажной подстилки после дождя",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2493",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2493",
+    "desc": [
+      "После тёплого дождя берёзовые листья и мох темнеют, а от рыхлой подстилки поднимается тяжёлый землистый грибной дух."
+    ],
+    "apply_message": "После тёплого дождя берёзовые листья и мох темнеют, а от рыхлой подстилки поднимается тяжёлый землистый грибной дух."
+  },
+  {
+    "id": "fd_nature_n2524",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах сухой соломы",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2524",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах сухой соломы",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2524",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах сухой соломы",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2524",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2524",
+    "desc": [
+      "Прогретая солнцем солома пахнет сухо и чуть сладко; запах заметен у стерни, где ещё лежат обломанные стебли."
+    ],
+    "apply_message": "Прогретая солнцем солома пахнет сухо и чуть сладко; запах заметен у стерни, где ещё лежат обломанные стебли."
+  },
+  {
+    "id": "fd_nature_n2525",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Горький запах полыни на меже",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2525",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Горький запах полыни на меже",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2525",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Горький запах полыни на меже",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2525",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2525",
+    "desc": [
+      "У разогретой межи стоит горький терпкий запах полыни; после дождя он становится слабее и смешивается с запахом влажной земли."
+    ],
+    "apply_message": "У разогретой межи стоит горький терпкий запах полыни; после дождя он становится слабее и смешивается с запахом влажной земли."
+  },
+  {
+    "id": "fd_nature_n2526",
+    "type": "field_type",
+    "intensity_levels": [
+      {
+        "name": "Запах клевера у поля",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2526",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах клевера у поля",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2526",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      },
+      {
+        "//": "repeat last entry",
+        "name": "Запах клевера у поля",
+        "effects": [
+          {
+            "effect_id": "eff_nature_n2526",
+            "min_duration": "1 seconds",
+            "max_duration": "1 seconds",
+            "intensity": 1,
+            "is_environmental": true
+          }
+        ]
+      }
+    ],
+    "decay_amount_factor": 5,
+    "gas_absorption_factor": "80m",
+    "percent_spread": 25,
+    "dirty_transparency_cache": true,
+    "has_fume": true,
+    "immunity_data": {
+      "body_part_env_resistance": [
+        [
+          "mouth",
+          7
+        ]
+      ],
+      "flags": [
+        "INHALED_TOXIN_IMMUNE"
+      ]
+    },
+    "priority": 8,
+    "half_life": "30 seconds",
+    "phase": "gas"
+  },
+  {
+    "type": "effect_type",
+    "id": "eff_nature_n2526",
+    "desc": [
+      "Уцелевшие клеверные цветки в травяной полосе пахнут медово и тепло; к вечеру запах слабеет, когда цветки остывают."
+    ],
+    "apply_message": "Уцелевшие клеверные цветки в травяной полосе пахнут медово и тепло; к вечеру запах слабеет, когда цветки остывают."
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0216",
+    "field": "fd_nature_n0216",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0217",
+    "field": "fd_nature_n0217",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0221",
+    "field": "fd_nature_n0221",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0222",
+    "field": "fd_nature_n0222",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0228",
+    "field": "fd_nature_n0228",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0408",
+    "field": "fd_nature_n0408",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0410",
+    "field": "fd_nature_n0410",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0412",
+    "field": "fd_nature_n0412",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0415",
+    "field": "fd_nature_n0415",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0706",
+    "field": "fd_nature_n0706",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0707",
+    "field": "fd_nature_n0707",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n0708",
+    "field": "fd_nature_n0708",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1115",
+    "field": "fd_nature_n1115",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1116",
+    "field": "fd_nature_n1116",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1117",
+    "field": "fd_nature_n1117",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1118",
+    "field": "fd_nature_n1118",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1123",
+    "field": "fd_nature_n1123",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1127",
+    "field": "fd_nature_n1127",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1485",
+    "field": "fd_nature_n1485",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1486",
+    "field": "fd_nature_n1486",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1487",
+    "field": "fd_nature_n1487",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1488",
+    "field": "fd_nature_n1488",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1491",
+    "field": "fd_nature_n1491",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1495",
+    "field": "fd_nature_n1495",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1659",
+    "field": "fd_nature_n1659",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1660",
+    "field": "fd_nature_n1660",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1751",
+    "field": "fd_nature_n1751",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1752",
+    "field": "fd_nature_n1752",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n1914",
+    "field": "fd_nature_n1914",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n2492",
+    "field": "fd_nature_n2492",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n2493",
+    "field": "fd_nature_n2493",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n2524",
+    "field": "fd_nature_n2524",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n2525",
+    "field": "fd_nature_n2525",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  },
+  {
+    "type": "emit",
+    "id": "emit_nature_n2526",
+    "field": "fd_nature_n2526",
+    "intensity": 1,
+    "qty": 1,
+    "chance": 5
+  }
+]

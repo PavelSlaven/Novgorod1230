@@ -10,3 +10,4 @@ native-autosave-options
 native-camp-exact-lookup
 native-npc-post-work
 native-perception-capture
+native-ground-footprints

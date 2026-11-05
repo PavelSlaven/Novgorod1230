@@ -1,0 +1,227 @@
+diff --git a/src/creature.cpp b/src/creature.cpp
+--- a/src/creature.cpp
++++ b/src/creature.cpp
+@@ -74,6 +74,7 @@
+ #include "value_ptr.h"
+ #include "vehicle.h"
+ #include "vpart_position.h"
++#include "weather.h"
+ 
+ struct mutation_branch;
+ 
+@@ -159,6 +160,8 @@
+ static const material_id material_wood( "wood" );
+ static const material_id material_wool( "wool" );
+ 
++static const species_id species_BIRD( "BIRD" );
++static const species_id species_HUMAN( "HUMAN" );
+ static const species_id species_ROBOT( "ROBOT" );
+ 
+ static const trait_id trait_DEBUG_CLOAK( "DEBUG_CLOAK" );
+@@ -323,6 +326,70 @@
+     location = loc;
+ }
+ 
++static int footprint_direction_index( const tripoint_abs_ms &old_pos,
++                                      const tripoint_abs_ms &new_pos )
++{
++    switch( direction_from( old_pos.xy(), new_pos.xy() ) ) {
++        case direction::NORTH:
++            return 0;
++        case direction::NORTHWEST:
++        case direction::WEST:
++        case direction::SOUTHWEST:
++            return 1;
++        case direction::SOUTH:
++            return 2;
++        case direction::NORTHEAST:
++        case direction::EAST:
++        case direction::SOUTHEAST:
++            return 3;
++        default:
++            return 2;
++    }
++}
++
++static void leave_ordinary_footprint( const Creature &creature,
++                                     const tripoint_abs_ms &old_pos,
++                                     const tripoint_abs_ms &new_pos )
++{
++    if( creature.is_fake() || ( old_pos.x() == new_pos.x() && old_pos.y() == new_pos.y() ) ) {
++        return;
++    }
++
++    map &here = get_map();
++    const tripoint_bub_ms old_tile = here.get_bub( old_pos );
++    if( !here.inbounds( old_tile ) || !here.has_floor( old_tile ) ||
++        here.has_flag( ter_furn_flag::TFLAG_SWIMMABLE, old_tile ) ) {
++        return;
++    }
++    if( !here.has_flag_ter( "SOFT_GROUND", old_tile ) &&
++        !( here.is_outside( old_tile ) && !here.is_roofed( old_tile ) &&
++           get_weather().get_snow_depth_mm( project_to<coords::omt>( old_pos ) ) > 0 ) ) {
++        return;
++    }
++
++    static const std::array<std::array<field_type_str_id, 4>, 3> footprints_by_family = {{
++            { fd_human_footprint_n, fd_human_footprint_w,
++              fd_human_footprint_s, fd_human_footprint_e },
++            { fd_bird_footprint_n, fd_bird_footprint_w,
++              fd_bird_footprint_s, fd_bird_footprint_e },
++            { fd_animal_footprint_n, fd_animal_footprint_w,
++              fd_animal_footprint_s, fd_animal_footprint_e }
++        }};
++    const int family = creature.in_species( species_HUMAN ) ? 0 :
++                       creature.in_species( species_BIRD ) ? 1 : 2;
++    const field_type_str_id &footprint = footprints_by_family[family][footprint_direction_index(
++                                              old_pos, new_pos )];
++    if( !footprint.is_valid() ) {
++        return;
++    }
++    if( here.get_field( old_tile, footprint ) != nullptr ) {
++        here.set_field_age( old_tile, footprint, 0_turns );
++        here.set_field_intensity( old_tile, footprint, 1 );
++    } else {
++        here.add_field( old_tile, footprint, 1, 0_turns, false );
++    }
++}
++
+ void Creature::on_move( const tripoint_abs_ms &old_pos )
+ {
+     if( old_pos == pos_abs() ) {
+@@ -340,6 +407,7 @@
+     }
+ 
+     leave_bloody_footprint( old_pos );
++    leave_ordinary_footprint( *this, old_pos, pos_abs() );
+     check_bloody_feet( old_pos );
+ }
+ 
+@@ -391,33 +459,11 @@
+         return;
+     }
+ 
+-    // Choose footprint direction
+-    direction dir = direction_from( old_pos, pos_abs() );
+-
+-    field_type_str_id footprint = fd_blood_footprint_s;
+-    switch( dir ) {
+-        case direction::NORTH:
+-            footprint = fd_blood_footprint_n;
+-            break;
+-        case direction::NORTHWEST:
+-        case direction::SOUTHWEST:
+-        case direction::WEST:
+-            footprint = fd_blood_footprint_w;
+-            break;
+-        case direction::SOUTH:
+-            footprint = fd_blood_footprint_s;
+-            break;
+-        case direction::NORTHEAST:
+-        case direction::SOUTHEAST:
+-        case direction::EAST:
+-            footprint = fd_blood_footprint_e;
+-            break;
+-        default:
+-            break;
+-    }
+-
+-    // Place footprint
+-    here.add_field( here.get_bub( old_pos ), footprint, 1 );
++    static const std::array<field_type_str_id, 4> bloody_footprints = {
++        fd_blood_footprint_n, fd_blood_footprint_w, fd_blood_footprint_s, fd_blood_footprint_e
++    };
++    here.add_field( here.get_bub( old_pos ),
++                    bloody_footprints[footprint_direction_index( old_pos, pos_abs() )], 1 );
+     //get_effect( effect_bloody_feet ).set_duration(get_effect( effect_bloody_feet ).get_duration() - 1_turns);
+ }
+ 
+diff --git a/src/field_type.h b/src/field_type.h
+--- a/src/field_type.h
++++ b/src/field_type.h
+@@ -139,6 +139,18 @@
+ extern const field_type_str_id fd_blood_footprint_w;
+ extern const field_type_str_id fd_blood_footprint_s;
+ extern const field_type_str_id fd_blood_footprint_e;
++extern const field_type_str_id fd_human_footprint_n;
++extern const field_type_str_id fd_human_footprint_w;
++extern const field_type_str_id fd_human_footprint_s;
++extern const field_type_str_id fd_human_footprint_e;
++extern const field_type_str_id fd_bird_footprint_n;
++extern const field_type_str_id fd_bird_footprint_w;
++extern const field_type_str_id fd_bird_footprint_s;
++extern const field_type_str_id fd_bird_footprint_e;
++extern const field_type_str_id fd_animal_footprint_n;
++extern const field_type_str_id fd_animal_footprint_w;
++extern const field_type_str_id fd_animal_footprint_s;
++extern const field_type_str_id fd_animal_footprint_e;
+ extern const field_type_str_id fd_blood_insect;
+ extern const field_type_str_id fd_blood_invertebrate;
+ extern const field_type_str_id fd_blood_veggy;
+@@ -202,6 +214,7 @@
+ 
+         time_duration underwater_age_speedup = 0_turns;
+         time_duration outdoor_age_speedup = 0_turns;
++        time_duration precipitation_age_speedup = 0_turns;
+         int decay_amount_factor = 0;
+         int percent_spread = 0;
+         int apply_slime_factor = 0;
+diff --git a/src/field_type.cpp b/src/field_type.cpp
+--- a/src/field_type.cpp
++++ b/src/field_type.cpp
+@@ -17,6 +17,18 @@
+ const field_type_str_id fd_blood_footprint_n( "fd_blood_footprint_n" );
+ const field_type_str_id fd_blood_footprint_s( "fd_blood_footprint_s" );
+ const field_type_str_id fd_blood_footprint_w( "fd_blood_footprint_w" );
++const field_type_str_id fd_human_footprint_n( "fd_human_footprint_n" );
++const field_type_str_id fd_human_footprint_w( "fd_human_footprint_w" );
++const field_type_str_id fd_human_footprint_s( "fd_human_footprint_s" );
++const field_type_str_id fd_human_footprint_e( "fd_human_footprint_e" );
++const field_type_str_id fd_bird_footprint_n( "fd_bird_footprint_n" );
++const field_type_str_id fd_bird_footprint_w( "fd_bird_footprint_w" );
++const field_type_str_id fd_bird_footprint_s( "fd_bird_footprint_s" );
++const field_type_str_id fd_bird_footprint_e( "fd_bird_footprint_e" );
++const field_type_str_id fd_animal_footprint_n( "fd_animal_footprint_n" );
++const field_type_str_id fd_animal_footprint_w( "fd_animal_footprint_w" );
++const field_type_str_id fd_animal_footprint_s( "fd_animal_footprint_s" );
++const field_type_str_id fd_animal_footprint_e( "fd_animal_footprint_e" );
+ const field_type_str_id fd_blood_insect( "fd_blood_insect" );
+ const field_type_str_id fd_blood_invertebrate( "fd_blood_invertebrate" );
+ const field_type_str_id fd_blood_veggy( "fd_blood_veggy" );
+@@ -300,6 +312,7 @@
+     optional( jo, was_loaded, "block_mtypes", block_mtypes );
+     optional( jo, was_loaded, "underwater_age_speedup", underwater_age_speedup, 0_turns );
+     optional( jo, was_loaded, "outdoor_age_speedup", outdoor_age_speedup, 0_turns );
++    optional( jo, was_loaded, "precipitation_age_speedup", precipitation_age_speedup, 0_turns );
+     optional( jo, was_loaded, "decay_amount_factor", decay_amount_factor, 0 );
+     optional( jo, was_loaded, "percent_spread", percent_spread, 0 );
+     optional( jo, was_loaded, "apply_slime_factor", apply_slime_factor, 0 );
+diff --git a/src/map_field.cpp b/src/map_field.cpp
+--- a/src/map_field.cpp
++++ b/src/map_field.cpp
+@@ -540,6 +540,15 @@
+     }
+ }
+ 
++static void field_processor_precipitation_dissipation( const tripoint_bub_ms &p, field_entry &cur,
++        field_proc_data &pd )
++{
++    if( get_weather().weather_id->precip != precip_class::none && pd.here.is_outside( p ) &&
++        !pd.here.is_roofed( p ) ) {
++        cur.mod_field_age( pd.cur_fd_type->precipitation_age_speedup );
++    }
++}
++
+ static void field_processor_fd_acid( const tripoint_bub_ms &p, field_entry &cur,
+                                      field_proc_data &pd )
+ {
+@@ -2270,6 +2279,9 @@
+     if( ft.underwater_age_speedup != 0_turns ) {
+         processors.push_back( &field_processor_underwater_dissipation );
+     }
++    if( ft.precipitation_age_speedup != 0_turns ) {
++        processors.push_back( &field_processor_precipitation_dissipation );
++    }
+     if( ft.apply_slime_factor > 0 ) {
+         processors.push_back( &field_processor_apply_slime );
+     }

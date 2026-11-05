@@ -1,0 +1,178 @@
+[
+  {
+    "type": "terrain",
+    "id": "t_dirt",
+    "copy-from": "t_dirt",
+    "looks_like": "t_natural_floor_abstract",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_dirtmound",
+    "copy-from": "t_dirtmound",
+    "looks_like": "",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_mud",
+    "copy-from": "t_mud",
+    "looks_like": "t_dirt",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_sand",
+    "copy-from": "t_sand",
+    "looks_like": "",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_sandmound",
+    "copy-from": "t_sandmound",
+    "looks_like": "t_dirtmound",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_clay",
+    "copy-from": "t_clay",
+    "looks_like": "",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_claymound",
+    "copy-from": "t_claymound",
+    "looks_like": "t_dirtmound",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_grass",
+    "copy-from": "t_grass",
+    "looks_like": "t_natural_floor_abstract",
+    "transforms_into": "t_grass_grazed",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_grass_dead",
+    "copy-from": "t_grass_dead",
+    "looks_like": "t_dirt",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_grass_long",
+    "copy-from": "t_grass_long",
+    "looks_like": "t_grass",
+    "transforms_into": "t_grass",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_grass_tall",
+    "copy-from": "t_grass_tall",
+    "looks_like": "t_shrub",
+    "transforms_into": "t_grass_long",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_forestfloor",
+    "copy-from": "t_forestfloor",
+    "looks_like": "t_moss",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_moss",
+    "copy-from": "t_moss",
+    "looks_like": "t_grass",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_palisade_gate_o",
+    "copy-from": "t_palisade_gate_o",
+    "looks_like": "",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "id": "fd_human_footprint_n",
+    "type": "field_type",
+    "intensity_levels": [ { "name": "след человека", "color": "brown" } ],
+    "half_life": "6 hours",
+    "linear_half_life": true,
+    "precipitation_age_speedup": "11 turns",
+    "phase": "solid",
+    "display_field": true
+  },
+  {
+    "id": "fd_human_footprint_w",
+    "type": "field_type",
+    "copy-from": "fd_human_footprint_n"
+  },
+  {
+    "id": "fd_human_footprint_s",
+    "type": "field_type",
+    "copy-from": "fd_human_footprint_n"
+  },
+  {
+    "id": "fd_human_footprint_e",
+    "type": "field_type",
+    "copy-from": "fd_human_footprint_n"
+  },
+  {
+    "id": "fd_bird_footprint_n",
+    "type": "field_type",
+    "intensity_levels": [ { "name": "след птицы", "color": "brown" } ],
+    "half_life": "6 hours",
+    "linear_half_life": true,
+    "precipitation_age_speedup": "11 turns",
+    "phase": "solid",
+    "display_field": true
+  },
+  {
+    "id": "fd_bird_footprint_w",
+    "type": "field_type",
+    "copy-from": "fd_bird_footprint_n"
+  },
+  {
+    "id": "fd_bird_footprint_s",
+    "type": "field_type",
+    "copy-from": "fd_bird_footprint_n"
+  },
+  {
+    "id": "fd_bird_footprint_e",
+    "type": "field_type",
+    "copy-from": "fd_bird_footprint_n"
+  },
+  {
+    "id": "fd_animal_footprint_n",
+    "type": "field_type",
+    "intensity_levels": [ { "name": "след животного", "color": "brown" } ],
+    "half_life": "6 hours",
+    "linear_half_life": true,
+    "precipitation_age_speedup": "11 turns",
+    "phase": "solid",
+    "display_field": true
+  },
+  {
+    "id": "fd_animal_footprint_w",
+    "type": "field_type",
+    "copy-from": "fd_animal_footprint_n"
+  },
+  {
+    "id": "fd_animal_footprint_s",
+    "type": "field_type",
+    "copy-from": "fd_animal_footprint_n"
+  },
+  {
+    "id": "fd_animal_footprint_e",
+    "type": "field_type",
+    "copy-from": "fd_animal_footprint_n"
+  }
+]

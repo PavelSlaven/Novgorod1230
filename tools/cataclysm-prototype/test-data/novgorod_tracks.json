@@ -1,0 +1,43 @@
+[
+  {
+    "type": "terrain",
+    "id": "t_novgorod_tracks_soft_a",
+    "copy-from": "t_pavement",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "terrain",
+    "id": "t_novgorod_tracks_soft_b",
+    "copy-from": "t_pavement",
+    "extend": { "flags": [ "SOFT_GROUND" ] }
+  },
+  {
+    "type": "MONSTER",
+    "id": "mon_novgorod_tracks_animal_a",
+    "copy-from": "mon_chicken",
+    "name": { "str": "test mammal" },
+    "species": [ "MAMMAL" ]
+  },
+  {
+    "type": "MONSTER",
+    "id": "mon_novgorod_tracks_animal_b",
+    "copy-from": "mon_chicken",
+    "name": { "str": "test mammal" },
+    "species": [ "MAMMAL" ]
+  },
+  {
+    "type": "MONSTER",
+    "id": "mon_novgorod_tracks_human_bird",
+    "copy-from": "mon_chicken",
+    "name": { "str": "test HUMAN and BIRD priority monster" },
+    "species": [ "HUMAN", "BIRD" ]
+  },
+  {
+    "type": "MONSTER_WHITELIST",
+    "monsters": [
+      "mon_novgorod_tracks_animal_a",
+      "mon_novgorod_tracks_animal_b",
+      "mon_novgorod_tracks_human_bird"
+    ]
+  }
+]

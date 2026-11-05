@@ -80,7 +80,7 @@ class ApplyOverlaysTest(unittest.TestCase):
                                  "native-preload", "native-semantic-input", "native-control-tests",
                                  "native-live-input", "native-autosave-options",
                                  "native-camp-exact-lookup", "native-npc-post-work",
-                                 "native-perception-capture"])
+                                 "native-perception-capture", "native-ground-footprints"])
         self.assertEqual(sorted(names), sorted(path.stem for path in HERE.glob("native-*.patch")))
 
 

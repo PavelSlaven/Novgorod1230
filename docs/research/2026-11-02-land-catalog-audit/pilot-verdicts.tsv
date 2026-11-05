@@ -1,0 +1,84 @@
+id	проверка	вердикт	причина	доказательство
+7	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/map_scale_constants.h:9–16; 11 «constexpr int MAPSIZE = 11;»; 16 «constexpr int SEEX = 12;»
+8	ссылка	не проверить	ограничение	W/pilot-plan.md:8 «ранний мороз уничтожает хлеб… урожай гибнет до уборки»; novgorod_1230_curated.sqlite!events#9: запись не удалось открыть разрешёнными интерфейсами, в разрешённых raw/*.tsv её нет.
+8	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/ambience/settlement_ambience_texts.csv:16 «sat_peasant_homestead_work_sounds_summer_015,peasant_homestead,work_sounds,summer,day,acoustic,Двор почти безлюден — все в поле или на покосе; только скрипит верёвка колодезного ведра д»
+8	ссылка	верно		"origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv:2 «fl_cu_secale_cereale,рожь (озимая),Secale cereale,rye,cereal_winter,annual_grass,yes,,true,proposed:flora/cereal_winter,ARABLE:8,""arable_field:ubiquitous | seasons: winter,spring,summer»"
+8	ссылка	верно		origin/main:docs/design/systems/02-world-map-history.md:18 «Старт — Вихтуй, 20 августа 1230 года по юлианскому календарю, 07:00 местного среднего солнечного времени. В первой версии это небольшая деревня из нескольких дворов (их число уточняют п»
+9	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/overmap_terrain/overmap_terrain_hardcoded.json:24 «""spawns"": { ""group"": ""GROUP_FOREST"", ""population"": [ 0, 1 ], ""chance"": 13 },»"
+9	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/overmap_terrain/overmap_terrain_hardcoded.json:37 «""spawns"": { ""group"": ""GROUP_FOREST"", ""population"": [ 0, 3 ], ""chance"": 13 },»"
+9	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/overmap_terrain/overmap_terrain_hardcoded.json:50 «""spawns"": { ""group"": ""GROUP_FOREST"", ""population"": [ 0, 6 ], ""chance"": 15 },»"
+9	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/overmap_terrain/overmap_terrain_hardcoded.json:64 «""spawns"": { ""group"": ""GROUP_SWAMP"", ""population"": [ 2, 6 ], ""chance"": 50 },»"
+9	ссылка	верно		"origin/claude/fix04e-devint:dev-world/start.json:19–31; 22 «""point"": [ 0, 0, 0 ], ""overmap"": ""novgorod_dev_courtyard_north""»; 23 «""point"": [ 0, 0, 1 ], ""overmap"": ""novgorod_dev_courtyard_roof_north""»"
+9	ссылка	неверно	источник	"origin/claude/fix04e-devint:tools/cataclysm-prototype/dev-world/wild-region.json:129 «""id"": ""river"",»; :131 «""chance"": 1,»; заявленный диапазон 23–128 не включает шанс реки. Должно быть: ссылка 23–131 или отдельно 129–131."
+20	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/overmap_mutable/farm_horse_mutable.json:4 «""id"": ""Horse Farm Mutable"",»"
+20	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/overmap_special.cpp:293 «void overmap_special::load( const JsonObject &jo, const std::string_view src )»
+20	ссылка	верно		"origin/claude/fix04e-devint:dev-world/start.json:19 «""type"": ""overmap_special"",»"
+20	ссылка	неверно	источник	"origin/claude/fix04e-devint:tools/cataclysm-prototype/dev-world/start.json:2 «{»; :4 «""id"": ""novgorod_dev_courtyard"",». Должно быть: start.json:4."
+29	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-flora.json:2160 «""id"": ""t_grass_dead"",»"
+29	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:13 «epr_arable_field__r2_arable_field_extra_17,pf_arable_field,env_r2_arable_field_extra_17,Солома остаётся полосой за связкой снопов,work_waste,waste,physical;visual,contextual,summer;autu»
+29	нет в CDDA	верно		"rg -n -i -w 'rye.?stubble|stubble.?field|grain.?stubble|harvested.?field|жнивьё|жниво' C:/Users/Slaven/cdda-src/0d8843f/data/json C:/Users/Slaven/cdda-src/0d8843f/src: совпадений нет (exit 1). Более широкий поиск stubble нашёл C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-flora.json:2170 «""description"": ""An area of extremely short green stubble protruding from the dirt.  Something has been clearly grazing here.""», это выщипанная трава, не жнивьё."
+30	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/furniture-rural.json:4 «""id"": ""f_hay"",»"
+30	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/generic.json:2586 «""id"": ""straw_pile"",»"
+30	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:13 «epr_arable_field__r2_arable_field_extra_17,pf_arable_field,env_r2_arable_field_extra_17,Солома остаётся полосой за связкой снопов,work_waste,waste,physical;visual,contextual,summer;autu»
+30	ссылка	верно		"servak:/srv/novgorod-work/data/master-archive/unpacked/Novgorod1230_MASTER_ARCHIVE_v1/data/normalized_source_tables/occupations/activities.csv:734 «ACT00733,Крестьянский хозяин с несколькими занятиями: собрать и связать результат,""Крестьянский хозяин с несколькими занятиями формирует снопы, копны, корзины или мешки.""»"
+31	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/comestibles/raw_grain.json:316 «""id"": ""wheat"",»"
+31	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/comestibles/raw_grain.json:425 «""id"": ""barley"",»"
+31	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/comestibles/raw_grain.json:504 «""id"": ""oats"",»"
+31	ссылка	верно		"origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv:2 «fl_cu_secale_cereale,рожь (озимая),Secale cereale,rye,cereal_winter,annual_grass,yes,,true,proposed:flora/cereal_winter,ARABLE:8,""arable_field:ubiquitous | seasons: winter,spring,summer»"
+31	нет в CDDA	верно		"W/pilot-plan.md:31 «рожь в зерне»; rg -n -i ""\brye\b|\bSecale\b|рожь|seed_rye"" CS/data/json CS/src: 3 совпадения, отдельного зерна/семени нет; CS/data/json/items/comestibles/alcohol.json:1554 «A multi-grain liquor made from a mash of corn and rye.»; два других совпадения — название книги."
+32	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/furniture-domestic_plants.json:102 «""id"": ""f_plant_harvest"",»"
+32	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/comestibles/seed.json:1613 «""id"": ""seed_oats"",»"
+32	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/items/comestibles/seed.json:280 «""id"": ""seed_barley"",»"
+32	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:3273 «class jmapgen_sealed_item : public jmapgen_piece_with_has_vehicle_collision»
+32	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4497 «new_pal.load_place_mapings<jmapgen_sealed_item>( jo, ""sealed_item"", format_placings, c );»"
+33	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-floors-outdoors.json:128 «""id"": ""t_dirtmound"",»"
+33	ссылка	верно		"origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv:2 «fl_cu_secale_cereale,рожь (озимая),Secale cereale,rye,cereal_winter,annual_grass,yes,,true,proposed:flora/cereal_winter,ARABLE:8,""arable_field:ubiquitous | seasons: winter,spring,summer»"
+34	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/furniture-flora.json:18 «""id"": ""f_dandelion"",»"
+34	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4777 «objects.load_objects<jmapgen_nested>( jo, ""place_nested"", context_ );»"
+34	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/regional_settings.cpp:610 «void region_settings::load( const JsonObject &jo, std::string_view )»
+35	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-fences-gates.json:808 «""id"": ""t_splitrail_fence"",»"
+36	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/bird.json:172 «""id"": ""mon_crow"",»"
+36	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/mammal.json:1665 «""id"": ""mon_hare"",»"
+36	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4767 «objects.load_objects<jmapgen_monster_group>( jo, ""place_monsters"", context_ );»"
+36	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/mongroup.cpp:451 «void MonsterGroupManager::LoadMonsterGroup( const JsonObject &jo )»
+36	ссылка	верно		"origin/claude/fix04e-devint:dev-world/fauna-policy.json:265 «""mon_crow"",»"
+36	ссылка	верно		"origin/claude/fix04e-devint:dev-world/fauna-policy.json:335 «""mon_hare"",»"
+36	нет в CDDA	верно		"rg -n -i -F 'GROUP_FIELD' C:/Users/Slaven/cdda-src/0d8843f/data/json C:/Users/Slaven/cdda-src/0d8843f/src: совпадений нет (exit 1). Поиск field|farm|crop|rural в data/json/monstergroups и CS/src/mongroup.cpp дал только C:/Users/Slaven/cdda-src/0d8843f/data/json/monstergroups/nether.json:27 «""id"": ""GROUP_NETHER_REALITY_TEAR_FIELD"",», не полевую группу животных."
+36	нет в CDDA	верно		"W/pilot-plan.md:36 «GROUP_FIELD»; rg -n -i ""GROUP_FIELD"" CS/data/json CS/src: 0 совпадений, exit 1. Проверено точное утверждение об отсутствии этого id отдельно от общего утверждения о полевой группе."
+43	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:191–203; 191 «Снопы шуршат на решётке при перекладке»; 203 «Мелкие парные следы ласки видны у стены овина»
+43	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:748–758; 748 «Цепы мерно стучат по сухим снопам»; 758 «Отдельные стебли выпадают из связки снопа»
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/emit.json:60 «""id"": ""emit_smoke_stream"",»"
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/field_type.json:358 «""id"": ""fd_fire"",»"
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/field_type.json:531 «""id"": ""fd_smoke"",»"
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapdata.cpp:1225 «optional( jo, was_loaded, ""emissions"", emissions );»"
+44	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:1984 «class jmapgen_field : public jmapgen_piece»
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4479 «new_pal.load_place_mapings<jmapgen_field>( jo, ""fields"", format_placings, c );»"
+44	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4777 «objects.load_objects<jmapgen_nested>( jo, ""place_nested"", context_ );»"
+44	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:831 «static void load_nested_mapgen( JsonObject &&jio, const nested_mapgen_id &id_base )»
+51	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:562 «epr_r6_floodplain_meadow_haystack_after_mowing,pf_floodplain_meadow,env_r6_floodplain_meadow_haystack_after_mowing,Стог сена стоит на пойменном лугу после покоса и сушки,loose_object,ob»
+52	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/mammal.json:1734 «""id"": ""mon_horse"",»"
+52	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/mammal.json:2571 «""id"": ""mon_sheep"",»"
+52	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/mammal.json:851 «""id"": ""mon_cow"",»"
+52	ссылка	верно		"origin/claude/fix04e-devint:dev-world/fauna-policy.json:262 «""mon_cow"",»"
+52	ссылка	верно		"origin/claude/fix04e-devint:dev-world/fauna-policy.json:336 «""mon_horse"",»"
+52	ссылка	верно		"origin/claude/fix04e-devint:dev-world/fauna-policy.json:361 «""mon_sheep"",»"
+58	ссылка	верно		origin/main:data/world-catalogs/novgorod/game-base-v1/items-household-personal/sources/evidence-household-v2/x-crafts.csv:1612–1630; 1615 «Деревья срубали и оставляли высыхать на месте.»; 1617 «Сухие стволы и корневища сжигали на расчищенном участке.»; 1627 «Старое нивище зарастало — теперь оно звалось лядиной»
+59	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-flora.json:2050 «""id"": ""t_trunk"",»"
+59	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/furniture_and_terrain/terrain-flora.json:2071 «""id"": ""t_stump"",»"
+59	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/map_extras.json:357 «""id"": ""mx_clearcut"",»"
+59	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/overmap/map_extras.json:582 «""id"": ""mx_burned_ground"",»"
+59	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapdata.cpp:1380 «optional( jo, false, ""transforms_into"", transforms_into, ter_str_id::NULL_ID() );»"
+60	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4765 «objects.load_objects<jmapgen_item_group>( jo, ""place_items"", context_ );»"
+60	нет в CDDA	неверно	источник	"rg -n -i ""wood.?pile|log.?pile|pile.{0,30}(logs|wood)|stack.{0,30}(wood|logs)|firewood.?rack|lumber.?rack|поленниц"" CS/data/json CS/src; CS/data/json/furniture_and_terrain/furniture-terrains.json:1859 «""id"": ""f_log_stack_short"",»; :1879 «""id"": ""f_log_stack_mid"",»; :1880 «""name"": ""stack of logs"",»; :1868 разбор на log. Должно быть: родная мебель штабеля брёвен есть; рассмотреть f_log_stack_short/mid/tall."
+66	ссылка	верно		origin/claude/fix04e-devint:data/world-catalogs/novgorod/game-base-v1/places-binding/presence/environment_presence_authoring.csv:748 «epr_threshing_barn__r2_threshing_barn_01,pf_threshing_barn,env_r2_threshing_barn_01,Цепы мерно стучат по сухим снопам,sound,sound,physical;audible,contextual,summer;autumn,day,presence:»
+66	ссылка	верно		"origin/main:data/world-catalogs/novgorod/sources/books-evidence-v1/buildings-interiors-containers.csv:179 «settlement_form,селище,,quantity,""70% селищ СЗ — 3–6 дворов, 30% — 7–12"",622242,Рыбаков Борис Александрович; Даркевич Владислав Петрович; Янин Валентин Лаврентьевич; Раппопорт Павел Але»; origin/claude/fix04e-devint:data/world-catalogs/novgorod/sources/books-evidence-v1/buildings-interiors-containers.csv:179 «settlement_form,селище,,quantity,""70% селищ СЗ — 3–6 дворов, 30% — 7–12"",622242,Рыбаков Борис Александрович; Даркевич Владислав Петрович; Янин Валентин Лаврентьевич; Раппопорт Павел Але»"
+67	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/bird.json:140 «""id"": ""mon_chicken"",»"
+67	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/data/json/monsters/mammal.json:1064 «""id"": ""mon_dog"",»"
+67	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/effect_on_condition.cpp:91 «void effect_on_condition::load( const JsonObject &jo, std::string_view src )»
+67	ссылка	верно		"C:/Users/Slaven/cdda-src/0d8843f/src/mapgen.cpp:4758 «objects.load_objects<jmapgen_npc>( jo, ""place_npcs"", context_ );»"
+67	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/npc.cpp:354 «void npc_template::load( const JsonObject &jsobj, std::string_view src )»
+67	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/npc_class.cpp:50 «void npc_class::load_npc_class( const JsonObject &jo, const std::string &src )»
+67	ссылка	верно		C:/Users/Slaven/cdda-src/0d8843f/src/npctalk.cpp:6380 «talk_effect_fun_t::func f_make_sound( const JsonObject &jo, std::string_view member,»
+67	ссылка	верно		"origin/claude/fix04e-devint:dev-world/courtyard.json:72 «""place_npcs"": [»"
+67	ссылка	верно		"origin/claude/fix04e-devint:dev-world/wild-eocs.json:17 «""id"": ""EOC_NOVGOROD_YARD_ROUTINE"",»"
+80	нет в CDDA	верно		"rg -n -i 'village.{0,30}(frequency|spawn|rate)|(?:frequency|spawn|rate).{0,30}village|village_frequency|VILLAGE_SPACING' C:/Users/Slaven/cdda-src/0d8843f/data/json C:/Users/Slaven/cdda-src/0d8843f/src: совпадений нет (exit 1). Ближайшие настройки города: C:/Users/Slaven/cdda-src/0d8843f/src/regional_settings.cpp:575 «mandatory( jo, was_loaded, ""city_size"", city_size );»; C:/Users/Slaven/cdda-src/0d8843f/src/regional_settings.cpp:576 «optional( jo, was_loaded, ""city_spacing"", city_spacing );»."

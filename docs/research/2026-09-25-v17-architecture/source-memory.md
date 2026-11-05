@@ -1,0 +1,29 @@
+---
+name: novgorod-code-architecture-study
+description: "Verified wiring map of PR #98 code (2026-09-25, ca704b65): what v17 actually runs, what is dead/unwired, turn chain, place-fill chain, DB/catalog facts, contract tensions."
+metadata:
+  node_type: memory
+  type: project
+  originSessionId: ff9acd1f-6ccd-44a9-bc42-216c6bc662b8
+  modified: 2026-09-25T13:43:42.692Z
+---
+
+Full graph/package study at `Novgorod-runtime` HEAD `ca704b65` (CBM reindexed; bindings load via dynamic import, so graph misses composition→bindings→scenario — confirm with rg). Complements [[novgorod-repository-map]]; fresher where they differ.
+
+**Scenario coupling.** game-server: 520 non-test `lower-dvina-trace-*` files / 75.7k lines at 0f7f89de (runtime 37.6k, infrastructure 29.1k, internal 8.9k; LW-026); ~111 files / 17k truly scenario-specific, rest generic code under the prefix. v17 reachable closure 1276 files, 552 lower-dvina (43%). v17 runs through `createLowerDvinaTracePublicRuntime`, Phase1B adapter (new party), Phase2 runtime (`phase-2.js submitTurn` branches authored vs trace, revision lists `[21..35]`, rev32 default), trace-runtime (resolvers, narrator, `year 1230`). `@rus/turn` target composition ports are all `blocked`; real work via `releaseVerticalSliceExecutor`.
+
+**Turn chain.** `http/handler.js` → public runtime → `phase-2.js submitTurn` (in-memory dedupe, replay) → `runTurnWorkflow` (17 stages) → exact fast path else `runTurnStepLoop` (≤8 steps; model picks scalar `operation_choice` among code-built choices; LLM correctors; grounding auditor; ≤1 repair) → P16 `spatial-v3-combined-atomic-committer` (one tx, advisory locks, `party_command_idempotency` lease/CAS, `state_version`) → durable narrator (writer→audit→rewrite) → `TurnScreen` or degraded `FactualTurnDeliveryScreen`. Planner prompts in game-server `lower-dvina-trace-turn-step-planner-*` with case-by-case rules.
+
+**Unwired / dead in v17.** Null: `scenePresentation`, `spatialSemanticProfile`, `npcSemanticRemainderProfile`, ordinary/initial first-entry provisioners, ordinaryMaterialization/containerContents/localFire/S1 profiles (only A1+N1) → F1 off, O2a/O2b null profile, S1 off. `runModularNewGamePipeline` (new-game stages 2–23) unwired; only 11/12/16/22–25 used pointwise. `environment-state` 0 runtime users (weather/light done by materialization `projectApprovedCurrentEnvironment` = second owner). `space-map` unused despite MODULE.md. `body-state` time effects (hunger/fatigue), `world-processes` catch-up engine, `social-law` rights — tests only. `world-base` read-only guard bypassed (raw `pool.query`). Bindings v2–v15 and `production-spatial-v3-release.js` dead but referenced by tools. game-web route panel display-only (no buttons).
+
+**Place fill.** 7 starts from `live-world-runtime-v17/target-starts-manifest.v1.json` → Phase1B → `materializeAuthoredStartPartyInstance` → Stage 24/25. Generated G5: `spatial-v3-generated-expansion-adapter` select→admit→`materializeSpatialV3GeneratedScene`→`prepareFirstEntry` (NPC `compileGeneratedNpcBindings`→procedural NPC→npc-runtime routine→Stage16 equipment; finite via `createTargetFiniteFirstEntryPorts`). Natural baseline 13 layers recomputed on read, seed includes season (nature changes with season). Hardcoded slot `main`/position `focus`.
+
+**DB/data.** world_base 208 tables (+7 activation DDL = 215): legacy graph (11,359 nodes) beside ~110 `spatial_v3_*` tables (276 nodes); two revision chains (`world_revisions`, `spatial_v3_world_revisions`); two import journals. party_runtime 132 tables (+3). v17 bootstrap readback: P12 12,359 rows, item catalog + actor attributes activated. Read by file path, bypassing DB/activation: WK bundle (65 MB), exit/local-edge labels, lower-dvina data. temporal-v4 approved but NOT imported by v17 bootstrap while runtime reads `temporal_authoring_records` (unverified: may be empty). `m2c-initial-entity-perception` approved, no consumer. 391 sha256 literals in 62 src files.
+
+**Perception (verified 2026-09-28, cf33a327).** Player: deterministic `createSpatialV3VisibilityResolver` (light/cover/occlusion/concealment/weather → clear/partial/none per observer position) runs at start, movement, expansion; ordinary turns read persisted `party_visible_packages`. `projectSpatialV3CurrentVisibleContext` on `clear` gives full `identity.appearance` (incl. hair) + all worn gear as `observable_cues`, `partial` gives nothing; `projectActorPortraitSpecV1` (only active conversation) always includes hair → hair-under-headwear leak, fix goes to R-2 via item `covers_hair` ([[game-base-verification-rounds]]). NPC: `proposeNpcPerception` → `spatial-v3-perception-reaction-cycle` → boundary participant → `lower-dvina-trace-post-applied-actor-step` is OFF in live world (`post_action_perception_profile: null`, phase-2.js:352; only scenario rev 34). NPC LLM calls in v17 only from conversation and Phase-7 scripted commands. Wiring NPC perception = Runtime_Plan M4 ("общий потребитель decision boundaries").
+
+**LLM.** Package `llm-runtime` role defaults say `deepseek-v4-flash` (stale); `apps/game-server/src/runtime/llm-settings.js` forces `qwen3.8-27b-uncensored-w4a16-tp2` for all roles.
+
+**Contract tensions** (for M2c): `code_driven` D-004/§7/§11 still v2 lazy-G5 logic vs Spatial v3; AI §17 (no new digests) vs pervasive pins; AI §10.1 (missing ordinary class = defect) vs hard-block; "any place type" limited by approved expansion templates; eager M2c vs lazy O1; Lower Dvina examples inside general contracts. Governing essentials: PC §3–9, AI §10–17 (§15: scenario resolver = blocking defect), WR §24.1 playtest reports, AR §25.1 auditor triggers.
+
+**Why:** owner asked for full package-by-package study; avoid re-deriving. **How to apply:** use as starting map; re-verify with rg before relying on a specific claim.

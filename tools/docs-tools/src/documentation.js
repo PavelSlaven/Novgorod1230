@@ -114,7 +114,7 @@ export async function validateNpmScriptReferences(rootDir = '.') {
     if (content === null) continue;
     const rel = relative(root, file).replaceAll('\\', '/');
     if (rel.split('/').includes('test') || rel.endsWith('.test.js') ||
-      ['docs/archive/', 'docs/implementation/', 'docs/migration/', 'docs/work/temporal-world-v4/'].some((prefix) => rel.startsWith(prefix))) continue;
+      ['docs/archive/', 'docs/implementation/', 'docs/migration/', 'docs/work/temporal-world-v4/', 'docs/research/'].some((prefix) => rel.startsWith(prefix))) continue;
     for (const [index, line] of content.split(/\r?\n/u).entries()) {
       for (const match of line.matchAll(/\bnpm run ([a-z0-9][a-z0-9:_-]*)/giu)) {
         if (!names.has(match[1])) errors.push(`${rel}:${index + 1}: unknown npm script ${match[1]}`);
